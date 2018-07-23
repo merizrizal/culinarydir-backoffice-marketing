@@ -11,7 +11,6 @@ use core\models\RegistryBusinessHour;
 use core\models\RegistryBusinessFacility;
 use core\models\RegistryBusinessImage;
 use core\models\Business;
-use sybase\SybaseController;
 use sycomponent\AjaxRequest;
 use sycomponent\Tools;
 use yii\web\NotFoundHttpException;
@@ -49,7 +48,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     public function actionIndex($type = null)
     {
         if (Yii::$app->request->isAjax) {
-            $this->layout = '@backoffice/views/layouts/ajax';
+            $this->layout = $this->ajaxLayout;
         }
 
         $searchModel = new RegistryBusinessSearch();
@@ -79,7 +78,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     public function actionView($id, $type = null)
     {
         if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
+            $this->layout = $this->ajaxLayout;
         }
 
         $model = RegistryBusiness::find()
@@ -127,7 +126,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     public function actionCreate($save = null, $type = null)
     {
         if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
+            $this->layout = $this->ajaxLayout;
         }
 
         $render = 'create';
@@ -407,7 +406,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     public function actionUpgradeMembership($id, $save = null, $type = null)
     {
         if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
+            $this->layout = $this->ajaxLayout;
         }
 
         $modelBusiness = Business::find()
@@ -496,7 +495,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     public function actionReportByDistrict()
     {
         if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
+            $this->layout = $this->ajaxLayout;
         }
 
         $tanggal = null;
@@ -529,7 +528,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     public function actionReportByVillage()
     {
         if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
+            $this->layout = $this->ajaxLayout;
         }
 
         $tanggal = null;
@@ -577,7 +576,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     private function formUpdate($id, $render, $save = null, $type = null) {
 
         if (Yii::$app->request->isAjax) {
-            $this->layout = 'ajax';
+            $this->layout = $this->ajaxLayout;
         }
 
         $model = $this->findModel($id);

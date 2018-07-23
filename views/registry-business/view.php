@@ -5,7 +5,7 @@ use sycomponent\AjaxRequest;
 use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
 use sycomponent\Tools;
-use backend\components\AppComponent;
+use backoffice\components\AppComponent;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */

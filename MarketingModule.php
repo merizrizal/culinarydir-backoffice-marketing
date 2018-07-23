@@ -2,6 +2,8 @@
 
 namespace backoffice\modules\marketing;
 
+use Yii;
+
 /**
  * marketing module definition class
  */
@@ -19,6 +21,6 @@ class MarketingModule extends \yii\base\Module
     {
         parent::init();
 
-        // custom initialization code goes here
+        Yii::$app->params['navigation'] = require __DIR__ . '/config/navigation.php';
     }
 }
