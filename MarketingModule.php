@@ -13,6 +13,7 @@ class MarketingModule extends \yii\base\Module
      * {@inheritdoc}
      */
     public $controllerNamespace = 'backoffice\modules\marketing\controllers';
+    public $defaultRoute = 'registry-business/index';
 
     /**
      * {@inheritdoc}
