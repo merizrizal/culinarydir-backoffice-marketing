@@ -32,9 +32,8 @@ if ($status !== null) :
 
 endif;
 
-$this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Membership'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => (!empty($this->params['type']) ? Yii::t('app', 'My Registry') : Yii::t('app', 'All Registry')), 'url' => (empty($this->params['type']) ? ['index'] : ['index', 'type' => $this->params['type']])];
+$this->title = $model['name'];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' =>  ['index-' . strtolower($statusApproval)]];
 $this->params['breadcrumbs'][] = $this->title; ?>
 
 <?= $ajaxRequest->component() ?>
@@ -47,39 +46,15 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                 <div class="x_content">
 
-                    <?= Html::a('<i class="fa fa-upload"></i> ' . 'Create',
-                        (empty($this->params['type']) ? ['create'] : ['create', 'type' => $this->params['type']]),
-                        [
-                            'class' => 'btn btn-success',
-                            'style' => 'color:white'
-                        ]) ?>
-
-                    <?= Html::a('<i class="fa fa-pencil-alt"></i> ' . 'Edit',
-                        (empty($this->params['type']) ? ['update', 'id' => $model->id] : ['update', 'id' => $model->id, 'type' => $this->params['type']]),
-                        [
-                            'class' => 'btn btn-primary',
-                            'style' => 'color:white'
-                        ]) ?>
-
-                    <?= Html::a('<i class="fa fa-trash-alt"></i> ' . 'Delete',
-                        (empty($this->params['type']) ? ['delete', 'id' => $model->id] : ['delete', 'id' => $model->id, 'type' => $this->params['type']]),
-                        [
-                            'id' => 'delete',
-                            'class' => 'btn btn-danger',
-                            'style' => 'color:white',
-                            'data-not-ajax' => 1,
-                            'model-id' => $model->id,
-                            'model-name' => $model->name,
-                        ]) ?>
-
-                    <?= Html::a('<i class="fa fa-share-square"></i> ' . 'Resubmit',
-                        (empty($this->params['type']) ? ['resubmit', 'id' => $model->id] : ['resubmit', 'id' => $model->id, 'type' => $this->params['type']]),
-                        [
-                            'class' => 'btn btn-default',
-                        ]) ?>
+                    <?php
+                    if (!empty($actionButton)) {
+                        foreach ($actionButton as $valActionButton) {
+                             echo $valActionButton($model);
+                        }
+                    } ?>
 
                     <?= Html::a('<i class="fa fa-times"></i> ' . 'Cancel',
-                        (empty($this->params['type']) ? ['index'] : ['index', 'type' => $this->params['type']]),
+                        ['index-' . strtolower($statusApproval)],
                         [
                             'class' => 'btn btn-default',
                         ]) ?>
@@ -88,13 +63,13 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                     <div class="row">
                         <div class="col-lg-12">
-                            <h4><strong><?= Yii::t('app', 'Membership Type') ?></strong> : <?= $model->membershipType->name ?> | <strong><?= Yii::t('app', 'Status') ?></strong> : <?= $model->status ?></h4>
+                            <h4><strong><?= Yii::t('app', 'Membership Type') ?></strong> : <?= $model['membershipType']['name'] ?> | <strong><?= Yii::t('app', 'Status') ?></strong> : <?= $model['applicationBusiness']['logStatusApprovals'][0]['statusApproval']['name'] ?></h4>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-lg-12">
-                            <h4><strong><?= Yii::t('app', 'User In Charge') ?></strong> : <?= $model->userInCharge->full_name ?></h4>
+                            <h4><strong><?= Yii::t('app', 'User In Charge') ?></strong> : <?= $model['userInCharge']['full_name'] ?></h4>
                             <hr>
                         </div>
                     </div>
@@ -110,11 +85,11 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                         <div class="col-md-3">
                             <?= Html::label(Yii::t('app', 'Name')) ?><br>
-                            <?= $model->name ?>
+                            <?= $model['name'] ?>
                         </div>
                         <div class="col-md-3">
                             <?= Html::label(Yii::t('app', 'Unique Name')) ?><br>
-                            <?= $model->unique_name ?>
+                            <?= $model['unique_name'] ?>
                         </div>
 
                     </div>
@@ -123,19 +98,19 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                         <div class="col-md-3">
                             <?= Html::label(Yii::t('app', 'Address Type')) ?><br>
-                            <?= $model->address_type ?>
+                            <?= $model['address_type'] ?>
                         </div>
                         <div class="col-md-3">
                             <?= Html::label(Yii::t('app', 'Address')) ?><br>
-                            <?= $model->address ?>
+                            <?= $model['address'] ?>
                         </div>
                         <div class="col-md-3">
                             <?= Html::label(Yii::t('app', 'Address Info')) ?><br>
-                            <?= $model->address_info ?>
+                            <?= $model['address_info'] ?>
                         </div>
                         <div class="col-md-3">
                             <?= Html::label(Yii::t('app', 'City ID')) ?><br>
-                            <?= $model->city->name ?>
+                            <?= $model['city']['name'] ?>
                         </div>
 
                     </div>
@@ -144,16 +119,16 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                         <div class="col-lg-3 col-xs-6">
                             <?= Html::label(Yii::t('app', 'District ID')) ?><br>
-                            <?= $model->district->name ?>
+                            <?= $model['district']['name'] ?>
                         </div>
 
                         <div class="col-lg-3 col-xs-6">
                             <?= Html::label(Yii::t('app', 'Village ID')) ?><br>
-                            <?= $model->village->name ?>
+                            <?= $model['village']['name'] ?>
                         </div>
                         <div class="col-lg-6 col-xs-6">
                             <?= Html::label(Yii::t('app', 'Coordinate')) ?><br>
-                            <?= $model->coordinate ?>
+                            <?= $model['coordinate'] ?>
                         </div>
 
                     </div>
@@ -162,21 +137,21 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                         <div class="col-lg-3 col-xs-6">
                             <?= Html::label(Yii::t('app', 'Email')) ?><br>
-                            <?= $model->email ?>
+                            <?= $model['email'] ?>
                         </div>
 
                         <div class="col-lg-3 col-xs-6">
                             <?= Html::label(Yii::t('app', 'Phone1')) ?><br>
-                            <?= $model->phone1 ?>
+                            <?= $model['phone1'] ?>
                         </div>
 
                         <div class="col-lg-3 col-xs-6">
                             <?= Html::label(Yii::t('app', 'Phone2')) ?><br>
-                            <?= $model->phone2 ?>
+                            <?= $model['phone2'] ?>
                         </div>
                         <div class="col-lg-3 col-xs-6">
                             <?= Html::label(Yii::t('app', 'Phone3')) ?><br>
-                            <?= $model->phone3 ?>
+                            <?= $model['phone3'] ?>
                         </div>
 
                     </div>
@@ -187,7 +162,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             <?= Html::label(Yii::t('app', 'Business Location')) ?><br>
 
                             <?php
-                            $coordinate = explode(',', $model->coordinate);
+                            $coordinate = explode(',', $model['coordinate']);
 
                             if (!empty($coordinate) && count($coordinate) > 1) {
 
@@ -218,12 +193,14 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     <div class="row">
 
                         <?php
-                        foreach ($model->registryBusinessCategories as $registryBusinessCategory) {
+                        if (!empty($model['registryBusinessCategories'])) {
+                            foreach ($model['registryBusinessCategories'] as $registryBusinessCategory) {
 
-                            echo '
-                                <div class="col-sm-2 col-xs-6">
-                                    ' . $registryBusinessCategory->category->name . '
-                                </div>';
+                                echo '
+                                    <div class="col-sm-2 col-xs-6">
+                                        ' . $registryBusinessCategory['category']['name'] . '
+                                    </div>';
+                            }
                         } ?>
 
                     </div>
@@ -241,16 +218,15 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                         $productCategoryParent = [];
                         $productCategoryChild = [];
 
-                        if (!empty($model->registryBusinessProductCategories)) {
+                        if (!empty($model['registryBusinessProductCategories'])) {
+                            foreach ($model['registryBusinessProductCategories'] as $value) {
 
-                            foreach ($model->registryBusinessProductCategories as $value) {
+                                if ($value['productCategory']['is_parent']) {
 
-                                if (empty($value->productCategory->parent_id)) {
-
-                                    $productCategoryParent[$value->product_category_id] = $value->productCategory->name;
+                                    $productCategoryParent[$value['product_category_id']] = $value['productCategory']['name'];
                                 } else {
 
-                                    $productCategoryChild[$value->product_category_id] = $value->productCategory->name;
+                                    $productCategoryChild[$value['product_category_id']] = $value['productCategory']['name'];
                                 }
                             }
 
@@ -307,21 +283,23 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             <?php
                             $days = Yii::$app->params['days'];
 
-                            foreach ($model->registryBusinessHours as $businessHour):
+                            if (!empty($model['registryBusinessHours'])):
+                                foreach ($model['registryBusinessHours'] as $businessHour):
 
-                                $is24Hour = (($businessHour->open_at == '00:00:00') && ($businessHour->close_at == '24:00:00')) ? true : false; ?>
+                                    $is24Hour = (($businessHour['open_at'] == '00:00:00') && ($businessHour['close_at'] == '24:00:00')) ? true : false; ?>
 
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <?= Html::label(Yii::t('app', $days[$businessHour->day - 1])) ?>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <?= Html::label(Yii::t('app', $days[$businessHour['day'] - 1])) ?>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <?= $is24Hour ? Yii::t('app','24 Hours') : Yii::$app->formatter->asTime($businessHour['open_at']) . ' - ' . Yii::$app->formatter->asTime($businessHour['close_at']);?>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <?= $is24Hour ? Yii::t('app','24 Hours') : Yii::$app->formatter->asTime($businessHour->open_at) . ' - ' . Yii::$app->formatter->asTime($businessHour->close_at);?>
-                                    </div>
-                                </div>
 
-                            <?php
-                            endforeach; ?>
+                                <?php
+                                endforeach;
+                            endif; ?>
 
                         </div>
                     </div>
@@ -338,12 +316,12 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                         <div class="col-md-3">
                             <?= Html::label(Yii::t('app', 'Price Min')) ?><br>
-                            <?= Yii::$app->formatter->asCurrency($model->price_min); ?>
+                            <?= Yii::$app->formatter->asCurrency($model['price_min']); ?>
                         </div>
 
                         <div class="col-md-3">
                             <?= Html::label(Yii::t('app', 'Price Max')) ?><br>
-                            <?= Yii::$app->formatter->asCurrency($model->price_max); ?>
+                            <?= Yii::$app->formatter->asCurrency($model['price_max']); ?>
                         </div>
                     </div>
 
@@ -357,12 +335,14 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     <div class="row">
 
                         <?php
-                        foreach ($model->registryBusinessFacilities as $registryBusinessFacility) {
+                        if (!empty($model['registryBusinessFacilities'])) {
+                            foreach ($model['registryBusinessFacilities'] as $registryBusinessFacility) {
 
-                            echo '
-                                <div class="col-sm-2 col-xs-6">
-                                    ' . $registryBusinessFacility->facility->name . '
-                                </div>';
+                                echo '
+                                    <div class="col-sm-2 col-xs-6">
+                                        ' . $registryBusinessFacility['facility']['name'] . '
+                                    </div>';
+                            }
                         } ?>
 
                     </div>
@@ -377,24 +357,26 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     <div class="row">
 
                         <?php
-                        foreach ($model->registryBusinessImages as $registryBusinessImage): ?>
+                        if (!empty($model['registryBusinessImages'])):
+                            foreach ($model['registryBusinessImages'] as $registryBusinessImage): ?>
 
-                            <div class="col-xs-3">
-                                <div class="thumbnail">
-                                    <div class="image view view-first">
-                                        <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_business/', $registryBusinessImage['image'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
-                                        <div class="mask">
-                                            <p>&nbsp;</p>
-                                            <div class="tools tools-bottom">
-                                                <a class="show-image direct" href="<?= Yii::getAlias('@uploadsUrl') . '/img/registry_business/' . $registryBusinessImage['image'] ?>"><i class="fa fa-search"></i></a>
+                                <div class="col-xs-3">
+                                    <div class="thumbnail">
+                                        <div class="image view view-first">
+                                            <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_business/', $registryBusinessImage['image'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+                                            <div class="mask">
+                                                <p>&nbsp;</p>
+                                                <div class="tools tools-bottom">
+                                                    <a class="show-image direct" href="<?= Yii::getAlias('@uploadsUrl') . '/img/registry_business/' . $registryBusinessImage['image'] ?>"><i class="fa fa-search"></i></a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                        <?php
-                        endforeach; ?>
+                            <?php
+                            endforeach;
+                        endif; ?>
 
                     </div>
 
