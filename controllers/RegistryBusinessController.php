@@ -356,7 +356,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     </div>
                 </div>',
             'buttons' => [
-                'view' =>  function($url, $model, $key) {
+                'view' => function($url, $model, $key) {
                     return Html::a('<i class="fa fa-search-plus"></i>', ['view-pndg', 'id' => $model->id], [
                         'id' => 'view',
                         'class' => 'btn btn-primary',
@@ -365,7 +365,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                         'title' => 'View',
                     ]);
                 },
-                'delete' =>  function($url, $model, $key) {
+                'delete' => function($url, $model, $key) {
                     return Html::a('<i class="fa fa-trash-alt"></i>', ['delete', 'id' => $model->id, 'statusApproval' => 'pndg'], [
                         'id' => 'delete',
                         'class' => 'btn btn-danger',
@@ -401,7 +401,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     </div>
                 </div>',
             'buttons' => [
-                'resubmit' =>  function($url, $model, $key) {
+                'resubmit' => function($url, $model, $key) {
                     return Html::a('<i class="fa fa-check"></i>', ['view-icorct', 'id' => $model->id], [
                         'id' => 'resubmit',
                         'class' => 'btn btn-primary',
@@ -434,7 +434,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     </div>
                 </div>',
             'buttons' => [
-                'view' =>  function($url, $model, $key) {
+                'view' => function($url, $model, $key) {
                     return Html::a('<i class="fa fa-search-plus"></i>', ['view-rjct', 'id' => $model->id], [
                         'id' => 'view',
                         'class' => 'btn btn-primary',
@@ -1129,7 +1129,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             }
 
             if ($flag) {
-                $flag = $this->run('/approval/status-approval/resubmit', ['appBId' => $appBId]);
+                $flag = $this->run('/approval/status-approval/resubmit', ['appBId' => $appBId, 'regBId' => $id]);
             }
         }
 
@@ -1235,6 +1235,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             ->andWhere(['registry_business.user_in_charge' => Yii::$app->user->getIdentity()->id])
             ->andWhere(['log_status_approval.status_approval_id' => $statusApproval])
             ->andWhere(['log_status_approval.is_actual' => 1])
+            ->andWhere('registry_business.application_business_counter = application_business.counter')
             ->distinct();
 
         Yii::$app->formatter->timeZone = 'Asia/Jakarta';
