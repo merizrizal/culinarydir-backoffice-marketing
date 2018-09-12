@@ -577,14 +577,14 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 'registryBusinessProductCategories' => function($query) {
                     $query->andOnCondition(['registry_business_product_category.is_active' => true]);
                 },
-                'registryBusinessHours' => function($query) {
-                    $query->orderBy(['registry_business_hour.day' => SORT_ASC]);
-                },
                 'registryBusinessProductCategories.productCategory',
                 'registryBusinessFacilities' => function($query) {
                     $query->andOnCondition(['registry_business_facility.is_active' => true]);
                 },
                 'registryBusinessFacilities.facility',
+                'registryBusinessHours' => function($query) {
+                    $query->orderBy(['registry_business_hour.day' => SORT_ASC]);
+                },
             ])
             ->andWhere(['registry_business.id' => $id])
             ->one();

@@ -32,6 +32,12 @@ return [
                 'url' => ['marketing/registry-business/index-rjct'],
                 'isDirect' => false,
             ],
+            'member'=> [
+                'label' => 'Member',
+                'iconClass' => 'fa fa-users',
+                'url' => ['marketing/business/member'],
+                'isDirect' => false,
+            ],
         ]
     ]
 ];
