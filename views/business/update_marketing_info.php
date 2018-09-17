@@ -347,8 +347,8 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Informatio
                                             'step' => 10000,
                                             'prefix' => 'Rp',
                                             'verticalbuttons' => true,
-                                            'verticalupclass' => 'glyphicon glyphicon-plus',
-                                            'verticaldownclass' => 'glyphicon glyphicon-minus',
+                                            'verticalup' => '<i class="glyphicon glyphicon-plus"></i>',
+                                            'verticaldown' => '<i class="glyphicon glyphicon-minus"></i>'
                                         ],
                                     ]); ?>
 
@@ -368,8 +368,8 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Informatio
                                             'step' => 10000,
                                             'prefix' => 'Rp',
                                             'verticalbuttons' => true,
-                                            'verticalupclass' => 'glyphicon glyphicon-plus',
-                                            'verticaldownclass' => 'glyphicon glyphicon-minus',
+                                            'verticalup' => '<i class="glyphicon glyphicon-plus"></i>',
+                                            'verticaldown' => '<i class="glyphicon glyphicon-minus"></i>'
                                         ],
                                     ]); ?>
 

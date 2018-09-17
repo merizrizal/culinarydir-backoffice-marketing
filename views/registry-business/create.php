@@ -558,8 +558,8 @@ $this->registerJs($jscript); ?>
                                                     'step' => 10000,
                                                     'prefix' => 'Rp',
                                                     'verticalbuttons' => true,
-                                                    'verticalupclass' => 'glyphicon glyphicon-plus',
-                                                    'verticaldownclass' => 'glyphicon glyphicon-minus',
+                                                    'verticalup' => '<i class="glyphicon glyphicon-plus"></i>',
+                                                    'verticaldown' => '<i class="glyphicon glyphicon-minus"></i>'
                                                 ],
                                             ]); ?>
 
@@ -579,8 +579,8 @@ $this->registerJs($jscript); ?>
                                                     'step' => 10000,
                                                     'prefix' => 'Rp',
                                                     'verticalbuttons' => true,
-                                                    'verticalupclass' => 'glyphicon glyphicon-plus',
-                                                    'verticaldownclass' => 'glyphicon glyphicon-minus',
+                                                    'verticalup' => '<i class="glyphicon glyphicon-plus"></i>',
+                                                    'verticaldown' => '<i class="glyphicon glyphicon-minus"></i>'
                                                 ],
                                             ]); ?>
 
