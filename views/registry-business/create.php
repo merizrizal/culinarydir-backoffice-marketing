@@ -963,5 +963,5 @@ $jscript = '
     $(".select2.select2-container").find("input.select2-search__field").css("width", "100%");
 ';
 
-$this->registerJs($jscript . Yii::$app->params['checkbox-radio-script']()); ?>
+$this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>
 
