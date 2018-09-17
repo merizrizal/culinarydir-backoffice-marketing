@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use yii\widgets\MaskedInput;
+use dosamigos\ckeditor\CKEditor;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use core\models\City;
@@ -170,6 +171,18 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information
                                     ]) ?>
                                 </div>
 
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+
+                                    <?= $form->field($model, 'about', [
+                                        'template' => '{label}{input}{error}',
+                                    ])->widget(CKEditor::className(), [
+                                        'options' => ['rows' => 6],
+                                    ]) ?>
+
+                                </div>
                             </div>
 
                             <div class="form-group">
