@@ -478,6 +478,9 @@ class BusinessController extends \backoffice\controllers\BaseController
                 }
 
                 if ($flag) {
+                    $modelBusinessDetail->price_min = !empty($modelBusinessDetail->price_min) ? $modelBusinessDetail->price_min : 0;
+                    $modelBusinessDetail->price_max = !empty($modelBusinessDetail->price_max) ? $modelBusinessDetail->price_max : 0;
+
                     $flag = $modelBusinessDetail->save();
                 }
 

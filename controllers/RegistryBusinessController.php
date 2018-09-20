@@ -75,6 +75,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         if ($model->load(($post = Yii::$app->request->post()))) {
 
+            $model->price_min = !empty($model->price_min) ? $model->price_min : 0;
+            $model->price_max = !empty($model->price_max) ? $model->price_max : 0;
+
             if (empty($save)) {
 
                 $isValidatedPerson = true;
@@ -612,6 +615,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
+
+                $model->price_min = !empty($model->price_min) ? $model->price_min : 0;
+                $model->price_max = !empty($model->price_max) ? $model->price_max : 0;
 
                 if (($flag = $model->save())) {
 
