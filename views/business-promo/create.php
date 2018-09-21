@@ -1,10 +1,7 @@
 <?php
 
-use yii\helpers\Html;
-
-
 /* @var $this yii\web\View */
-/* @var $model backend\models\BusinessPromo */
+/* @var $model core\models\BusinessPromo */
 
 $this->title = 'Create ' . Yii::t('app', 'Promo');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['business/member']];

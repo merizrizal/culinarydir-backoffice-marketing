@@ -1,10 +1,7 @@
 <?php
 
-use yii\helpers\Html;
-
-
 /* @var $this yii\web\View */
-/* @var $model backend\models\BusinessProduct */
+/* @var $model core\models\BusinessProduct */
 
 $this->title = 'Update ' . Yii::t('app', 'Product');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['business/member']];

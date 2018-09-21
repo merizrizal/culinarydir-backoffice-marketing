@@ -11,7 +11,7 @@ use core\models\Village;
 use core\models\MembershipType;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\search\BusinessSearch */
+/* @var $searchModel core\models\search\BusinessSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 kartik\select2\Select2Asset::register($this);

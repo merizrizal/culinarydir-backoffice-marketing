@@ -7,7 +7,7 @@ use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\search\BusinessProductSearch */
+/* @var $searchModel core\models\search\BusinessProductSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $ajaxRequest = new AjaxRequest([
