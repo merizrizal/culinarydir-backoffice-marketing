@@ -111,6 +111,10 @@ class BusinessController extends \backoffice\controllers\BaseController
                 $flag = false;
 
                 if (($flag = $model->save())) {
+
+                    $coordinate = explode(',', $modelBusinessLocation->coordinate);
+                    $modelBusinessLocation->coordinate = trim($coordinate[0]) . ',' . trim($coordinate[1]);
+
                     $flag = $modelBusinessLocation->save();
                 }
 

@@ -75,13 +75,13 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         if ($model->load(($post = Yii::$app->request->post()))) {
 
+            $coordinate = explode(',', $model->coordinate);
+            $model->coordinate = trim($coordinate[0]) . ',' . trim($coordinate[1]);
+
             $model->price_min = !empty($model->price_min) ? $model->price_min : 0;
             $model->price_max = !empty($model->price_max) ? $model->price_max : 0;
 
             if (empty($save)) {
-
-                $isValidatedPerson = true;
-                $isValidatedRegistryBusinessContactPerson = true;
 
                 $modelPerson = [];
                 $modelRegistryBusinessContactPerson = [];
@@ -541,13 +541,16 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     {
         $model = $this->findModel($id);
 
-        if ($model->load(($post = Yii::$app->request->post()))) {
+        if ($model->load(Yii::$app->request->post())) {
 
             if (empty($save)) {
 
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             } else {
+
+                $coordinate = explode(',', $model->coordinate);
+                $model->coordinate = trim($coordinate[0]) . ',' . trim($coordinate[1]);
 
                 if ($model->save()) {
 
