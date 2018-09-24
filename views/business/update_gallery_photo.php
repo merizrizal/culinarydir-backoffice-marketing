@@ -80,10 +80,12 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo'); ?>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="text-center mt-10">
+                                                        <div class="mt-10">
                                                             <?= Html::checkbox('BusinessImageDelete[]', false, ['class' => 'form-control', 'label' => 'Delete', 'value' => $businessImage['id']]) ?>
+                                                            <br>
                                                             <?= Html::checkbox('profile['. $businessImage['id'] .']', ($businessImage['type'] == 'Profile'), ['class' => 'form-control', 'label' => 'Set as Profile']) ?>
-                                                            <?= Html::checkbox('is_primary['. $businessImage['id'] .']', $businessImage['is_primary'], ['class' => 'form-control', 'label' => 'Set as Primary']) ?>
+                                                            <br>
+                                                            <?= Html::radio('thumbnail', $businessImage['is_primary'], ['class' => 'form-control', 'label' => 'Set as Thumbnail', 'value' => $businessImage['id']]) ?>
                                                         </div>
                                                     </div>
                                                 </div>
