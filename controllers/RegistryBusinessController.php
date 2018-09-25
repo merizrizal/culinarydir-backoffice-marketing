@@ -75,9 +75,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         if ($model->load(($post = Yii::$app->request->post()))) {
 
-            $coordinate = explode(',', $model->coordinate);
-            $model->coordinate = trim($coordinate[0]) . ',' . trim($coordinate[1]);
-
+            $model->setCoordinate();
             $model->price_min = !empty($model->price_min) ? $model->price_min : 0;
             $model->price_max = !empty($model->price_max) ? $model->price_max : 0;
 
@@ -549,8 +547,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 return ActiveForm::validate($model);
             } else {
 
-                $coordinate = explode(',', $model->coordinate);
-                $model->coordinate = trim($coordinate[0]) . ',' . trim($coordinate[1]);
+                $model->setCoordinate();
 
                 if ($model->save()) {
 
