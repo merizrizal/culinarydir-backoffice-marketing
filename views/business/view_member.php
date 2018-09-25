@@ -317,7 +317,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             if (!empty($model['businessHours'])):
                                 foreach ($model['businessHours'] as $businessHour):
 
-                                    $is24Hour = (($businessHour['open_at'] == '00:00:00') && ($businessHour['close_at'] == '24:00:00')) ? true : false; ?>
+                                    $is24Hour = (($businessHour['open_at'] == '00:00:00') && ($businessHour['close_at'] == '24:00:00')); ?>
 
                                     <div class="row">
                                         <div class="col-md-2">
