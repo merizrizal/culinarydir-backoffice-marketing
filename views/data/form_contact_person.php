@@ -55,11 +55,12 @@ $form = new ActiveForm([
 <div class="row">
     <div class="col-md-12">
         <?= Html::a('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), null, ['class' => 'btn btn-default add-contact-person']) ?>
+        <?= Html::a('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), null, ['class' => 'btn btn-default delete-contact-person']) ?>
     </div>
 </div>
 
 <div class="temp-form hide">
-    <div class="mb-10">
+    <div class="mb-10 data-form">
         <hr>
         <div class="row mt-10">
             <div class="col-md-4 col-xs-6">
@@ -126,7 +127,6 @@ $jscript = '
             "container":".field-person-" + index + "-last_name",
             "input":"#person-" + index + "-last_name",
             "validate":function (attribute, value, messages, deferred, $form) {
-                yii.validation.required(value, messages, {"message":"Nama Belakang tidak boleh kosong."});
                 yii.validation.string(value, messages, {"message":"Nama Belakang harus berupa string.","max":16,"tooLong":"Nama Belakang harus memiliki paling banyak 16 karakter.","skipOnEmpty":1});
             }
         });
@@ -147,7 +147,6 @@ $jscript = '
             "container":".field-person-" + index + "-phone",
             "input":"#person-" + index + "-phone",
             "validate":function (attribute, value, messages, deferred, $form) {
-                yii.validation.required(value, messages, {"message":"Telepon tidak boleh kosong."});
                 yii.validation.string(value, messages, {"message":"Telepon harus berupa string.","max":16,"tooLong":"Telepon harus memiliki paling banyak 16 karakter.","skipOnEmpty":1});
             }
         });
@@ -159,7 +158,6 @@ $jscript = '
             "input":"#person-" + index + "-email",
             "enableAjaxValidation":true,
             "validate":function (attribute, value, messages, deferred, $form) {
-                yii.validation.required(value, messages, {"message":"Email tidak boleh kosong."});
                 yii.validation.string(value, messages, {"message":"Email harus berupa string.","max":64,"tooLong":"Email harus memiliki paling banyak 64 karakter.","skipOnEmpty":1});
                 yii.validation.email(value, messages, {"pattern":/^[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/,"fullPattern":/^[^@]*<[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$/,"allowName":false,"message":"Email bukan alamat email yang valid.","enableIDN":false,"skipOnEmpty":1});
             }
@@ -206,6 +204,12 @@ $jscript = '
         $("#person-" + indexCount + "-phone").inputmask({"mask":["999-999-9999","9999-999-9999","9999-9999-9999","9999-99999-9999"]});' .
 
         Yii::$app->params['checkbox-radio-script'](null, null, '#registrybusinesscontactperson-" + indexCount + "-is_primary_contact') . '
+    });
+
+    $(".delete-contact-person").on("click", function() {
+        
+        $(".second-form").children(".data-form").last().remove();
+        indexCount--;
     });
 ';
 
