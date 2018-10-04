@@ -45,6 +45,12 @@ $form = new ActiveForm([
                 ]) ?>
             </div>
         </div>
+        
+        <div class="row">
+        	<div class="col-md-8 col-xs-12">
+                <?= $form->field($modelRegistryBusinessContactPerson, '[1]note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -94,6 +100,12 @@ $form = new ActiveForm([
                     'class' => 'form-control',
                     'placeholder' => 'Email',
                 ]) ?>
+            </div>
+        </div>
+        
+        <div class="row">
+        	<div class="col-md-8 col-xs-12">
+                <?= $form->field($modelRegistryBusinessContactPerson, '[index]note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
             </div>
         </div>
     </div>
@@ -196,6 +208,7 @@ $jscript = '
         formContactPerson = replaceIndex(formContactPerson, "registrybusinesscontactperson-index-is_primary_contact", indexCount);
         formContactPerson = replaceIndex(formContactPerson, "person-index-phone", indexCount);
         formContactPerson = replaceIndex(formContactPerson, "person-index-email", indexCount);
+        formContactPerson = replaceIndex(formContactPerson, "registrybusinesscontactperson-index-note", indexCount);
 
         $(".second-form").append(formContactPerson.html());
 
