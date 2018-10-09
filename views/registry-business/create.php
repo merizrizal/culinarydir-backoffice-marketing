@@ -857,16 +857,9 @@ $jscript = '
 
     $(".open-map").on("click", function() {
 
-        if (navigator.geolocation) {
-
-            navigator.geolocation.getCurrentPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function(position) {
                 $("#registrybusiness-coordinate").val(position.coords.latitude + "," + position.coords.longitude);
             });
-        } else {
-
-            $(this).attr("href", "https://www.google.co.id/maps/@-6.9171962,107.6185384,14.75z?hl=en");
-            $(this).trigger("click");
-        }
         
         return false;
     });
