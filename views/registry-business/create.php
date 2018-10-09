@@ -1,6 +1,5 @@
 <?php
 
-use Yii;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
@@ -240,7 +239,7 @@ $this->registerJs($jscript); ?>
                                         </div>
 
                                         <div class="col-lg-3 col-xs-3">
-                                            <?= Html::a('<i class="fa fa-map-marker-alt"></i> ' . Yii::t('app', 'Open Map'), 'https://www.google.co.id/maps/@-6.9171962,107.6185384,14.75z?hl=en', ['class' => 'btn btn-primary btn-block direct', 'target' => '_blank']) ?>
+                                            <?= Html::a('<i class="fa fa-map-marker-alt"></i> ' . Yii::t('app', 'Open Map'), '', ['class' => 'btn btn-primary btn-block open-map', 'target' => '_blank']) ?>
                                         </div>
                                     </div>
 
@@ -854,6 +853,22 @@ $jscript = '
 
     $("#registrybusiness-district_id").on("select2:select", function(e) {
         village(true);
+    });
+
+    $(".open-map").on("click", function() {
+
+        if (navigator.geolocation) {
+
+            navigator.geolocation.getCurrentPosition(function(position) {
+                $("#registrybusiness-coordinate").val(position.coords.latitude + "," + position.coords.longitude);
+            });
+        } else {
+
+            $(this).attr("href", "https://www.google.co.id/maps/@-6.9171962,107.6185384,14.75z?hl=en");
+            $(this).trigger("click");
+        }
+        
+        return false;
     });
 
     $("#registrybusinesscategory-category_id").select2({
