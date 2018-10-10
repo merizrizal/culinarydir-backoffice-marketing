@@ -194,7 +194,6 @@ $this->registerJs($jscript); ?>
                                             <?= $form->field($model, 'address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address')]) ?>
                                         </div>
 
-
                                         <div class="col-md-4">
                                             <?= $form->field($model, 'address_info')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address Info')]) ?>
                                         </div>
@@ -277,6 +276,14 @@ $this->registerJs($jscript); ?>
                                                     'class' => 'form-control'
                                                 ]
                                             ]) ?>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <div class="row">
+
+                                        <div class="col-md-9">
+                                            <?= $form->field($model, 'note')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
                                         </div>
 
                                     </div>

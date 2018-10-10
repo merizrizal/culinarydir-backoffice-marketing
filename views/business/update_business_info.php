@@ -172,6 +172,14 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information
                                 </div>
 
                             </div>
+                            
+                            <div class="row">
+
+                                <div class="col-md-9">
+                                    <?= $form->field($model, 'note')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                                </div>
+
+                            </div>
 
                             <div class="row">
                                 <div class="col-lg-12">
