@@ -9,6 +9,10 @@ use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use core\models\City;
 
+/* @var $this yii\web\View */
+/* @var $model core\models\Business */
+/* @var $modelBusinessLocation core\models\BusinessLocation */
+
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
@@ -37,9 +41,9 @@ endif;
 $this->title = 'Update ' . Yii::t('app', 'Business Information') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['member']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-member', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information'); ?>
+$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information');
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="business-update">
     <div class="row">
@@ -97,17 +101,17 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information
 
                                 <div class="col-lg-3 col-xs-6">
                                     <?= $form->field($modelBusinessLocation, 'city_id')->dropDownList(
-                                            ArrayHelper::map(
-                                                City::find()->orderBy('name')->asArray()->all(),
-                                                'id',
-                                                function($data) {
-                                                    return $data['name'];
-                                                }
-                                            ),
-                                            [
-                                                'prompt' => '',
-                                                'style' => 'width: 100%'
-                                            ]) ?>
+                                        ArrayHelper::map(
+                                            City::find()->orderBy('name')->asArray()->all(),
+                                            'id',
+                                            function($data) {
+                                                return $data['name'];
+                                            }
+                                        ),
+                                        [
+                                            'prompt' => '',
+                                            'style' => 'width: 100%'
+                                        ]) ?>
                                 </div>
 
                                 <div class="col-lg-3 col-xs-6">

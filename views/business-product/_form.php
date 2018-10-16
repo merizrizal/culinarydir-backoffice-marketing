@@ -10,6 +10,7 @@ use sycomponent\NotificationDialog;
 /* @var $this yii\web\View */
 /* @var $model core\models\BusinessProduct */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $modelBusiness core\models\Business */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'BusinessProduct',
@@ -31,40 +32,41 @@ if ($status !== null) :
     $notif->theScript();
     echo $notif->renderDialog();
 
-endif; ?>
+endif;
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="row">
     <div class="col-sm-12">
         <div class="x_panel">
             <div class="business-product-form">
 
-                <?php $form = ActiveForm::begin([
-                        'id' => 'business-product-form',
-                        'action' => $model->isNewRecord ? ['create', 'id' => $modelBusiness['id']] : ['update', 'id' => $model->id, 'bid' => $modelBusiness['id']],
-                        'options' => [
-
+                <?php 
+                $form = ActiveForm::begin([
+                    'id' => 'business-product-form',
+                    'action' => $model->isNewRecord ? ['create', 'id' => $modelBusiness['id']] : ['update', 'id' => $model->id, 'bid' => $modelBusiness['id']],
+                    'options' => [
+    
+                    ],
+                    'fieldConfig' => [
+                        'parts' => [
+                            '{inputClass}' => 'col-lg-12'
                         ],
-                        'fieldConfig' => [
-                            'parts' => [
-                                '{inputClass}' => 'col-lg-12'
-                            ],
-                            'template' => '
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        {label}
+                        'template' => '
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    {label}
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="{inputClass}">
+                                        {input}
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="{inputClass}">
-                                            {input}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        {error}
-                                    </div>
-                                </div>',
-                        ]
+                                </div>
+                                <div class="col-lg-3">
+                                    {error}
+                                </div>
+                            </div>',
+                    ]
                 ]); ?>
 
                     <div class="x_title">
@@ -72,9 +74,11 @@ endif; ?>
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-lg-6">
+                                
                                     <?php
                                     if (!$model->isNewRecord)
                                         echo Html::a('<i class="fa fa-upload"></i> ' . 'Create', ['create', 'id' => $modelBusiness['id']], ['class' => 'btn btn-success']); ?>
+                                        
                                 </div>
                             </div>
                         </div>
@@ -112,16 +116,19 @@ endif; ?>
                             <div class="row">
                                 <div class="col-lg-3"></div>
                                 <div class="col-lg-6">
+                                
                                     <?php
                                     $icon = '<i class="fa fa-save"></i> ';
                                     echo Html::submitButton($model->isNewRecord ? $icon . 'Save' : $icon . 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']);
                                     echo Html::a('<i class="fa fa-times"></i> Cancel', ['index', 'id' => $modelBusiness['id']], ['class' => 'btn btn-default']); ?>
+                                    
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                <?php ActiveForm::end(); ?>
+                <?php
+                ActiveForm::end(); ?>
 
             </div>
         </div>

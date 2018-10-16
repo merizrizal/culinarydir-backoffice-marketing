@@ -8,7 +8,7 @@ use sycomponent\Tools;
 use backoffice\components\AppComponent;
 
 /* @var $this yii\web\View */
-/* @var $model core\models\RegistryBusiness */
+/* @var $model core\models\Business */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'Business',
@@ -34,9 +34,9 @@ endif;
 
 $this->title = $model['name'];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' =>  ['member']];
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="business-view">
 

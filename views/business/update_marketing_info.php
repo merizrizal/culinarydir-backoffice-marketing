@@ -10,6 +10,19 @@ use core\models\Category;
 use core\models\ProductCategory;
 use core\models\Facility;
 
+/* @var $this yii\web\View */
+/* @var $model core\models\Business */
+/* @var $modelBusinessCategory core\models\BusinessCategory */
+/* @var $dataBusinessCategory core\models\BusinessCategory */
+/* @var $modelBusinessProductCategory core\models\BusinessProductCategory */
+/* @var $dataBusinessProductCategoryParent core\models\BusinessProductCategory */
+/* @var $dataBusinessProductCategoryChild core\models\BusinessProductCategory */
+/* @var $modelBusinessFacility core\models\BusinessFacility */
+/* @var $dataBusinessFacility core\models\BusinessFacility */
+/* @var $modelBusinessHour core\models\BusinessHour */
+/* @var $dataBusinessHour core\models\BusinessHour */
+/* @var $modelBusinessDetail core\models\BusinessDetail */
+
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
@@ -53,12 +66,12 @@ $facility = Facility::find()
         ->orderBy('name')
         ->asArray()->all();
 
-$this->title = 'Update ' . Yii::t('app', 'Marketing Information') . ' : ' . $model['name'];
+$this->title = 'Update ' . Yii::t('app', 'Marketing Information') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['member']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-member', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Information'); ?>
+$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Information');
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="business-update">
     <div class="row">
@@ -105,9 +118,9 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Informatio
                                                     $selectedDataCategory[$value['category_id']] = ['selected' => true];
                                                 }
                                             }
-                                        } ?>
+                                        }
 
-                                        <?= $form->field($modelBusinessCategory, 'category_id')->dropDownList(
+                                        echo $form->field($modelBusinessCategory, 'category_id')->dropDownList(
                                             ArrayHelper::map(
                                                 $category,
                                                 'id',
@@ -142,9 +155,9 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Informatio
 
                                                 $selectedDataProductParent[$value['product_category_id']] = ['selected' => true];
                                             }
-                                        } ?>
+                                        }
 
-                                        <?= $form->field($modelBusinessProductCategory, 'product_category_id[parent]')->dropDownList(
+                                        echo $form->field($modelBusinessProductCategory, 'product_category_id[parent]')->dropDownList(
                                             ArrayHelper::map(
                                                 $productParentCategory,
                                                 'id',
@@ -169,9 +182,9 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Informatio
 
                                                 $selectedDataProductChild[$value['product_category_id']] = ['selected' => true];
                                             }
-                                        } ?>
+                                        }
 
-                                        <?= $form->field($modelBusinessProductCategory, 'product_category_id[child]')->dropDownList(
+                                        echo $form->field($modelBusinessProductCategory, 'product_category_id[child]')->dropDownList(
                                             ArrayHelper::map(
                                                 $productCategory,
                                                 'id',
@@ -209,9 +222,9 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Informatio
                                                     $selectedDataFacility[$value['facility_id']] = ['selected' => true];
                                                 }
                                             }
-                                        } ?>
+                                        }
 
-                                        <?= $form->field($modelBusinessFacility, 'facility_id')->dropDownList(
+                                        echo $form->field($modelBusinessFacility, 'facility_id')->dropDownList(
                                             ArrayHelper::map(
                                                 $facility,
                                                 'id',

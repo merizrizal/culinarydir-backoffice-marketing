@@ -35,9 +35,9 @@ $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['business/member']];
 $this->params['breadcrumbs'][] = ['label' => $model->business->name, 'url' => ['business/view-member', 'id' => $model->business->id]];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Product'), 'url' => ['index', 'id' => $model->business->id]];
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="business-product-view">
 
@@ -111,7 +111,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 </div>
 
 <?php
-
 $modalDialog = new ModalDialog([
     'clickedComponent' => 'a#delete',
     'modelAttributeId' => 'model-id',
@@ -130,6 +129,4 @@ $jscript = Yii::$app->params['checkbox-radio-script']()
     . '$(".iCheck-helper").parent().removeClass("disabled");
 ';
 
-$this->registerJs($jscript);
-
-?>
+$this->registerJs($jscript); ?>

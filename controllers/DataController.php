@@ -2,7 +2,6 @@
 
 namespace backoffice\modules\marketing\controllers;
 
-use Yii;
 use core\models\Person;
 use core\models\RegistryBusinessContactPerson;
 use yii\filters\VerbFilter;

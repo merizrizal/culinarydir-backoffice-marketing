@@ -40,9 +40,9 @@ if ($status !== null) :
 endif;
 
 $this->title = Yii::t('app', 'Member');
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component(false) ?>
+echo $ajaxRequest->component(false); ?>
 
 <div class="business-index">
 
@@ -51,9 +51,9 @@ $this->params['breadcrumbs'][] = $this->title; ?>
         'clickedComponent' => 'a#delete',
         'modelAttributeId' => 'model-id',
         'modelAttributeName' => 'model-name',
-    ]); ?>
+    ]);
 
-    <?= GridView::widget([
+    echo GridView::widget([
         'id' => 'grid-view-business',
         'dataProvider' => $dataProvider,
         'pjax' => false,
@@ -193,9 +193,9 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
 </div>
 
-<?= $modalDialog->renderDialog() ?>
+<?php 
+echo $modalDialog->renderDialog();
 
-<?php
 $jscript = ''
     . $modalDialog->getScript() . '
 
