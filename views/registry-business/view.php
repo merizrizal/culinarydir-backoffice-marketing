@@ -155,6 +155,14 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                         </div>
 
                     </div>
+                    
+                    <div class="row mb-20">
+
+                        <div class="col-lg-9 col-xs-12">
+                            <?= Html::label(Yii::t('app', 'Note')) ?><br>
+                            <?= $model['note'] ?>
+                        </div>
+                    </div>
 
                     <div class="row mb-20">
                         <div class="col-md-12">
