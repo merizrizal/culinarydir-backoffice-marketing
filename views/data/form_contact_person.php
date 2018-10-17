@@ -1,7 +1,12 @@
 <?php
+
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\MaskedInput;
+
+/* @var $this yii\web\View */
+/* @var $modelPerson core\models\Person */
+/* @var $modelRegistryBusinessContactPerson core\models\RegistryBusinessContactPerson */
 
 $form = new ActiveForm([
     'fieldConfig' => [
@@ -120,7 +125,7 @@ $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/i
 $jscript = '
     var indexCount = 1;
 
-    var addValidator = function(index) {
+    function addValidator(index) {
 
         $("#registry-business-form").yiiActiveForm("add", {
             "id":"person-" + index + "-first_name",
@@ -186,7 +191,7 @@ $jscript = '
 
         var formContactPerson = $(".temp-form").clone();
 
-        var replaceIndex = function(contentClone, component, index) {
+        function replaceIndex(contentClone, component, index) {
 
             var inputClass = contentClone.find(".field-" + component).attr("class");
             inputClass = inputClass.replace("index", index);

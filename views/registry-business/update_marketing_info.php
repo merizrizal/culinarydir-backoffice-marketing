@@ -10,6 +10,19 @@ use core\models\Category;
 use core\models\ProductCategory;
 use core\models\Facility;
 
+/* @var $this yii\web\View */
+/* @var $model core\models\RegistryBusiness */
+/* @var $dataRegistryBusinessCategory core\models\RegistryBusinessCategory */
+/* @var $modelRegistryBusinessCategory core\models\RegistryBusinessCategory */
+/* @var $dataRegistryBusinessProductCategoryParent core\models\RegistryBusinessProductCategory */
+/* @var $dataRegistryBusinessProductCategoryChild core\models\RegistryBusinessProductCategory */
+/* @var $modelRegistryBusinessProductCategory core\models\RegistryBusinessProductCategory */
+/* @var $dataRegistryBusinessFacility core\models\RegistryBusinessFacility */
+/* @var $modelRegistryBusinessFacility core\models\RegistryBusinessFacility */
+/* @var $dataRegistryBusinessHour core\models\RegistryBusinessHour */
+/* @var $modelRegistryBusinessHour core\models\RegistryBusinessHour */
+/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
@@ -53,12 +66,12 @@ $facility = Facility::find()
         ->orderBy('name')
         ->asArray()->all();
 
-$this->title = 'Update ' . Yii::t('app', 'Marketing Information') . ' : ' . $model['name'];
+$this->title = 'Update ' . Yii::t('app', 'Marketing Information') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' => ['index-' . strtolower($statusApproval)]];
-$this->params['breadcrumbs'][] = ['label' => $model['name'], 'url' => ['view-' . strtolower($statusApproval), 'id' => $model['id']]];
-$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Information'); ?>
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-' . strtolower($statusApproval), 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Information');
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="registry-business-update">
     <div class="row">
@@ -69,7 +82,7 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Informatio
                     <?php
                     $form = ActiveForm::begin([
                         'id' => 'registry-business-form',
-                        'action' => ['update-marketing-info', 'id' => $model['id'], 'statusApproval' => strtolower($statusApproval)],
+                        'action' => ['update-marketing-info', 'id' => $model->id, 'statusApproval' => strtolower($statusApproval)],
                         'options' => [
 
                         ],
@@ -105,9 +118,9 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Informatio
                                                     $selectedDataCategory[$value['category_id']] = ['selected' => true];
                                                 }
                                             }
-                                        } ?>
+                                        }
 
-                                        <?= $form->field($modelRegistryBusinessCategory, 'category_id')->dropDownList(
+                                        echo $form->field($modelRegistryBusinessCategory, 'category_id')->dropDownList(
                                             ArrayHelper::map(
                                                 $category,
                                                 'id',
@@ -169,9 +182,9 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Informatio
 
                                                 $selectedDataProductChild[$value['product_category_id']] = ['selected' => true];
                                             }
-                                        } ?>
+                                        }
 
-                                        <?= $form->field($modelRegistryBusinessProductCategory, 'product_category_id[child]')->dropDownList(
+                                        echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[child]')->dropDownList(
                                             ArrayHelper::map(
                                                 $productCategory,
                                                 'id',
@@ -209,9 +222,9 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Informatio
                                                     $selectedDataFacility[$value['facility_id']] = ['selected' => true];
                                                 }
                                             }
-                                        } ?>
+                                        }
 
-                                        <?= $form->field($modelRegistryBusinessFacility, 'facility_id')->dropDownList(
+                                        echo $form->field($modelRegistryBusinessFacility, 'facility_id')->dropDownList(
                                             ArrayHelper::map(
                                                 $facility,
                                                 'id',
@@ -382,7 +395,7 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Informatio
 
                                         <?php
                                         echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-' . strtolower($statusApproval), 'id' => $model['id']], ['class' => 'btn btn-default']); ?>
+                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-' . strtolower($statusApproval), 'id' => $model->id], ['class' => 'btn btn-default']); ?>
 
                                     </div>
                                 </div>

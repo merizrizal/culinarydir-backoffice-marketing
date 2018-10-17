@@ -710,7 +710,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $newModelRegistryBusinessProductCategory->is_active = true;
                             }
 
-                            if(!($flag = $newModelRegistryBusinessProductCategory->save())) {
+                            if (!($flag = $newModelRegistryBusinessProductCategory->save())) {
                                 break;
                             } else {
                                 array_push($dataRegistryBusinessProductCategoryParent, $newModelRegistryBusinessProductCategory->toArray());
@@ -753,7 +753,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $newModelRegistryBusinessProductCategory->is_active = true;
                             }
 
-                            if(!($flag = $newModelRegistryBusinessProductCategory->save())) {
+                            if (!($flag = $newModelRegistryBusinessProductCategory->save())) {
                                 break;
                             } else {
                                 array_push($dataRegistryBusinessProductCategoryChild, $newModelRegistryBusinessProductCategory->toArray());
@@ -927,9 +927,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             }
         }
 
-        $dataRegistryBusinessCategory = empty($dataRegistryBusinessCategory) ? $model['registryBusinessCategories'] : $dataRegistryBusinessCategory;
+        $dataRegistryBusinessCategory = empty($dataRegistryBusinessCategory) ? $model->registryBusinessCategories : $dataRegistryBusinessCategory;
 
-        $dataRegistryBusinessProductCategory = $model['registryBusinessProductCategories'];
+        $dataRegistryBusinessProductCategory = $model->registryBusinessProductCategories;
 
         $registryBusinessProductCategoryParent = [];
         $registryBusinessProductCategoryChild = [];
@@ -946,9 +946,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $dataRegistryBusinessProductCategoryParent = empty($dataRegistryBusinessProductCategoryParent) ? $registryBusinessProductCategoryParent : $dataRegistryBusinessProductCategoryParent;
         $dataRegistryBusinessProductCategoryChild = empty($dataRegistryBusinessProductCategoryChild) ? $registryBusinessProductCategoryChild : $dataRegistryBusinessProductCategoryChild;
 
-        $dataRegistryBusinessHour = empty($dataRegistryBusinessHour) ? $model['registryBusinessHours'] : $dataRegistryBusinessHour;
+        $dataRegistryBusinessHour = empty($dataRegistryBusinessHour) ? $model->registryBusinessHours : $dataRegistryBusinessHour;
 
-        $dataRegistryBusinessFacility = empty($dataRegistryBusinessFacility) ? $model['registryBusinessFacilities'] : $dataRegistryBusinessFacility;
+        $dataRegistryBusinessFacility = empty($dataRegistryBusinessFacility) ? $model->registryBusinessFacilities : $dataRegistryBusinessFacility;
 
         return $this->render('update_marketing_info', [
             'model' => $model,
@@ -1034,7 +1034,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             }
         }
 
-        foreach ($model['registryBusinessImages'] as $valueRegistryBusinessImage) {
+        foreach ($model->registryBusinessImages as $valueRegistryBusinessImage) {
 
             $deleted = false;
 
@@ -1169,24 +1169,23 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         if (!empty($post = Yii::$app->request->post()) && !empty($post['tanggal_from']) && !empty($post['tanggal_to'])) {
 
             $basic = RegistryBusiness::find()
-                    ->joinWith([
-                        'district',
-                        'district.region',
-                    ])
-                    ->andWhere('(registry_business.created_at::date) AT time zone \'Asia/Jakarta\' BETWEEN \'' . $post['tanggal_from'] . '\' AND \'' . $post['tanggal_to'] . '\'')
-                    ->asArray()->all();
+                ->joinWith([
+                    'district',
+                    'district.region',
+                ])
+                ->andWhere('(registry_business.created_at::date) AT time zone \'Asia/Jakarta\' BETWEEN \'' . $post['tanggal_from'] . '\' AND \'' . $post['tanggal_to'] . '\'')
+                ->asArray()->all();
 
             $tanggal = Yii::$app->formatter->asDate($post['tanggal_from'],'long') . ' - ' . Yii::$app->formatter->asDate($post['tanggal_to'],'long');
 
             $data = [];
-            foreach ($basic as $b)
-            {
+            foreach ($basic as $b) {
                 $data[$b['district_id']][] = $b;
             }
         }
         return $this->render('report/report_by_district',[
-                'tanggal' => $tanggal,
-                'data' => $data,
+            'tanggal' => $tanggal,
+            'data' => $data,
         ]);
     }
 
@@ -1194,27 +1193,27 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     {
         $tanggal = null;
         $data = null;
+        
         if (!empty($post = Yii::$app->request->post()) && !empty($post['tanggal_from']) && !empty($post['tanggal_to'])) {
 
             $basic = RegistryBusiness::find()
-                    ->joinWith([
-                        'village',
-                        'district',
-                    ])
-                    ->andWhere('(registry_business.created_at::date) AT time zone \'Asia/Jakarta\' BETWEEN \'' . $post['tanggal_from'] . '\' AND \'' . $post['tanggal_to'] . '\'')
-                    ->asArray()->all();
+                ->joinWith([
+                    'village',
+                    'district',
+                ])
+                ->andWhere('(registry_business.created_at::date) AT time zone \'Asia/Jakarta\' BETWEEN \'' . $post['tanggal_from'] . '\' AND \'' . $post['tanggal_to'] . '\'')
+                ->asArray()->all();
 
             $tanggal = Yii::$app->formatter->asDate($post['tanggal_from'],'long') . ' - ' . Yii::$app->formatter->asDate($post['tanggal_to'],'long');
 
             $data = [];
-            foreach ($basic as $b)
-            {
+            foreach ($basic as $b) {
                 $data[$b['village_id']][] = $b;
             }
         }
         return $this->render('report/report_by_village',[
-                'tanggal' => $tanggal,
-                'data' => $data,
+            'tanggal' => $tanggal,
+            'data' => $data,
         ]);
     }
 
@@ -1259,37 +1258,37 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     private function view($id, $statusApproval, $actionButton = null) {
 
         $model = RegistryBusiness::find()
-                ->joinWith([
-                    'membershipType',
-                    'city',
-                    'district',
-                    'village',
-                    'userInCharge',
-                    'registryBusinessCategories' => function($query) {
-                        $query->andOnCondition(['registry_business_category.is_active' => true]);
-                    },
-                    'registryBusinessCategories.category',
-                    'registryBusinessProductCategories' => function($query) {
-                        $query->andOnCondition(['registry_business_product_category.is_active' => true]);
-                    },
-                    'registryBusinessHours' => function($query) {
-                        $query->andOnCondition(['registry_business_hour.is_open' => true])
-                            ->orderBy(['registry_business_hour.day' => SORT_ASC]);
-                    },
-                    'registryBusinessProductCategories.productCategory',
-                    'registryBusinessFacilities' => function($query) {
-                        $query->andOnCondition(['registry_business_facility.is_active' => true]);
-                    },
-                    'registryBusinessFacilities.facility',
-                    'registryBusinessImages',
-                    'applicationBusiness',
-                    'applicationBusiness.logStatusApprovals' => function($query) {
-                        $query->andOnCondition(['log_status_approval.is_actual' => true]);
-                    },
-                    'applicationBusiness.logStatusApprovals.statusApproval',
-                ])
-                ->andWhere(['registry_business.id' => $id])
-                ->asArray()->one();
+            ->joinWith([
+                'membershipType',
+                'city',
+                'district',
+                'village',
+                'userInCharge',
+                'registryBusinessCategories' => function($query) {
+                    $query->andOnCondition(['registry_business_category.is_active' => true]);
+                },
+                'registryBusinessCategories.category',
+                'registryBusinessProductCategories' => function($query) {
+                    $query->andOnCondition(['registry_business_product_category.is_active' => true]);
+                },
+                'registryBusinessHours' => function($query) {
+                    $query->andOnCondition(['registry_business_hour.is_open' => true])
+                        ->orderBy(['registry_business_hour.day' => SORT_ASC]);
+                },
+                'registryBusinessProductCategories.productCategory',
+                'registryBusinessFacilities' => function($query) {
+                    $query->andOnCondition(['registry_business_facility.is_active' => true]);
+                },
+                'registryBusinessFacilities.facility',
+                'registryBusinessImages',
+                'applicationBusiness',
+                'applicationBusiness.logStatusApprovals' => function($query) {
+                    $query->andOnCondition(['log_status_approval.is_actual' => true]);
+                },
+                'applicationBusiness.logStatusApprovals.statusApproval',
+            ])
+            ->andWhere(['registry_business.id' => $id])
+            ->asArray()->one();
 
         return $this->render('view', [
             'model' => $model,

@@ -9,6 +9,8 @@ use backoffice\components\AppComponent;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
+/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $actionButton backoffice\modules\marketing\controllers\RegistryBusinessController */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryBusiness',
@@ -34,9 +36,9 @@ endif;
 
 $this->title = $model['name'];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' =>  ['index-' . strtolower($statusApproval)]];
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="registry-business-view">
 
@@ -49,15 +51,11 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     <?php
                     if (!empty($actionButton)) {
                         foreach ($actionButton as $valActionButton) {
-                             echo $valActionButton($model);
+                            echo $valActionButton($model);
                         }
-                    } ?>
+                    }
 
-                    <?= Html::a('<i class="fa fa-times"></i> ' . 'Cancel',
-                        ['index-' . strtolower($statusApproval)],
-                        [
-                            'class' => 'btn btn-default',
-                        ]) ?>
+                    echo ' ' . Html::a('<i class="fa fa-times"></i> ' . 'Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']); ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>
 

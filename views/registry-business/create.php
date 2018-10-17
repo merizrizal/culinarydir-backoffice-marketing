@@ -15,6 +15,19 @@ use core\models\Category;
 use core\models\ProductCategory;
 use core\models\Facility;
 
+/* @var $this yii\web\View */
+/* @var $dataRegistryBusinessCategory core\models\RegistryBusinessCategory */
+/* @var $modelRegistryBusinessCategory core\models\RegistryBusinessCategory */
+/* @var $dataRegistryBusinessProductCategoryParent core\models\RegistryBusinessProductCategory */
+/* @var $dataRegistryBusinessProductCategoryChild core\models\RegistryBusinessProductCategory */
+/* @var $modelRegistryBusinessProductCategory core\models\RegistryBusinessProductCategory */
+/* @var $dataRegistryBusinessFacility core\models\RegistryBusinessFacility */
+/* @var $modelRegistryBusinessFacility core\models\RegistryBusinessFacility */
+/* @var $dataRegistryBusinessHour core\models\RegistryBusinessHour */
+/* @var $modelRegistryBusinessHour core\models\RegistryBusinessHour */
+/* @var $dataRegistryBusinessImage core\models\RegistryBusinessImage */
+/* @var $modelRegistryBusinessImage core\models\RegistryBusinessImage */
+
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
@@ -63,11 +76,10 @@ $productCategory = ProductCategory::find()
 
 $facility = Facility::find()
         ->orderBy('name')
-        ->asArray()->all(); ?>
+        ->asArray()->all();
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component();
 
-<?php
 $jscript = '
     $("#wizard-create-application").steps({
         titleTemplate:
@@ -204,17 +216,17 @@ $this->registerJs($jscript); ?>
 
                                         <div class="col-lg-3 col-xs-6">
                                             <?= $form->field($model, 'city_id')->dropDownList(
-                                                    ArrayHelper::map(
-                                                        City::find()->orderBy('name')->asArray()->all(),
-                                                        'id',
-                                                        function($data) {
-                                                            return $data['name'];
-                                                        }
-                                                    ),
-                                                    [
-                                                        'prompt' => '',
-                                                        'style' => 'width: 100%'
-                                                    ]) ?>
+                                                ArrayHelper::map(
+                                                    City::find()->orderBy('name')->asArray()->all(),
+                                                    'id',
+                                                    function($data) {
+                                                        return $data['name'];
+                                                    }
+                                                ),
+                                                [
+                                                    'prompt' => '',
+                                                    'style' => 'width: 100%'
+                                                ]) ?>
                                         </div>
 
                                         <div class="col-lg-3 col-xs-6">
@@ -314,9 +326,9 @@ $this->registerJs($jscript); ?>
                                                             $selectedDataCategory[$value['category_id']] = ['selected' => true];
                                                         }
                                                     }
-                                                } ?>
+                                                }
 
-                                                <?= $form->field($modelRegistryBusinessCategory, 'category_id')->dropDownList(
+                                                echo $form->field($modelRegistryBusinessCategory, 'category_id')->dropDownList(
                                                     ArrayHelper::map(
                                                         $category,
                                                         'id',
@@ -353,9 +365,9 @@ $this->registerJs($jscript); ?>
 
                                                         $selectedDataProductParent[$value['product_category_id']] = ['selected' => true];
                                                     }
-                                                } ?>
+                                                }
 
-                                                <?= $form->field($modelRegistryBusinessProductCategory, 'product_category_id[parent]')->dropDownList(
+                                                echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[parent]')->dropDownList(
                                                     ArrayHelper::map(
                                                         $productParentCategory,
                                                         'id',
@@ -380,9 +392,9 @@ $this->registerJs($jscript); ?>
 
                                                         $selectedDataProductChild[$value['product_category_id']] = ['selected' => true];
                                                     }
-                                                } ?>
+                                                }
 
-                                                <?= $form->field($modelRegistryBusinessProductCategory, 'product_category_id[child]')->dropDownList(
+                                                echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[child]')->dropDownList(
                                                     ArrayHelper::map(
                                                         $productCategory,
                                                         'id',
@@ -422,9 +434,9 @@ $this->registerJs($jscript); ?>
                                                             $selectedDataFacility[$value['facility_id']] = ['selected' => true];
                                                         }
                                                     }
-                                                } ?>
+                                                }
 
-                                                <?= $form->field($modelRegistryBusinessFacility, 'facility_id')->dropDownList(
+                                                echo $form->field($modelRegistryBusinessFacility, 'facility_id')->dropDownList(
                                                     ArrayHelper::map(
                                                         $facility,
                                                         'id',
@@ -637,7 +649,6 @@ $this->registerJs($jscript); ?>
                                             </div>
                                             <div class="col-sm-10">
 
-
                                                 <?= $form->field($modelRegistryBusinessImage, 'image[]')->widget(FileInput::classname(), [
                                                     'options' => [
                                                         'accept' => 'image/*',
@@ -757,9 +768,9 @@ $jscript = '
 
     $("#registrybusiness-city_id").val(1).trigger("change");
 
-    var district = function(executeRemote, afterSuccess) {
+    function district(executeRemote, afterSuccess) {
 
-        var setDistrict = function(remoteData) {
+        function setDistrict(remoteData) {
 
             $("#registrybusiness-district_id").val(null).trigger("change");
             $("#registrybusiness-district_id").select2({
@@ -820,9 +831,9 @@ $jscript = '
         });
     });
 
-    var village = function(executeRemote, afterSuccess) {
+    function village(executeRemote, afterSuccess) {
 
-        var setVillage = function(remoteData) {
+        function setVillage(remoteData) {
 
             $("#registrybusiness-village_id").val(null).trigger("change");
             $("#registrybusiness-village_id").select2({

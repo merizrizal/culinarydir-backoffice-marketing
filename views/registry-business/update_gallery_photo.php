@@ -7,6 +7,12 @@ use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use sycomponent\Tools;
 
+/* @var $this yii\web\View*/
+/* @var $model core\models\RegistryBusiness */
+/* @var $dataRegistryBusinessImage core\models\RegistryBusinessImage */
+/* @var $modelRegistryBusinessImage core\models\RegistryBusinessImage */
+/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryBusiness',
 ]);
@@ -29,12 +35,12 @@ if ($status !== null) :
 
 endif;
 
-$this->title = 'Update ' . Yii::t('app', 'Gallery Photo') . ' : ' . $model['name'];
+$this->title = 'Update ' . Yii::t('app', 'Gallery Photo') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' => ['index-' . strtolower($statusApproval)]];
-$this->params['breadcrumbs'][] = ['label' => $model['name'], 'url' => ['view-' . strtolower($statusApproval), 'id' => $model['id']]];
-$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo'); ?>
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-' . strtolower($statusApproval), 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo');
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="registry-business-update">
     <div class="row">
@@ -45,7 +51,7 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo'); ?>
                     <?php
                     $form = ActiveForm::begin([
                         'id' => 'registry-business-form',
-                        'action' => ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => strtolower($statusApproval)],
+                        'action' => ['update-gallery-photo', 'id' => $model->id, 'statusApproval' => strtolower($statusApproval)],
                         'options' => [
 
                         ],
@@ -72,7 +78,7 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo'); ?>
                                                 <div class="col-xs-3">
                                                     <div class="thumbnail">
                                                         <div class="image view view-first">
-                                                            <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_business/', $registryBusinessImage['image'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+                                                            <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_business/', $registryBusinessImage['image'], 200, 150), ['style' => 'width: 100%; display: block;']); ?>
                                                             <div class="mask">
                                                                 <p>&nbsp;</p>
                                                                 <div class="tools tools-bottom">
@@ -101,7 +107,6 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo'); ?>
                                         <?= Html::label(Yii::t('app', 'Foto'), null, ['class' => 'control-label']) ?>
                                     </div>
                                     <div class="col-sm-10">
-
 
                                         <?= $form->field($modelRegistryBusinessImage, 'image[]')->widget(FileInput::classname(), [
                                             'options' => [

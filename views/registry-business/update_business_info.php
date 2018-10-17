@@ -8,6 +8,10 @@ use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use core\models\City;
 
+/* @var $this yii\web\View */
+/* @var $model core\models\RegistryBusiness */
+/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
@@ -36,9 +40,9 @@ endif;
 $this->title = 'Update ' . Yii::t('app', 'Business Information') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' => ['index-' . strtolower($statusApproval)]];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-' . strtolower($statusApproval), 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information'); ?>
+$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information');
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="registry-business-update">
     <div class="row">
@@ -219,7 +223,7 @@ $jscript = '
 
     $("#registrybusiness-city_id").val(1).trigger("change");
 
-    var district = function(executeRemote, afterSuccess) {
+    function district(executeRemote, afterSuccess) {
 
         var setDistrict = function(remoteData) {
 
@@ -282,9 +286,9 @@ $jscript = '
         });
     });
 
-    var village = function(executeRemote, afterSuccess) {
+    function village(executeRemote, afterSuccess) {
 
-        var setVillage = function(remoteData) {
+        function setVillage(remoteData) {
 
             $("#registrybusiness-village_id").val(null).trigger("change");
             $("#registrybusiness-village_id").select2({

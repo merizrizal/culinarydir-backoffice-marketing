@@ -13,6 +13,9 @@ use core\models\MembershipType;
 /* @var $this yii\web\View */
 /* @var $searchModel core\models\search\RegistryBusinessSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $title backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $actionColumn backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -40,9 +43,9 @@ if ($status !== null) :
 endif;
 
 $this->title = $title;
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="registry-business-index">
 
@@ -75,9 +78,9 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
     if (!empty($actionColumn)) {
         array_push($column, $actionColumn);
-    } ?>
+    }
 
-    <?= GridView::widget([
+    echo GridView::widget([
         'id' => 'grid-view-registry-business',
         'dataProvider' => $dataProvider,
         'pjax' => false,
@@ -135,11 +138,11 @@ $this->params['breadcrumbs'][] = $this->title; ?>
         'toolbar' => [
             [
                 'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index-' . strtolower($statusApproval)], [
-                'id' => 'refresh',
-                'class' => 'btn btn-success',
-                'data-placement' => 'top',
-                'data-toggle' => 'tooltip',
-                'title' => 'Refresh'
+                    'id' => 'refresh',
+                    'class' => 'btn btn-success',
+                    'data-placement' => 'top',
+                    'data-toggle' => 'tooltip',
+                    'title' => 'Refresh'
                 ])
             ],
         ],
@@ -161,9 +164,9 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
 </div>
 
-<?= $modalDialog->renderDialog() ?>
+<?php 
+echo $modalDialog->renderDialog();
 
-<?php
 $jscript = ''
     . $modalDialog->getScript() . '
 

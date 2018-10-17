@@ -144,7 +144,7 @@ echo $ajaxRequest->component(); ?>
             </div>
         </div>
     </div>
-</div><!-- /.row -->
+</div>
 
 <?php
 
