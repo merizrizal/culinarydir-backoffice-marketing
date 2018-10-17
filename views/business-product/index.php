@@ -9,6 +9,7 @@ use sycomponent\NotificationDialog;
 /* @var $this yii\web\View */
 /* @var $searchModel core\models\search\BusinessProductSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $modelBusiness core\models\Business */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'BusinessProduct',
@@ -36,9 +37,9 @@ endif;
 $this->title = Yii::t('app', 'Product');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['business/member']];
 $this->params['breadcrumbs'][] = ['label' => $modelBusiness['name'], 'url' => ['business/view-member', 'id' => $modelBusiness['id']]];
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component(true) ?>
+echo $ajaxRequest->component(true); ?>
 
 <div class="business-product-index">
 
@@ -47,9 +48,9 @@ $this->params['breadcrumbs'][] = $this->title; ?>
         'clickedComponent' => 'a#delete',
         'modelAttributeId' => 'model-id',
         'modelAttributeName' => 'model-name',
-    ]); ?>
+    ]);
 
-    <?= GridView::widget([
+    echo GridView::widget([
         'id' => 'grid-view-business-product',
         'dataProvider' => $dataProvider,
         'pjax' => false,
@@ -162,9 +163,9 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
 </div>
 
-<?= $modalDialog->renderDialog() ?>
-
 <?php
+echo $modalDialog->renderDialog();
+
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
 
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);

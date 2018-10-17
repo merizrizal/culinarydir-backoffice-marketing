@@ -10,7 +10,7 @@ use sycomponent\Tools;
 /* @var $this yii\web\View */
 /* @var $model core\models\Business */
 /* @var $modelBusinessImage core\models\BusinessImage */
-/* @var $dataBusinessImage array */
+/* @var $dataBusinessImage core\models\BusinessImage */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'Business',
@@ -38,9 +38,9 @@ endif;
 $this->title = 'Update ' . Yii::t('app', 'Gallery Photo') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['member']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-member', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo'); ?>
+$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo');
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="business-update">
     <div class="row">

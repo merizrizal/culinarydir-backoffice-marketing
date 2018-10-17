@@ -42,9 +42,9 @@ endif;
 $this->title = 'Update ' . Yii::t('app', 'Business Information') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['member']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-member', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information'); ?>
+$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information');
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="business-update">
     <div class="row">
@@ -119,7 +119,7 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information
                                                 'prompt' => '',
                                                 'style' => 'width: 100%'
                                             ]) ?>
-                                            
+
                                 </div>
                                 <div class="col-lg-3 col-xs-6">
                                 
