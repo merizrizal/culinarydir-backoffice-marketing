@@ -7,6 +7,11 @@ use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use sycomponent\Tools;
 
+/* @var $this yii\web\View */
+/* @var $model core\models\Business */
+/* @var $modelBusinessImage core\models\BusinessImage */
+/* @var $dataBusinessImage array */
+
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'Business',
 ]);
@@ -18,6 +23,7 @@ $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
 if ($status !== null) :
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -29,7 +35,7 @@ if ($status !== null) :
 
 endif;
 
-$this->title = 'Update ' . Yii::t('app', 'Gallery Photo') . ' : ' . $model['name'];
+$this->title = 'Update ' . Yii::t('app', 'Gallery Photo') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['member']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-member', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo'); ?>
@@ -45,7 +51,7 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo'); ?>
                     <?php
                     $form = ActiveForm::begin([
                         'id' => 'business-form',
-                        'action' => ['update-gallery-photo', 'id' => $model['id']],
+                        'action' => ['update-gallery-photo', 'id' => $model->id],
                         'options' => [
 
                         ],
@@ -72,7 +78,9 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo'); ?>
                                                 <div class="col-xs-3">
                                                     <div class="thumbnail">
                                                         <div class="image view view-first">
+                                                        
                                                             <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_business/', $businessImage['image'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+                                                            
                                                             <div class="mask">
                                                                 <p>&nbsp;</p>
                                                                 <div class="tools tools-bottom">
@@ -81,11 +89,17 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo'); ?>
                                                             </div>
                                                         </div>
                                                         <div class="mt-10">
+                                                        
                                                             <?= Html::checkbox('BusinessImageDelete[]', false, ['class' => 'form-control', 'label' => 'Delete', 'value' => $businessImage['id']]) ?>
+                                                            
                                                             <br>
+                                                            
                                                             <?= Html::checkbox('profile['. $businessImage['id'] .']', ($businessImage['type'] == 'Profile'), ['class' => 'form-control', 'label' => 'Set as Profile']) ?>
+                                                            
                                                             <br>
+                                                            
                                                             <?= Html::radio('thumbnail', $businessImage['is_primary'], ['class' => 'form-control', 'label' => 'Set as Thumbnail', 'value' => $businessImage['id']]) ?>
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -102,10 +116,11 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo'); ?>
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-sm-2">
-                                        <?= Html::label(Yii::t('app', 'Foto'), null, ['class' => 'control-label']) ?>
+                                    
+                                        <?= Html::label(Yii::t('app', 'Foto')) ?>
+                                        
                                     </div>
                                     <div class="col-sm-10">
-
 
                                         <?= $form->field($modelBusinessImage, 'image[]')->widget(FileInput::classname(), [
                                             'options' => [
@@ -122,15 +137,13 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Gallery Photo'); ?>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-12">
 
-                                        <?php
-                                        echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-member', 'id' => $model->id], ['class' => 'btn btn-default']); ?>
+                                    <?php
+                                    echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
+                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-member', 'id' => $model->id], ['class' => 'btn btn-default']); ?>
 
-                                    </div>
                                 </div>
                             </div>
 

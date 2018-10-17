@@ -63,18 +63,22 @@ class BusinessController extends \backoffice\controllers\BaseController
                     'businessLocation.village',
                     'userInCharge',
                     'businessCategories' => function($query) {
+                        
                         $query->andOnCondition(['business_category.is_active' => true]);
                     },
                     'businessCategories.category',
                     'businessProductCategories' => function($query) {
+                        
                         $query->andOnCondition(['business_product_category.is_active' => true]);
                     },
                     'businessHours' => function($query) {
+                        
                         $query->andOnCondition(['business_hour.is_open' => true])
                             ->orderBy(['business_hour.day' => SORT_ASC]);
                     },
                     'businessProductCategories.productCategory',
                     'businessFacilities' => function($query) {
+                        
                         $query->andOnCondition(['business_facility.is_active' => true]);
                     },
                     'businessFacilities.facility',
@@ -82,6 +86,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                     'businessImages',
                     'applicationBusiness',
                     'applicationBusiness.logStatusApprovals' => function($query) {
+                        
                         $query->andOnCondition(['log_status_approval.is_actual' => true]);
                     },
                     'applicationBusiness.logStatusApprovals.statusApproval',
@@ -146,18 +151,22 @@ class BusinessController extends \backoffice\controllers\BaseController
         $model = Business::find()
             ->joinWith([
                 'businessCategories' => function($query) {
+                    
                     $query->andOnCondition(['business_category.is_active' => true]);
                 },
                 'businessCategories.category',
                 'businessProductCategories' => function($query) {
+                    
                     $query->andOnCondition(['business_product_category.is_active' => true]);
                 },
                 'businessProductCategories.productCategory',
                 'businessFacilities' => function($query) {
+                    
                     $query->andOnCondition(['business_facility.is_active' => true]);
                 },
                 'businessFacilities.facility',
                 'businessHours' => function($query) {
+                    
                     $query->orderBy(['business_hour.day' => SORT_ASC]);
                 },
                 'businessDetail',
@@ -515,8 +524,10 @@ class BusinessController extends \backoffice\controllers\BaseController
         foreach ($dataBusinessProductCategory as $valueBusinessProductCategory) {
 
             if ($valueBusinessProductCategory['productCategory']['is_parent']) {
+                
                 $businessProductCategoryParent[] = $valueBusinessProductCategory;
             } else {
+                
                 $businessProductCategoryChild[] = $valueBusinessProductCategory;
             }
         }

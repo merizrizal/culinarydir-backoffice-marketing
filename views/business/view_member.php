@@ -8,7 +8,7 @@ use sycomponent\Tools;
 use backoffice\components\AppComponent;
 
 /* @var $this yii\web\View */
-/* @var $model core\models\RegistryBusiness */
+/* @var $model core\models\Business */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'Business',
@@ -21,6 +21,7 @@ $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
 if ($status !== null) :
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -101,97 +102,115 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     <div class="row">
                         <div class="col-lg-12">
                             <h4><strong><?= Yii::t('app', 'User In Charge') ?></strong> : <?= $model['userInCharge']['full_name'] ?></h4>
-                            <hr>
                         </div>
                     </div>
+                    
+                    <hr>
 
                     <div class="row">
                         <div class="col-md-12">
                             <h4><strong><?= Yii::t('app', 'Business Information') ?></strong></h4>
-                            <hr>
                         </div>
                     </div>
 
-                    <div class="row mb-20">
+					<hr>
 
+                    <div class="row mb-20">
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Name')) ?><br>
                             <?= $model['name'] ?>
+                        
                         </div>
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Unique Name')) ?><br>
                             <?= $model['unique_name'] ?>
+                            
                         </div>
-
                     </div>
 
                     <div class="row mb-20">
-
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Address Type')) ?><br>
                             <?= $model['businessLocation']['address_type'] ?>
+                            
                         </div>
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Address')) ?><br>
                             <?= $model['businessLocation']['address'] ?>
+                            
                         </div>
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Address Info')) ?><br>
                             <?= $model['businessLocation']['address_info'] ?>
+                            
                         </div>
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'City ID')) ?><br>
                             <?= $model['businessLocation']['city']['name'] ?>
+                            
                         </div>
-
                     </div>
 
                     <div class="row mb-20">
-
                         <div class="col-lg-3 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'District ID')) ?><br>
                             <?= $model['businessLocation']['district']['name'] ?>
+                            
                         </div>
-
                         <div class="col-lg-3 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'Village ID')) ?><br>
                             <?= $model['businessLocation']['village']['name'] ?>
+                            
                         </div>
                         <div class="col-lg-6 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'Coordinate')) ?><br>
                             <?= $model['businessLocation']['coordinate'] ?>
+                            
                         </div>
-
                     </div>
 
                     <div class="row mb-20">
-
                         <div class="col-lg-3 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'Email')) ?><br>
                             <?= $model['email'] ?>
+                            
                         </div>
-
                         <div class="col-lg-3 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'Phone1')) ?><br>
                             <?= $model['phone1'] ?>
+                            
                         </div>
-
                         <div class="col-lg-3 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'Phone2')) ?><br>
                             <?= $model['phone2'] ?>
+                            
                         </div>
                         <div class="col-lg-3 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'Phone3')) ?><br>
                             <?= $model['phone3'] ?>
+                            
                         </div>
-
                     </div>
                     
                     <div class="row mb-20">
-
                         <div class="col-lg-9 col-xs-12">
+                        
                             <?= Html::label(Yii::t('app', 'Note')) ?><br>
                             <?= $model['note'] ?>
+                            
                         </div>
                     </div>
 
@@ -219,13 +238,16 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     <div class="row">
                         <div class="col-md-12">
                             <h4><strong><?= Yii::t('app', 'Marketing Information') ?></strong></h4>
-                            <hr>
                         </div>
                     </div>
+                    
+                    <hr>
 
                     <div class="row">
                         <div class="col-md-12">
-                            <?= Html::label(Yii::t('app', 'Business Category'), null, ['class' => 'control-label']) ?>
+                        
+                            <?= Html::label(Yii::t('app', 'Business Category')) ?>
+                            
                         </div>
                     </div>
 
@@ -233,6 +255,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                         <?php
                         if (!empty($model['businessCategories'])) {
+                            
                             foreach ($model['businessCategories'] as $businessCategory) {
 
                                 echo '
@@ -248,9 +271,12 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                     <div class="row">
                         <div class="col-md-12">
-                            <?= Html::label(Yii::t('app', 'Product Category'), null, ['class' => 'control-label']) ?>
+                        
+                            <?= Html::label(Yii::t('app', 'Product Category')) ?>
+                            
                         </div>
                     </div>
+                    
                     <div class="row">
 
                         <?php
@@ -258,6 +284,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                         $productCategoryChild = [];
 
                         if (!empty($model['businessProductCategories'])) {
+                            
                             foreach ($model['businessProductCategories'] as $value) {
 
                                 if ($value['productCategory']['is_parent']) {
@@ -312,7 +339,9 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                     <div class="row">
                         <div class="col-md-12">
-                            <?= Html::label(Yii::t('app', 'Business Hour'), null, ['class' => 'control-label']) ?>
+                        
+                            <?= Html::label(Yii::t('app', 'Business Hour')) ?>
+                            
                         </div>
                     </div>
 
@@ -323,6 +352,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             $days = Yii::$app->params['days'];
 
                             if (!empty($model['businessHours'])):
+                            
                                 foreach ($model['businessHours'] as $businessHour):
 
                                     $is24Hour = (($businessHour['open_at'] == '00:00:00') && ($businessHour['close_at'] == '24:00:00')); ?>
@@ -332,7 +362,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                                             <?= Html::label(Yii::t('app', $days[$businessHour['day'] - 1])) ?>
                                         </div>
                                         <div class="col-md-4">
-                                            <?= $is24Hour ? Yii::t('app','24 Hours') : Yii::$app->formatter->asTime($businessHour['open_at']) . ' - ' . Yii::$app->formatter->asTime($businessHour['close_at']);?>
+                                            <?= $is24Hour ? Yii::t('app','24 Hours') : Yii::$app->formatter->asTime($businessHour['open_at']) . ' - ' . Yii::$app->formatter->asTime($businessHour['close_at']); ?>
                                         </div>
                                     </div>
 
@@ -347,20 +377,25 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                     <div class="row">
                         <div class="col-md-12">
-                            <?= Html::label(Yii::t('app', 'Price Range'), null, ['class' => 'control-label']) ?>
+                        
+                            <?= Html::label(Yii::t('app', 'Price Range')) ?>
+                            
                         </div>
                     </div>
 
                     <div class="row mb-20">
-
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Price Min')) ?><br>
                             <?= Yii::$app->formatter->asCurrency($model['businessDetail']['price_min']); ?>
+                            
                         </div>
 
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Price Max')) ?><br>
                             <?= Yii::$app->formatter->asCurrency($model['businessDetail']['price_max']); ?>
+                            
                         </div>
                     </div>
 
@@ -368,13 +403,17 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                     <div class="row">
                         <div class="col-md-12">
-                            <?= Html::label(Yii::t('app', 'Facility'), null, ['class' => 'control-label']) ?>
+                        
+                            <?= Html::label(Yii::t('app', 'Facility')) ?>
+                            
                         </div>
                     </div>
+                    
                     <div class="row">
 
                         <?php
                         if (!empty($model['businessFacilities'])) {
+                            
                             foreach ($model['businessFacilities'] as $businessFacility) {
 
                                 echo '
@@ -390,19 +429,25 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                     <div class="row">
                         <div class="col-md-12">
-                            <?= Html::label(Yii::t('app', 'Photo'), null, ['class' => 'control-label']) ?>
+                        
+                            <?= Html::label(Yii::t('app', 'Photo')) ?>
+                            
                         </div>
                     </div>
+                    
                     <div class="row">
 
                         <?php
                         if (!empty($model['businessImages'])):
+                        
                             foreach ($model['businessImages'] as $businessImage): ?>
 
                                 <div class="col-xs-3">
                                     <div class="thumbnail">
                                         <div class="image view view-first">
+                                        
                                             <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_business/', $businessImage['image'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+                                            
                                             <div class="mask">
                                                 <p>&nbsp;</p>
                                                 <div class="tools tools-bottom">
@@ -428,7 +473,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 </div>
 
 <?php
-
 $modalDialog = new ModalDialog([
     'clickedComponent' => 'a#delete',
     'modelAttributeId' => 'model-id',

@@ -9,6 +9,10 @@ use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use core\models\City;
 
+/* @var $this yii\web\View */
+/* @var $model core\models\Business */
+/* @var $modelBusinessLocation core\models\BusinessLocation */
+
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
@@ -23,6 +27,7 @@ $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
 if ($status !== null) :
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -67,40 +72,46 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information
 
                             <div class="row">
                                 <div class="col-md-6">
+                                
                                     <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Name')]) ?>
+                                    
                                 </div>
                                 <div class="col-md-6">
+                                
                                     <?= $form->field($model, 'unique_name', [
                                         'enableAjaxValidation' => true
                                     ])->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Unique Name')]) ?>
+                                    
                                 </div>
                             </div>
 
                             <div class="row">
-
                                 <div class="col-md-3">
+                                
                                     <?= $form->field($modelBusinessLocation, 'address_type')->dropDownList(['Gang' => 'Gang', 'Jalan' => 'Jalan', 'Komplek' => 'Komplek'], ['prompt' => Yii::t('app', 'Address Type'), 'style' => 'width: 100%']) ?>
+                                
                                 </div>
-
                                 <div class="col-md-5">
+                                
                                     <?= $form->field($modelBusinessLocation, 'address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address')]) ?>
+                                
                                 </div>
-
-
                                 <div class="col-md-4">
+                                
                                     <?= $form->field($modelBusinessLocation, 'address_info')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address Info')]) ?>
+                                
                                 </div>
-
                             </div>
 
                             <div class="row">
-
                                 <div class="col-lg-3 col-xs-6">
+                                
                                     <?= $form->field($modelBusinessLocation, 'city_id')->dropDownList(
                                             ArrayHelper::map(
                                                 City::find()->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 function($data) {
+                                                    
                                                     return $data['name'];
                                                 }
                                             ),
@@ -108,40 +119,41 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information
                                                 'prompt' => '',
                                                 'style' => 'width: 100%'
                                             ]) ?>
+                                            
                                 </div>
-
                                 <div class="col-lg-3 col-xs-6">
-                                    <?= $form->field($modelBusinessLocation, 'district_id')->textInput([
-                                        'style' => 'width: 100%'
-                                    ]) ?>
+                                
+                                    <?= $form->field($modelBusinessLocation, 'district_id')->textInput(['style' => 'width: 100%']) ?>
+                                    
                                 </div>
-
                                 <div class="col-lg-3 col-xs-6">
-                                    <?= $form->field($modelBusinessLocation, 'village_id')->textInput([
-                                        'style' => 'width: 100%'
-                                    ]) ?>
+                                
+                                    <?= $form->field($modelBusinessLocation, 'village_id')->textInput(['style' => 'width: 100%']) ?>
+                                    
                                 </div>
-
                             </div>
 
                             <div class="row">
-
                                 <div class="col-lg-6 col-xs-9">
+                                
                                     <?= $form->field($modelBusinessLocation, 'coordinate')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Coordinate')]) ?>
+                                
                                 </div>
-
                                 <div class="col-lg-3 col-xs-3">
+                                
                                     <?= Html::a('<i class="fa fa-map-marker-alt"></i> ' . Yii::t('app', 'Open Map'), 'https://www.google.co.id/maps/@-6.9171962,107.6185384,14.75z?hl=en', ['class' => 'btn btn-primary btn-block direct', 'target' => '_blank']) ?>
+                                
                                 </div>
                             </div>
 
                             <div class="row">
-
                                 <div class="col-lg-3 col-xs-6">
+                                
                                     <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Email')]) ?>
+                                    
                                 </div>
-
                                 <div class="col-lg-3 col-xs-6">
+                                
                                     <?= $form->field($model, 'phone1')->widget(MaskedInput::className(), [
                                         'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                         'options' => [
@@ -149,9 +161,10 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information
                                             'class' => 'form-control'
                                         ]
                                     ]) ?>
+                                    
                                 </div>
-
                                 <div class="col-lg-3 col-xs-6">
+                                
                                     <?= $form->field($model, 'phone2')->widget(MaskedInput::className(), [
                                         'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                         'options' => [
@@ -159,9 +172,10 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information
                                             'class' => 'form-control'
                                         ]
                                     ]) ?>
+                                    
                                 </div>
-
                                 <div class="col-lg-3 col-xs-6">
+                                
                                     <?= $form->field($model, 'phone3')->widget(MaskedInput::className(), [
                                         'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                         'options' => [
@@ -169,16 +183,16 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information
                                             'class' => 'form-control'
                                         ]
                                     ]) ?>
+                                    
                                 </div>
-
                             </div>
                             
                             <div class="row">
-
                                 <div class="col-md-9">
+                                
                                     <?= $form->field($model, 'note')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                                    
                                 </div>
-
                             </div>
 
                             <div class="row">
@@ -192,16 +206,14 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information
 
                                 </div>
                             </div>
+                            
+                            <div class="row">
+                                <div class="col-lg-12">
 
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-lg-12">
+                                    <?php
+                                    echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
+                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-member', 'id' => $model->id], ['class' => 'btn btn-default']); ?>
 
-                                        <?php
-                                        echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-member', 'id' => $model->id], ['class' => 'btn btn-default']); ?>
-
-                                    </div>
                                 </div>
                             </div>
 
@@ -217,24 +229,10 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Business Information
 </div>
 
 <?php
-
 $jscript = '
-    $("#businesslocation-address_type").select2({
-        theme: "krajee",
-        placeholder: "' . Yii::t('app', 'Address Type') . '",
-        minimumResultsForSearch: "Infinity"
-    });
+    function district(executeRemote, afterSuccess) {
 
-    $("#businesslocation-city_id").select2({
-        theme: "krajee",
-        placeholder: "' . Yii::t('app', 'City ID') . '"
-    });
-
-    $("#businesslocation-city_id").val(1).trigger("change");
-
-    var district = function(executeRemote, afterSuccess) {
-
-        var setDistrict = function(remoteData) {
+        function setDistrict(remoteData) {
 
             $("#businesslocation-district_id").val(null).trigger("change");
             $("#businesslocation-district_id").select2({
@@ -255,20 +253,77 @@ $jscript = '
                     setDistrict(response);
 
                     if (afterSuccess !== undefined) {
+
                         afterSuccess();
                     }
                 }
             });
         } else {
+
             setDistrict([]);
 
             if (afterSuccess !== undefined) {
+
+                afterSuccess();
+            }
+        }
+    };
+
+    function village(executeRemote, afterSuccess) {
+
+        function setVillage(remoteData) {
+
+            $("#businesslocation-village_id").val(null).trigger("change");
+            $("#businesslocation-village_id").select2({
+                theme: "krajee",
+                placeholder: "' . Yii::t('app', 'Village ID') . '",
+                data: remoteData,
+            });
+        };
+
+        if (executeRemote) {
+
+            $.ajax({
+                dataType: "json",
+                cache: false,
+                url: "' . Yii::$app->urlManager->createUrl(['masterdata/village/get-village-by-district']) . '?id=" + $("#businesslocation-district_id").select2("data")[0].id,
+                success: function(response) {
+
+                    setVillage(response);
+
+                    if (afterSuccess !== undefined) {
+
+                        afterSuccess();
+                    }
+                }
+            });
+        } else {
+
+            setVillage([]);
+
+            if (afterSuccess !== undefined) {
+
                 afterSuccess();
             }
         }
     };
 
     district();
+
+    village();
+
+    $("#businesslocation-address_type").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'Address Type') . '",
+        minimumResultsForSearch: "Infinity"
+    });
+
+    $("#businesslocation-city_id").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'City ID') . '"
+    });
+
+    $("#businesslocation-city_id").val(1).trigger("change");
 
     if ($("#businesslocation-city_id").select2("data")[0].id) {
 
@@ -295,45 +350,8 @@ $jscript = '
         });
     });
 
-    var village = function(executeRemote, afterSuccess) {
-
-        var setVillage = function(remoteData) {
-
-            $("#businesslocation-village_id").val(null).trigger("change");
-            $("#businesslocation-village_id").select2({
-                theme: "krajee",
-                placeholder: "' . Yii::t('app', 'Village ID') . '",
-                data: remoteData,
-            });
-        };
-
-        if (executeRemote) {
-
-            $.ajax({
-                dataType: "json",
-                cache: false,
-                url: "' . Yii::$app->urlManager->createUrl(['masterdata/village/get-village-by-district']) . '?id=" + $("#businesslocation-district_id").select2("data")[0].id,
-                success: function(response) {
-
-                    setVillage(response);
-
-                    if (afterSuccess !== undefined) {
-                        afterSuccess();
-                    }
-                }
-            });
-        } else {
-            setVillage([]);
-
-            if (afterSuccess !== undefined) {
-                afterSuccess();
-            }
-        }
-    };
-
-    village();
-
     $("#businesslocation-district_id").on("select2:select", function(e) {
+
         village(true);
     });
 ';
