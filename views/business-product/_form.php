@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use kartik\file\FileInput;
-use kartik\money\MaskMoney;
+use kartik\number\NumberControl;
 use yii\widgets\ActiveForm;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
@@ -95,7 +95,9 @@ echo $ajaxRequest->component(); ?>
                             'parts' => [
                                 '{inputClass}' => 'col-lg-4'
                             ],
-                        ])->widget(MaskMoney::className()) ?>
+                        ])->widget(NumberControl::className(), [
+                            'maskedInputOptions' => Yii::$app->params['maskedInputOptions']
+                        ]) ?>
 
                         <?= $form->field($model, 'image')->widget(FileInput::classname(), [
                             'options' => [

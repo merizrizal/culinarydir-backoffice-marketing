@@ -1149,16 +1149,16 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             $transaction->commit();
 
             return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl([$this->module->id . '/registry-business/index-icorct']));
-          } else {
+        } else {
 
             Yii::$app->session->setFlash('status', 'danger');
             Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
             Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-
+    
             $transaction->rollBack();
-
+    
             return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl([$this->module->id . '/registry-business/view-icorct', 'id' => $id]));
-          }
+        }
     }
 
     public function actionReportByDistrict()
@@ -1183,6 +1183,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 $data[$b['district_id']][] = $b;
             }
         }
+        
         return $this->render('report/report_by_district',[
             'tanggal' => $tanggal,
             'data' => $data,
@@ -1211,6 +1212,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 $data[$b['village_id']][] = $b;
             }
         }
+        
         return $this->render('report/report_by_village',[
             'tanggal' => $tanggal,
             'data' => $data,
