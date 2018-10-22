@@ -12,6 +12,9 @@ use sycomponent\Tools;
 /* @var $modelBusinessImage core\models\BusinessImage */
 /* @var $dataBusinessImage core\models\BusinessImage */
 
+kartik\select2\Select2Asset::register($this);
+kartik\select2\ThemeKrajeeAsset::register($this);
+
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'Business',
 ]);
@@ -90,13 +93,17 @@ echo $ajaxRequest->component(); ?>
                                                         </div>
                                                         <div class="mt-10">
                                                         
+                                                        	<?= Html::dropDownList('category['. $businessImage['id'] .']', $businessImage['category'], ['Ambience' => 'Suasana', 'Menu' => 'Menu'], ['class' => 'photo-category']) ?>
+                                                        	
+                                                        	<div class="clearfix" style="margin-bottom: 5px"></div>
+                                                        
                                                             <?= Html::checkbox('BusinessImageDelete[]', false, ['class' => 'form-control', 'label' => 'Delete', 'value' => $businessImage['id']]) ?>
                                                             
-                                                            <br>
+                                                            <div class="clearfix"></div>
                                                             
                                                             <?= Html::checkbox('profile['. $businessImage['id'] .']', ($businessImage['type'] == 'Profile'), ['class' => 'form-control', 'label' => 'Set as Profile']) ?>
                                                             
-                                                            <br>
+                                                            <div class="clearfix"></div>
                                                             
                                                             <?= Html::radio('thumbnail', $businessImage['is_primary'], ['class' => 'form-control', 'label' => 'Set as Thumbnail', 'value' => $businessImage['id']]) ?>
                                                             
@@ -166,6 +173,11 @@ $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/i
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/Magnific-Popup/dist/jquery.magnific-popup.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript = '
+    $(".photo-category").select2({
+        theme: "krajee",
+        minimumResultsForSearch: -1
+    });
+
     $(".thumbnail").magnificPopup({
         delegate: "a.show-image",
         type: "image",

@@ -605,6 +605,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                         $modelBusinessImage->type = !empty($post['profile'][$value->id]) ? 'Profile' : 'Gallery';
                         $modelBusinessImage->is_primary = !empty($post['thumbnail']) && $post['thumbnail'] == $value->id ? true : false;
+                        $modelBusinessImage->category = $post['category'][$value->id];
 
                         if (!($flag = $modelBusinessImage->save())) {
                             break;
