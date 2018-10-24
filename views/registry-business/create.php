@@ -16,6 +16,7 @@ use core\models\ProductCategory;
 use core\models\Facility;
 
 /* @var $this yii\web\View */
+/* @var $model core\models\RegistryBusiness */
 /* @var $dataRegistryBusinessCategory core\models\RegistryBusinessCategory */
 /* @var $modelRegistryBusinessCategory core\models\RegistryBusinessCategory */
 /* @var $dataRegistryBusinessProductCategoryParent core\models\RegistryBusinessProductCategory */
@@ -27,6 +28,7 @@ use core\models\Facility;
 /* @var $modelRegistryBusinessHour core\models\RegistryBusinessHour */
 /* @var $dataRegistryBusinessImage core\models\RegistryBusinessImage */
 /* @var $modelRegistryBusinessImage core\models\RegistryBusinessImage */
+/* @var $day string */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -42,6 +44,7 @@ $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
 if ($status !== null) :
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -52,10 +55,6 @@ if ($status !== null) :
     echo $notif->renderDialog();
 
 endif;
-
-
-/* @var $this yii\web\View */
-/* @var $model core\models\RegistryBusiness */
 
 $this->title = Yii::t('app', 'Create Application');
 $this->params['breadcrumbs'][] = $this->title;
@@ -98,8 +97,10 @@ $jscript = '
         onStepChanged: function(event, currentIndex, priorIndex) {
 
             if (priorIndex == 0) {
+
                 $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#previous\"]").removeClass("buttonDisabled");
             } else if (currentIndex == 0) {
+
                 $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#previous\"]").addClass("buttonDisabled");
             }
 
@@ -120,6 +121,7 @@ $jscript = '
             }
         },
         onFinished: function(event, currentIndex) {
+
             $("#registry-business-form").trigger("submit");
         },
         labels: {
@@ -147,7 +149,7 @@ $this->registerJs($jscript); ?>
                             'id' => 'registry-business-form',
                             'action' => ['create'],
                             'options' => [
-
+                                
                             ],
                             'fieldConfig' => [
                                 'template' => '{input}{error}',
@@ -167,7 +169,7 @@ $this->registerJs($jscript); ?>
                                                 </div>
                                             </div>
                                         ',
-                                    ])->radioList(MembershipType::find()->andWhere(['as_archive' => false])->orderBy('order')->asArray()->all(), [
+                                    ])->radioList(MembershipType::find()->andWhere(['as_archive' => false])->andWhere(['is_premium' => false])->orderBy('order')->asArray()->all(), [
                                         'item' => function ($index, $label, $name, $checked, $value) {
 
                                             return '
@@ -184,37 +186,43 @@ $this->registerJs($jscript); ?>
 
                                 <h1><?= Yii::t('app', 'Business Information') ?></h1>
                                 <div>
-
                                     <div class="row">
                                         <div class="col-md-6">
+                                        
                                             <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Name')]) ?>
+                                        
                                         </div>
                                         <div class="col-md-6">
+                                        
                                             <?= $form->field($model, 'unique_name', [
                                                 'enableAjaxValidation' => true
                                             ])->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Unique Name')]) ?>
+                                        
                                         </div>
                                     </div>
-
                                     <div class="row">
-
                                         <div class="col-md-3">
-                                            <?= $form->field($model, 'address_type')->dropDownList(['Gang' => 'Gang', 'Jalan' => 'Jalan', 'Komplek' => 'Komplek'], ['prompt' => Yii::t('app', 'Address Type'), 'style' => 'width: 100%']) ?>
+                                        
+                                            <?= $form->field($model, 'address_type')->dropDownList(['Gang' => 'Gang', 'Jalan' => 'Jalan', 'Komplek' => 'Komplek'], [
+                                                'prompt' => Yii::t('app', 'Address Type'),
+                                                'style' => 'width: 100%'
+                                            ]) ?>
+                                        
                                         </div>
-
                                         <div class="col-md-5">
+                                        
                                             <?= $form->field($model, 'address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address')]) ?>
+                                        
                                         </div>
-
                                         <div class="col-md-4">
+                                        
                                             <?= $form->field($model, 'address_info')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address Info')]) ?>
+                                        
                                         </div>
-
                                     </div>
-
                                     <div class="row">
-
                                         <div class="col-lg-3 col-xs-6">
+                                        
                                             <?= $form->field($model, 'city_id')->dropDownList(
                                                 ArrayHelper::map(
                                                     City::find()->orderBy('name')->asArray()->all(),
@@ -227,40 +235,43 @@ $this->registerJs($jscript); ?>
                                                     'prompt' => '',
                                                     'style' => 'width: 100%'
                                                 ]) ?>
+                                                
                                         </div>
-
                                         <div class="col-lg-3 col-xs-6">
+                                        
                                             <?= $form->field($model, 'district_id')->textInput([
                                                 'style' => 'width: 100%'
                                             ]) ?>
+                                            
                                         </div>
-
                                         <div class="col-lg-3 col-xs-6">
+                                        
                                             <?= $form->field($model, 'village_id')->textInput([
                                                 'style' => 'width: 100%'
                                             ]) ?>
+                                            
                                         </div>
-
                                     </div>
-
                                     <div class="row">
-
                                         <div class="col-lg-6 col-xs-9">
+                                        
                                             <?= $form->field($model, 'coordinate')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Coordinate')]) ?>
+                                        
                                         </div>
-
                                         <div class="col-lg-3 col-xs-3">
-                                            <?= Html::a('<i class="fa fa-map-marker-alt"></i> ' . Yii::t('app', 'Open Map'), '', ['class' => 'btn btn-primary btn-block open-map', 'target' => '_blank']) ?>
+                                        
+                                            <?= Html::a('<i class="fa fa-map-marker-alt"></i> ' . Yii::t('app', 'Open Map'), '', ['class' => 'btn btn-primary btn-block open-map']) ?>
+                                        
                                         </div>
                                     </div>
-
                                     <div class="row">
-
                                         <div class="col-lg-3 col-xs-6">
+                                        
                                             <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Email')]) ?>
+                                        
                                         </div>
-
                                         <div class="col-lg-3 col-xs-6">
+                                        
                                             <?= $form->field($model, 'phone1')->widget(MaskedInput::className(), [
                                                 'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                                 'options' => [
@@ -268,9 +279,10 @@ $this->registerJs($jscript); ?>
                                                     'class' => 'form-control'
                                                 ]
                                             ]) ?>
+                                        
                                         </div>
-
                                         <div class="col-lg-3 col-xs-6">
+                                        
                                             <?= $form->field($model, 'phone2')->widget(MaskedInput::className(), [
                                                 'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                                 'options' => [
@@ -278,9 +290,10 @@ $this->registerJs($jscript); ?>
                                                     'class' => 'form-control'
                                                 ]
                                             ]) ?>
+                                        
                                         </div>
-
                                         <div class="col-lg-3 col-xs-6">
+                                        
                                             <?= $form->field($model, 'phone3')->widget(MaskedInput::className(), [
                                                 'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                                 'options' => [
@@ -288,27 +301,26 @@ $this->registerJs($jscript); ?>
                                                     'class' => 'form-control'
                                                 ]
                                             ]) ?>
+                                        
                                         </div>
-
-                                    </div>
-                                    
+                                    </div> 
                                     <div class="row">
-
                                         <div class="col-md-9">
+                                        
                                             <?= $form->field($model, 'note')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                                        
                                         </div>
-
                                     </div>
-
                                 </div>
 
                                 <h1><?= Yii::t('app', 'Marketing Information') ?></h1>
                                 <div>
-
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <?= Html::label(Yii::t('app', 'Business Category'), null, ['class' => 'control-label']) ?>
+                                            
+                                                <?= Html::label(Yii::t('app', 'Business Category')) ?>
+                                            
                                             </div>
                                         </div>
                                         <div class="row">
@@ -350,7 +362,9 @@ $this->registerJs($jscript); ?>
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <?= Html::label(Yii::t('app', 'Product Category'), null, ['class' => 'control-label']) ?>
+                                            
+                                                <?= Html::label(Yii::t('app', 'Product Category')) ?>
+                                                
                                             </div>
                                         </div>
                                         <div class="row">
@@ -416,7 +430,9 @@ $this->registerJs($jscript); ?>
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <?= Html::label(Yii::t('app', 'Facility'), null, ['class' => 'control-label']) ?>
+                                            
+                                                <?= Html::label(Yii::t('app', 'Facility')) ?>
+                                            
                                             </div>
                                         </div>
                                         <div class="row">
@@ -458,8 +474,10 @@ $this->registerJs($jscript); ?>
                                     <div class="form-group">
                                         <div class="row mb-10">
                                             <div class="col-md-12">
-                                                <label class="control-label"><?= Yii::t('app', 'Business Hour') ?></label>
+                                            
+                                                <?= Html::label(Yii::t('app', 'Business Hour')) ?>
                                                 <?= Html::button(Yii::t('app', 'Set All'), ['class' => 'btn btn-primary btn-xs set-all-business-hour']) ?>
+                                            
                                             </div>
                                         </div>
 
@@ -480,6 +498,7 @@ $this->registerJs($jscript); ?>
                                                     $modelRegistryBusinessHour->close_at = $value['close_at'];
 
                                                     if ($modelRegistryBusinessHour->open_at == '00:00:00' && $modelRegistryBusinessHour->close_at == '24:00:00') {
+                                                        
                                                         $is24Hour = true;
                                                     }
 
@@ -489,9 +508,10 @@ $this->registerJs($jscript); ?>
 
                                             <div class="row">
                                                 <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
+                                                
                                                     <?= Yii::t('app', $days[$i]) ?>
+                                                    
                                                 </div>
-
                                                 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
 
                                                     <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']is_open')
@@ -558,50 +578,51 @@ $this->registerJs($jscript); ?>
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <label class="control-label"><?= Yii::t('app', 'Price Range') ?></label>
+                                            
+                                                <?= Html::label(Yii::t('app', 'Average Spending')) ?>
+                                                
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
-
-                                            <?= $form->field($model, 'price_min')->widget(TouchSpin::className(), [
-                                                'options' => [
-                                                    'placeholder' => Yii::t('app', 'Price Min'),
-                                                ],
-                                                'pluginOptions' => [
-                                                    'min' => 0,
-                                                    'max' => 1000000,
-                                                    'step' => 10000,
-                                                    'prefix' => 'Rp',
-                                                    'verticalbuttons' => true,
-                                                    'verticalup' => '<i class="glyphicon glyphicon-plus"></i>',
-                                                    'verticaldown' => '<i class="glyphicon glyphicon-minus"></i>'
-                                                ],
-                                            ]); ?>
-
-                                        </div>
-                                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
-                                            -
-                                        </div>
-                                        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
-
-                                            <?= $form->field($model, 'price_max')->widget(TouchSpin::className(), [
-                                                'options' => [
-                                                    'placeholder' => Yii::t('app', 'Price Max'),
-                                                ],
-                                                'pluginOptions' => [
-                                                    'min' => 0,
-                                                    'max' => 1000000,
-                                                    'step' => 10000,
-                                                    'prefix' => 'Rp',
-                                                    'verticalbuttons' => true,
-                                                    'verticalup' => '<i class="glyphicon glyphicon-plus"></i>',
-                                                    'verticaldown' => '<i class="glyphicon glyphicon-minus"></i>'
-                                                ],
-                                            ]); ?>
-
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
+    
+                                                <?= $form->field($model, 'price_min')->widget(TouchSpin::className(), [
+                                                    'options' => [
+                                                        'placeholder' => Yii::t('app', 'Price Min'),
+                                                    ],
+                                                    'pluginOptions' => [
+                                                        'min' => 0,
+                                                        'max' => 1000000,
+                                                        'step' => 10000,
+                                                        'prefix' => 'Rp',
+                                                        'verticalbuttons' => true,
+                                                        'verticalup' => '<i class="glyphicon glyphicon-plus"></i>',
+                                                        'verticaldown' => '<i class="glyphicon glyphicon-minus"></i>'
+                                                    ],
+                                                ]); ?>
+    
+                                            </div>
+                                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
+                                                -
+                                            </div>
+                                            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
+    
+                                                <?= $form->field($model, 'price_max')->widget(TouchSpin::className(), [
+                                                    'options' => [
+                                                        'placeholder' => Yii::t('app', 'Price Max'),
+                                                    ],
+                                                    'pluginOptions' => [
+                                                        'min' => 0,
+                                                        'max' => 1000000,
+                                                        'step' => 10000,
+                                                        'prefix' => 'Rp',
+                                                        'verticalbuttons' => true,
+                                                        'verticalup' => '<i class="glyphicon glyphicon-plus"></i>',
+                                                        'verticaldown' => '<i class="glyphicon glyphicon-minus"></i>'
+                                                    ],
+                                                ]); ?>
+    
+                                            </div>
                                         </div>
                                     </div>
 
@@ -645,7 +666,9 @@ $this->registerJs($jscript); ?>
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-sm-2">
-                                                <?= Html::label(Yii::t('app', 'Foto'), null, ['class' => 'control-label']) ?>
+                                            
+                                                <?= Html::label(Yii::t('app', 'Foto')) ?>
+                                                
                                             </div>
                                             <div class="col-sm-10">
 
@@ -678,12 +701,19 @@ $this->registerJs($jscript); ?>
 </div>
 
 <?php
-
 $this->registerCssFile(Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-steps/demo/css/jquery.steps.css', ['depends' => 'yii\web\YiiAsset']);
 $this->registerCssFile(Yii::$app->urlManager->baseUrl . '/media/css/jquery.steps.css', ['depends' => 'yii\web\YiiAsset']);
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
 
 $cssscript = '
+    .wizard > .content > .body ul > li {
+        display: block;
+    }
+
+    .select2-container--krajee .select2-selection--multiple .select2-selection__choice__remove {
+        margin-top: 1px;
+    }
+
     .select2-grid-system ul.select2-results__options > li.select2-results__option {
         float: left;
         width: 50%;

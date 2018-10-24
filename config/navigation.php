@@ -2,12 +2,6 @@
 return [
     'params' => [
         'navigation' => [
-            'mainMenu'=> [
-                'label' => 'Main Menu',
-                'iconClass' => 'fa fa-home',
-                'url' => [''],
-                'isDirect' => true,
-            ],
             'createApplication'=> [
                 'label' => 'Create Application',
                 'iconClass' => 'fa fa-edit',
