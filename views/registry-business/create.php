@@ -176,8 +176,7 @@ $this->registerJs($jscript); ?>
                                                 <div class="col-lg-2 col-md-3 col-sm-4 col-xs-12">
                                                     <label>' .
                                                         Html::radio($name, $checked, ['class' => 'membership-type-id', 'value' => $label['id']]) . ' ' . $label['name'] . '
-                                                    </label>' .
-                                                    Html::hiddenInput('is_premium', !empty($label['is_premium']) ? 1 : 0, ['class' => 'is-premium']) . '
+                                                    </label>
                                                 </div>';
                                         }
                                     ]) ?>
@@ -376,8 +375,11 @@ $this->registerJs($jscript); ?>
                                                 if (!empty($dataRegistryBusinessProductCategoryParent)) {
 
                                                     foreach ($dataRegistryBusinessProductCategoryParent as $value) {
-
-                                                        $selectedDataProductParent[$value['product_category_id']] = ['selected' => true];
+                                                        
+                                                        if (!empty($value['product_category_id'])) {
+                                                            
+                                                            $selectedDataProductParent[$value['product_category_id']] = ['selected' => true];
+                                                        }
                                                     }
                                                 }
 
@@ -404,7 +406,10 @@ $this->registerJs($jscript); ?>
 
                                                     foreach ($dataRegistryBusinessProductCategoryChild as $value) {
 
-                                                        $selectedDataProductChild[$value['product_category_id']] = ['selected' => true];
+                                                        if (!empty($value['product_category_id'])) {
+                                                            
+                                                            $selectedDataProductChild[$value['product_category_id']] = ['selected' => true];
+                                                        }
                                                     }
                                                 }
 
@@ -570,7 +575,14 @@ $this->registerJs($jscript); ?>
 
                                         <?php
                                         endforeach; ?>
-
+                                        
+                                        <div class="row">
+                                            <div class="col-md-9">
+                                            
+                                                <?= $form->field($model, 'note_business_hour')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                                            
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <hr>
