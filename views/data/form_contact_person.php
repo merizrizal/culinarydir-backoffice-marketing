@@ -8,56 +8,14 @@ use yii\widgets\MaskedInput;
 /* @var $modelPerson core\models\Person */
 /* @var $modelRegistryBusinessContactPerson core\models\RegistryBusinessContactPerson */
 
+kartik\select2\Select2Asset::register($this);
+kartik\select2\ThemeKrajeeAsset::register($this);
+
 $form = new ActiveForm([
     'fieldConfig' => [
         'template' => '{input}{error}',
     ]
 ]); ?>
-
-<div class="main-form">
-    <div class="mb-20">
-        <div class="row">
-            <div class="col-md-4 col-xs-6">
-                <?= $form->field($modelPerson, '[1]first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
-            </div>
-
-            <div class="col-md-4 col-xs-6">
-                <?= $form->field($modelPerson, '[1]last_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Last Name')]) ?>
-            </div>
-
-            <div class="col-md-4 col-xs-12">
-                <?= $form->field($modelRegistryBusinessContactPerson, '[1]is_primary_contact')->checkbox() ?>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4 col-xs-6">
-                <?= $form->field($modelPerson, '[1]phone')->widget(MaskedInput::className(), [
-                    'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
-                    'options' => [
-                        'class' => 'form-control',
-                        'placeholder' => Yii::t('app', 'Phone'),
-                    ],
-                ]) ?>
-            </div>
-
-            <div class="col-md-4 col-xs-6">
-                <?= $form->field($modelPerson, '[1]email', [
-                    'enableAjaxValidation' => true
-                ])->textInput([
-                    'class' => 'form-control',
-                    'placeholder' => 'Email',
-                ]) ?>
-            </div>
-        </div>
-        
-        <div class="row">
-        	<div class="col-md-8 col-xs-12">
-                <?= $form->field($modelRegistryBusinessContactPerson, '[1]note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="second-form">
 
@@ -83,7 +41,7 @@ $form = new ActiveForm([
             </div>
 
             <div class="col-md-4 col-xs-12">
-                <?= $form->field($modelRegistryBusinessContactPerson, '[index]is_primary_contact')->checkbox() ?>
+            	<?= $form->field($modelRegistryBusinessContactPerson, '[index]position')->dropDownList(['Owner' => 'Owner', 'Manager' => 'Manager', 'Staff' => 'Staff'], ['prompt' => Yii::t('app', 'Position')]); ?>
             </div>
         </div>
 
@@ -106,6 +64,10 @@ $form = new ActiveForm([
                     'placeholder' => 'Email',
                 ]) ?>
             </div>
+            
+            <div class="col-md-4 col-xs-6">
+            	<?= $form->field($modelRegistryBusinessContactPerson, '[index]is_primary_contact')->checkbox(['label' => Yii::t('app', 'Is Primary Contact')]) ?>
+            </div>
         </div>
         
         <div class="row">
@@ -123,7 +85,7 @@ $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript = '
-    var indexCount = 1;
+    var indexCount = 0;
 
     function addValidator(index) {
 
@@ -214,6 +176,7 @@ $jscript = '
         formContactPerson = replaceIndex(formContactPerson, "person-index-phone", indexCount);
         formContactPerson = replaceIndex(formContactPerson, "person-index-email", indexCount);
         formContactPerson = replaceIndex(formContactPerson, "registrybusinesscontactperson-index-note", indexCount);
+        formContactPerson = replaceIndex(formContactPerson, "registrybusinesscontactperson-index-position", indexCount);
 
         $(".second-form").append(formContactPerson.html());
 
@@ -222,6 +185,12 @@ $jscript = '
         $("#person-" + indexCount + "-phone").inputmask({"mask":["999-999-9999","9999-999-9999","9999-9999-9999","9999-99999-9999"]});' .
 
         Yii::$app->params['checkbox-radio-script'](null, null, '#registrybusinesscontactperson-" + indexCount + "-is_primary_contact') . '
+
+        $("#registrybusinesscontactperson-" + indexCount + "-position").select2({
+            theme: "krajee",
+            placeholder: "' . Yii::t('app', 'Position') . '",
+            minimumResultsForSearch: "Infinity"
+        });
     });
 
     $(".delete-contact-person").on("click", function() {
