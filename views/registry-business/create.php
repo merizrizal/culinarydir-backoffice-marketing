@@ -712,46 +712,32 @@ $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/i
 $jscript = '
     var stepContactPerson = false;
 
-    $(".membership-type-id").on("ifChecked",function(e){
+    $(".membership-type-id").on("ifChecked",function(e) {
 
-        var isPremium = parseInt($(this).parent().parent().siblings(".is-premium").val());
+        if (!stepContactPerson) {
 
-        if (isPremium) {
+            $("#wizard-create-application").steps("insert", 3, {
+                title: "Contact Person",
+                content: function() {
 
-            if (!stepContactPerson) {
+                    $.ajax({
+                        cache: false,
+                        type: "GET",
+                        url: "' . Yii::$app->urlManager->createUrl('/marketing/data/form-contact-person') . '",
+                        success: function(response) {
+                            $(".wizard .content .form-contact-person").html(response);
+                        }
+                    });
 
-                $("#wizard-create-application").steps("insert", 3, {
-                    title: "Contact Person",
-                    content: function() {
+                    return "<div class=\"form-contact-person\"></div>";
+                }
+            });
 
-                        $.ajax({
-                            cache: false,
-                            type: "GET",
-                            url: "' . Yii::$app->urlManager->createUrl('/marketing/data/form-contact-person') . '",
-                            success: function(response) {
-                                $(".wizard .content .form-contact-person").html(response);
-                            }
-                        });
+            stepContactPerson = true;
 
-                        return "<div class=\"form-contact-person\"></div>";
-                    }
-                });
-
-                stepContactPerson = true;
-
-                $(".click-contact-person").on("click", function() {
-                    $(this).siblings("span").html("Removes the control functionality completely and transforms the current state to the initial HTML structure.");
-                });
-            }
-        } else {
-
-            if (stepContactPerson) {
-
-                $("#wizard-create-application").steps("remove", 3);
-                $("#wizard-create-application.wizard > .steps > ul > li:nth-child(3)").addClass("last");
-
-                stepContactPerson = false;
-            }
+            $(".click-contact-person").on("click", function() {
+                $(this).siblings("span").html("Removes the control functionality completely and transforms the current state to the initial HTML structure.");
+            });
         }
     });
 
