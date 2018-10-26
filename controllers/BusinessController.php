@@ -43,8 +43,8 @@ class BusinessController extends \backoffice\controllers\BaseController
 
         $searchModel = new BusinessSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query
-            ->andWhere(['user_in_charge' => Yii::$app->user->getIdentity()->id]);
+//         $dataProvider->query
+//             ->andWhere(['user_in_charge' => Yii::$app->user->getIdentity()->id]);
 
         Yii::$app->formatter->timeZone = 'Asia/Jakarta';
 

@@ -1243,7 +1243,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $searchModel = new RegistryBusinessSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query
-            ->andWhere(['registry_business.user_in_charge' => Yii::$app->user->getIdentity()->id])
+            //->andWhere(['registry_business.user_in_charge' => Yii::$app->user->getIdentity()->id])
             ->andWhere(['log_status_approval.status_approval_id' => $statusApproval])
             ->andWhere(['log_status_approval.is_actual' => 1])
             ->andWhere('registry_business.application_business_counter = application_business.counter')
