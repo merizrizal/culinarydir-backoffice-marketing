@@ -72,12 +72,11 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $modelRegistryBusinessImage = new RegistryBusinessImage();
         $modelRegistryBusinessImage->setScenario(RegistryBusinessImage::SCENARIO_CREATE);
         $dataRegistryBusinessImage = [];
+        
+        $newModelPerson = new Person();
+        $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
 
         if ($model->load(($post = Yii::$app->request->post()))) {
-
-            $model->setCoordinate();
-            $model->price_min = !empty($model->price_min) ? $model->price_min : 0;
-            $model->price_max = !empty($model->price_max) ? $model->price_max : 0;
 
             if (empty($save)) {
 
@@ -128,6 +127,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     $model->application_business_id = $modelApplicationBusiness->id;
                     $model->user_in_charge = Yii::$app->user->identity->id;
                     $model->application_business_counter = $modelApplicationBusiness->counter;
+                    $model->setCoordinate();
+                    $model->price_min = !empty($model->price_min) ? $model->price_min : 0;
+                    $model->price_max = !empty($model->price_max) ? $model->price_max : 0;
 
                     if (($flag = $model->save())) {
 
@@ -276,7 +278,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                                 if ($i !== 'index') {
 
-                                    $newModelPerson = new Person();
                                     $newModelPerson->first_name = $post['Person'][$i]['first_name'];
                                     $newModelPerson->last_name = $post['Person'][$i]['last_name'];
                                     $newModelPerson->phone = $post['Person'][$i]['phone'];
@@ -284,7 +285,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                                     if (($flag = $newModelPerson->save())) {
 
-                                        $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
                                         $newModelRegistryBusinessContactPerson->registry_business_id = $model->id;
                                         $newModelRegistryBusinessContactPerson->person_id = $newModelPerson->id;
                                         $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
@@ -338,6 +338,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'dataRegistryBusinessHour' => $dataRegistryBusinessHour,
             'modelRegistryBusinessImage' => $modelRegistryBusinessImage,
             'dataRegistryBusinessImage' => $dataRegistryBusinessImage,
+            'modelPerson' => $newModelPerson,
+            'modelRegistryBusinessContactPerson' => $newModelRegistryBusinessContactPerson,
         ]);
     }
 

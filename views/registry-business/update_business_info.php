@@ -7,6 +7,7 @@ use yii\widgets\MaskedInput;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use core\models\City;
+use dosamigos\ckeditor\CKEditor;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
@@ -177,11 +178,21 @@ echo $ajaxRequest->component(); ?>
                             </div>
                             
                             <div class="row">
+                                <div class="col-lg-12">
 
+                                    <?= $form->field($model, 'about', [
+                                        'template' => '{label}{input}{error}',
+                                    ])->widget(CKEditor::className(), [
+                                        'options' => ['rows' => 6],
+                                    ]) ?>
+
+                                </div>
+                            </div>
+                            
+                            <div class="row">
                                 <div class="col-md-9">
                                     <?= $form->field($model, 'note')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
                                 </div>
-
                             </div>
 
                             <div class="form-group">
