@@ -1011,8 +1011,14 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 if ($flag) {
 
                     if (!empty($post['RegistryBusinessImageDelete'])) {
+                        
                         if (($flag = RegistryBusinessImage::deleteAll(['id' => $post['RegistryBusinessImageDelete']]))) {
-                            $deletedRegistryBusinessImageId = $post['RegistryBusinessImageDelete'];
+                            
+                            if (count($model->registryBusinessImages) == count($post['RegistryBusinessImageDelete'])) {
+                                $flag = false;
+                            } else {
+                                $deletedRegistryBusinessImageId = $post['RegistryBusinessImageDelete'];
+                            }
                         }
                     }
                 }
