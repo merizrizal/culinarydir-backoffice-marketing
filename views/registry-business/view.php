@@ -385,6 +385,15 @@ echo $ajaxRequest->component(); ?>
                         endif; ?>
 
                     </div>
+                    
+                    <?php
+                    if (!empty($actionButton)) {
+                        foreach ($actionButton as $valActionButton) {
+                            echo $valActionButton($model);
+                        }
+                    }
+
+                    echo ' ' . Html::a('<i class="fa fa-times"></i> ' . 'Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']); ?>
 
                 </div>
 
