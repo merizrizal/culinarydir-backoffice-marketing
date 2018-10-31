@@ -7,10 +7,10 @@ use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use sycomponent\Tools;
 
-/* @var $this yii\web\View*/
+/* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
-/* @var $dataRegistryBusinessImage core\models\RegistryBusinessImage */
 /* @var $modelRegistryBusinessImage core\models\RegistryBusinessImage */
+/* @var $dataRegistryBusinessImage core\models\RegistryBusinessImage */
 /* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
 
 $ajaxRequest = new AjaxRequest([
@@ -24,6 +24,7 @@ $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
 if ($status !== null) :
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -78,7 +79,9 @@ echo $ajaxRequest->component(); ?>
                                                 <div class="col-xs-3">
                                                     <div class="thumbnail">
                                                         <div class="image view view-first">
+                                                        
                                                             <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_business/', $registryBusinessImage['image'], 200, 150), ['style' => 'width: 100%; display: block;']); ?>
+                                                            
                                                             <div class="mask">
                                                                 <p>&nbsp;</p>
                                                                 <div class="tools tools-bottom">
@@ -87,7 +90,9 @@ echo $ajaxRequest->component(); ?>
                                                             </div>
                                                         </div>
                                                         <div class="text-center mt-10">
-                                                            <?= Html::checkbox('RegistryBusinessImageDelete[]', false, ['class' => 'form-control', 'label' => 'Delete', 'value' => $registryBusinessImage['id']]) ?>
+                                                        
+                                                            <?= Html::checkbox('RegistryBusinessImageDelete[]', false, ['label' => 'Delete', 'value' => $registryBusinessImage['id']]) ?>
+                                                        
                                                         </div>
                                                     </div>
                                                 </div>

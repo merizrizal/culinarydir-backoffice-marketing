@@ -84,7 +84,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 $modelRegistryBusinessContactPerson = [];
 
                 if (!empty($post['Person'])) {
+                    
                     foreach ($post['Person'] as $i => $value) {
+                        
                         $postPerson = [];
                         $postPerson['Person'] = $value;
                         $modelPerson[$i] = new Person();
@@ -93,7 +95,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 }
 
                 if (!empty($post['RegistryBusinessContactPerson'])) {
+                    
                     foreach ($post['RegistryBusinessContactPerson'] as $i => $value) {
+                        
                         $postRegistryBusinessContactPerson = [];
                         $postRegistryBusinessContactPerson['RegistryBusinessContactPerson'] = $value;
                         $modelRegistryBusinessContactPerson[$i] = new RegistryBusinessContactPerson();
@@ -256,12 +260,14 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                             $images = Tools::uploadFiles('/img/registry_business/', $newModelRegistryBusinessImage, 'image', 'registry_business_id', '', true);
 
-                            foreach ($images as $image) {
+                            foreach ($images as $index => $image) {
 
                                 $newModelRegistryBusinessImage = new RegistryBusinessImage();
                                 $newModelRegistryBusinessImage->registry_business_id = $model->id;
                                 $newModelRegistryBusinessImage->image = $image;
                                 $newModelRegistryBusinessImage->type = 'Gallery';
+                                $newModelRegistryBusinessImage->category = 'Ambience';
+                                $newModelRegistryBusinessImage->order = $index + 1;
 
                                 if (!($flag = $newModelRegistryBusinessImage->save())) {
                                     break;
@@ -972,13 +978,17 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     {
         $model = RegistryBusiness::find()
             ->joinWith([
-                'registryBusinessImages',
+                'registryBusinessImages' => function($query) {
+                
+                    $query->orderBy(['order' => SORT_ASC]);
+                }
             ])
             ->andWhere(['registry_business.id' => $id])
             ->one();
-
+            
         $modelRegistryBusinessImage = new RegistryBusinessImage();
         $dataRegistryBusinessImage = [];
+        $newDataRegistryBusinessImage = [];
 
         $deletedRegistryBusinessImageId = [];
 
@@ -992,20 +1002,24 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 $newModelRegistryBusinessImage = new RegistryBusinessImage(['registry_business_id' => $model->id]);
 
                 if ($newModelRegistryBusinessImage->load($post)) {
-
+                    
+                    $prevIndex = count($model->registryBusinessImages);
+                    
                     $images = Tools::uploadFiles('/img/registry_business/', $newModelRegistryBusinessImage, 'image', 'registry_business_id', '', true);
 
-                    foreach ($images as $image) {
+                    foreach ($images as $index => $image) {
 
                         $newModelRegistryBusinessImage = new RegistryBusinessImage();
                         $newModelRegistryBusinessImage->registry_business_id = $model->id;
                         $newModelRegistryBusinessImage->image = $image;
                         $newModelRegistryBusinessImage->type = 'Gallery';
+                        $newModelRegistryBusinessImage->category = 'Ambience';
+                        $newModelRegistryBusinessImage->order = ($index + 1) + $prevIndex;
 
                         if (!($flag = $newModelRegistryBusinessImage->save())) {
                             break;
                         } else {
-                            array_push($dataRegistryBusinessImage, $newModelRegistryBusinessImage->toArray());
+                            array_push($newDataRegistryBusinessImage, $newModelRegistryBusinessImage->toArray());
                         }
                     }
                 }
@@ -1016,10 +1030,24 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                         
                         if (($flag = RegistryBusinessImage::deleteAll(['id' => $post['RegistryBusinessImageDelete']]))) {
                             
-                            if (count($model->registryBusinessImages) == count($post['RegistryBusinessImageDelete'])) {
+                            if (empty($newDataRegistryBusinessImage) && (count($model->registryBusinessImages) == count($post['RegistryBusinessImageDelete']))) {
                                 $flag = false;
                             } else {
                                 $deletedRegistryBusinessImageId = $post['RegistryBusinessImageDelete'];
+                            }
+                            
+                            if ($flag) {
+                                
+                                $modelRegistryBusinessImages = RegistryBusinessImage::findAll(['registry_business_id' => $model->id]);
+                                
+                                foreach ($modelRegistryBusinessImages as $index => $modelRegistryBusinessImage) {
+                                    
+                                    $modelRegistryBusinessImage->order = $index + 1;
+                                    
+                                    if (!($flag = $modelRegistryBusinessImage->save())) {
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -1042,22 +1070,27 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 }
             }
         }
-
+        
         foreach ($model->registryBusinessImages as $valueRegistryBusinessImage) {
-
+            
             $deleted = false;
-
+            
             foreach ($deletedRegistryBusinessImageId as $registryBusinessImageId) {
-
+                
                 if ($registryBusinessImageId == $valueRegistryBusinessImage['id']) {
                     $deleted = true;
                     break;
                 }
             }
-
+            
             if (!$deleted) {
-                array_push($dataRegistryBusinessImage, $valueRegistryBusinessImage);
+                array_push($dataRegistryBusinessImage, $valueRegistryBusinessImage->toArray());
             }
+        }
+        
+        if (!empty($newDataRegistryBusinessImage)) {
+            
+            $dataRegistryBusinessImage = ArrayHelper::merge($dataRegistryBusinessImage, $newDataRegistryBusinessImage);
         }
 
         return $this->render('update_gallery_photo', [

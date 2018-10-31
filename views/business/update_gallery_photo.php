@@ -97,15 +97,21 @@ echo $ajaxRequest->component(); ?>
                                                         	
                                                         	<div class="clearfix" style="margin-bottom: 5px"></div>
                                                         
-                                                            <?= Html::checkbox('BusinessImageDelete[]', false, ['class' => 'form-control', 'label' => 'Delete', 'value' => $businessImage['id']]) ?>
+                                                            <?= Html::checkbox('BusinessImageDelete[]', false, ['label' => 'Delete', 'value' => $businessImage['id']]) ?>
                                                             
                                                             <div class="clearfix"></div>
                                                             
-                                                            <?= Html::checkbox('profile['. $businessImage['id'] .']', ($businessImage['type'] == 'Profile'), ['class' => 'form-control', 'label' => 'Set as Profile']) ?>
+                                                            <?= Html::checkbox('profile['. $businessImage['id'] .']', ($businessImage['type'] == 'Profile'), ['label' => 'Set as Profile']) ?>
                                                             
                                                             <div class="clearfix"></div>
                                                             
-                                                            <?= Html::radio('thumbnail', $businessImage['is_primary'], ['class' => 'form-control', 'label' => 'Set as Thumbnail', 'value' => $businessImage['id']]) ?>
+                                                            <?= Html::radio('thumbnail', $businessImage['is_primary'], ['label' => 'Set as Thumbnail', 'value' => $businessImage['id']]) ?>
+                                                            
+                                                            <div class="clearfix"></div>
+                                                            
+                                                            <?php
+                                                            echo Html::a('<i class="fa fa-arrow-left"></i>', ['up', 'id' => $businessImage['id']], ['class' => 'btn btn-default', 'title' => 'Left']);
+                                                            echo Html::a('<i class="fa fa-arrow-right"></i>', ['down', 'id' => $businessImage['id']], ['class' => 'btn btn-default', 'title' => 'Right']); ?>
                                                             
                                                         </div>
                                                     </div>
@@ -175,7 +181,7 @@ $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/Magnific
 $jscript = '
     $(".photo-category").select2({
         theme: "krajee",
-        minimumResultsForSearch: -1
+        minimumResultsForSearch: Infinity
     });
 
     $(".thumbnail").magnificPopup({
