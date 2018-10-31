@@ -559,7 +559,7 @@ $this->registerJs($jscript); ?>
 
                                                 <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
 
-                                                    <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']open_at')
+                                                    <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . '][1]open_at')
                                                         ->dropDownList(
                                                             $hours,
                                                             [
@@ -573,7 +573,7 @@ $this->registerJs($jscript); ?>
                                                 </div>
                                                 <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
 
-                                                    <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']close_at')
+                                                    <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . '][1]close_at')
                                                         ->dropDownList(
                                                             $hours,
                                                             [
@@ -585,7 +585,15 @@ $this->registerJs($jscript); ?>
                                                         ); ?>
 
                                                 </div>
+                                                <div class="col-lg-3 col-md-6 col-sm-3 col-xs-4">
+                                                	<?= Html::a('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), null, ['class' => 'btn btn-default add-business-hour']) ?>
+                                            		<?= Html::a('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), null, ['class' => 'btn btn-default delete-business-hour']) ?>
+                                                </div>
                                             </div>
+                                            
+                                        	<div class="additional-hour-form">
+                                        		
+                                        	</div>
 
                                         <?php
                                         endforeach; ?>
@@ -787,6 +795,41 @@ $this->registerJs($jscript); ?>
             </div>
         </div>
     </div>
+</div>
+
+<div class="additional-hour-temp-form hide">
+	<div class="data-hour-form">
+		<div class="row">
+			<div class="col-lg-2 col-lg-offset-5 col-md-3 col-sm-3 col-xs-4">
+			
+				<?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . '][index]open_at')
+                    ->dropDownList(
+                        $hours,
+                        [
+                            'prompt' => '',
+                            'class' => 'business-hour-time open',
+                            'style' => 'width: 100%',
+                            'disabled' => !$modelRegistryBusinessHour->is_open,
+                        ]
+                    ); ?>
+                    
+			</div>
+			<div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+			
+				<?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . '][index]close_at')
+                    ->dropDownList(
+                        $hours,
+                        [
+                            'prompt' => '',
+                            'class' => 'business-hour-time close',
+                            'style' => 'width: 100%',
+                            'disabled' => !$modelRegistryBusinessHour->is_open,
+                        ]
+                    ); ?>
+                    
+			</div>
+		</div>
+	</div>
 </div>
 
 <?php
@@ -1186,6 +1229,23 @@ $jscript = '
 
         return false;
     });
+
+    var indexHourCount = 1;
+    
+    $(".add-business-hour").on("click", function() {
+        
+        indexHourCount++;
+        
+        var formBusinessHour = $(".additional-hour-temp-form").clone();
+
+        $(".additional-hour-form").append(formBusinessHour.html());
+    });
+
+    $(".delete-business-hour").on("click", function() {
+        $(".additional-hour-form").children(".data-hour-form").last().remove();
+        indexHourCount--;
+    });
+    
 ';
 
 $this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>
