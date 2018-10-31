@@ -729,14 +729,14 @@ $this->registerJs($jscript); ?>
 
                                 <h1>Contact Person</h1>
                                 <div>
-                                    <div class="main-form">
-
-                                    </div>
-
+                                	<div class="main-form"></div>
+                                	
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <?= Html::a('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), null, ['class' => 'btn btn-default add-contact-person']) ?>
-                                            <?= Html::a('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), null, ['class' => 'btn btn-default delete-contact-person']) ?>
+                                        
+                                            <?= Html::a('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), '', ['class' => 'btn btn-default add-contact-person']) ?>
+                                            <?= Html::a('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), '', ['class' => 'btn btn-default delete-contact-person']) ?>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -885,24 +885,14 @@ $this->registerJsFile(Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-st
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript = '
-    $("#registrybusiness-address_type").select2({
-        theme: "krajee",
-        placeholder: "' . Yii::t('app', 'Address Type') . '",
-        minimumResultsForSearch: "Infinity"
-    });
-
-    $("#registrybusiness-city_id").select2({
-        theme: "krajee",
-        placeholder: "' . Yii::t('app', 'City ID') . '"
-    });
-
-    $("#registrybusiness-city_id").val(1).trigger("change");
-
+    var indexCount = 0;
+    
     function district(executeRemote, afterSuccess) {
 
         function setDistrict(remoteData) {
 
             $("#registrybusiness-district_id").val(null).trigger("change");
+
             $("#registrybusiness-district_id").select2({
                 theme: "krajee",
                 placeholder: "' . Yii::t('app', 'District ID') . '",
@@ -937,38 +927,12 @@ $jscript = '
         }
     };
 
-    district();
-
-    if ($("#registrybusiness-city_id").select2("data")[0].id) {
-
-        district(true, function() {
-
-            $("input#registrybusiness-district_id").val("' . $model->district_id . '").trigger("change");
-
-            if ($("#registrybusiness-district_id").select2("data")[0] && $("#registrybusiness-district_id").select2("data")[0].id) {
-
-                village(true, function() {
-
-                    $("input#registrybusiness-village_id").val("' . $model->village_id . '").trigger("change");
-                });
-            }
-        });
-    }
-
-    $("#registrybusiness-city_id").on("select2:select", function(e) {
-
-        district(true, function() {
-
-            $("input#registrybusiness-village_id").val(null).trigger("change");
-            village();
-        });
-    });
-
     function village(executeRemote, afterSuccess) {
 
         function setVillage(remoteData) {
 
             $("#registrybusiness-village_id").val(null).trigger("change");
+
             $("#registrybusiness-village_id").select2({
                 theme: "krajee",
                 placeholder: "' . Yii::t('app', 'Village ID') . '",
@@ -1002,8 +966,6 @@ $jscript = '
             }
         }
     };
-
-    village();
 
     function addValidator(index) {
 
@@ -1078,25 +1040,15 @@ $jscript = '
         return contentClone;
     };
 
-    $("#registrybusiness-district_id").on("select2:select", function(e) {
-
-        village(true);
+    $("#registrybusiness-address_type").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'Address Type') . '",
+        minimumResultsForSearch: Infinity
     });
 
-    $(".open-map").on("click", function() {
-
-        if (navigator.geolocation) {
-
-            navigator.geolocation.getCurrentPosition(function(position) {
-                $("#registrybusiness-coordinate").val(position.coords.latitude + "," + position.coords.longitude);
-            });
-        } else {
-
-            $(this).attr("href", "https://www.google.co.id/maps/@-6.9171962,107.6185384,14.75z?hl=en");
-            $(this).trigger("click");
-        }
-
-        return false;
+    $("#registrybusiness-city_id").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'City ID') . '"
     });
 
     $("#registrybusinesscategory-category_id").select2({
@@ -1135,9 +1087,60 @@ $jscript = '
 
     $(".select2.select2-container").find("input.select2-search__field").css("width", "100%");
 
-    var indexCount = 0;
+    district();
+
+    village();
 
     addValidator(indexCount);
+
+    $("#registrybusiness-city_id").val(1).trigger("change");
+
+    $("#registrybusiness-city_id").on("select2:select", function(e) {
+
+        district(true, function() {
+
+            $("input#registrybusiness-village_id").val(null).trigger("change");
+            village();
+        });
+    });
+
+    if ($("#registrybusiness-city_id").select2("data")[0].id) {
+
+        district(true, function() {
+
+            $("input#registrybusiness-district_id").val("' . $model->district_id . '").trigger("change");
+
+            if ($("#registrybusiness-district_id").select2("data")[0] && $("#registrybusiness-district_id").select2("data")[0].id) {
+
+                village(true, function() {
+
+                    $("input#registrybusiness-village_id").val("' . $model->village_id . '").trigger("change");
+                });
+            }
+        });
+    }
+
+    $("#registrybusiness-district_id").on("select2:select", function(e) {
+
+        village(true);
+    });
+
+    $(".open-map").on("click", function() {
+
+        if (navigator.geolocation) {
+
+            navigator.geolocation.getCurrentPosition(function(position) {
+
+                $("#registrybusiness-coordinate").val(position.coords.latitude + "," + position.coords.longitude);
+            });
+        } else {
+
+            $(this).attr("href", "https://www.google.co.id/maps/@-6.9171962,107.6185384,14.75z?hl=en");
+            $(this).trigger("click");
+        }
+        
+        return false;
+    });
 
     $(".add-contact-person").on("click", function() {
 
@@ -1166,6 +1169,8 @@ $jscript = '
             placeholder: "' . Yii::t('app', 'Position') . '",
             minimumResultsForSearch: "Infinity"
         });
+
+        return false;
     });
 
     $(".delete-contact-person").on("click", function() {
@@ -1175,7 +1180,9 @@ $jscript = '
         if (indexCount > 0) {
 
             indexCount--;
-        }        
+        }
+        
+        return false;
     });
 
     $(".daysCount").each(function() {
@@ -1206,7 +1213,6 @@ $jscript = '
     
             $("#business-hour-24h-" + elemDay).iCheck("disable");
             $("#business-hour-24h-" + elemDay).iCheck("uncheck");
-
             $("#registrybusinesshour-day"  + elemDay + "-open_at").attr("disabled","disabled");
             $("#registrybusinesshour-day"  + elemDay + "-open_at").val(null).trigger("change");
 
@@ -1325,6 +1331,8 @@ $jscript = '
                 theme: "krajee",
                 placeholder: "' . Yii::t('app', 'Time Close') . '"
             });
+
+            return false;
         });
 
         thisObj.parent().find(".delete-business-hour-day" + thisObj.val()).on("click", function() {
@@ -1335,6 +1343,8 @@ $jscript = '
 
                 indexHourCount--;    
             }
+
+            return false;
         });
     });
 ';
