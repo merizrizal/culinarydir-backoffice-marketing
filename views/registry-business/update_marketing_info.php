@@ -272,65 +272,75 @@ echo $ajaxRequest->component(); ?>
                                             break;
                                         }
                                     } ?>
-
-                                    <div class="row">
-                                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
-                                            <?= Yii::t('app', $days[$i]) ?>
-                                        </div>
-
-                                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
-
-                                            <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']is_open')
-                                                ->checkbox([
-                                                    'label' => Yii::t('app', 'Open'),
-                                                    'class' => 'business-hour-is-open day-' . ($i + 1),
-                                                    'data-day' => $i + 1,
-                                                ]); ?>
-
-                                        </div>
-                                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
-                                            <div class="form-group">
-
-                                                <?= Html::checkbox('always24', $is24Hour, [
-                                                    'label' => Yii::t('app', '24 Hours'),
-                                                    'data-day' => $i + 1,
-                                                    'class' => 'business-hour-24h',
-                                                    'disabled' => !$modelRegistryBusinessHour->is_open,
-                                                    'id' => 'business-hour-24h-' . ($i + 1)
-                                                ]); ?>
-
+									
+									<div>
+                                        <div class="row">
+                                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
+                                                <?= Yii::t('app', $days[$i]) ?>
                                             </div>
-                                        </div>
-
-                                        <div class="visible-xs clearfix"></div>
-
-                                        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
-
-                                            <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']open_at')
-                                                ->dropDownList(
-                                                    $hours,
-                                                    [
-                                                        'prompt' => '',
-                                                        'class' => 'business-hour-time open',
-                                                        'style' => 'width: 100%',
+    
+                                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
+    
+                                                <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']is_open')
+                                                    ->checkbox([
+                                                        'label' => Yii::t('app', 'Open'),
+                                                        'class' => 'business-hour-is-open day-' . ($i + 1),
+                                                        'data-day' => $i + 1,
+                                                    ]); ?>
+    
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
+                                                <div class="form-group">
+    
+                                                    <?= Html::checkbox('always24', $is24Hour, [
+                                                        'label' => Yii::t('app', '24 Hours'),
+                                                        'data-day' => $i + 1,
+                                                        'class' => 'business-hour-24h',
                                                         'disabled' => !$modelRegistryBusinessHour->is_open,
-                                                    ]
-                                                ); ?>
-
-                                        </div>
-                                        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
-
-                                            <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']close_at')
-                                                ->dropDownList(
-                                                    $hours,
-                                                    [
-                                                        'prompt' => '',
-                                                        'class' => 'business-hour-time close',
-                                                        'style' => 'width: 100%',
-                                                        'disabled' => !$modelRegistryBusinessHour->is_open,
-                                                    ]
-                                                ); ?>
-
+                                                        'id' => 'business-hour-24h-' . ($i + 1)
+                                                    ]); ?>
+    
+                                                </div>
+                                            </div>
+    
+                                            <div class="visible-xs clearfix"></div>
+    
+                                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+    
+                                                <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']open_at')
+                                                    ->dropDownList(
+                                                        $hours,
+                                                        [
+                                                            'prompt' => '',
+                                                            'class' => 'business-hour-time open',
+                                                            'style' => 'width: 100%',
+                                                            'disabled' => !$modelRegistryBusinessHour->is_open,
+                                                        ]
+                                                    ); ?>
+    
+                                            </div>
+                                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+    
+                                                <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']close_at')
+                                                    ->dropDownList(
+                                                        $hours,
+                                                        [
+                                                            'prompt' => '',
+                                                            'class' => 'business-hour-time close',
+                                                            'style' => 'width: 100%',
+                                                            'disabled' => !$modelRegistryBusinessHour->is_open,
+                                                        ]
+                                                    ); ?>
+    
+                                            </div>
+                                            <div class="col-lg-3 col-md-6 col-sm-3 col-xs-4">
+                                                        	
+                                            	<?= Html::hiddenInput('day', ($i+1), ['class' => 'daysCount']) ?>
+                                            	
+                                                <?= Html::a('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), null, ['class' => 'btn btn-default add-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
+                                                <?= Html::a('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), null, ['class' => 'btn btn-default delete-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
+                                                
+                                            </div>
                                         </div>
                                     </div>
 
@@ -412,6 +422,35 @@ echo $ajaxRequest->component(); ?>
     </div>
 </div>
 
+<div class="additional-hour-temp-form hide">
+    <div class="data-hour-form">
+        <div class="row">
+            <div class="col-lg-2 col-lg-offset-5 col-md-3 col-sm-3 col-xs-4">
+
+                <?= $form->field($modelRegistryBusinessHourAdditional, '[dayidx][index]open_at')
+                    ->dropDownList($hours,[
+                        'prompt' => '',
+                        'class' => 'business-hour-time-additional open-additional',
+                        'style' => 'width: 100%',
+                        'disabled' => !$modelRegistryBusinessHour->is_open,
+                    ]); ?>
+
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+
+                <?= $form->field($modelRegistryBusinessHourAdditional, '[dayidx][index]close_at')
+                    ->dropDownList($hours,[
+                        'prompt' => '',
+                        'class' => 'business-hour-time-additional close-additional',
+                        'style' => 'width: 100%',
+                        'disabled' => !$modelRegistryBusinessHour->is_open,
+                    ]); ?>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
 
@@ -475,45 +514,22 @@ $jscript = '
         placeholder: "' . Yii::t('app', 'Time Close') . '"
     });
 
-    $(".business-hour-is-open").on("ifChecked",function(e){
+    function replaceComponent(contentClone, component, content, index) {
 
-        var elemDay = $(this).data("day");
+        var inputClass = contentClone.find(".field-" + component).attr("class");
+        inputClass = inputClass.replace(content, index);
+        contentClone.find("#" + component).parent().attr("class", inputClass);
 
-        $("#business-hour-24h-" + elemDay).iCheck("enable");
+        var inputName = contentClone.find("#" + component).attr("name");
+        inputName = inputName.replace(content, index);
+        contentClone.find("#" + component).attr("name", inputName);
 
-        $("#registrybusinesshour-day"  + elemDay + "-open_at").removeAttr("disabled");
-        $("#registrybusinesshour-day"  + elemDay + "-close_at").removeAttr("disabled");
-    });
+        var inputId = contentClone.find("#" + component).attr("id");
+        inputId = inputId.replace(content, index);
+        contentClone.find("#" + component).attr("id", inputId);
 
-    $(".business-hour-is-open").on("ifUnchecked",function(e){
-
-        var elemDay = $(this).data("day");
-
-        $("#business-hour-24h-" + elemDay).iCheck("disable");
-        $("#business-hour-24h-" + elemDay).iCheck("uncheck");
-
-        $("#registrybusinesshour-day"  + elemDay + "-open_at").attr("disabled","disabled");
-        $("#registrybusinesshour-day"  + elemDay + "-open_at").val(null).trigger("change");
-
-        $("#registrybusinesshour-day"  + elemDay + "-close_at").attr("disabled","disabled");
-        $("#registrybusinesshour-day"  + elemDay + "-close_at").val(null).trigger("change");
-    });
-
-    $(".business-hour-24h").on("ifChecked",function(e){
-
-        var elemDay = $(this).data("day");
-
-        $("#registrybusinesshour-day"  + elemDay + "-open_at").val("00:00:00").trigger("change");
-        $("#registrybusinesshour-day"  + elemDay + "-close_at").val("24:00:00").trigger("change");
-    });
-
-    $(".business-hour-24h").on("ifUnchecked",function(e){
-
-        var elemDay = $(this).data("day");
-
-        $("#registrybusinesshour-day"  + elemDay + "-open_at").val(null).trigger("change");
-        $("#registrybusinesshour-day"  + elemDay + "-close_at").val(null).trigger("change");
-    });
+        return contentClone;
+    };
 
     $(".set-all-business-hour").on("click", function() {
 
@@ -543,6 +559,137 @@ $jscript = '
         });
 
         return false;
+    });
+
+    $(".daysCount").each(function() {
+
+        var indexHourCount = 0;
+
+        var thisObj = $(this);
+
+        $(".business-hour-is-open.day-" + thisObj.val()).on("ifChecked", function(e) {
+
+            var elemDay = $(this).data("day");
+    
+            $("#business-hour-24h-" + elemDay).iCheck("enable");
+
+            $("#registrybusinesshour-day"  + elemDay + "-open_at").removeAttr("disabled");
+            $("#registrybusinesshour-day"  + elemDay + "-close_at").removeAttr("disabled");
+            
+            for (var counter = 1; counter <= indexHourCount; counter++) {
+
+                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-open_at").removeAttr("disabled");
+                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-close_at").removeAttr("disabled");
+            }
+        });
+    
+        $(".business-hour-is-open.day-" + thisObj.val()).on("ifUnchecked", function(e) {
+    
+            var elemDay = $(this).data("day");
+    
+            $("#business-hour-24h-" + elemDay).iCheck("disable");
+            $("#business-hour-24h-" + elemDay).iCheck("uncheck");
+            $("#registrybusinesshour-day"  + elemDay + "-open_at").attr("disabled","disabled");
+            $("#registrybusinesshour-day"  + elemDay + "-open_at").val(null).trigger("change");
+
+            $("#registrybusinesshour-day"  + elemDay + "-close_at").attr("disabled","disabled");
+            $("#registrybusinesshour-day"  + elemDay + "-close_at").val(null).trigger("change");
+    
+            for (var counter = 1; counter <= indexHourCount; counter++) {
+                
+                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-open_at").attr("disabled","disabled");
+                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-open_at").val(null).trigger("change");
+
+                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-close_at").attr("disabled","disabled");
+                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-close_at").val(null).trigger("change");
+            }
+        });
+    
+        $("#business-hour-24h-" + thisObj.val()).on("ifChecked", function(e) {
+    
+            var elemDay = $(this).data("day");
+    
+            $("#registrybusinesshour-day"  + elemDay + "-open_at").val("00:00:00").trigger("change");
+            $("#registrybusinesshour-day"  + elemDay + "-close_at").val("24:00:00").trigger("change");
+
+            $(".field-registrybusinesshour-day" + elemDay + "-open_at").hide();
+            $(".field-registrybusinesshour-day" + elemDay + "-close_at").hide();
+
+            $(".field-registrybusinesshour-day" + elemDay + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
+
+            $(".add-business-hour-day" + elemDay).hide();
+            $(".delete-business-hour-day" + elemDay).hide();
+
+            for (var counter = 1; counter <= indexHourCount; counter++) {
+
+                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-open_at").parents(".data-hour-form").remove();
+            }
+
+            indexHourCount = 0;
+        });
+    
+        $("#business-hour-24h-" + thisObj.val()).on("ifUnchecked",function(e) {
+    
+            var elemDay = $(this).data("day");
+    
+            $("#registrybusinesshour-day"  + elemDay + "-open_at").val(null).trigger("change");
+            $("#registrybusinesshour-day"  + elemDay + "-close_at").val(null).trigger("change");
+
+            $(".field-registrybusinesshour-day" + elemDay + "-open_at").parent().find(".24h-temp").remove();
+
+            $(".field-registrybusinesshour-day" + elemDay + "-open_at").show();
+            $(".field-registrybusinesshour-day" + elemDay + "-close_at").show();
+
+            $(".add-business-hour-day" + elemDay).show();
+            $(".delete-business-hour-day" + elemDay).show();
+        });
+
+        thisObj.parent().find(".add-business-hour-day" + thisObj.val()).on("click", function() {
+
+            var elemDay = $(this).data("day");
+            
+            indexHourCount++;
+    
+            var formBusinessHour = $(".additional-hour-temp-form").clone();
+    
+            formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-index-open_at", "index", indexHourCount);
+            formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-index-close_at", "index", indexHourCount);
+
+            formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-" + indexHourCount + "-open_at", "idx", elemDay);
+            formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-" + indexHourCount + "-close_at", "idx", elemDay);
+    
+            thisObj.parent().parent().parent().append(formBusinessHour.html());
+
+            if ($(".business-hour-is-open.day-" + elemDay).is(":checked")) {
+
+                $("#registrybusinesshouradditional-day"  + elemDay + "-" + indexHourCount + "-open_at").removeAttr("disabled");
+                $("#registrybusinesshouradditional-day"  + elemDay + "-" + indexHourCount + "-close_at").removeAttr("disabled");
+            }
+
+            $("#registrybusinesshouradditional-day" + elemDay + "-" + indexHourCount + "-open_at").select2({
+                theme: "krajee",
+                placeholder: "' . Yii::t('app', 'Time Open') . '"
+            });
+        
+            $("#registrybusinesshouradditional-day" + elemDay + "-" + indexHourCount + "-close_at").select2({
+                theme: "krajee",
+                placeholder: "' . Yii::t('app', 'Time Close') . '"
+            });
+
+            return false;
+        });
+
+        thisObj.parent().find(".delete-business-hour-day" + thisObj.val()).on("click", function() {
+    
+            thisObj.parent().parent().siblings(".data-hour-form").last().remove();
+            
+            if (indexHourCount > 0) {
+
+                indexHourCount--;    
+            }
+
+            return false;
+        });
     });
 ';
 

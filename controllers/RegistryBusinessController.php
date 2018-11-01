@@ -12,6 +12,7 @@ use core\models\Person;
 use core\models\RegistryBusinessCategory;
 use core\models\RegistryBusinessProductCategory;
 use core\models\RegistryBusinessHour;
+use core\models\RegistryBusinessHourAdditional;
 use core\models\RegistryBusinessFacility;
 use core\models\RegistryBusinessImage;
 use core\models\RegistryBusinessContactPerson;
@@ -25,7 +26,6 @@ use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use core\models\RegistryBusinessHourAdditional;
 
 
 /**
@@ -77,8 +77,11 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $modelRegistryBusinessImage->setScenario(RegistryBusinessImage::SCENARIO_CREATE);
         $dataRegistryBusinessImage = [];
         
-        $newModelPerson = new Person();
-        $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
+        $modelPerson = new Person();
+        $dataPerson = [];
+        
+        $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
+        $dataRegistryBusinessContactPerson = [];
 
         if ($model->load(($post = Yii::$app->request->post()))) {
 
@@ -323,26 +326,34 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             foreach ($post['Person'] as $i => $value) {
 
                                 if ($i !== 'index') {
-
+                                    
+                                    $newModelPerson = new Person();
                                     $newModelPerson->first_name = $post['Person'][$i]['first_name'];
                                     $newModelPerson->last_name = $post['Person'][$i]['last_name'];
                                     $newModelPerson->phone = $post['Person'][$i]['phone'];
                                     $newModelPerson->email = $post['Person'][$i]['email'];
 
-                                    if (($flag = $newModelPerson->save())) {
-
+                                    if (!($flag = $newModelPerson->save())) {
+                                        
+                                        break;
+                                    } else {
+                                        
+                                        array_push($dataPerson, $newModelPerson->toArray());
+                                        
+                                        $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
                                         $newModelRegistryBusinessContactPerson->registry_business_id = $model->id;
                                         $newModelRegistryBusinessContactPerson->person_id = $newModelPerson->id;
                                         $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
                                         $newModelRegistryBusinessContactPerson->note = $post['RegistryBusinessContactPerson'][$i]['note'];
                                         $newModelRegistryBusinessContactPerson->position = $post['RegistryBusinessContactPerson'][$i]['position'];
-
-                                        $flag = $newModelRegistryBusinessContactPerson->save();
                                     }
 
-                                    if (!$flag) {
+                                    if (!($flag = $newModelRegistryBusinessContactPerson->save())) {
                                         
                                         break;
+                                    } else {
+                                        
+                                        array_push($dataRegistryBusinessContactPerson, ArrayHelper::merge($newModelRegistryBusinessContactPerson->toArray(), $newModelPerson->toArray()));
                                     }
                                 }
                             }
@@ -350,7 +361,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     }
                 }
 
-                if ($flag) {
+                if (!$flag) {
 
                     Yii::$app->session->setFlash('status', 'success');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Create Data Is Success'));
@@ -387,8 +398,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'dataRegistryBusinessHourAdditional' => $dataRegistryBusinessHourAdditional,
             'modelRegistryBusinessImage' => $modelRegistryBusinessImage,
             'dataRegistryBusinessImage' => $dataRegistryBusinessImage,
-            'modelPerson' => $newModelPerson,
-            'modelRegistryBusinessContactPerson' => $newModelRegistryBusinessContactPerson,
+            'modelPerson' => $modelPerson,
+            'dataPerson' => $dataPerson,
+            'modelRegistryBusinessContactPerson' => $modelRegistryBusinessContactPerson,
+            'dataRegistryBusinessContactPerson' => $dataRegistryBusinessContactPerson
         ]);
     }
 
@@ -641,6 +654,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 'registryBusinessHours' => function($query) {
                     $query->orderBy(['registry_business_hour.day' => SORT_ASC]);
                 },
+                'registryBusinessHours.registryBusinessHourAdditionals',
             ])
             ->andWhere(['registry_business.id' => $id])
             ->one();
@@ -657,6 +671,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         $modelRegistryBusinessHour = new RegistryBusinessHour();
         $dataRegistryBusinessHour = [];
+        
+        $modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
+        $dataRegistryBusinessHourAdditional = [];
         
         if ($model->load(($post = Yii::$app->request->post()))) {
 
@@ -975,6 +992,37 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 array_push($dataRegistryBusinessHour, $newModelRegistryBusinessHourDay->toArray());
                             }
                         }
+                        
+                        if (!empty($post['RegistryBusinessHourAdditional'][$dayName])) {
+                            
+                            foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $value) {
+                                
+                                $newModelRegistryBusinessHourAdditional = RegistryBusinessHourAdditional::findOne(['unique_id' => $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i)]);
+                                
+                                if (empty($newModelRegistryBusinessHourAdditional)) {
+                                    
+                                    $newModelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
+                                    $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i);
+                                    $newModelRegistryBusinessHourAdditional->registry_business_hour_id = $newModelRegistryBusinessHourDay->id;
+                                    $newModelRegistryBusinessHourAdditional->day = $day;
+                                }
+                                
+                                if ($i !== 'index') {
+                                    
+                                    $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
+                                    $newModelRegistryBusinessHourAdditional->open_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at'] : null;
+                                    $newModelRegistryBusinessHourAdditional->close_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at'] : null;
+                                }
+                                
+                                if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
+                                    
+                                    break;
+                                } else {
+                                    
+                                    array_push($dataRegistryBusinessHourAdditional, $newModelRegistryBusinessHourAdditional->toArray());
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -995,7 +1043,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 }
             }
         }
-
+        
         $dataRegistryBusinessCategory = empty($dataRegistryBusinessCategory) ? $model->registryBusinessCategories : $dataRegistryBusinessCategory;
 
         $dataRegistryBusinessProductCategory = $model->registryBusinessProductCategories;
@@ -1018,6 +1066,14 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $dataRegistryBusinessProductCategoryChild = empty($dataRegistryBusinessProductCategoryChild) ? $registryBusinessProductCategoryChild : $dataRegistryBusinessProductCategoryChild;
 
         $dataRegistryBusinessHour = empty($dataRegistryBusinessHour) ? $model->registryBusinessHours : $dataRegistryBusinessHour;
+        
+        if (empty($dataRegistryBusinessHourAdditional)) {
+               
+            foreach ($model->registryBusinessHours as $i => $index) {
+                
+                array_push($dataRegistryBusinessHourAdditional, $model->registryBusinessHours[$i]->registryBusinessHourAdditionals); 
+            }
+        }
 
         $dataRegistryBusinessFacility = empty($dataRegistryBusinessFacility) ? $model->registryBusinessFacilities : $dataRegistryBusinessFacility;
 
@@ -1032,6 +1088,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'dataRegistryBusinessFacility' => $dataRegistryBusinessFacility,
             'modelRegistryBusinessHour' => $modelRegistryBusinessHour,
             'dataRegistryBusinessHour' => $dataRegistryBusinessHour,
+            'modelRegistryBusinessHourAdditional' => $modelRegistryBusinessHourAdditional,
+            'dataRegistryBusinessHourAdditional' => $dataRegistryBusinessHourAdditional,
             'statusApproval' => $statusApproval,
         ]);
     }
@@ -1388,6 +1446,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     $query->andOnCondition(['registry_business_hour.is_open' => true])
                         ->orderBy(['registry_business_hour.day' => SORT_ASC]);
                 },
+                'registryBusinessHours.registryBusinessHourAdditionals',
                 'registryBusinessProductCategories.productCategory',
                 'registryBusinessFacilities' => function($query) {
                     $query->andOnCondition(['registry_business_facility.is_active' => true]);
@@ -1402,7 +1461,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             ])
             ->andWhere(['registry_business.id' => $id])
             ->asArray()->one();
-
+        
         return $this->render('view', [
             'model' => $model,
             'statusApproval' => $statusApproval,

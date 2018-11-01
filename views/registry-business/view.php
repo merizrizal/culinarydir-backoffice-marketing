@@ -23,6 +23,7 @@ $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
 if ($status !== null) :
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -50,6 +51,7 @@ echo $ajaxRequest->component(); ?>
 
                     <?php
                     if (!empty($actionButton)) {
+                        
                         foreach ($actionButton as $valActionButton) {
                             echo $valActionButton($model);
                         }
@@ -200,6 +202,7 @@ echo $ajaxRequest->component(); ?>
 
                         <?php
                         if (!empty($model['registryBusinessCategories'])) {
+                            
                             foreach ($model['registryBusinessCategories'] as $registryBusinessCategory) {
 
                                 echo '
@@ -225,6 +228,7 @@ echo $ajaxRequest->component(); ?>
                         $productCategoryChild = [];
 
                         if (!empty($model['registryBusinessProductCategories'])) {
+                            
                             foreach ($model['registryBusinessProductCategories'] as $value) {
 
                                 if ($value['productCategory']['is_parent']) {
@@ -290,19 +294,35 @@ echo $ajaxRequest->component(); ?>
                             $days = Yii::$app->params['days'];
 
                             if (!empty($model['registryBusinessHours'])):
+                            
                                 foreach ($model['registryBusinessHours'] as $businessHour):
 
                                     $is24Hour = (($businessHour['open_at'] == '00:00:00') && ($businessHour['close_at'] == '24:00:00')); ?>
 
                                     <div class="row">
                                         <div class="col-md-2">
+                                        
                                             <?= Html::label(Yii::t('app', $days[$businessHour['day'] - 1])) ?>
+                                            
                                         </div>
-                                        <div class="col-md-4">
-                                            <?= $is24Hour ? Yii::t('app','24 Hours') : Yii::$app->formatter->asTime($businessHour['open_at']) . ' - ' . Yii::$app->formatter->asTime($businessHour['close_at']);?>
+                                        <div class="col-md-8">
+                                        	
+                                        	<?php
+                                            echo ($is24Hour ? Yii::t('app','24 Hours') : Yii::$app->formatter->asTime($businessHour['open_at'], 'HH:mm') . ' - ' . Yii::$app->formatter->asTime($businessHour['close_at'], 'HH:mm'));
+                                            
+                                            if (!empty($businessHour['registryBusinessHourAdditionals'])) {
+                                                
+                                                foreach ($businessHour['registryBusinessHourAdditionals'] as $businessHourAdditional): ?>
+                                                        
+                                                    <?= ', ' . Yii::$app->formatter->asTime($businessHourAdditional['open_at'], 'HH:mm') . ' - ' . Yii::$app->formatter->asTime($businessHourAdditional['close_at'], 'HH:mm'); ?>
+                                                        
+                                                <?php
+                                                endforeach;
+                                            } ?>
+                                            
                                         </div>
                                     </div>
-
+                                    
                                 <?php
                                 endforeach;
                             endif; ?>
@@ -342,6 +362,7 @@ echo $ajaxRequest->component(); ?>
 
                         <?php
                         if (!empty($model['registryBusinessFacilities'])) {
+                            
                             foreach ($model['registryBusinessFacilities'] as $registryBusinessFacility) {
 
                                 echo '
@@ -364,6 +385,7 @@ echo $ajaxRequest->component(); ?>
 
                         <?php
                         if (!empty($model['registryBusinessImages'])):
+                        
                             foreach ($model['registryBusinessImages'] as $registryBusinessImage): ?>
 
                                 <div class="col-xs-3">
@@ -388,6 +410,7 @@ echo $ajaxRequest->component(); ?>
                     
                     <?php
                     if (!empty($actionButton)) {
+                        
                         foreach ($actionButton as $valActionButton) {
                             echo $valActionButton($model);
                         }

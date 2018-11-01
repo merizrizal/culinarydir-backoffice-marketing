@@ -14,6 +14,8 @@ use core\models\City;
 use core\models\Category;
 use core\models\ProductCategory;
 use core\models\Facility;
+use core\models\Person;
+use core\models\RegistryBusinessContactPerson;
 use dosamigos\ckeditor\CKEditor;
 
 /* @var $this yii\web\View */
@@ -32,7 +34,9 @@ use dosamigos\ckeditor\CKEditor;
 /* @var $dataRegistryBusinessImage core\models\RegistryBusinessImage */
 /* @var $modelRegistryBusinessImage core\models\RegistryBusinessImage */
 /* @var $modelPerson core\models\Person */
+/* @var $dataPerson core\models\Person */
 /* @var $modelRegistryBusinessContactPerson core\models\RegistryBusinessContactPerson */
+/* @var $dataRegistryBusinessContactPerson core\models\RegistryBusinessContactPerson */
 /* @var $day string */
 
 kartik\select2\Select2Asset::register($this);
@@ -50,14 +54,14 @@ $message2 = Yii::$app->session->getFlash('message2');
 
 if ($status !== null) :
 
-$notif = new NotificationDialog([
-    'status' => $status,
-    'message1' => $message1,
-    'message2' => $message2,
-]);
-
-$notif->theScript();
-echo $notif->renderDialog();
+    $notif = new NotificationDialog([
+        'status' => $status,
+        'message1' => $message1,
+        'message2' => $message2,
+    ]);
+    
+    $notif->theScript();
+    echo $notif->renderDialog();
 
 endif;
 
@@ -65,22 +69,22 @@ $this->title = Yii::t('app', 'Create Application');
 $this->params['breadcrumbs'][] = $this->title;
 
 $category = Category::find()
-->orderBy('name')
-->asArray()->all();
+    ->orderBy('name')
+    ->asArray()->all();
 
 $productParentCategory = ProductCategory::find()
-->andWhere(['is_parent' => true])
-->orderBy('name')
-->asArray()->all();
+    ->andWhere(['is_parent' => true])
+    ->orderBy('name')
+    ->asArray()->all();
 
 $productCategory = ProductCategory::find()
-->andWhere(['is_parent' => false])
-->orderBy('name')
-->asArray()->all();
+    ->andWhere(['is_parent' => false])
+    ->orderBy('name')
+    ->asArray()->all();
 
 $facility = Facility::find()
-->orderBy('name')
-->asArray()->all();
+    ->orderBy('name')
+    ->asArray()->all();
 
 echo $ajaxRequest->component();
 
@@ -525,10 +529,16 @@ $this->registerJs($jscript); ?>
                                                     
                                                     foreach ($dataRegistryBusinessHourAdditional as $valueAdditional) {
                                                         
-                                                        $modelRegistryBusinessHourAdditional->open_at = $valueAdditional['open_at'];
-                                                        $modelRegistryBusinessHourAdditional->close_at = $valueAdditional['close_at'];
+                                                        if ($valueAdditional['day'] == $value['day']) {
+                                                            
+                                                            $modelRegistryBusinessHourAdditional->open_at = $valueAdditional['open_at'];
+                                                            $modelRegistryBusinessHourAdditional->close_at = $valueAdditional['close_at'];
+                                                        } else {
+                                                            
+                                                            break;
+                                                        }
                                                     }
-
+                                                    
                                                     break;
                                                 }
                                             } ?>
@@ -731,11 +741,92 @@ $this->registerJs($jscript); ?>
                                 <div>
                                 	<div class="main-form"></div>
                                 	
+                                	<?php
+                                	        
+                        	        if (!empty($dataRegistryBusinessContactPerson)) {
+                        	            
+                        	            foreach ($dataRegistryBusinessContactPerson as $i => $value) {
+                        	                
+                        	                $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
+                        	                $modelPerson->first_name = $value['first_name'];
+                        	                $modelPerson->last_name = $value['last_name'];
+                        	                $modelPerson->phone = $value['phone'];
+                        	                $modelPerson->email = $value['email'];
+                        	                $modelRegistryBusinessContactPerson->is_primary_contact = $value['is_primary_contact'];
+                        	                $modelRegistryBusinessContactPerson->note = $value['note'];
+                        	                $modelRegistryBusinessContactPerson->position = $value['position']; ?>
+                        	                
+                        	                <div class="mb-10 data-form">
+                                                <hr>
+                                                <div class="row mt-10">
+                                                    <div class="col-md-4 col-xs-6">
+                                                    
+                                                        <?= $form->field($modelPerson, '[' . ($i+1) .']first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
+                                                        
+                                                    </div>
+                                        
+                                                    <div class="col-md-4 col-xs-6">
+                                                    
+                                                        <?= $form->field($modelPerson, '[' . ($i+1) .']last_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Last Name')]) ?>
+                                                        
+                                                    </div>
+                                        
+                                                    <div class="col-md-4 col-xs-12">
+                                                    
+                                                    	<?= $form->field($modelRegistryBusinessContactPerson, '[' . ($i+1) .']position')->dropDownList(['Owner' => 'Owner', 'Manager' => 'Manager', 'Staff' => 'Staff'], ['prompt' => Yii::t('app', 'Position')]); ?>
+                                                    	
+                                                    </div>
+                                                </div>
+                                        
+                                                <div class="row">
+                                                    <div class="col-md-4 col-xs-6">
+                                                    
+                                                        <?= $form->field($modelPerson, '[' . ($i+1) .']phone')->widget(MaskedInput::className(), [
+                                                            'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
+                                                            'options' => [
+                                                                'class' => 'form-control',
+                                                                'placeholder' => Yii::t('app', 'Phone'),
+                                                            ],
+                                                        ]) ?>
+                                                        
+                                                    </div>
+                                        
+                                                    <div class="col-md-4 col-xs-6">
+                                                    
+                                                        <?= $form->field($modelPerson, '[' . ($i+1) .']email', [
+                                                            'enableAjaxValidation' => true
+                                                        ])->textInput([
+                                                            'class' => 'form-control',
+                                                            'placeholder' => 'Email',
+                                                        ]) ?>
+                                                        
+                                                    </div>
+                                        
+                                                    <div class="col-md-4 col-xs-6">
+                                                    
+                                                    	<?= $form->field($modelRegistryBusinessContactPerson, '[' . ($i+1) .']is_primary_contact')->checkbox(['class' => 'not-checkbox']) ?>
+                                                    	
+                                                    </div>
+                                                </div>
+                                        
+                                                <div class="row">
+                                                	<div class="col-md-8 col-xs-12">
+                                                	
+                                                        <?= $form->field($modelRegistryBusinessContactPerson, '[' . ($i+1) .']note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                        	                
+                    	                <?php
+                        	            }
+                        	        } ?>
+                                	
                                     <div class="row">
                                         <div class="col-md-12">
                                         
                                             <?= Html::a('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), '', ['class' => 'btn btn-default add-contact-person']) ?>
-                                            <?= Html::a('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), '', ['class' => 'btn btn-default delete-contact-person']) ?>
+                                            <?= Html::a('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), '', ['class' => 'btn btn-default delete-contact-person']); ?>
                                             
                                         </div>
                                     </div>
@@ -801,7 +892,7 @@ $this->registerJs($jscript); ?>
 
             <div class="col-md-4 col-xs-6">
             
-            	<?= $form->field($modelRegistryBusinessContactPerson, '[index]is_primary_contact')->checkbox() ?>
+            	<?= $form->field($modelRegistryBusinessContactPerson, '[index]is_primary_contact')->checkbox(['class' => 'not-checkbox']) ?>
             	
             </div>
         </div>
@@ -1185,6 +1276,38 @@ $jscript = '
         return false;
     });
 
+    $(".set-all-business-hour").on("click", function() {
+    
+        $(".business-hour-is-open").each(function() {
+
+            var thisObj = $(this);
+            var rootParentThisObj = thisObj.parent().parent().parent().parent().parent();
+
+            var businessHourIsOpenDay1 = $(".business-hour-is-open.day-1");
+            var rootParentbusinessHourIsOpen = $(".business-hour-is-open.day-1").parent().parent().parent().parent().parent();
+
+            var businessHourIsOpen = "uncheck";
+            var businessHour24h = "uncheck";
+
+            if (businessHourIsOpenDay1.is(":checked")) {
+
+                businessHourIsOpen = "check";
+            }
+
+            if (rootParentbusinessHourIsOpen.find(".business-hour-24h").is(":checked")) {
+
+                businessHour24h = "check";
+            }
+
+            $(this).iCheck(businessHourIsOpen);
+            rootParentThisObj.find(".business-hour-24h").iCheck(businessHour24h);
+            rootParentThisObj.find(".business-hour-time.open").val(rootParentbusinessHourIsOpen.find(".business-hour-time.open").val()).trigger("change");
+            rootParentThisObj.find(".business-hour-time.close").val(rootParentbusinessHourIsOpen.find(".business-hour-time.close").val()).trigger("change");
+        });
+
+        return false;
+    });
+
     $(".daysCount").each(function() {
 
         var indexHourCount = 0;
@@ -1239,7 +1362,7 @@ $jscript = '
             $(".field-registrybusinesshour-day" + elemDay + "-open_at").hide();
             $(".field-registrybusinesshour-day" + elemDay + "-close_at").hide();
 
-            $(".field-registrybusinesshour-day" + elemDay + "-open_at").parent().append("<div class=\"24h-temp\">24 JAM</div>");
+            $(".field-registrybusinesshour-day" + elemDay + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
 
             $(".add-business-hour-day" + elemDay).hide();
             $(".delete-business-hour-day" + elemDay).hide();
@@ -1266,38 +1389,6 @@ $jscript = '
 
             $(".add-business-hour-day" + elemDay).show();
             $(".delete-business-hour-day" + elemDay).show();
-        });
-    
-        $(".set-all-business-hour").on("click", function() {
-    
-            $(".business-hour-is-open").each(function() {
-    
-                var thisObj = $(this);
-                var rootParentThisObj = thisObj.parent().parent().parent().parent().parent();
-    
-                var businessHourIsOpenDay1 = $(".business-hour-is-open.day-1");
-                var rootParentbusinessHourIsOpen = $(".business-hour-is-open.day-1").parent().parent().parent().parent().parent();
-    
-                var businessHourIsOpen = "uncheck";
-                var businessHour24h = "uncheck";
-    
-                if (businessHourIsOpenDay1.is(":checked")) {
-
-                    businessHourIsOpen = "check";
-                }
-    
-                if (rootParentbusinessHourIsOpen.find(".business-hour-24h").is(":checked")) {
-
-                    businessHour24h = "check";
-                }
-    
-                $(this).iCheck(businessHourIsOpen);
-                rootParentThisObj.find(".business-hour-24h").iCheck(businessHour24h);
-                rootParentThisObj.find(".business-hour-time.open").val(rootParentbusinessHourIsOpen.find(".business-hour-time.open").val()).trigger("change");
-                rootParentThisObj.find(".business-hour-time.close").val(rootParentbusinessHourIsOpen.find(".business-hour-time.close").val()).trigger("change");
-            });
-    
-            return false;
         });
 
         thisObj.parent().find(".add-business-hour-day" + thisObj.val()).on("click", function() {
@@ -1339,9 +1430,9 @@ $jscript = '
     
             thisObj.parent().parent().siblings(".data-hour-form").last().remove();
             
-            if (indexHourCount > 1) {
+            if (indexHourCount > 0) {
 
-                indexHourCount--;    
+                indexHourCount--;
             }
 
             return false;
@@ -1349,4 +1440,4 @@ $jscript = '
     });
 ';
 
-$this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>
+$this->registerJs(Yii::$app->params['checkbox-radio-script'](null, null, 'input[type=\"radio\"]:not(\".not-checkbox\"), input[type=\"checkbox\"]:not(\".not-checkbox\")') . $jscript); ?>
