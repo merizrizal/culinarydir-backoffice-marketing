@@ -569,6 +569,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
         $modelBusinessImage = new BusinessImage();
         $dataBusinessImage = [];
+        $newDataBusinessImage = [];
 
         $deletedBusinessImageId = [];
 
@@ -578,50 +579,86 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = true;
-
-                $newModelBusinessImage = new BusinessImage(['business_id' => $model->id]);
-
-                if ($newModelBusinessImage->load($post)) {
-
-                    $images = Tools::uploadFiles('/img/registry_business/', $newModelBusinessImage, 'image', 'business_id', '', true);
-
-                    foreach ($images as $image) {
-
-                        $newModelBusinessImage = new BusinessImage();
-                        $newModelBusinessImage->business_id = $model->id;
-                        $newModelBusinessImage->image = $image;
-                        $newModelBusinessImage->type = 'Gallery';
-                        $newModelBusinessImage->is_primary = false;
-
-                        if (!($flag = $newModelBusinessImage->save())) {
-                            break;
-                        } else {
-                            array_push($dataBusinessImage, $newModelBusinessImage->toArray());
+                
+                $order = count($model->businessImages);
+                    
+                if (!empty($post['BusinessImageDelete'])) {
+                    
+                    if (($flag = BusinessImage::deleteAll(['id' => $post['BusinessImageDelete']]))) {
+                        
+                        $deletedBusinessImageId = $post['BusinessImageDelete'];
+                    }
+                    
+                    if ($flag) {
+                        
+                        $order = 0;
+                        
+                        foreach ($model->businessImages as $dataModelBusinessImage) {
+                            
+                            $deleted = false;
+                            
+                            foreach ($deletedBusinessImageId as $businessImageId) {
+                                
+                                if ($dataModelBusinessImage->id == $businessImageId) {
+                                    
+                                    $deleted = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (!$deleted) {
+                                
+                                $order++;
+                                
+                                $dataModelBusinessImage->order = $order;
+                                
+                                if (!($flag = $dataModelBusinessImage->save())) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if ($flag) {
+                    
+                    $newModelBusinessImage = new BusinessImage(['business_id' => $model->id]);
+                    
+                    if ($newModelBusinessImage->load($post)) {
+                        
+                        $images = Tools::uploadFiles('/img/registry_business/', $newModelBusinessImage, 'image', 'business_id', '', true);
+                        
+                        foreach ($images as $image) {
+                            
+                            $order++;
+                            
+                            $newModelBusinessImage = new BusinessImage();
+                            $newModelBusinessImage->business_id = $model->id;
+                            $newModelBusinessImage->image = $image;
+                            $newModelBusinessImage->type = 'Gallery';
+                            $newModelBusinessImage->is_primary = false;
+                            $newModelBusinessImage->category = 'Ambience';
+                            $newModelBusinessImage->order = $order;
+                            
+                            if (!($flag = $newModelBusinessImage->save())) {
+                                break;
+                            } else {
+                                array_push($newDataBusinessImage, $newModelBusinessImage->toArray());
+                            }
                         }
                     }
                 }
 
                 if ($flag) {
 
-                    foreach ($model->businessImages as $value) {
+                    foreach ($model->businessImages as $existModelBusinessImage) {
 
-                        $modelBusinessImage = $value;
-
-                        $modelBusinessImage->type = !empty($post['profile'][$value->id]) ? 'Profile' : 'Gallery';
-                        $modelBusinessImage->is_primary = !empty($post['thumbnail']) && $post['thumbnail'] == $value->id ? true : false;
-                        $modelBusinessImage->category = $post['category'][$value->id];
+                        $existModelBusinessImage->type = !empty($post['profile'][$existModelBusinessImage->id]) ? 'Profile' : 'Gallery';
+                        $existModelBusinessImage->is_primary = !empty($post['thumbnail']) && $post['thumbnail'] == $existModelBusinessImage->id ? true : false;
+                        $existModelBusinessImage->category = !empty($post['category'][$existModelBusinessImage->id]) ? $post['category'][$existModelBusinessImage->id] : $modelBusinessImage->category;
 
                         if (!($flag = $modelBusinessImage->save())) {
                             break;
-                        }
-                    }
-                }
-
-                if ($flag) {
-
-                    if (!empty($post['BusinessImageDelete'])) {
-                        if (($flag = BusinessImage::deleteAll(['id' => $post['BusinessImageDelete']]))) {
-                            $deletedBusinessImageId = $post['BusinessImageDelete'];
                         }
                     }
                 }
@@ -659,6 +696,11 @@ class BusinessController extends \backoffice\controllers\BaseController
             if (!$deleted) {
                 array_push($dataBusinessImage, $valueBusinessImage);
             }
+        }
+        
+        if (!empty($newDataBusinessImage)) {
+            
+            $dataBusinessImage = ArrayHelper::merge($dataBusinessImage, $newDataBusinessImage);
         }
 
         return $this->render('update_gallery_photo', [
