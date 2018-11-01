@@ -1053,7 +1053,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     
                     if ($flag) {
                         
-                        $modelRegistryBusinessImages = RegistryBusinessImage::findAll(['registry_business_id' => $model->id]);
+                        $modelRegistryBusinessImages = RegistryBusinessImage::find()
+                            ->andWhere(['registry_business_id' => $model->id])
+                            ->orderBy(['order' => SORT_ASC])
+                            ->all();
                         
                         $order = 1;
                         
@@ -1083,7 +1086,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                         $newModelRegistryBusinessImage->image = $image;
                         $newModelRegistryBusinessImage->type = 'Gallery';
                         $newModelRegistryBusinessImage->category = 'Ambience';
-                        $newModelRegistryBusinessImage->order = $order;
+                        $newModelRegistryBusinessImage->order = !empty($deletedRegistryBusinessImageId) ? $order : $order + 1;
 
                         if (!($flag = $newModelRegistryBusinessImage->save())) {
                             break;

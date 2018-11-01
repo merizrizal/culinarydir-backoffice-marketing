@@ -574,6 +574,8 @@ class BusinessController extends \backoffice\controllers\BaseController
         $deletedBusinessImageId = [];
 
         if (!empty(($post = Yii::$app->request->post()))) {
+            
+//             echo '<pre>'; print_r($post); exit();
 
             if (!empty($save)) {
 
@@ -591,7 +593,10 @@ class BusinessController extends \backoffice\controllers\BaseController
                     
                     if ($flag) {
                         
-                        $modelBusinessImages = BusinessImage::findAll(['business_id' => $model->id]);
+                        $modelBusinessImages = BusinessImage::find()
+                            ->andWhere(['business_id' => $model->id])
+                            ->orderBy(['id' => SORT_ASC])
+                            ->all();
                         
                         $order = 1;
                         
@@ -622,7 +627,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                         $newModelBusinessImage->type = 'Gallery';
                         $newModelBusinessImage->is_primary = false;
                         $newModelBusinessImage->category = 'Ambience';
-                        $newModelBusinessImage->order = $order;
+                        $newModelBusinessImage->order = !empty($deletedBusinessImageId) ? $order : $order + 1;
 
                         if (!($flag = $newModelBusinessImage->save())) {
                             break;
