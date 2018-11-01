@@ -1060,61 +1060,63 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = true;
-
+                
+                $order = count($model->registryBusinessImages);
+                
+                if (!empty($post['RegistryBusinessImageDelete'])) {
+                    
+                    if (($flag = RegistryBusinessImage::deleteAll(['id' => $post['RegistryBusinessImageDelete']]))) {
+                        
+                        if (empty($newDataRegistryBusinessImage) && ($order == count($post['RegistryBusinessImageDelete']))) {
+                            
+                            $flag = false;
+                        } else {
+                            
+                            $deletedRegistryBusinessImageId = $post['RegistryBusinessImageDelete'];
+                        }
+                    }
+                    
+                    if ($flag) {
+                        
+                        $modelRegistryBusinessImages = RegistryBusinessImage::findAll(['registry_business_id' => $model->id]);
+                        
+                        $order = 1;
+                        
+                        foreach ($modelRegistryBusinessImages as $dataModelRegistryBusinessImage) {
+                            
+                            $dataModelRegistryBusinessImage->order = $order;
+                            
+                            if (!($flag = $dataModelRegistryBusinessImage->save())) {
+                                break;
+                            }
+                            
+                            $order++;
+                        }
+                    }
+                }
+                
                 $newModelRegistryBusinessImage = new RegistryBusinessImage(['registry_business_id' => $model->id]);
 
-                if ($newModelRegistryBusinessImage->load($post)) {
-                    
-                    $prevIndex = count($model->registryBusinessImages);
+                if ($flag && $newModelRegistryBusinessImage->load($post)) {
                     
                     $images = Tools::uploadFiles('/img/registry_business/', $newModelRegistryBusinessImage, 'image', 'registry_business_id', '', true);
 
-                    foreach ($images as $index => $image) {
+                    foreach ($images as $image) {
 
                         $newModelRegistryBusinessImage = new RegistryBusinessImage();
                         $newModelRegistryBusinessImage->registry_business_id = $model->id;
                         $newModelRegistryBusinessImage->image = $image;
                         $newModelRegistryBusinessImage->type = 'Gallery';
                         $newModelRegistryBusinessImage->category = 'Ambience';
-                        $newModelRegistryBusinessImage->order = ($index + 1) + $prevIndex;
+                        $newModelRegistryBusinessImage->order = $order;
 
                         if (!($flag = $newModelRegistryBusinessImage->save())) {
-                            
                             break;
                         } else {
                             array_push($newDataRegistryBusinessImage, $newModelRegistryBusinessImage->toArray());
                         }
-                    }
-                }
-
-                if ($flag) {
-
-                    if (!empty($post['RegistryBusinessImageDelete'])) {
                         
-                        if (($flag = RegistryBusinessImage::deleteAll(['id' => $post['RegistryBusinessImageDelete']]))) {
-                            
-                            if (empty($newDataRegistryBusinessImage) && (count($model->registryBusinessImages) == count($post['RegistryBusinessImageDelete']))) {
-
-                                $flag = false;
-                            } else {
-                                
-                                $deletedRegistryBusinessImageId = $post['RegistryBusinessImageDelete'];
-                            }
-                            
-                            if ($flag) {
-                                
-                                $modelRegistryBusinessImages = RegistryBusinessImage::findAll(['registry_business_id' => $model->id]);
-                                
-                                foreach ($modelRegistryBusinessImages as $index => $modelRegistryBusinessImage) {
-                                    
-                                    $modelRegistryBusinessImage->order = $index + 1;
-                                    
-                                    if (!($flag = $modelRegistryBusinessImage->save())) {
-                                        break;
-                                    }
-                                }
-                            }
-                        }
+                        $order++;
                     }
                 }
 

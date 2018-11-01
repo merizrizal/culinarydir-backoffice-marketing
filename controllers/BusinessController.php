@@ -569,6 +569,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
         $modelBusinessImage = new BusinessImage();
         $dataBusinessImage = [];
+        $newDataBusinessImage = [];
 
         $deletedBusinessImageId = [];
 
@@ -578,10 +579,38 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = true;
+                
+                $order = count($model->businessImages);
+                    
+                if (!empty($post['BusinessImageDelete'])) {
+                    
+                    if (($flag = BusinessImage::deleteAll(['id' => $post['BusinessImageDelete']]))) {
+                        
+                        $deletedBusinessImageId = $post['BusinessImageDelete'];
+                    }
+                    
+                    if ($flag) {
+                        
+                        $modelBusinessImages = BusinessImage::findAll(['business_id' => $model->id]);
+                        
+                        $order = 1;
+                        
+                        foreach ($modelBusinessImages as $dataModelBusinessImage) {
+                            
+                            $dataModelBusinessImage->order = $order;
+                            
+                            if (!($flag = $dataModelBusinessImage->save())) {
+                                break;
+                            }
+                            
+                            $order++;
+                        }
+                    }
+                }
 
                 $newModelBusinessImage = new BusinessImage(['business_id' => $model->id]);
 
-                if ($newModelBusinessImage->load($post)) {
+                if ($flag && $newModelBusinessImage->load($post)) {
 
                     $images = Tools::uploadFiles('/img/registry_business/', $newModelBusinessImage, 'image', 'business_id', '', true);
 
@@ -592,12 +621,16 @@ class BusinessController extends \backoffice\controllers\BaseController
                         $newModelBusinessImage->image = $image;
                         $newModelBusinessImage->type = 'Gallery';
                         $newModelBusinessImage->is_primary = false;
+                        $newModelBusinessImage->category = 'Ambience';
+                        $newModelBusinessImage->order = $order;
 
                         if (!($flag = $newModelBusinessImage->save())) {
                             break;
                         } else {
-                            array_push($dataBusinessImage, $newModelBusinessImage->toArray());
+                            array_push($newDataBusinessImage, $newModelBusinessImage->toArray());
                         }
+                        
+                        $order++;
                     }
                 }
 
@@ -609,19 +642,10 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                         $modelBusinessImage->type = !empty($post['profile'][$value->id]) ? 'Profile' : 'Gallery';
                         $modelBusinessImage->is_primary = !empty($post['thumbnail']) && $post['thumbnail'] == $value->id ? true : false;
-                        $modelBusinessImage->category = $post['category'][$value->id];
+                        $modelBusinessImage->category = !empty($post['category'][$value->id]) ? $post['category'][$value->id] : $modelBusinessImage->category;
 
                         if (!($flag = $modelBusinessImage->save())) {
                             break;
-                        }
-                    }
-                }
-
-                if ($flag) {
-
-                    if (!empty($post['BusinessImageDelete'])) {
-                        if (($flag = BusinessImage::deleteAll(['id' => $post['BusinessImageDelete']]))) {
-                            $deletedBusinessImageId = $post['BusinessImageDelete'];
                         }
                     }
                 }
@@ -659,6 +683,11 @@ class BusinessController extends \backoffice\controllers\BaseController
             if (!$deleted) {
                 array_push($dataBusinessImage, $valueBusinessImage);
             }
+        }
+        
+        if (!empty($newDataBusinessImage)) {
+            
+            $dataBusinessImage = ArrayHelper::merge($dataBusinessImage, $newDataBusinessImage);
         }
 
         return $this->render('update_gallery_photo', [
