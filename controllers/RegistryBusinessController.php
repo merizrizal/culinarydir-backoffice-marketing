@@ -1053,48 +1053,60 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     
                     if ($flag) {
                         
-                        $modelRegistryBusinessImages = RegistryBusinessImage::find()
-                            ->andWhere(['registry_business_id' => $model->id])
-                            ->orderBy(['order' => SORT_ASC])
-                            ->all();
+                        $order = 0;
                         
-                        $order = 1;
-                        
-                        foreach ($modelRegistryBusinessImages as $dataModelRegistryBusinessImage) {
+                        foreach ($model->registryBusinessImages as $dataModelRegistryBusinessImage) {
                             
-                            $dataModelRegistryBusinessImage->order = $order;
+                            $deleted = false;
                             
-                            if (!($flag = $dataModelRegistryBusinessImage->save())) {
-                                break;
+                            foreach ($deletedRegistryBusinessImageId as $registryBusinessImageId) {
+                                
+                                if ($dataModelRegistryBusinessImage->id == $registryBusinessImageId) {
+                                    
+                                    $deleted = true;
+                                    break;
+                                }
                             }
                             
-                            $order++;
+                            if (!$deleted) {
+                            
+                                $order++;
+                                
+                                $dataModelRegistryBusinessImage->order = $order;
+                                
+                                if (!($flag = $dataModelRegistryBusinessImage->save())) {
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
                 
-                $newModelRegistryBusinessImage = new RegistryBusinessImage(['registry_business_id' => $model->id]);
-
-                if ($flag && $newModelRegistryBusinessImage->load($post)) {
+                if ($flag) {
+                
+                    $newModelRegistryBusinessImage = new RegistryBusinessImage(['registry_business_id' => $model->id]);
                     
-                    $images = Tools::uploadFiles('/img/registry_business/', $newModelRegistryBusinessImage, 'image', 'registry_business_id', '', true);
-
-                    foreach ($images as $image) {
-
-                        $newModelRegistryBusinessImage = new RegistryBusinessImage();
-                        $newModelRegistryBusinessImage->registry_business_id = $model->id;
-                        $newModelRegistryBusinessImage->image = $image;
-                        $newModelRegistryBusinessImage->type = 'Gallery';
-                        $newModelRegistryBusinessImage->category = 'Ambience';
-                        $newModelRegistryBusinessImage->order = !empty($deletedRegistryBusinessImageId) ? $order : $order + 1;
-
-                        if (!($flag = $newModelRegistryBusinessImage->save())) {
-                            break;
-                        } else {
-                            array_push($newDataRegistryBusinessImage, $newModelRegistryBusinessImage->toArray());
-                        }
+                    if ($newModelRegistryBusinessImage->load($post)) {
                         
-                        $order++;
+                        $images = Tools::uploadFiles('/img/registry_business/', $newModelRegistryBusinessImage, 'image', 'registry_business_id', '', true);
+                        
+                        foreach ($images as $image) {
+                            
+                            $order++;
+                            
+                            $newModelRegistryBusinessImage = new RegistryBusinessImage();
+                            $newModelRegistryBusinessImage->registry_business_id = $model->id;
+                            $newModelRegistryBusinessImage->image = $image;
+                            $newModelRegistryBusinessImage->type = 'Gallery';
+                            $newModelRegistryBusinessImage->category = 'Ambience';
+                            $newModelRegistryBusinessImage->order = $order;
+                            
+                            if (!($flag = $newModelRegistryBusinessImage->save())) {
+                                break;
+                            } else {
+                                array_push($newDataRegistryBusinessImage, $newModelRegistryBusinessImage->toArray());
+                            }
+                        }
                     }
                 }
 

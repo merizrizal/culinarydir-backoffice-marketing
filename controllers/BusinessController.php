@@ -574,8 +574,6 @@ class BusinessController extends \backoffice\controllers\BaseController
         $deletedBusinessImageId = [];
 
         if (!empty(($post = Yii::$app->request->post()))) {
-            
-//             echo '<pre>'; print_r($post); exit();
 
             if (!empty($save)) {
 
@@ -593,61 +591,71 @@ class BusinessController extends \backoffice\controllers\BaseController
                     
                     if ($flag) {
                         
-                        $modelBusinessImages = BusinessImage::find()
-                            ->andWhere(['business_id' => $model->id])
-                            ->orderBy(['id' => SORT_ASC])
-                            ->all();
+                        $order = 0;
                         
-                        $order = 1;
-                        
-                        foreach ($modelBusinessImages as $dataModelBusinessImage) {
+                        foreach ($model->businessImages as $dataModelBusinessImage) {
                             
-                            $dataModelBusinessImage->order = $order;
+                            $deleted = false;
                             
-                            if (!($flag = $dataModelBusinessImage->save())) {
-                                break;
+                            foreach ($deletedBusinessImageId as $businessImageId) {
+                                
+                                if ($dataModelBusinessImage->id == $businessImageId) {
+                                    
+                                    $deleted = true;
+                                    break;
+                                }
                             }
                             
-                            $order++;
+                            if (!$deleted) {
+                                
+                                $order++;
+                                
+                                $dataModelBusinessImage->order = $order;
+                                
+                                if (!($flag = $dataModelBusinessImage->save())) {
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
-
-                $newModelBusinessImage = new BusinessImage(['business_id' => $model->id]);
-
-                if ($flag && $newModelBusinessImage->load($post)) {
-
-                    $images = Tools::uploadFiles('/img/registry_business/', $newModelBusinessImage, 'image', 'business_id', '', true);
-
-                    foreach ($images as $image) {
-
-                        $newModelBusinessImage = new BusinessImage();
-                        $newModelBusinessImage->business_id = $model->id;
-                        $newModelBusinessImage->image = $image;
-                        $newModelBusinessImage->type = 'Gallery';
-                        $newModelBusinessImage->is_primary = false;
-                        $newModelBusinessImage->category = 'Ambience';
-                        $newModelBusinessImage->order = !empty($deletedBusinessImageId) ? $order : $order + 1;
-
-                        if (!($flag = $newModelBusinessImage->save())) {
-                            break;
-                        } else {
-                            array_push($newDataBusinessImage, $newModelBusinessImage->toArray());
-                        }
+                
+                if ($flag) {
+                    
+                    $newModelBusinessImage = new BusinessImage(['business_id' => $model->id]);
+                    
+                    if ($newModelBusinessImage->load($post)) {
                         
-                        $order++;
+                        $images = Tools::uploadFiles('/img/registry_business/', $newModelBusinessImage, 'image', 'business_id', '', true);
+                        
+                        foreach ($images as $image) {
+                            
+                            $order++;
+                            
+                            $newModelBusinessImage = new BusinessImage();
+                            $newModelBusinessImage->business_id = $model->id;
+                            $newModelBusinessImage->image = $image;
+                            $newModelBusinessImage->type = 'Gallery';
+                            $newModelBusinessImage->is_primary = false;
+                            $newModelBusinessImage->category = 'Ambience';
+                            $newModelBusinessImage->order = $order;
+                            
+                            if (!($flag = $newModelBusinessImage->save())) {
+                                break;
+                            } else {
+                                array_push($newDataBusinessImage, $newModelBusinessImage->toArray());
+                            }
+                        }
                     }
                 }
 
                 if ($flag) {
 
-                    foreach ($model->businessImages as $value) {
+                    foreach ($model->businessImages as $existModelBusinessImage) {
 
-                        $modelBusinessImage = $value;
-
-                        $modelBusinessImage->type = !empty($post['profile'][$value->id]) ? 'Profile' : 'Gallery';
-                        $modelBusinessImage->is_primary = !empty($post['thumbnail']) && $post['thumbnail'] == $value->id ? true : false;
-                        $modelBusinessImage->category = !empty($post['category'][$value->id]) ? $post['category'][$value->id] : $modelBusinessImage->category;
+                        $existModelBusinessImage->type = !empty($post['profile'][$existModelBusinessImage->id]) ? 'Profile' : 'Gallery';
+                        $existModelBusinessImage->is_primary = !empty($post['thumbnail']) && $post['thumbnail'] == $existModelBusinessImage->id ? true : false;
+                        $existModelBusinessImage->category = !empty($post['category'][$existModelBusinessImage->id]) ? $post['category'][$existModelBusinessImage->id] : $modelBusinessImage->category;
 
                         if (!($flag = $modelBusinessImage->save())) {
                             break;
