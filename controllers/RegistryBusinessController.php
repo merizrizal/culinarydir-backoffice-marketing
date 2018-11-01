@@ -84,31 +84,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
             if (empty($save)) {
 
-                $modelPerson = [];
-                $modelRegistryBusinessContactPerson = [];
-
-                if (!empty($post['Person'])) {
-                    
-                    foreach ($post['Person'] as $i => $value) {
-                        
-                        $postPerson = [];
-                        $postPerson['Person'] = $value;
-                        $modelPerson[$i] = new Person();
-                        $modelPerson[$i]->load($postPerson);
-                    }
-                }
-
-                if (!empty($post['RegistryBusinessContactPerson'])) {
-                    
-                    foreach ($post['RegistryBusinessContactPerson'] as $i => $value) {
-                        
-                        $postRegistryBusinessContactPerson = [];
-                        $postRegistryBusinessContactPerson['RegistryBusinessContactPerson'] = $value;
-                        $modelRegistryBusinessContactPerson[$i] = new RegistryBusinessContactPerson();
-                        $modelRegistryBusinessContactPerson[$i]->load($postRegistryBusinessContactPerson);
-                    }
-                }
-
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ArrayHelper::merge(ActiveForm::validate($model), ActiveForm::validateMultiple($modelPerson), ActiveForm::validateMultiple($modelRegistryBusinessContactPerson));
             } else {
