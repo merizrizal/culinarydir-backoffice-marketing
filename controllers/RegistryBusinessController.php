@@ -88,7 +88,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             if (empty($save)) {
 
                 Yii::$app->response->format = Response::FORMAT_JSON;
-                return ArrayHelper::merge(ActiveForm::validate($model), ActiveForm::validateMultiple($modelPerson), ActiveForm::validateMultiple($modelRegistryBusinessContactPerson));
+                return ActiveForm::validate($model);
             } else {
 
                 $transaction = Yii::$app->db->beginTransaction();
