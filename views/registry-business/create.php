@@ -611,8 +611,8 @@ $jscript = '
                                                         	
                                                         	<?= Html::hiddenInput('day', ($i+1), ['class' => 'daysCount']) ?>
                                                         	
-                                                            <?= Html::a('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), null, ['class' => 'btn btn-default add-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
-                                                            <?= Html::a('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), null, ['class' => 'btn btn-default delete-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
+                                                            <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default add-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
+                                                            <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default delete-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
                                                             
                                                         </div>
                                                     </div>
@@ -912,8 +912,8 @@ $jscript = '
                                     <div class="row">
                                         <div class="col-md-12">
                                         
-                                            <?= Html::a('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), '', ['class' => 'btn btn-default add-contact-person']) ?>
-                                            <?= Html::a('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), '', ['class' => 'btn btn-default delete-contact-person']); ?>
+                                            <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default add-contact-person']) ?>
+                                            <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default delete-contact-person']); ?>
                                             
                                         </div>
                                     </div>
