@@ -53,6 +53,7 @@ echo $ajaxRequest->component(); ?>
                     if (!empty($actionButton)) {
                         
                         foreach ($actionButton as $valActionButton) {
+                            
                             echo $valActionButton($model);
                         }
                     }
@@ -84,12 +85,16 @@ echo $ajaxRequest->component(); ?>
                     <div class="row mb-20">
 
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Name')) ?><br>
                             <?= $model['name'] ?>
+                            
                         </div>
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Unique Name')) ?><br>
                             <?= $model['unique_name'] ?>
+                            
                         </div>
 
                     </div>
@@ -97,20 +102,28 @@ echo $ajaxRequest->component(); ?>
                     <div class="row mb-20">
 
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Address Type')) ?><br>
                             <?= $model['address_type'] ?>
+                            
                         </div>
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Address')) ?><br>
                             <?= $model['address'] ?>
+                            
                         </div>
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Address Info')) ?><br>
                             <?= $model['address_info'] ?>
+                            
                         </div>
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'City ID')) ?><br>
                             <?= $model['city']['name'] ?>
+                            
                         </div>
 
                     </div>
@@ -118,17 +131,23 @@ echo $ajaxRequest->component(); ?>
                     <div class="row mb-20">
 
                         <div class="col-lg-3 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'District ID')) ?><br>
                             <?= $model['district']['name'] ?>
+                            
                         </div>
 
                         <div class="col-lg-3 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'Village ID')) ?><br>
                             <?= $model['village']['name'] ?>
+                            
                         </div>
                         <div class="col-lg-6 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'Coordinate')) ?><br>
                             <?= $model['coordinate'] ?>
+                            
                         </div>
 
                     </div>
@@ -136,22 +155,30 @@ echo $ajaxRequest->component(); ?>
                     <div class="row mb-20">
 
                         <div class="col-lg-3 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'Email')) ?><br>
                             <?= $model['email'] ?>
+                            
                         </div>
 
                         <div class="col-lg-3 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'Phone1')) ?><br>
                             <?= $model['phone1'] ?>
+                            
                         </div>
 
                         <div class="col-lg-3 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'Phone2')) ?><br>
                             <?= $model['phone2'] ?>
+                            
                         </div>
                         <div class="col-lg-3 col-xs-6">
+                        
                             <?= Html::label(Yii::t('app', 'Phone3')) ?><br>
                             <?= $model['phone3'] ?>
+                            
                         </div>
 
                     </div>
@@ -218,7 +245,9 @@ echo $ajaxRequest->component(); ?>
 
                     <div class="row">
                         <div class="col-md-12">
+                        
                             <?= Html::label(Yii::t('app', 'Product Category'), null, ['class' => 'control-label']) ?>
+                            
                         </div>
                     </div>
                     <div class="row">
@@ -283,7 +312,9 @@ echo $ajaxRequest->component(); ?>
 
                     <div class="row">
                         <div class="col-md-12">
+                        
                             <?= Html::label(Yii::t('app', 'Business Hour'), null, ['class' => 'control-label']) ?>
+                            
                         </div>
                     </div>
 
@@ -314,7 +345,7 @@ echo $ajaxRequest->component(); ?>
                                                 
                                                 foreach ($businessHour['registryBusinessHourAdditionals'] as $businessHourAdditional): ?>
                                                         
-                                                    <?= ', ' . Yii::$app->formatter->asTime($businessHourAdditional['open_at'], 'HH:mm') . ' - ' . Yii::$app->formatter->asTime($businessHourAdditional['close_at'], 'HH:mm'); ?>
+                                                    <?= ', ' . Yii::$app->formatter->asTime($businessHourAdditional['open_at'], 'short') . ' - ' . Yii::$app->formatter->asTime($businessHourAdditional['close_at'], 'short'); ?>
                                                         
                                                 <?php
                                                 endforeach;
@@ -329,25 +360,40 @@ echo $ajaxRequest->component(); ?>
 
                         </div>
                     </div>
+                    
+                    <div class="row">
+                        <div class="col-xs-12">
+                        
+                            <?= Html::label(Yii::t('app', 'Note')) ?><br>
+                            <?= !empty($model['note_business_hour']) ? $model['note_business_hour'] : '-' ?>
+                            
+                        </div>
+                    </div>
 
                     <hr>
 
                     <div class="row">
                         <div class="col-md-12">
-                            <?= Html::label(Yii::t('app', 'Price Range'), null, ['class' => 'control-label']) ?>
+                        
+                            <?= Html::label(Yii::t('app', 'Average Spending')) ?>
+                            
                         </div>
                     </div>
 
                     <div class="row mb-20">
 
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Price Min')) ?><br>
                             <?= Yii::$app->formatter->asCurrency($model['price_min']); ?>
+                            
                         </div>
 
                         <div class="col-md-3">
+                        
                             <?= Html::label(Yii::t('app', 'Price Max')) ?><br>
                             <?= Yii::$app->formatter->asCurrency($model['price_max']); ?>
+                            
                         </div>
                     </div>
 
@@ -355,7 +401,9 @@ echo $ajaxRequest->component(); ?>
 
                     <div class="row">
                         <div class="col-md-12">
+                        
                             <?= Html::label(Yii::t('app', 'Facility'), null, ['class' => 'control-label']) ?>
+                            
                         </div>
                     </div>
                     <div class="row">
@@ -412,6 +460,7 @@ echo $ajaxRequest->component(); ?>
                     if (!empty($actionButton)) {
                         
                         foreach ($actionButton as $valActionButton) {
+                            
                             echo $valActionButton($model);
                         }
                     }
