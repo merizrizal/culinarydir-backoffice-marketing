@@ -16,8 +16,9 @@ use core\models\ProductCategory;
 use core\models\Facility;
 use core\models\Person;
 use core\models\RegistryBusinessContactPerson;
-use dosamigos\ckeditor\CKEditor;
 use core\models\RegistryBusinessHourAdditional;
+use dosamigos\ckeditor\CKEditor;
+
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
@@ -553,69 +554,69 @@ $jscript = '
                                                     }
                                                 } ?>
     											
-                                                    <div class="row">
-                                                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
-        
-                                                            <?= Yii::t('app', $days[$i]) ?>
-        
-                                                        </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
-        
-                                                            <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']is_open')
-                                                                ->checkbox([
-                                                                    'label' => Yii::t('app', 'Open'),
-                                                                    'class' => 'business-hour-is-open day-' . ($i + 1),
-                                                                    'data-day' => $i + 1,
-                                                                ]); ?>
-        
-                                                        </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
-                                                            <div class="form-group">
-        
-                                                                <?= Html::checkbox('always24', $is24Hour, [
-                                                                    'label' => Yii::t('app', '24 Hours'),
-                                                                    'data-day' => $i + 1,
-                                                                    'class' => 'business-hour-24h',
-                                                                    'disabled' => !$modelRegistryBusinessHour->is_open,
-                                                                    'id' => 'business-hour-24h-' . ($i + 1)
-                                                                ]); ?>
-        
-                                                            </div>
-                                                        </div>
-        
-                                                        <div class="visible-xs clearfix"></div>
-        
-                                                        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
-        
-                                                            <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']open_at')
-                                                                ->dropDownList($hours, [
-                                                                    'prompt' => '',
-                                                                    'class' => 'business-hour-time open',
-                                                                    'style' => 'width: 100%',
-                                                                    'disabled' => !$modelRegistryBusinessHour->is_open,
-                                                                ]); ?>
-        
-                                                        </div>
-                                                        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
-        
-                                                            <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']close_at')
-                                                                ->dropDownList($hours, [
-                                                                    'prompt' => '',
-                                                                    'class' => 'business-hour-time close',
-                                                                    'style' => 'width: 100%',
-                                                                    'disabled' => !$modelRegistryBusinessHour->is_open,
-                                                                ]); ?>
-        
-                                                        </div>
-                                                        <div class="col-lg-3 col-md-6 col-sm-3 col-xs-4">
-                                                        	
-                                                        	<?= Html::hiddenInput('day', ($i+1), ['class' => 'daysCount']) ?>
-                                                        	
-                                                            <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default add-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
-                                                            <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default delete-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
-                                                            
+                                                <div class="row">
+                                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
+    
+                                                        <?= Yii::t('app', $days[$i]) ?>
+    
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
+    
+                                                        <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']is_open')
+                                                            ->checkbox([
+                                                                'label' => Yii::t('app', 'Open'),
+                                                                'class' => 'business-hour-is-open day-' . ($i + 1),
+                                                                'data-day' => $i + 1,
+                                                            ]); ?>
+    
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
+                                                        <div class="form-group">
+    
+                                                            <?= Html::checkbox('always24', $is24Hour, [
+                                                                'label' => Yii::t('app', '24 Hours'),
+                                                                'data-day' => $i + 1,
+                                                                'class' => 'business-hour-24h',
+                                                                'disabled' => !$modelRegistryBusinessHour->is_open,
+                                                                'id' => 'business-hour-24h-' . ($i + 1)
+                                                            ]); ?>
+    
                                                         </div>
                                                     </div>
+    
+                                                    <div class="visible-xs clearfix"></div>
+    
+                                                    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+    
+                                                        <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']open_at')
+                                                            ->dropDownList($hours, [
+                                                                'prompt' => '',
+                                                                'class' => 'business-hour-time open',
+                                                                'style' => 'width: 100%',
+                                                                'disabled' => !$modelRegistryBusinessHour->is_open,
+                                                            ]); ?>
+    
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+    
+                                                        <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']close_at')
+                                                            ->dropDownList($hours, [
+                                                                'prompt' => '',
+                                                                'class' => 'business-hour-time close',
+                                                                'style' => 'width: 100%',
+                                                                'disabled' => !$modelRegistryBusinessHour->is_open,
+                                                            ]); ?>
+    
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-6 col-sm-3 col-xs-4">
+                                                    	
+                                                    	<?= Html::hiddenInput('day', ($i+1), ['class' => 'daysCount']) ?>
+                                                    	
+                                                        <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default add-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
+                                                        <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default delete-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
+                                                        
+                                                    </div>
+                                                </div>
                                                 
                                                 <?php
                                                 if (!empty($dataRegistryBusinessHourAdditional)) {

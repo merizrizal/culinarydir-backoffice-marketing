@@ -223,23 +223,27 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 
                                 foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $value) {
                                     
-                                    if ($i !== 'index') {
-                                        
-                                        $newModelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
-                                        $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i);
-                                        $newModelRegistryBusinessHourAdditional->registry_business_hour_id = $newModelRegistryBusinessHourDay->id;
-                                        $newModelRegistryBusinessHourAdditional->day = $day;
-                                        $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
-                                        $newModelRegistryBusinessHourAdditional->open_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at'] : null;
-                                        $newModelRegistryBusinessHourAdditional->close_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at'] : null;
-                                    }
-                                
-                                    if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
-                                        
-                                        break;
-                                    } else {
-                                        
-                                        array_push($dataRegistryBusinessHourAdditional, $newModelRegistryBusinessHourAdditional->toArray());
+                                    if (!empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at']) || !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at'])) {
+                                    
+                                        if ($i !== 'index') {
+                                            
+                                            $newModelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
+                                            $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i);
+                                            $newModelRegistryBusinessHourAdditional->registry_business_hour_id = $newModelRegistryBusinessHourDay->id;
+                                            $newModelRegistryBusinessHourAdditional->day = $day;
+                                            $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
+                                            $newModelRegistryBusinessHourAdditional->open_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at'] : null;
+                                            $newModelRegistryBusinessHourAdditional->close_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at'] : null;
+                                            
+                                        }
+                                    
+                                        if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
+                                            
+                                            break;
+                                        } else {
+                                            
+                                            array_push($dataRegistryBusinessHourAdditional, $newModelRegistryBusinessHourAdditional->toArray());
+                                        }
                                     }
                                 }
                             }
@@ -944,7 +948,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                         $dayName = 'day' . $day;
 
                         if (!empty($post['RegistryBusinessHour'][$dayName])) {
-
+                            
                             $newModelRegistryBusinessHourDay = RegistryBusinessHour::findOne(['unique_id' => $model->id . '-' . $day]);
 
                             if (empty($newModelRegistryBusinessHourDay)) {
@@ -959,7 +963,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             $newModelRegistryBusinessHourDay->open_at = !empty($post['RegistryBusinessHour'][$dayName]['open_at']) ? $post['RegistryBusinessHour'][$dayName]['open_at'] : null;
                             $newModelRegistryBusinessHourDay->close_at = !empty($post['RegistryBusinessHour'][$dayName]['close_at']) ? $post['RegistryBusinessHour'][$dayName]['close_at'] : null;
 
-                            if (!$flag = $newModelRegistryBusinessHourDay->save()) {
+                            if (!($flag = $newModelRegistryBusinessHourDay->save())) {
                                 
                                 break;
                             } else {
@@ -968,33 +972,47 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             }
                         }
                         
+                        if (!empty($post['RegistryBusinessHourAdditionalDeleted'][$dayName])) {
+                        
+                            foreach ($post['RegistryBusinessHourAdditionalDeleted'][$dayName] as $i => $value) {
+                                
+                                if (empty($post['RegistryBusinessHourAdditional'][$dayName][$i+1])) {
+                                    
+                                    RegistryBusinessHourAdditional::deleteAll(['id' => $value]);
+                                }
+                            }
+                        } 
+                        
                         if (!empty($post['RegistryBusinessHourAdditional'][$dayName])) {
                             
                             foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $value) {
                                 
-                                $newModelRegistryBusinessHourAdditional = RegistryBusinessHourAdditional::findOne(['unique_id' => $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i)]);
+                                if (!empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at']) || !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at'])) {
                                 
-                                if (empty($newModelRegistryBusinessHourAdditional)) {
+                                    $newModelRegistryBusinessHourAdditional = RegistryBusinessHourAdditional::findOne(['unique_id' => $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i)]);
                                     
-                                    $newModelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
-                                    $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i);
-                                    $newModelRegistryBusinessHourAdditional->registry_business_hour_id = $newModelRegistryBusinessHourDay->id;
-                                    $newModelRegistryBusinessHourAdditional->day = $day;
-                                }
-                                
-                                if ($i !== 'index') {
+                                    if (empty($newModelRegistryBusinessHourAdditional)) {
+                                        
+                                        $newModelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
+                                        $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i);
+                                        $newModelRegistryBusinessHourAdditional->registry_business_hour_id = $newModelRegistryBusinessHourDay->id;
+                                        $newModelRegistryBusinessHourAdditional->day = $day;
+                                    }
                                     
-                                    $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
-                                    $newModelRegistryBusinessHourAdditional->open_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at'] : null;
-                                    $newModelRegistryBusinessHourAdditional->close_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at'] : null;
-                                }
-                                
-                                if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
+                                    if ($i !== 'index') {
+                                        
+                                        $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
+                                        $newModelRegistryBusinessHourAdditional->open_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at'] : null;
+                                        $newModelRegistryBusinessHourAdditional->close_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at'] : null;
+                                    }
                                     
-                                    break;
-                                } else {
-                                    
-                                    array_push($dataRegistryBusinessHourAdditional, $newModelRegistryBusinessHourAdditional->toArray());
+                                    if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
+                                        
+                                        break;
+                                    } else {
+                                        
+                                        array_push($dataRegistryBusinessHourAdditional, $newModelRegistryBusinessHourAdditional->toArray());
+                                    }
                                 }
                             }
                         }
@@ -1039,14 +1057,20 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         $dataRegistryBusinessProductCategoryParent = empty($dataRegistryBusinessProductCategoryParent) ? $registryBusinessProductCategoryParent : $dataRegistryBusinessProductCategoryParent;
         $dataRegistryBusinessProductCategoryChild = empty($dataRegistryBusinessProductCategoryChild) ? $registryBusinessProductCategoryChild : $dataRegistryBusinessProductCategoryChild;
-
+        
         $dataRegistryBusinessHour = empty($dataRegistryBusinessHour) ? $model->registryBusinessHours : $dataRegistryBusinessHour;
         
         if (empty($dataRegistryBusinessHourAdditional)) {
-               
-            foreach ($model->registryBusinessHours as $i => $index) {
+        
+            foreach ($dataRegistryBusinessHour as $i => $valueHour) {
                 
-                array_push($dataRegistryBusinessHourAdditional, $model->registryBusinessHours[$i]->registryBusinessHourAdditionals); 
+                if (!empty($valueHour['registryBusinessHourAdditionals'])) {
+                    
+                    foreach ($valueHour['registryBusinessHourAdditionals'] as $value) {
+                        
+                        array_push($dataRegistryBusinessHourAdditional, $value);
+                    }
+                }
             }
         }
 
@@ -1133,6 +1157,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $dataModelRegistryBusinessImage->order = $order;
                                 
                                 if (!($flag = $dataModelRegistryBusinessImage->save())) {
+                                    
                                     break;
                                 }
                             }
@@ -1160,8 +1185,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             $newModelRegistryBusinessImage->order = $order;
                             
                             if (!($flag = $newModelRegistryBusinessImage->save())) {
+                                
                                 break;
                             } else {
+                                
                                 array_push($newDataRegistryBusinessImage, $newModelRegistryBusinessImage->toArray());
                             }
                         }
