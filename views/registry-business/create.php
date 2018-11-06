@@ -1198,6 +1198,16 @@ $jscript .= '
                 yii.validation.email(value, messages, {"pattern":/^[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/,"fullPattern":/^[^@]*<[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$/,"allowName":false,"message":"Email bukan alamat email yang valid.","enableIDN":false,"skipOnEmpty":1});
             }
         });
+
+        $("#registry-business-form").yiiActiveForm("add", {
+            "id":"registrybusinesscontactperson-" + index + "-position",
+            "name":"[" + index + "]position",
+            "container":".field-registrybusinesscontactperson-" + index + "-position",
+            "input":"#registrybusinesscontactperson-" + index + "-position",
+            "validate":function (attribute, value, messages, deferred, $form) {
+                yii.validation.required(value, messages, {"message":"Jabatan tidak boleh kosong."});
+            }
+        });
     };
 
     function replaceComponent(contentClone, component, content, index) {
