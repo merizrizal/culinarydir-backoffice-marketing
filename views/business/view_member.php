@@ -359,10 +359,24 @@ echo $ajaxRequest->component(); ?>
 
                                     <div class="row">
                                         <div class="col-md-2">
+                                        
                                             <?= Html::label(Yii::t('app', $days[$businessHour['day'] - 1])) ?>
+                                            
                                         </div>
-                                        <div class="col-md-4">
-                                            <?= $is24Hour ? Yii::t('app','24 Hours') : Yii::$app->formatter->asTime($businessHour['open_at']) . ' - ' . Yii::$app->formatter->asTime($businessHour['close_at']); ?>
+                                        <div class="col-md-8">
+                                        	
+                                        	<?php
+                                            echo $is24Hour ? Yii::t('app','24 Hours') : Yii::$app->formatter->asTime($businessHour['open_at'], 'short') . ' - ' . Yii::$app->formatter->asTime($businessHour['close_at'], 'short');
+                                            
+                                            if (!empty($businessHour['businessHourAdditionals'])) {
+                                                
+                                                foreach ($businessHour['businessHourAdditionals'] as $businessHourAdditional):
+                                                        
+                                                    echo ', ' . Yii::$app->formatter->asTime($businessHourAdditional['open_at'], 'short') . ' - ' . Yii::$app->formatter->asTime($businessHourAdditional['close_at'], 'short');
+                                                
+                                                endforeach;
+                                            } ?>
+                                            
                                         </div>
                                     </div>
 

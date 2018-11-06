@@ -9,6 +9,7 @@ use sycomponent\NotificationDialog;
 use core\models\Category;
 use core\models\ProductCategory;
 use core\models\Facility;
+use core\models\BusinessHourAdditional;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\Business */
@@ -21,6 +22,8 @@ use core\models\Facility;
 /* @var $dataBusinessFacility core\models\BusinessFacility */
 /* @var $modelBusinessHour core\models\BusinessHour */
 /* @var $dataBusinessHour core\models\BusinessHour */
+/* @var $modelBusinessHourAdditional core\models\BusinessHourAdditional */
+/* @var $dataBusinessHourAdditional core\models\BusinessHourAdditional */
 /* @var $modelBusinessDetail core\models\BusinessDetail */
 /* @var $day string */
 
@@ -51,29 +54,35 @@ if ($status !== null) :
 endif;
 
 $category = Category::find()
-        ->orderBy('name')
-        ->asArray()->all();
+    ->orderBy('name')
+    ->asArray()->all();
 
 $productParentCategory = ProductCategory::find()
-        ->andWhere(['is_parent' => 1])
-        ->orderBy('name')
-        ->asArray()->all();
+    ->andWhere(['is_parent' => 1])
+    ->orderBy('name')
+    ->asArray()->all();
 
 $productCategory = ProductCategory::find()
-        ->andWhere(['is_parent' => 0])
-        ->orderBy('name')
-        ->asArray()->all();
+    ->andWhere(['is_parent' => 0])
+    ->orderBy('name')
+    ->asArray()->all();
 
 $facility = Facility::find()
-        ->orderBy('name')
-        ->asArray()->all();
+    ->orderBy('name')
+    ->asArray()->all();
 
 $this->title = 'Update ' . Yii::t('app', 'Marketing Information') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['member']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-member', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Information');
 
-echo $ajaxRequest->component(); ?>
+echo $ajaxRequest->component(); 
+
+$jscript = '
+    var indexCount = 0;
+    
+    var indexHourCountArr = [];
+'; ?>
 
 <div class="business-update">
     <div class="row">
@@ -267,87 +276,173 @@ echo $ajaxRequest->component(); ?>
                                 $hours = Yii::$app->params['hours'];
 
                                 foreach ($days as $i => $day):
-
-                                    $is24Hour = false;
-
-                                    foreach ($dataBusinessHour as $value) {
-
-                                        if ($value['day'] == ($i + 1)) {
-
-                                            $modelBusinessHour->is_open = $value['is_open'];
-                                            $modelBusinessHour->open_at = $value['open_at'];
-                                            $modelBusinessHour->close_at = $value['close_at'];
-
-                                            if ($modelBusinessHour->open_at == '00:00:00' && $modelBusinessHour->close_at == '24:00:00') {
-                                                $is24Hour = true;
-                                            }
-
-                                            break;
-                                        }
-                                    } ?>
-
-                                    <div class="row">
-                                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
-                                        
-                                            <?= Yii::t('app', $days[$i]) ?>
+                                
+                                    $countAdditional = 0; ?>
+                                        	
+                                	<div>
+                                    
+    									<?php
+                                        $is24Hour = false;
+    
+                                        foreach ($dataBusinessHour as $value) {
+    
+                                            if ($value['day'] == ($i + 1)) {
+    
+                                                $modelBusinessHour->is_open = $value['is_open'];
+                                                $modelBusinessHour->open_at = $value['open_at'];
+                                                $modelBusinessHour->close_at = $value['close_at'];
+    
+                                                if ($modelBusinessHour->open_at == '00:00:00' && $modelBusinessHour->close_at == '24:00:00') {
+    
+                                                    $is24Hour = true;
+                                                    
+                                                    $jscript .= '
+                                                        $(".field-businesshour-day" + "' . ($i+1) . '" + "-open_at").hide();
+                                                        $(".field-businesshour-day" + "' . ($i+1) . '" + "-close_at").hide();
                                             
-                                        </div>
-                                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
+                                                        $(".field-businesshour-day" + "' . ($i+1) . '" + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
+                                            
+                                                        $(".add-business-hour-day" + "' . ($i+1) . '").hide();
+                                                        $(".delete-business-hour-day" + "' . ($i+1) . '").hide();
+                                                    ';
+                                                    
+                                                }
+                                                
+                                                break;
+                                            }
+                                        } ?>
+    									
+                                        <div class="row">
+                                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
 
-                                            <?= $form->field($modelBusinessHour, '[day' . ($i + 1) . ']is_open')
-                                                ->checkbox([
-                                                    'label' => Yii::t('app', 'Open'),
-                                                    'class' => 'business-hour-is-open day-' . ($i + 1),
-                                                    'data-day' => $i + 1,
-                                                ]); ?>
-
-                                        </div>
-                                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
-                                            <div class="form-group">
-
-                                                <?= Html::checkbox('always24', $is24Hour, [
-                                                    'label' => Yii::t('app', '24 Hours'),
-                                                    'data-day' => $i + 1,
-                                                    'class' => 'business-hour-24h',
-                                                    'disabled' => !$modelBusinessHour->is_open,
-                                                    'id' => 'business-hour-24h-' . ($i + 1)
-                                                ]); ?>
+                                                <?= Yii::t('app', $days[$i]) ?>
 
                                             </div>
-                                        </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
 
-                                        <div class="visible-xs clearfix"></div>
+                                                <?= $form->field($modelBusinessHour, '[day' . ($i + 1) . ']is_open')
+                                                    ->checkbox([
+                                                        'label' => Yii::t('app', 'Open'),
+                                                        'class' => 'business-hour-is-open day-' . ($i + 1),
+                                                        'data-day' => $i + 1,
+                                                    ]); ?>
 
-                                        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
+                                                <div class="form-group">
 
-                                            <?= $form->field($modelBusinessHour, '[day' . ($i + 1) . ']open_at')
-                                                ->dropDownList(
-                                                    $hours,
-                                                    [
+                                                    <?= Html::checkbox('always24', $is24Hour, [
+                                                        'label' => Yii::t('app', '24 Hours'),
+                                                        'data-day' => $i + 1,
+                                                        'class' => 'business-hour-24h',
+                                                        'disabled' => !$modelBusinessHour->is_open,
+                                                        'id' => 'business-hour-24h-' . ($i + 1)
+                                                    ]); ?>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="visible-xs clearfix"></div>
+
+                                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+
+                                                <?= $form->field($modelBusinessHour, '[day' . ($i + 1) . ']open_at')
+                                                    ->dropDownList($hours, [
                                                         'prompt' => '',
                                                         'class' => 'business-hour-time open',
                                                         'style' => 'width: 100%',
                                                         'disabled' => !$modelBusinessHour->is_open,
-                                                    ]
-                                                ); ?>
+                                                    ]); ?>
 
-                                        </div>
-                                        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+                                            </div>
+                                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
 
-                                            <?= $form->field($modelBusinessHour, '[day' . ($i + 1) . ']close_at')
-                                                ->dropDownList(
-                                                    $hours,
-                                                    [
+                                                <?= $form->field($modelBusinessHour, '[day' . ($i + 1) . ']close_at')
+                                                    ->dropDownList($hours, [
                                                         'prompt' => '',
                                                         'class' => 'business-hour-time close',
                                                         'style' => 'width: 100%',
                                                         'disabled' => !$modelBusinessHour->is_open,
-                                                    ]
-                                                ); ?>
+                                                    ]); ?>
 
+                                            </div>
+                                            <div class="col-lg-3 col-md-6 col-sm-3 col-xs-4">
+                                            	
+                                            	<?= Html::hiddenInput('day', ($i+1), ['class' => 'daysCount']) ?>
+                                            	
+                                                <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default add-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
+                                                <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default delete-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
+                                                
+                                            </div>
                                         </div>
+                                        
+                                        <?php
+                                        if (!empty($dataBusinessHourAdditional)) {
+                                            
+                                            $jscript .= '
+                                                indexHourCountArr["' . ($i+1) . '"] = 0;
+                                            ';
+                                            
+                                            foreach ($dataBusinessHourAdditional as $valueAdditional) {
+                                                
+                                                if ($valueAdditional['day'] == ($i+1)) {
+                                                     
+                                                    $countAdditional++;
+                                                    $modelBusinessHourAdditional = new BusinessHourAdditional();
+                                                    $modelBusinessHourAdditional->open_at = $valueAdditional['open_at'];
+                                                    $modelBusinessHourAdditional->close_at = $valueAdditional['close_at']; ?>
+                                                
+                                                    <div class="data-hour-form">
+                                                        <div class="row">
+                                                            <div class="col-lg-2 col-lg-offset-5 col-md-3 col-sm-3 col-xs-4">
+                                                
+                                                                <?= $form->field($modelBusinessHourAdditional, '[day' . $valueAdditional['day'] . '][' . $countAdditional . ']open_at')
+                                                                    ->dropDownList($hours,[
+                                                                        'prompt' => '',
+                                                                        'class' => 'business-hour-time-additional open-additional',
+                                                                        'style' => 'width: 100%',
+                                                                        'disabled' => !$modelBusinessHour->is_open,
+                                                                    ]); ?>
+                                                
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+                                                
+                                                                <?= $form->field($modelBusinessHourAdditional, '[day' . $valueAdditional['day'] . '][' . $countAdditional . ']close_at')
+                                                                    ->dropDownList($hours,[
+                                                                        'prompt' => '',
+                                                                        'class' => 'business-hour-time-additional close-additional',
+                                                                        'style' => 'width: 100%',
+                                                                        'disabled' => !$modelBusinessHour->is_open,
+                                                                    ]); ?>
+                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <?php
+                                                    echo Html::hiddenInput('BusinessHourAdditionalDeleted[day' . $valueAdditional['day'] . '][]', $valueAdditional['id'], ['class' => 'deletedHour']);
+                                            
+                                            		$jscript .= '
+                                                        indexHourCountArr["' . ($i+1) . '"]++;
+    
+                                                        $("#businesshouradditional-day" + "' . ($i+1) . '" + "-" + indexHourCountArr["' . ($i+1) . '"] + "-open_at").select2({
+                                                            theme: "krajee",
+                                                            placeholder: "' . Yii::t('app', 'Time Open') . '"
+                                                        });
+    
+                                                        $("#businesshouradditional-day" + "' . ($i+1) . '" + "-" + indexHourCountArr["' . ($i+1) . '"] + "-close_at").select2({
+                                                            theme: "krajee",
+                                                            placeholder: "' . Yii::t('app', 'Time Close') . '"
+                                                        });
+                                                    ';
+                                        		
+                                                }
+                                            }
+                                            
+                                        } ?>
+                                    
                                     </div>
-
+                                    
                                 <?php
                                 endforeach; ?>
 
@@ -426,6 +521,35 @@ echo $ajaxRequest->component(); ?>
     </div>
 </div>
 
+<div class="additional-hour-temp-form hide">
+    <div class="data-hour-form">
+        <div class="row">
+            <div class="col-lg-2 col-lg-offset-5 col-md-3 col-sm-3 col-xs-4">
+
+                <?= $form->field(new BusinessHourAdditional(), '[dayidx][index]open_at')
+                    ->dropDownList($hours,[
+                        'prompt' => '',
+                        'class' => 'business-hour-time-additional open-additional',
+                        'style' => 'width: 100%',
+                        'disabled' => !$modelBusinessHour->is_open,
+                    ]); ?>
+
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+
+                <?= $form->field(new BusinessHourAdditional(), '[dayidx][index]close_at')
+                    ->dropDownList($hours,[
+                        'prompt' => '',
+                        'class' => 'business-hour-time-additional close-additional',
+                        'style' => 'width: 100%',
+                        'disabled' => !$modelBusinessHour->is_open,
+                    ]); ?>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
 
@@ -454,7 +578,7 @@ $this->registerCss($cssscript);
 
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
-$jscript = '
+$jscript .= '
     $("#businesscategory-category_id").select2({
         theme: "krajee",
         dropdownCssClass: "select2-grid-system",
@@ -489,45 +613,22 @@ $jscript = '
         placeholder: "' . Yii::t('app', 'Time Close') . '"
     });
 
-    $(".business-hour-is-open").on("ifChecked",function(e){
+    function replaceComponent(contentClone, component, content, index) {
 
-        var elemDay = $(this).data("day");
+        var inputClass = contentClone.find(".field-" + component).attr("class");
+        inputClass = inputClass.replace(content, index);
+        contentClone.find("#" + component).parent().attr("class", inputClass);
 
-        $("#business-hour-24h-" + elemDay).iCheck("enable");
+        var inputName = contentClone.find("#" + component).attr("name");
+        inputName = inputName.replace(content, index);
+        contentClone.find("#" + component).attr("name", inputName);
 
-        $("#businesshour-day"  + elemDay + "-open_at").removeAttr("disabled");
-        $("#businesshour-day"  + elemDay + "-close_at").removeAttr("disabled");
-    });
+        var inputId = contentClone.find("#" + component).attr("id");
+        inputId = inputId.replace(content, index);
+        contentClone.find("#" + component).attr("id", inputId);
 
-    $(".business-hour-is-open").on("ifUnchecked",function(e){
-
-        var elemDay = $(this).data("day");
-
-        $("#business-hour-24h-" + elemDay).iCheck("disable");
-        $("#business-hour-24h-" + elemDay).iCheck("uncheck");
-
-        $("#businesshour-day"  + elemDay + "-open_at").attr("disabled","disabled");
-        $("#businesshour-day"  + elemDay + "-open_at").val(null).trigger("change");
-
-        $("#businesshour-day"  + elemDay + "-close_at").attr("disabled","disabled");
-        $("#businesshour-day"  + elemDay + "-close_at").val(null).trigger("change");
-    });
-
-    $(".business-hour-24h").on("ifChecked",function(e){
-
-        var elemDay = $(this).data("day");
-
-        $("#businesshour-day"  + elemDay + "-open_at").val("00:00:00").trigger("change");
-        $("#businesshour-day"  + elemDay + "-close_at").val("24:00:00").trigger("change");
-    });
-
-    $(".business-hour-24h").on("ifUnchecked",function(e){
-
-        var elemDay = $(this).data("day");
-
-        $("#businesshour-day"  + elemDay + "-open_at").val(null).trigger("change");
-        $("#businesshour-day"  + elemDay + "-close_at").val(null).trigger("change");
-    });
+        return contentClone;
+    };
 
     $(".set-all-business-hour").on("click", function() {
 
@@ -543,10 +644,12 @@ $jscript = '
             var businessHour24h = "uncheck";
 
             if (businessHourIsOpenDay1.is(":checked")) {
+
                 businessHourIsOpen = "check";
             }
 
             if (rootParentbusinessHourIsOpen.find(".business-hour-24h").is(":checked")) {
+
                 businessHour24h = "check";
             }
 
@@ -557,6 +660,137 @@ $jscript = '
         });
 
         return false;
+    });
+
+    $(".daysCount").each(function() {
+        
+        var thisObj = $(this);
+        
+        var indexHourCount = (indexHourCountArr[thisObj.val()] == null ? 0 : indexHourCountArr[thisObj.val()]);
+
+        $(".business-hour-is-open.day-" + thisObj.val()).on("ifChecked", function(e) {
+
+            var elemDay = $(this).data("day");
+    
+            $("#business-hour-24h-" + elemDay).iCheck("enable");
+
+            $("#businesshour-day"  + elemDay + "-open_at").removeAttr("disabled");
+            $("#businesshour-day"  + elemDay + "-close_at").removeAttr("disabled");
+            
+            for (var counter = 1; counter <= indexHourCount; counter++) {
+
+                $("#businesshouradditional-day"  + elemDay + "-" + counter + "-open_at").removeAttr("disabled");
+                $("#businesshouradditional-day"  + elemDay + "-" + counter + "-close_at").removeAttr("disabled");
+            }
+        });
+    
+        $(".business-hour-is-open.day-" + thisObj.val()).on("ifUnchecked", function(e) {
+    
+            var elemDay = $(this).data("day");
+    
+            $("#business-hour-24h-" + elemDay).iCheck("disable");
+            $("#business-hour-24h-" + elemDay).iCheck("uncheck");
+            $("#businesshour-day"  + elemDay + "-open_at").attr("disabled","disabled");
+            $("#businesshour-day"  + elemDay + "-open_at").val(null).trigger("change");
+
+            $("#businesshour-day"  + elemDay + "-close_at").attr("disabled","disabled");
+            $("#businesshour-day"  + elemDay + "-close_at").val(null).trigger("change");
+    
+            for (var counter = 1; counter <= indexHourCount; counter++) {
+                
+                $("#businesshouradditional-day"  + elemDay + "-" + counter + "-open_at").attr("disabled","disabled");
+                $("#businesshouradditional-day"  + elemDay + "-" + counter + "-open_at").val(null).trigger("change");
+
+                $("#businesshouradditional-day"  + elemDay + "-" + counter + "-close_at").attr("disabled","disabled");
+                $("#businesshouradditional-day"  + elemDay + "-" + counter + "-close_at").val(null).trigger("change");
+            }
+        });
+    
+        $("#business-hour-24h-" + thisObj.val()).on("ifChecked", function(e) {
+    
+            var elemDay = $(this).data("day");
+    
+            $("#businesshour-day"  + elemDay + "-open_at").val("00:00:00").trigger("change");
+            $("#businesshour-day"  + elemDay + "-close_at").val("24:00:00").trigger("change");
+
+            $(".field-businesshour-day" + elemDay + "-open_at").hide();
+            $(".field-businesshour-day" + elemDay + "-close_at").hide();
+
+            $(".field-businesshour-day" + elemDay + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
+
+            $(".add-business-hour-day" + elemDay).hide();
+            $(".delete-business-hour-day" + elemDay).hide();
+
+            for (var counter = 1; counter <= indexHourCount; counter++) {
+
+                $("#businesshouradditional-day"  + elemDay + "-" + counter + "-open_at").parents(".data-hour-form").remove();
+            }
+
+            indexHourCount = 0;
+        });
+    
+        $("#business-hour-24h-" + thisObj.val()).on("ifUnchecked",function(e) {
+    
+            var elemDay = $(this).data("day");
+    
+            $("#businesshour-day"  + elemDay + "-open_at").val(null).trigger("change");
+            $("#businesshour-day"  + elemDay + "-close_at").val(null).trigger("change");
+
+            $(".field-businesshour-day" + elemDay + "-open_at").parent().find(".24h-temp").remove();
+
+            $(".field-businesshour-day" + elemDay + "-open_at").show();
+            $(".field-businesshour-day" + elemDay + "-close_at").show();
+
+            $(".add-business-hour-day" + elemDay).show();
+            $(".delete-business-hour-day" + elemDay).show();
+        });
+
+        thisObj.parent().find(".add-business-hour-day" + thisObj.val()).on("click", function() {
+
+            var elemDay = $(this).data("day");
+            
+            indexHourCount++;
+    
+            var formBusinessHour = $(".additional-hour-temp-form").clone();
+    
+            formBusinessHour = replaceComponent(formBusinessHour, "businesshouradditional-dayidx-index-open_at", "index", indexHourCount);
+            formBusinessHour = replaceComponent(formBusinessHour, "businesshouradditional-dayidx-index-close_at", "index", indexHourCount);
+
+            formBusinessHour = replaceComponent(formBusinessHour, "businesshouradditional-dayidx-" + indexHourCount + "-open_at", "idx", elemDay);
+            formBusinessHour = replaceComponent(formBusinessHour, "businesshouradditional-dayidx-" + indexHourCount + "-close_at", "idx", elemDay);
+    
+            thisObj.parent().parent().parent().append(formBusinessHour.html());
+
+            if ($(".business-hour-is-open.day-" + elemDay).is(":checked")) {
+
+                $("#businesshouradditional-day"  + elemDay + "-" + indexHourCount + "-open_at").removeAttr("disabled");
+                $("#businesshouradditional-day"  + elemDay + "-" + indexHourCount + "-close_at").removeAttr("disabled");
+            }
+
+            $("#businesshouradditional-day" + elemDay + "-" + indexHourCount + "-open_at").select2({
+                theme: "krajee",
+                placeholder: "' . Yii::t('app', 'Time Open') . '"
+            });
+        
+            $("#businesshouradditional-day" + elemDay + "-" + indexHourCount + "-close_at").select2({
+                theme: "krajee",
+                placeholder: "' . Yii::t('app', 'Time Close') . '"
+            });
+            
+            return false;
+        });
+
+        thisObj.parent().find(".delete-business-hour-day" + thisObj.val()).on("click", function() {
+            
+            thisObj.parent().parent().siblings(".data-hour-form").last().remove();
+            
+            if (indexHourCount > 0) {
+
+                indexHourCount--;    
+            }
+
+            return false;
+        });
     });
 ';
 

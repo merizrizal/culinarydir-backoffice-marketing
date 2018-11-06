@@ -17,6 +17,7 @@ use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use core\models\BusinessHourAdditional;
 
 /**
  * BusinessController
@@ -57,43 +58,44 @@ class BusinessController extends \backoffice\controllers\BaseController
     public function actionViewMember($id) {
 
         $model = Business::find()
-                ->joinWith([
-                    'membershipType',
-                    'businessLocation.city',
-                    'businessLocation.district',
-                    'businessLocation.village',
-                    'userInCharge',
-                    'businessCategories' => function($query) {
-                        
-                        $query->andOnCondition(['business_category.is_active' => true]);
-                    },
-                    'businessCategories.category',
-                    'businessProductCategories' => function($query) {
-                        
-                        $query->andOnCondition(['business_product_category.is_active' => true]);
-                    },
-                    'businessHours' => function($query) {
-                        
-                        $query->andOnCondition(['business_hour.is_open' => true])
-                            ->orderBy(['business_hour.day' => SORT_ASC]);
-                    },
-                    'businessProductCategories.productCategory',
-                    'businessFacilities' => function($query) {
-                        
-                        $query->andOnCondition(['business_facility.is_active' => true]);
-                    },
-                    'businessFacilities.facility',
-                    'businessDetail',
-                    'businessImages',
-                    'applicationBusiness',
-                    'applicationBusiness.logStatusApprovals' => function($query) {
-                        
-                        $query->andOnCondition(['log_status_approval.is_actual' => true]);
-                    },
-                    'applicationBusiness.logStatusApprovals.statusApproval',
-                ])
-                ->andWhere(['business.id' => $id])
-                ->asArray()->one();
+            ->joinWith([
+                'membershipType',
+                'businessLocation.city',
+                'businessLocation.district',
+                'businessLocation.village',
+                'userInCharge',
+                'businessCategories' => function($query) {
+                    
+                    $query->andOnCondition(['business_category.is_active' => true]);
+                },
+                'businessCategories.category',
+                'businessProductCategories' => function($query) {
+                    
+                    $query->andOnCondition(['business_product_category.is_active' => true]);
+                },
+                'businessHours' => function($query) {
+                    
+                    $query->andOnCondition(['business_hour.is_open' => true])
+                        ->orderBy(['business_hour.day' => SORT_ASC]);
+                },
+                'businessHours.businessHourAdditionals',
+                'businessProductCategories.productCategory',
+                'businessFacilities' => function($query) {
+                    
+                    $query->andOnCondition(['business_facility.is_active' => true]);
+                },
+                'businessFacilities.facility',
+                'businessDetail',
+                'businessImages',
+                'applicationBusiness',
+                'applicationBusiness.logStatusApprovals' => function($query) {
+                    
+                    $query->andOnCondition(['log_status_approval.is_actual' => true]);
+                },
+                'applicationBusiness.logStatusApprovals.statusApproval',
+            ])
+            ->andWhere(['business.id' => $id])
+            ->asArray()->one();
 
         return $this->render('view_member', [
             'model' => $model,
@@ -170,6 +172,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                     
                     $query->orderBy(['business_hour.day' => SORT_ASC]);
                 },
+                'businessHours.businessHourAdditionals',
                 'businessDetail',
             ])
             ->andWhere(['business.id' => $id])
@@ -187,6 +190,9 @@ class BusinessController extends \backoffice\controllers\BaseController
 
         $modelBusinessHour = new BusinessHour();
         $dataBusinessHour = [];
+        
+        $modelBusinessHourAdditional = new BusinessHourAdditional();
+        $dataBusinessHourAdditional = [];
 
         $modelBusinessDetail = $model->businessDetail;
 
@@ -223,8 +229,10 @@ class BusinessController extends \backoffice\controllers\BaseController
                             }
 
                             if (!($flag = $newModelBusinessCategory->save())) {
+                                
                                 break;
                             } else {
+                                
                                 array_push($dataBusinessCategory, $newModelBusinessCategory->toArray());
                             }
                         }
@@ -235,6 +243,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                             $valueBusinessCategory->is_active = false;
 
                             if (!($flag = $valueBusinessCategory->save())) {
+                                
                                 break;
                             }
                         }
@@ -263,6 +272,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 $valueBusinessCategory->is_active = false;
 
                                 if (!($flag = $valueBusinessCategory->save())) {
+                                    
                                     break;
                                 }
                             }
@@ -292,8 +302,10 @@ class BusinessController extends \backoffice\controllers\BaseController
                             }
 
                             if(!($flag = $newModelBusinessProductCategory->save())) {
+                                
                                 break;
                             } else {
+                                
                                 array_push($dataBusinessProductCategoryParent, $newModelBusinessProductCategory->toArray());
                             }
                         }
@@ -306,6 +318,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 $valueBusinessProductCategory->is_active = false;
 
                                 if (!($flag = $valueBusinessProductCategory->save())) {
+                                    
                                     break;
                                 }
                             }
@@ -335,8 +348,10 @@ class BusinessController extends \backoffice\controllers\BaseController
                             }
 
                             if(!($flag = $newModelBusinessProductCategory->save())) {
+                                
                                 break;
                             } else {
+                                
                                 array_push($dataBusinessProductCategoryChild, $newModelBusinessProductCategory->toArray());
                             }
                         }
@@ -349,6 +364,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 $valueBusinessProductCategory->is_active = false;
 
                                 if (!($flag = $valueBusinessProductCategory->save())) {
+                                    
                                     break;
                                 }
                             }
@@ -381,6 +397,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 $valueBusinessProductCategory->is_active = false;
 
                                 if (!($flag = $valueBusinessProductCategory->save())) {
+                                    
                                     break;
                                 }
                             }
@@ -410,8 +427,10 @@ class BusinessController extends \backoffice\controllers\BaseController
                             }
 
                             if (!($flag = $newModelBusinessFacility->save())) {
+                                
                                 break;
                             } else {
+                                
                                 array_push($dataBusinessFacility, $newModelBusinessFacility->toArray());
                             }
                         }
@@ -422,6 +441,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                             $valueBusinessFacility->is_active = false;
 
                             if (!($flag = $valueBusinessFacility->save())) {
+                                
                                 break;
                             }
                         }
@@ -450,6 +470,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 $valueBusinessFacility->is_active = false;
 
                                 if (!($flag = $valueBusinessFacility->save())) {
+                                    
                                     break;
                                 }
                             }
@@ -482,15 +503,63 @@ class BusinessController extends \backoffice\controllers\BaseController
                             $newModelBusinessHourDay->close_at = !empty($post['BusinessHour'][$dayName]['close_at']) ? $post['BusinessHour'][$dayName]['close_at'] : null;
 
                             if (!$flag = $newModelBusinessHourDay->save()) {
+                                
                                 break;
                             } else {
+                                
                                 array_push($dataBusinessHour, $newModelBusinessHourDay->toArray());
+                            }
+                        }
+                        
+                        if (!empty($post['BusinessHourAdditionalDeleted'][$dayName])) {
+                            
+                            foreach ($post['BusinessHourAdditionalDeleted'][$dayName] as $i => $value) {
+                                
+                                if (empty($post['BusinessHourAdditional'][$dayName][$i+1])) {
+                                    
+                                    BusinessHourAdditional::deleteAll(['id' => $value]);
+                                }
+                            }
+                        }
+                        
+                        if (!empty($post['BusinessHourAdditional'][$dayName])) {
+                            
+                            foreach ($post['BusinessHourAdditional'][$dayName] as $i => $value) {
+                                
+                                if (!empty($post['BusinessHourAdditional'][$dayName][$i]['open_at']) || !empty($post['BusinessHourAdditional'][$dayName][$i]['close_at'])) {
+                                    
+                                    $newModelBusinessHourAdditional = BusinessHourAdditional::findOne(['unique_id' => $newModelBusinessHourDay->id . '-' . $day . '-' . ($i)]);
+                                    
+                                    if (empty($newModelBusinessHourAdditional)) {
+                                        
+                                        $newModelBusinessHourAdditional = new BusinessHourAdditional();
+                                        $newModelBusinessHourAdditional->unique_id = $newModelBusinessHourDay->id . '-' . $day . '-' . ($i);
+                                        $newModelBusinessHourAdditional->business_hour_id = $newModelBusinessHourDay->id;
+                                        $newModelBusinessHourAdditional->day = $day;
+                                    }
+                                    
+                                    if ($i !== 'index') {
+                                        
+                                        $newModelBusinessHourAdditional->is_open = $newModelBusinessHourDay->is_open;
+                                        $newModelBusinessHourAdditional->open_at = !empty($post['BusinessHourAdditional'][$dayName][$i]['open_at']) ? $post['BusinessHourAdditional'][$dayName][$i]['open_at'] : null;
+                                        $newModelBusinessHourAdditional->close_at = !empty($post['BusinessHourAdditional'][$dayName][$i]['close_at']) ? $post['BusinessHourAdditional'][$dayName][$i]['close_at'] : null;
+                                    }
+                                    
+                                    if (!($flag = $newModelBusinessHourAdditional->save())) {
+                                        
+                                        break;
+                                    } else {
+                                        
+                                        array_push($dataBusinessHourAdditional, $newModelBusinessHourAdditional->toArray());
+                                    }
+                                }
                             }
                         }
                     }
                 }
 
                 if ($flag) {
+                    
                     $modelBusinessDetail->price_min = !empty($modelBusinessDetail->price_min) ? $modelBusinessDetail->price_min : 0;
                     $modelBusinessDetail->price_max = !empty($modelBusinessDetail->price_max) ? $modelBusinessDetail->price_max : 0;
 
@@ -537,6 +606,20 @@ class BusinessController extends \backoffice\controllers\BaseController
         $dataBusinessProductCategoryChild = empty($dataBusinessProductCategoryChild) ? $businessProductCategoryChild : $dataBusinessProductCategoryChild;
 
         $dataBusinessHour = empty($dataBusinessHour) ? $model['businessHours'] : $dataBusinessHour;
+        
+        if (empty($dataBusinessHourAdditional)) {
+            
+            foreach ($dataBusinessHour as $i => $valueHour) {
+                
+                if (!empty($valueHour['businessHourAdditionals'])) {
+                    
+                    foreach ($valueHour['businessHourAdditionals'] as $value) {
+                        
+                        array_push($dataBusinessHourAdditional, $value);
+                    }
+                }
+            }
+        }
 
         $dataBusinessFacility = empty($dataBusinessFacility) ? $model['businessFacilities'] : $dataBusinessFacility;
 
@@ -551,6 +634,8 @@ class BusinessController extends \backoffice\controllers\BaseController
             'dataBusinessFacility' => $dataBusinessFacility,
             'modelBusinessHour' => $modelBusinessHour,
             'dataBusinessHour' => $dataBusinessHour,
+            'modelBusinessHourAdditional' => $modelBusinessHourAdditional,
+            'dataBusinessHourAdditional' => $dataBusinessHourAdditional,
             'modelBusinessDetail' => $modelBusinessDetail,
         ]);
     }
@@ -641,8 +726,10 @@ class BusinessController extends \backoffice\controllers\BaseController
                             $newModelBusinessImage->order = $order;
                             
                             if (!($flag = $newModelBusinessImage->save())) {
+                                
                                 break;
                             } else {
+                                
                                 array_push($newDataBusinessImage, $newModelBusinessImage->toArray());
                             }
                         }
@@ -658,6 +745,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                         $existModelBusinessImage->category = !empty($post['category'][$existModelBusinessImage->id]) ? $post['category'][$existModelBusinessImage->id] : $modelBusinessImage->category;
 
                         if (!($flag = $modelBusinessImage->save())) {
+                            
                             break;
                         }
                     }
@@ -688,12 +776,14 @@ class BusinessController extends \backoffice\controllers\BaseController
             foreach ($deletedBusinessImageId as $businessImageId) {
 
                 if ($businessImageId == $valueBusinessImage['id']) {
+                    
                     $deleted = true;
                     break;
                 }
             }
 
             if (!$deleted) {
+                
                 array_push($dataBusinessImage, $valueBusinessImage);
             }
         }
@@ -791,8 +881,10 @@ class BusinessController extends \backoffice\controllers\BaseController
     protected function findModel($id)
     {
         if (($model = Business::findOne($id)) !== null) {
+            
             return $model;
         } else {
+            
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
