@@ -516,6 +516,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             <li>' . Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
+                            <li>' . Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
                         </ul>
                     </div>
                 ';
@@ -558,6 +559,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             <li>' . Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
+                            <li>' . Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
                         </ul>
                     </div>
                 ';
@@ -978,7 +980,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 
                                 if (empty($post['RegistryBusinessHourAdditional'][$dayName][$i+1])) {
                                     
-                                    RegistryBusinessHourAdditional::deleteAll(['id' => $value]);
+                                    $flag = RegistryBusinessHourAdditional::deleteAll(['id' => $value]);
                                 }
                             }
                         } 
@@ -1227,6 +1229,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             }
             
             if (!$deleted) {
+                
                 array_push($dataRegistryBusinessImage, $valueRegistryBusinessImage->toArray());
             }
         }
@@ -1240,6 +1243,130 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'model' => $model,
             'modelRegistryBusinessImage' => $modelRegistryBusinessImage,
             'dataRegistryBusinessImage' => $dataRegistryBusinessImage,
+            'statusApproval' => $statusApproval,
+        ]);
+    }
+    
+    public function actionUpdateContactPerson($id, $statusApproval, $save = null) {
+        
+        $model = RegistryBusiness::find()
+            ->joinWith([
+                'registryBusinessContactPeople' => function($query) {
+                    $query->orderBy(['registry_business_contact_person.id' => SORT_ASC]);
+                },
+                'registryBusinessContactPeople.person',
+            ])
+            ->andWhere(['registry_business.id' => $id])
+            ->one();
+            
+        $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
+        $dataRegistryBusinessContactPerson = [];
+        
+        if (!empty($post = Yii::$app->request->post())) {
+            
+            if (empty($save)) {
+                
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ActiveForm::validate($model);
+            } else {
+                
+                $transaction = Yii::$app->db->beginTransaction();
+                $flag = true;
+                
+                if (!empty($post['RegistryBusinessContactPersonDeleted'])) {
+                    
+                    foreach ($post['RegistryBusinessContactPersonDeleted'] as $i => $deletedValue) {
+                        
+                        if (empty($post['RegistryBusinessContactPerson'][$i]) && empty($post['Person'][$i])) {
+                            
+                            if ($flag = RegistryBusinessContactPerson::deleteAll(['person_id' => $deletedValue])) {
+                                
+                                $flag = Person::deleteAll(['id' => $deletedValue]);
+                            }
+                        }
+                    }
+                }
+                
+                if (!empty($post['Person']) && !empty($post['RegistryBusinessContactPerson'])) {
+                    
+                    foreach ($post['Person'] as $i => $value) {
+                        
+                        if ($i !== 'index') {
+                            
+                            if (!empty($model['registryBusinessContactPeople'][($i-1)])) {
+                                
+                                $newModelPerson = Person::findOne(['id' => $model['registryBusinessContactPeople'][($i-1)]['person_id']]);
+                            } else {
+                                
+                                $newModelPerson = new Person();
+                            }
+                            
+                            $newModelPerson->first_name = $post['Person'][$i]['first_name'];
+                            $newModelPerson->last_name = $post['Person'][$i]['last_name'];
+                            $newModelPerson->phone = $post['Person'][$i]['phone'];
+                            $newModelPerson->email = $post['Person'][$i]['email'];
+                            
+                            if (!($flag = $newModelPerson->save())) {
+                                
+                                break;
+                            } else {
+                                
+                                $newModelRegistryBusinessContactPerson = RegistryBusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
+                                
+                                if (empty($newModelRegistryBusinessContactPerson)) {
+                                    
+                                    $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
+                                    $newModelRegistryBusinessContactPerson->registry_business_id = $model->id;
+                                    $newModelRegistryBusinessContactPerson->person_id = $newModelPerson->id;
+                                }
+                                
+                                $newModelRegistryBusinessContactPerson->position = $post['RegistryBusinessContactPerson'][$i]['position'];
+                                $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
+                                $newModelRegistryBusinessContactPerson->note = $post['RegistryBusinessContactPerson'][$i]['note'];
+                                
+                            }
+                            
+                            if (!($flag = $newModelRegistryBusinessContactPerson->save())) {
+                                
+                                break;
+                            } else {
+                                
+                                array_push($dataRegistryBusinessContactPerson, ArrayHelper::merge($newModelRegistryBusinessContactPerson->toArray(), $newModelPerson->toArray()));
+                            }
+                        }
+                    }
+                }
+                
+                if ($flag) {
+                    
+                    Yii::$app->session->setFlash('status', 'success');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    
+                    $transaction->commit();
+                } else {
+                    
+                    Yii::$app->session->setFlash('status', 'danger');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    
+                    $transaction->rollBack();
+                }
+            }
+        }
+        
+        if (empty($dataRegistryBusinessContactPerson)) {
+            
+            foreach ($model->registryBusinessContactPeople as $i => $value) {
+                
+                array_push($dataRegistryBusinessContactPerson, $value);
+            }
+        }
+            
+        return $this->render('update_contact_person', [
+            'model' => $model,
+            'modelRegistryBusinessContactPerson' => $modelRegistryBusinessContactPerson,
+            'dataRegistryBusinessContactPerson' => $dataRegistryBusinessContactPerson,
             'statusApproval' => $statusApproval,
         ]);
     }
@@ -1472,6 +1599,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 },
                 'registryBusinessFacilities.facility',
                 'registryBusinessImages',
+                'registryBusinessContactPeople' => function($query) {
+                    $query->orderBy(['registry_business_contact_person.id' => SORT_ASC]);
+                },
+                'registryBusinessContactPeople.person',
                 'applicationBusiness',
                 'applicationBusiness.logStatusApprovals' => function($query) {
                     $query->andOnCondition(['log_status_approval.is_actual' => true]);

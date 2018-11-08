@@ -87,6 +87,8 @@ class BusinessController extends \backoffice\controllers\BaseController
                 'businessFacilities.facility',
                 'businessDetail',
                 'businessImages',
+                'businessContactPeople',
+                'businessContactPeople.person',
                 'applicationBusiness',
                 'applicationBusiness.logStatusApprovals' => function($query) {
                     

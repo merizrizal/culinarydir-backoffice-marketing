@@ -425,7 +425,9 @@ echo $ajaxRequest->component(); ?>
 
                     <div class="row">
                         <div class="col-md-12">
+                        
                             <?= Html::label(Yii::t('app', 'Photo'), null, ['class' => 'control-label']) ?>
+                            
                         </div>
                     </div>
                     <div class="row">
@@ -438,7 +440,9 @@ echo $ajaxRequest->component(); ?>
                                 <div class="col-xs-3">
                                     <div class="thumbnail">
                                         <div class="image view view-first">
+                                        
                                             <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_business/', $registryBusinessImage['image'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+                                            
                                             <div class="mask">
                                                 <p>&nbsp;</p>
                                                 <div class="tools tools-bottom">
@@ -455,7 +459,94 @@ echo $ajaxRequest->component(); ?>
 
                     </div>
                     
-                    <?php
+                    <hr>
+                    
+                    <div class="row">
+                    	<div class="col-md-12">
+                        
+                            <h4><strong><?= Html::label('Contact Person', null, ['class' => 'control-label']) ?></strong></h4>
+                            
+                            <hr>
+                        </div>
+                    </div>
+                		
+    				<?php
+				    if (!empty($model['registryBusinessContactPeople'])):
+			            
+			            foreach ($model['registryBusinessContactPeople'] as $i => $person):
+			            	
+    			            $is_primary = !empty($person['is_primary_contact']) ? ' - ' . Yii::t('app', 'Primary Contact') : '';
+    			            
+			                echo '<strong>' . Yii::t('app', 'Contact') . ' ' . ($i+1) . $is_primary . '</strong><br><br>'; ?>
+			            	
+			            	<div class="row mb-20">
+			            		<div class="col-md-3">
+			            		
+    			            		<?php
+    			            		echo Html::label(Yii::t('app', 'Name')) . '<br>';
+        				            
+        			                echo $person['person']['first_name'] . ' ' . $person['person']['last_name']; ?>
+    			                
+    			                </div>
+    			                
+    			                <div class="col-md-3">
+    			                	
+    			                	<?php
+    			                	echo Html::label(Yii::t('app', 'Position')) .  '<br>';
+    			                	
+    			                	echo $person['position']; ?>
+    			                	
+    			                </div>
+			                </div>
+			                
+			                <div class="row mb-20">
+			                	<div class="col-md-3">
+			                		
+			                		<?php
+    			            		echo Html::label(Yii::t('app', 'Email')) . '<br>';
+        				            
+    			            		echo !empty($person['person']['email']) ? $person['person']['email'] : '-'; ?>
+			                		
+			                	</div>
+			                	
+			                	<div class="col-md-3">
+			                		
+			                		<?php
+    			            		echo Html::label(Yii::t('app', 'Phone')) . '<br>';
+        				            
+    			            		echo !empty($person['person']['phone']) ? $person['person']['phone'] : '-'; ?>
+			                		
+			                	</div>
+			                	
+			                	<div class="col-md-6">
+			                		
+			                		<?php
+    			            		echo Html::label(Yii::t('app', 'Note')) . '<br>';
+        				            
+    			            		echo !empty($person['note']) ? $person['note'] : '-'; ?>
+			                		
+			                	</div>
+			                	
+			                </div>
+			                
+			                <hr>
+			                
+			            <?php
+			            endforeach;
+		            
+			        else: ?>
+			         	
+			         	<div class="row mb-20">
+			         		<div class="col-md-3">
+			         		
+	         		  			<?= '-' ?>
+			         		  
+		         		  	</div>
+			         	</div>
+		            
+		            <?php
+				    endif;
+				    
                     if (!empty($actionButton)) {
                         
                         foreach ($actionButton as $valActionButton) {
@@ -475,7 +566,6 @@ echo $ajaxRequest->component(); ?>
 </div>
 
 <?php
-
 $modalDialog = new ModalDialog([
     'clickedComponent' => 'a#delete',
     'modelAttributeId' => 'model-id',
