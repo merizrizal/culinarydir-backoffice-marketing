@@ -58,7 +58,7 @@ echo $ajaxRequest->component(); ?>
                         }
                     }
 
-                    echo ' ' . Html::a('<i class="fa fa-times"></i> ' . 'Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']); ?>
+                    echo ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']); ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>
 
@@ -464,7 +464,7 @@ echo $ajaxRequest->component(); ?>
                     <div class="row">
                     	<div class="col-md-12">
                         
-                            <h4><strong><?= Html::label('Contact Person', null, ['class' => 'control-label']) ?></strong></h4>
+                            <h4><strong><?= Html::label(Yii::t('app', 'Contact Person'), null, ['class' => 'control-label']) ?></strong></h4>
                             
                             <hr>
                         </div>
@@ -475,55 +475,48 @@ echo $ajaxRequest->component(); ?>
 			            
 			            foreach ($model['registryBusinessContactPeople'] as $i => $person):
 			            	
-    			            $is_primary = !empty($person['is_primary_contact']) ? ' - ' . Yii::t('app', 'Primary Contact') : '';
+			                $i++;
+    			            $is_primary = !empty($person['is_primary_contact']) ? ' - ' . Yii::t('app', 'Primary Contact') : ''; ?>
     			            
-			                echo '<strong>' . Yii::t('app', 'Contact') . ' ' . ($i+1) . $is_primary . '</strong><br><br>'; ?>
+			                <div class="row mb-20">
+			            		<div class="col-xs-12 mb-10">
+			            			<strong><?= Yii::t('app', 'Contact') . ' ' . $i . $is_primary ?></strong>
+    			            	</div>
 			            	
-			            	<div class="row mb-20">
-			            		<div class="col-md-3">
+			            		<div class="col-xs-6 col-sm-3">
 			            		
-    			            		<?php
-    			            		echo Html::label(Yii::t('app', 'Name')) . '<br>';
-        				            
-        			                echo $person['person']['first_name'] . ' ' . $person['person']['last_name']; ?>
+    			            		<?= Html::label(Yii::t('app', 'Name')) ?><br>
+        			                <?= $person['person']['first_name'] . ' ' . $person['person']['last_name']; ?>
     			                
     			                </div>
     			                
-    			                <div class="col-md-3">
+    			                <div class="col-xs-6 col-sm-3">
     			                	
-    			                	<?php
-    			                	echo Html::label(Yii::t('app', 'Position')) .  '<br>';
-    			                	
-    			                	echo $person['position']; ?>
+    			                	<?= Html::label(Yii::t('app', 'Position')) ?><br>
+    			                	<?= $person['position']; ?>
     			                	
     			                </div>
 			                </div>
 			                
 			                <div class="row mb-20">
-			                	<div class="col-md-3">
+			                	<div class="col-xs-6 col-sm-3">
 			                		
-			                		<?php
-    			            		echo Html::label(Yii::t('app', 'Email')) . '<br>';
-        				            
-    			            		echo !empty($person['person']['email']) ? $person['person']['email'] : '-'; ?>
+			                		<?= Html::label(Yii::t('app', 'Email')) ?><br>
+    			            		<?= !empty($person['person']['email']) ? $person['person']['email'] : '-'; ?>
 			                		
 			                	</div>
 			                	
-			                	<div class="col-md-3">
+			                	<div class="col-xs-6 col-sm-3">
 			                		
-			                		<?php
-    			            		echo Html::label(Yii::t('app', 'Phone')) . '<br>';
-        				            
-    			            		echo !empty($person['person']['phone']) ? $person['person']['phone'] : '-'; ?>
+    			            		<?= Html::label(Yii::t('app', 'Phone')) ?><br>
+    			            		<?= !empty($person['person']['phone']) ? $person['person']['phone'] : '-'; ?>
 			                		
 			                	</div>
 			                	
-			                	<div class="col-md-6">
+			                	<div class="col-xs-12 col-sm-6">
 			                		
-			                		<?php
-    			            		echo Html::label(Yii::t('app', 'Note')) . '<br>';
-        				            
-    			            		echo !empty($person['note']) ? $person['note'] : '-'; ?>
+    			            		<?= Html::label(Yii::t('app', 'Note')) . '<br>'; ?>
+    			            		<?= !empty($person['note']) ? $person['note'] : '-'; ?>
 			                		
 			                	</div>
 			                	
@@ -537,25 +530,58 @@ echo $ajaxRequest->component(); ?>
 			        else: ?>
 			         	
 			         	<div class="row mb-20">
-			         		<div class="col-md-3">
-			         		
-	         		  			<?= '-' ?>
-			         		  
+			         		<div class="col-xs-12">
+    			         		
+	         		  			<?= Yii::t('app', 'Data Not Available') ?>
+    			         		  
 		         		  	</div>
 			         	</div>
+			         	
+			         	<hr>
 		            
 		            <?php
-				    endif;
+				    endif; ?>
 				    
-                    if (!empty($actionButton)) {
-                        
-                        foreach ($actionButton as $valActionButton) {
-                            
-                            echo $valActionButton($model);
-                        }
-                    }
-
-                    echo ' ' . Html::a('<i class="fa fa-times"></i> ' . 'Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']); ?>
+				    <div class="btn-group dropup">
+				    
+    				    <?= Html::button('<i class="fa fa-pencil-alt"></i> Edit',
+    				        [
+    				            'type' => 'button',
+    				            'class' => 'btn btn-primary dropdown-toggle',
+    				            'style' => 'color:white',
+    				            'data-toggle' => 'dropdown',
+    				            'aria-haspopup' => 'true',
+    				            'aria-expanded' => 'false',
+    				        ]) ?>
+    
+                        <ul class="dropdown-menu">
+                            <li><?= Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id'], 'statusApproval' => $statusApproval]) ?></li>
+                            <li><?= Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id'], 'statusApproval' => $statusApproval]) ?></li>
+                            <li><?= Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => $statusApproval]) ?></li>
+                            <li><?= Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id'], 'statusApproval' => $statusApproval]) ?></li>
+                        </ul>
+                    </div>
+					
+					<?php
+					if ($statusApproval == 'ICORCT') {
+					    
+					    echo Html::a('<i class="fa fa-check"></i> Resubmit', ['resubmit', 'id' => $model['id'], 'appBId' => $model['applicationBusiness']['id'], 'appBCounter' => $model['applicationBusiness']['counter'], 'statusApproval' => 'ICORCT'], [
+				            'id' => 'resubmit',
+				            'class' => 'btn btn-success',
+				        ]);
+					} else if ($statusApproval == 'PNDG') {
+					    
+					    echo Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model['id'], 'statusApproval' => 'pndg'], [
+					        'id' => 'delete',
+					        'class' => 'btn btn-danger',
+					        'style' => 'color:white',
+					        'data-not-ajax' => 1,
+					        'model-id' => $model['id'],
+					        'model-name' => $model['name'],
+					    ]);
+					}
+					
+                    echo ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']); ?>
 
                 </div>
 

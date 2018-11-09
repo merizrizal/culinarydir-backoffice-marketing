@@ -502,7 +502,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 return '
                     <div class="btn-group">
 
-                        ' . Html::button('<i class="fa fa-pencil-alt"></i> ' . 'Edit',
+                        ' . Html::button('<i class="fa fa-pencil-alt"></i> Edit',
                             [
                                 'type' => 'button',
                                 'class' => 'btn btn-primary dropdown-toggle',
@@ -522,7 +522,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 ';
             },
             'delete' => function($model) {
-                return Html::a('<i class="fa fa-trash-alt"></i> ' . 'Delete',
+                return Html::a('<i class="fa fa-trash-alt"></i> Delete',
                     ['delete', 'id' => $model['id'], 'statusApproval' => 'pndg'],
                     [
                         'id' => 'delete',
@@ -545,7 +545,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 return '
                     <div class="btn-group">
 
-                        ' . Html::button('<i class="fa fa-pencil-alt"></i> ' . 'Edit',
+                        ' . Html::button('<i class="fa fa-pencil-alt"></i> Edit',
                             [
                                 'type' => 'button',
                                 'class' => 'btn btn-primary dropdown-toggle',
@@ -565,7 +565,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 ';
             },
             'resubmit' => function($model) {
-                return Html::a('<i class="fa fa-check"></i> ' . 'Resubmit',
+                return Html::a('<i class="fa fa-check"></i> Resubmit',
                     ['resubmit', 'id' => $model['id'], 'appBId' => $model['applicationBusiness']['id'], 'appBCounter' => $model['applicationBusiness']['counter'], 'statusApproval' => 'ICORCT'],
                     [
                         'id' => 'resubmit',
@@ -621,18 +621,22 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $model = RegistryBusiness::find()
             ->joinWith([
                 'registryBusinessCategories' => function($query) {
+                    
                     $query->andOnCondition(['registry_business_category.is_active' => true]);
                 },
                 'registryBusinessCategories.category',
                 'registryBusinessProductCategories' => function($query) {
+                    
                     $query->andOnCondition(['registry_business_product_category.is_active' => true]);
                 },
                 'registryBusinessProductCategories.productCategory',
                 'registryBusinessFacilities' => function($query) {
+                    
                     $query->andOnCondition(['registry_business_facility.is_active' => true]);
                 },
                 'registryBusinessFacilities.facility',
                 'registryBusinessHours' => function($query) {
+                    
                     $query->orderBy(['registry_business_hour.day' => SORT_ASC]);
                 },
                 'registryBusinessHours.registryBusinessHourAdditionals',
@@ -1247,11 +1251,12 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         ]);
     }
     
-    public function actionUpdateContactPerson($id, $statusApproval, $save = null) {
-        
+    public function actionUpdateContactPerson($id, $statusApproval, $save = null)
+    {
         $model = RegistryBusiness::find()
             ->joinWith([
                 'registryBusinessContactPeople' => function($query) {
+                    
                     $query->orderBy(['registry_business_contact_person.id' => SORT_ASC]);
                 },
                 'registryBusinessContactPeople.person',
@@ -1582,29 +1587,35 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 'village',
                 'userInCharge',
                 'registryBusinessCategories' => function($query) {
+                    
                     $query->andOnCondition(['registry_business_category.is_active' => true]);
                 },
                 'registryBusinessCategories.category',
                 'registryBusinessProductCategories' => function($query) {
+                    
                     $query->andOnCondition(['registry_business_product_category.is_active' => true]);
                 },
                 'registryBusinessHours' => function($query) {
+                    
                     $query->andOnCondition(['registry_business_hour.is_open' => true])
                         ->orderBy(['registry_business_hour.day' => SORT_ASC]);
                 },
                 'registryBusinessHours.registryBusinessHourAdditionals',
                 'registryBusinessProductCategories.productCategory',
                 'registryBusinessFacilities' => function($query) {
+                    
                     $query->andOnCondition(['registry_business_facility.is_active' => true]);
                 },
                 'registryBusinessFacilities.facility',
                 'registryBusinessImages',
                 'registryBusinessContactPeople' => function($query) {
+                    
                     $query->orderBy(['registry_business_contact_person.id' => SORT_ASC]);
                 },
                 'registryBusinessContactPeople.person',
                 'applicationBusiness',
                 'applicationBusiness.logStatusApprovals' => function($query) {
+                    
                     $query->andOnCondition(['log_status_approval.is_actual' => true]);
                 },
                 'applicationBusiness.logStatusApprovals.statusApproval',

@@ -49,7 +49,7 @@ echo $ajaxRequest->component(); ?>
 
                     <div class="btn-group">
 
-                        <?= Html::button('<i class="fa fa-pencil-alt"></i> ' . 'Edit',
+                        <?= Html::button('<i class="fa fa-pencil-alt"></i> Edit',
                             [
                                 'type' => 'button',
                                 'class' => 'btn btn-primary dropdown-toggle',
@@ -63,29 +63,30 @@ echo $ajaxRequest->component(); ?>
                             <li><?= Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id']]) ?></li>
                             <li><?= Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id']]) ?></li>
                             <li><?= Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id']]) ?></li>
+                            <li><?= Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id']]) ?></li>
                         </ul>
                     </div>
 
-                    <?= Html::a('<i class="fas fa-utensils"></i> ' . 'Menu',
+                    <?= Html::a('<i class="fas fa-utensils"></i> Menu',
                         ['business-product/index', 'id' => $model['id']],
                         [
                             'class' => 'btn btn-default',
                         ]) ?>
 
-                    <?= Html::a('<i class="fas fa-percent"></i> ' . 'Special Discount',
+                    <?= Html::a('<i class="fas fa-percent"></i> Special Discount',
                         ['business-promo/index', 'id' => $model['id']],
                         [
                             'class' => 'btn btn-default',
                         ]) ?>
 
-                    <?= Html::a('<i class="fa fa-level-up-alt"></i> ' . 'Upgrade',
+                    <?= Html::a('<i class="fa fa-level-up-alt"></i> Upgrade',
                         ['upgrade-member'],
                         [
                             'class' => 'btn btn-success',
                             'style' => 'color:white'
                         ]) ?>
 
-                    <?= Html::a('<i class="fa fa-times"></i> ' . 'Cancel',
+                    <?= Html::a('<i class="fa fa-times"></i> Cancel',
                         ['member'],
                         [
                             'class' => 'btn btn-default',
@@ -483,7 +484,7 @@ echo $ajaxRequest->component(); ?>
                     <div class="row">
                     	<div class="col-md-12">
                         
-                            <h4><strong><?= Html::label('Contact Person', null, ['class' => 'control-label']) ?></strong></h4>
+                            <h4><strong><?= Html::label(Yii::t('app', 'Contact Person'), null, ['class' => 'control-label']) ?></strong></h4>
                             
                             <hr>
                         </div>
@@ -494,55 +495,48 @@ echo $ajaxRequest->component(); ?>
 			            
 			            foreach ($model['businessContactPeople'] as $i => $person):
 			            	
-		            	    $is_primary = !empty($person['is_primary_contact']) ? ' - ' . Yii::t('app', 'Primary Contact') : '';
-			            
-			                echo '<strong>' . Yii::t('app', 'Contact') . ' ' . ($i+1) . $is_primary . '</strong><br><br>'; ?>
+    			            $i++;
+    			            $is_primary = !empty($person['is_primary_contact']) ? ' - ' . Yii::t('app', 'Primary Contact') : ''; ?>
+    			            
+			                <div class="row mb-20">
+			            		<div class="col-xs-12 mb-10">
+			            			<strong><?= Yii::t('app', 'Contact') . ' ' . $i . $is_primary ?></strong>
+    			            	</div>
 			            	
-			            	<div class="row mb-20">
-			            		<div class="col-md-3">
+			            		<div class="col-xs-6 col-sm-3">
 			            		
-    			            		<?php
-    			            		echo Html::label(Yii::t('app', 'Name')) . '<br>';
-        				            
-        			                echo $person['person']['first_name'] . ' ' . $person['person']['last_name']; ?>
+    			            		<?= Html::label(Yii::t('app', 'Name')) ?><br>
+        			                <?= $person['person']['first_name'] . ' ' . $person['person']['last_name']; ?>
     			                
     			                </div>
     			                
-    			                <div class="col-md-3">
+    			                <div class="col-xs-6 col-sm-3">
     			                	
-    			                	<?php
-    			                	echo Html::label(Yii::t('app', 'Position')) .  '<br>';
-    			                	
-    			                	echo $person['position']; ?>
+    			                	<?= Html::label(Yii::t('app', 'Position')) ?><br>
+    			                	<?= $person['position']; ?>
     			                	
     			                </div>
 			                </div>
 			                
 			                <div class="row mb-20">
-			                	<div class="col-md-3">
+			                	<div class="col-xs-6 col-sm-3">
 			                		
-			                		<?php
-    			            		echo Html::label(Yii::t('app', 'Email')) . '<br>';
-        				            
-    			            		echo !empty($person['person']['email']) ? $person['person']['email'] : '-'; ?>
+			                		<?= Html::label(Yii::t('app', 'Email')) ?><br>
+    			            		<?= !empty($person['person']['email']) ? $person['person']['email'] : '-'; ?>
 			                		
 			                	</div>
 			                	
-			                	<div class="col-md-3">
+			                	<div class="col-xs-6 col-sm-3">
 			                		
-			                		<?php
-    			            		echo Html::label(Yii::t('app', 'Phone')) . '<br>';
-        				            
-    			            		echo !empty($person['person']['phone']) ? $person['person']['phone'] : '-'; ?>
+    			            		<?= Html::label(Yii::t('app', 'Phone')) ?><br>
+    			            		<?= !empty($person['person']['phone']) ? $person['person']['phone'] : '-'; ?>
 			                		
 			                	</div>
 			                	
-			                	<div class="col-md-6">
+			                	<div class="col-xs-12 col-sm-6">
 			                		
-			                		<?php
-    			            		echo Html::label(Yii::t('app', 'Note')) . '<br>';
-        				            
-    			            		echo !empty($person['note']) ? $person['note'] : '-'; ?>
+    			            		<?= Html::label(Yii::t('app', 'Note')) . '<br>'; ?>
+    			            		<?= !empty($person['note']) ? $person['note'] : '-'; ?>
 			                		
 			                	</div>
 			                	
@@ -556,15 +550,61 @@ echo $ajaxRequest->component(); ?>
 		            else: ?>
 			         	
 			         	<div class="row mb-20">
-			         		<div class="col-md-3">
-			         		
-	         		  			<?= '-' ?>
-			         		  
+			         		<div class="col-xs-12">
+    			         		
+	         		  			<?= Yii::t('app', 'Data Not Available') ?>
+    			         		  
 		         		  	</div>
 			         	</div>
+			         	
+			         	<hr>
 		            
 		            <?php
 				    endif; ?>
+				    
+				    <div class="btn-group dropup">
+
+                        <?= Html::button('<i class="fa fa-pencil-alt"></i> Edit',
+                            [
+                                'type' => 'button',
+                                'class' => 'btn btn-primary dropdown-toggle',
+                                'style' => 'color:white',
+                                'data-toggle' => 'dropdown',
+                                'aria-haspopup' => 'true',
+                                'aria-expanded' => 'false',
+                            ]) ?>
+
+                        <ul class="dropdown-menu">
+                            <li><?= Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id']]) ?></li>
+                            <li><?= Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id']]) ?></li>
+                            <li><?= Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id']]) ?></li>
+                            <li><?= Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id']]) ?></li>
+                        </ul>
+                    </div>
+
+                    <?= Html::a('<i class="fas fa-utensils"></i> Menu', ['business-product/index', 'id' => $model['id']],
+                        [
+                            'class' => 'btn btn-default',
+                        ]) ?>
+
+                    <?= Html::a('<i class="fas fa-percent"></i> Special Discount',
+                        ['business-promo/index', 'id' => $model['id']],
+                        [
+                            'class' => 'btn btn-default',
+                        ]) ?>
+
+                    <?= Html::a('<i class="fa fa-level-up-alt"></i> Upgrade',
+                        ['upgrade-member'],
+                        [
+                            'class' => 'btn btn-success',
+                            'style' => 'color:white'
+                        ]) ?>
+
+                    <?= Html::a('<i class="fa fa-times"></i> Cancel',
+                        ['member'],
+                        [
+                            'class' => 'btn btn-default',
+                        ]) ?>
 
                 </div>
 

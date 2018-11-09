@@ -76,7 +76,7 @@ echo $ajaxRequest->component(); ?>
                                 
                                     <?php
                                     if (!$model->isNewRecord)
-                                        echo Html::a('<i class="fa fa-upload"></i> ' . 'Create', ['create', 'id' => $modelBusiness['id']], ['class' => 'btn btn-success']); ?>
+                                        echo Html::a('<i class="fa fa-upload"></i> Create', ['create', 'id' => $modelBusiness['id']], ['class' => 'btn btn-success']); ?>
                                         
                                 </div>
                             </div>
