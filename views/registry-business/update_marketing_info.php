@@ -265,41 +265,37 @@ $jscript = '
 
                                 foreach ($days as $i => $day):
                                 
-                                    $countAdditional = 0; ?>
-                                        	
-                                	<div>
-                                    
-    									<?php
-                                        $is24Hour = false;
-    
-                                        foreach ($dataRegistryBusinessHour as $value) {
-    
-                                            if ($value['day'] == ($i + 1)) {
-    
-                                                $modelRegistryBusinessHour->is_open = $value['is_open'];
-                                                $modelRegistryBusinessHour->open_at = $value['open_at'];
-                                                $modelRegistryBusinessHour->close_at = $value['close_at'];
-    
-                                                if ($modelRegistryBusinessHour->open_at == '00:00:00' && $modelRegistryBusinessHour->close_at == '24:00:00') {
-    
-                                                    $is24Hour = true;
-                                                    
-                                                    $jscript .= '
-                                                        $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-open_at").hide();
-                                                        $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-close_at").hide();
-                                            
-                                                        $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
-                                            
-                                                        $(".add-business-hour-day" + "' . ($i+1) . '").hide();
-                                                        $(".delete-business-hour-day" + "' . ($i+1) . '").hide();
-                                                    ';
-                                                    
-                                                }
+                                    $is24Hour = false;
+
+                                    foreach ($dataRegistryBusinessHour as $value) {
+
+                                        if ($value['day'] == ($i + 1)) {
+
+                                            $modelRegistryBusinessHour->is_open = $value['is_open'];
+                                            $modelRegistryBusinessHour->open_at = $value['open_at'];
+                                            $modelRegistryBusinessHour->close_at = $value['close_at'];
+
+                                            if ($modelRegistryBusinessHour->open_at == '00:00:00' && $modelRegistryBusinessHour->close_at == '24:00:00') {
+
+                                                $is24Hour = true;
                                                 
-                                                break;
+//                                                 $jscript .= '
+//                                                     $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-open_at").hide();
+//                                                     $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-close_at").hide();
+                                        
+//                                                     $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
+                                        
+//                                                     $(".add-business-hour-day" + "' . ($i+1) . '").hide();
+//                                                     $(".delete-business-hour-day" + "' . ($i+1) . '").hide();
+//                                                 ';
+                                                
                                             }
-                                        } ?>
+                                            
+                                            break;
+                                        }
+                                    } ?>
     									
+									<div>
                                         <div class="row">
                                             <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
 
@@ -366,6 +362,8 @@ $jscript = '
                                         
                                         <?php
                                         if (!empty($dataRegistryBusinessHourAdditional)) {
+                                            
+                                            $countAdditional = 0;
                                             
                                             $jscript .= '
                                                 indexHourCountArr["' . ($i+1) . '"] = 0;
@@ -693,6 +691,8 @@ $jscript .= '
         });
     
         $("#business-hour-24h-" + thisObj.val()).on("ifChecked", function(e) {
+
+            console.log("masuk");
     
             var elemDay = $(this).data("day");
     

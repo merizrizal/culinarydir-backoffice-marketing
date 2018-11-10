@@ -27,7 +27,6 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 
-
 /**
  * RegistryBusinessController implements the CRUD actions for RegistryBusiness model.
  */
@@ -55,8 +54,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $model = new RegistryBusiness();
         $model->setScenario(RegistryBusiness::SCENARIO_CREATE);
 
-        $modelApplicationBusiness = new ApplicationBusiness();
-
         $modelRegistryBusinessCategory = new RegistryBusinessCategory();
         $dataRegistryBusinessCategory = [];
 
@@ -77,14 +74,12 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $modelRegistryBusinessImage->setScenario(RegistryBusinessImage::SCENARIO_CREATE);
         $dataRegistryBusinessImage = [];
         
-        $modelPerson = new Person();
-        $dataPerson = [];
-        
+        $modelPerson = new Person();        
         $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
         $dataRegistryBusinessContactPerson = [];
 
         if ($model->load(($post = Yii::$app->request->post()))) {
-
+            
             if (empty($save)) {
 
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -94,6 +89,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
 
+                $modelApplicationBusiness = new ApplicationBusiness();
                 $modelApplicationBusiness->user_in_charge = Yii::$app->user->identity->id;
                 $modelApplicationBusiness->counter = 1;
 
@@ -111,7 +107,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 if ($flag) {
 
                     $model->application_business_id = $modelApplicationBusiness->id;
-                    $model->user_in_charge = Yii::$app->user->identity->id;
+                    $model->user_in_charge = $modelApplicationBusiness->user_in_charge;
                     $model->application_business_counter = $modelApplicationBusiness->counter;
                     $model->setCoordinate();
                     $model->price_min = !empty($model->price_min) ? $model->price_min : 0;
@@ -121,12 +117,12 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                         if (!empty($post['RegistryBusinessCategory']['category_id'])) {
 
-                            foreach ($post['RegistryBusinessCategory']['category_id'] as $value) {
+                            foreach ($post['RegistryBusinessCategory']['category_id'] as $categoryId) {
 
                                 $newModelRegistryBusinessCategory = new RegistryBusinessCategory();
-                                $newModelRegistryBusinessCategory->unique_id = $model->id . '-' . $value;
+                                $newModelRegistryBusinessCategory->unique_id = $model->id . '-' . $categoryId;
                                 $newModelRegistryBusinessCategory->registry_business_id = $model->id;
-                                $newModelRegistryBusinessCategory->category_id = $value;
+                                $newModelRegistryBusinessCategory->category_id = $categoryId;
                                 $newModelRegistryBusinessCategory->is_active = true;
 
                                 if (!($flag = $newModelRegistryBusinessCategory->save())) {
@@ -142,25 +138,22 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                     if ($flag) {
 
-                        if (!empty($post['RegistryBusinessProductCategory']['product_category_id'] && $post['RegistryBusinessProductCategory']['product_category_id']['parent'])) {
+                        if (!empty($post['RegistryBusinessProductCategory']['product_category_id']['parent'])) {
 
-                            if (!empty($post['RegistryBusinessProductCategory']['product_category_id']['parent'])) {
+                            foreach ($post['RegistryBusinessProductCategory']['product_category_id']['parent'] as $productCategoryId) {
 
-                                foreach ($post['RegistryBusinessProductCategory']['product_category_id']['parent'] as $value) {
+                                $newModelRegistryBusinessProductCategory = new RegistryBusinessProductCategory();
+                                $newModelRegistryBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
+                                $newModelRegistryBusinessProductCategory->registry_business_id = $model->id;
+                                $newModelRegistryBusinessProductCategory->product_category_id = $productCategoryId;
+                                $newModelRegistryBusinessProductCategory->is_active = true;
 
-                                    $newModelRegistryBusinessProductCategory = new RegistryBusinessProductCategory();
-                                    $newModelRegistryBusinessProductCategory->unique_id = $model->id . '-' . $value;
-                                    $newModelRegistryBusinessProductCategory->registry_business_id = $model->id;
-                                    $newModelRegistryBusinessProductCategory->product_category_id = $value;
-                                    $newModelRegistryBusinessProductCategory->is_active = true;
-
-                                    if (!($flag = $newModelRegistryBusinessProductCategory->save())) {
-                                        
-                                        break;
-                                    } else {
-                                        
-                                        array_push($dataRegistryBusinessProductCategoryParent, $newModelRegistryBusinessProductCategory->toArray());
-                                    }
+                                if (!($flag = $newModelRegistryBusinessProductCategory->save())) {
+                                    
+                                    break;
+                                } else {
+                                    
+                                    array_push($dataRegistryBusinessProductCategoryParent, $newModelRegistryBusinessProductCategory->toArray());
                                 }
                             }
                         }
@@ -168,25 +161,45 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                     if ($flag) {
 
-                        if (!empty($post['RegistryBusinessProductCategory']['product_category_id'] && $post['RegistryBusinessProductCategory']['product_category_id']['child'])) {
+                        if (!empty($post['RegistryBusinessProductCategory']['product_category_id']['child'])) {
 
-                            if (!empty($post['RegistryBusinessProductCategory']['product_category_id']['child'])) {
+                            foreach ($post['RegistryBusinessProductCategory']['product_category_id']['child'] as $productCategoryId) {
 
-                                foreach ($post['RegistryBusinessProductCategory']['product_category_id']['child'] as $value) {
+                                $newModelRegistryBusinessProductCategory = new RegistryBusinessProductCategory();
+                                $newModelRegistryBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
+                                $newModelRegistryBusinessProductCategory->registry_business_id = $model->id;
+                                $newModelRegistryBusinessProductCategory->product_category_id = $productCategoryId;
+                                $newModelRegistryBusinessProductCategory->is_active = true;
 
-                                    $newModelRegistryBusinessProductCategory = new RegistryBusinessProductCategory();
-                                    $newModelRegistryBusinessProductCategory->unique_id = $model->id . '-' . $value;
-                                    $newModelRegistryBusinessProductCategory->registry_business_id = $model->id;
-                                    $newModelRegistryBusinessProductCategory->product_category_id = $value;
-                                    $newModelRegistryBusinessProductCategory->is_active = true;
-
-                                    if (!($flag = $newModelRegistryBusinessProductCategory->save())) {
-                                        
-                                        break;
-                                    } else {
-                                        
-                                        array_push($dataRegistryBusinessProductCategoryChild, $newModelRegistryBusinessProductCategory->toArray());
-                                    }
+                                if (!($flag = $newModelRegistryBusinessProductCategory->save())) {
+                                    
+                                    break;
+                                } else {
+                                    
+                                    array_push($dataRegistryBusinessProductCategoryChild, $newModelRegistryBusinessProductCategory->toArray());
+                                }
+                            }
+                        }
+                    }
+                    
+                    if ($flag) {
+                        
+                        if (!empty($post['RegistryBusinessFacility']['facility_id'])) {
+                            
+                            foreach ($post['RegistryBusinessFacility']['facility_id'] as $facilityId) {
+                                
+                                $newModelRegistryBusinessFacility = new RegistryBusinessFacility();
+                                $newModelRegistryBusinessFacility->unique_id = $model->id . '-' . $facilityId;
+                                $newModelRegistryBusinessFacility->registry_business_id = $model->id;
+                                $newModelRegistryBusinessFacility->facility_id = $facilityId;
+                                $newModelRegistryBusinessFacility->is_active = true;
+                                
+                                if (!($flag = $newModelRegistryBusinessFacility->save())) {
+                                    
+                                    break;
+                                } else {
+                                    
+                                    array_push($dataRegistryBusinessFacility, $newModelRegistryBusinessFacility->toArray());
                                 }
                             }
                         }
@@ -221,21 +234,17 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             
                             if (!empty($post['RegistryBusinessHourAdditional'][$dayName])) {
                                 
-                                foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $value) {
+                                foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $dataAdditional) {
                                     
-                                    if (!empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at']) || !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at'])) {
-                                    
-                                        if ($i !== 'index') {
+                                    if (!empty($dataAdditional['open_at']) || !empty($dataAdditional['close_at'])) {
                                             
-                                            $newModelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
-                                            $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i);
-                                            $newModelRegistryBusinessHourAdditional->registry_business_hour_id = $newModelRegistryBusinessHourDay->id;
-                                            $newModelRegistryBusinessHourAdditional->day = $day;
-                                            $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
-                                            $newModelRegistryBusinessHourAdditional->open_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at'] : null;
-                                            $newModelRegistryBusinessHourAdditional->close_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at'] : null;
-                                            
-                                        }
+                                        $newModelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
+                                        $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . $i;
+                                        $newModelRegistryBusinessHourAdditional->registry_business_hour_id = $newModelRegistryBusinessHourDay->id;
+                                        $newModelRegistryBusinessHourAdditional->day = $day;
+                                        $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
+                                        $newModelRegistryBusinessHourAdditional->open_at = !empty($dataAdditional['open_at']) ? $dataAdditional['open_at'] : null;
+                                        $newModelRegistryBusinessHourAdditional->close_at = !empty($dataAdditional['close_at']) ? $dataAdditional['close_at'] : null;
                                     
                                         if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
                                             
@@ -252,43 +261,22 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                     if ($flag) {
 
-                        if (!empty($post['RegistryBusinessFacility']['facility_id'])) {
-
-                            foreach ($post['RegistryBusinessFacility']['facility_id'] as $value) {
-
-                                $newModelRegistryBusinessFacility = new RegistryBusinessFacility();
-                                $newModelRegistryBusinessFacility->unique_id = $model->id . '-' . $value;
-                                $newModelRegistryBusinessFacility->registry_business_id = $model->id;
-                                $newModelRegistryBusinessFacility->facility_id = $value;
-                                $newModelRegistryBusinessFacility->is_active = true;
-
-                                if (!($flag = $newModelRegistryBusinessFacility->save())) {
-                                    
-                                    break;
-                                } else {
-                                    
-                                    array_push($dataRegistryBusinessFacility, $newModelRegistryBusinessFacility->toArray());
-                                }
-                            }
-                        }
-                    }
-
-                    if ($flag) {
-
                         $newModelRegistryBusinessImage = new RegistryBusinessImage(['registry_business_id' => $model->id]);
 
                         if ($newModelRegistryBusinessImage->load($post)) {
 
                             $images = Tools::uploadFiles('/img/registry_business/', $newModelRegistryBusinessImage, 'image', 'registry_business_id', '', true);
 
-                            foreach ($images as $index => $image) {
+                            foreach ($images as $i => $image) {
 
+                                $i++;
+                                
                                 $newModelRegistryBusinessImage = new RegistryBusinessImage();
                                 $newModelRegistryBusinessImage->registry_business_id = $model->id;
                                 $newModelRegistryBusinessImage->image = $image;
                                 $newModelRegistryBusinessImage->type = 'Gallery';
                                 $newModelRegistryBusinessImage->category = 'Ambience';
-                                $newModelRegistryBusinessImage->order = $index + 1;
+                                $newModelRegistryBusinessImage->order = $i;
 
                                 if (!($flag = $newModelRegistryBusinessImage->save())) {
                                     
@@ -302,31 +290,26 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                         if (!empty($post['Person']) && !empty($post['RegistryBusinessContactPerson'])) {
 
-                            foreach ($post['Person'] as $i => $value) {
-
-                                if ($i !== 'index') {
+                            foreach ($post['Person'] as $i => $dataPerson) {
                                     
-                                    $newModelPerson = new Person();
-                                    $newModelPerson->first_name = $post['Person'][$i]['first_name'];
-                                    $newModelPerson->last_name = $post['Person'][$i]['last_name'];
-                                    $newModelPerson->phone = $post['Person'][$i]['phone'];
-                                    $newModelPerson->email = $post['Person'][$i]['email'];
+                                $newModelPerson = new Person();
+                                $newModelPerson->first_name = $dataPerson['first_name'];
+                                $newModelPerson->last_name = $dataPerson['last_name'];
+                                $newModelPerson->phone = $dataPerson['phone'];
+                                $newModelPerson->email = $dataPerson['email'];
 
-                                    if (!($flag = $newModelPerson->save())) {
-                                        
-                                        break;
-                                    } else {
-                                        
-                                        array_push($dataPerson, $newModelPerson->toArray());
-                                        
-                                        $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
-                                        $newModelRegistryBusinessContactPerson->registry_business_id = $model->id;
-                                        $newModelRegistryBusinessContactPerson->person_id = $newModelPerson->id;
-                                        $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
-                                        $newModelRegistryBusinessContactPerson->note = $post['RegistryBusinessContactPerson'][$i]['note'];
-                                        $newModelRegistryBusinessContactPerson->position = $post['RegistryBusinessContactPerson'][$i]['position'];
-                                    }
-
+                                if (!($flag = $newModelPerson->save())) {
+                                    
+                                    break;
+                                } else {
+                                    
+                                    $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
+                                    $newModelRegistryBusinessContactPerson->registry_business_id = $model->id;
+                                    $newModelRegistryBusinessContactPerson->person_id = $newModelPerson->id;
+                                    $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
+                                    $newModelRegistryBusinessContactPerson->note = !empty($post['RegistryBusinessContactPerson'][$i]['note']) ? $post['RegistryBusinessContactPerson'][$i]['note'] : null;
+                                    $newModelRegistryBusinessContactPerson->position = $post['RegistryBusinessContactPerson'][$i]['position'];
+                                
                                     if (!($flag = $newModelRegistryBusinessContactPerson->save())) {
                                         
                                         break;
@@ -378,7 +361,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'modelRegistryBusinessImage' => $modelRegistryBusinessImage,
             'dataRegistryBusinessImage' => $dataRegistryBusinessImage,
             'modelPerson' => $modelPerson,
-            'dataPerson' => $dataPerson,
             'modelRegistryBusinessContactPerson' => $modelRegistryBusinessContactPerson,
             'dataRegistryBusinessContactPerson' => $dataRegistryBusinessContactPerson
         ]);
