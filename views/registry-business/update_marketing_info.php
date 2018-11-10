@@ -78,9 +78,9 @@ $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Marketing Informatio
 echo $ajaxRequest->component();
 
 $jscript = '
-    var indexCount = 0;
-    
+
     var indexHourCountArr = [];
+
 '; ?>
 
 <div class="registry-business-update">

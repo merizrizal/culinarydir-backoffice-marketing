@@ -47,21 +47,21 @@ echo $ajaxRequest->component(); ?>
 
                 <div class="x_content">
 
-                    <?= Html::a('<i class="fa fa-upload"></i> ' . 'Create',
+                    <?= Html::a('<i class="fa fa-upload"></i> Create',
                         ['create', 'id' => $model->business_id],
                         [
                             'class' => 'btn btn-success',
                             'style' => 'color:white'
                         ]) ?>
 
-                    <?= Html::a('<i class="fa fa-pencil-alt"></i> ' . 'Edit',
+                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit',
                         ['update', 'id' => $model->id],
                         [
                             'class' => 'btn btn-primary',
                             'style' => 'color:white'
                         ]) ?>
 
-                    <?= Html::a('<i class="fa fa-trash-alt"></i> ' . 'Delete',
+                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete',
                         ['delete', 'id' => $model->id],
                         [
                             'id' => 'delete',
@@ -72,7 +72,7 @@ echo $ajaxRequest->component(); ?>
                             'model-name' => $model->title,
                         ]) ?>
 
-                    <?= Html::a('<i class="fa fa-times"></i> ' . 'Cancel',
+                    <?= Html::a('<i class="fa fa-times"></i> Cancel',
                         ['index', 'id' => $model->business_id],
                         [
                             'class' => 'btn btn-default',

@@ -10,6 +10,8 @@ use core\models\BusinessProductCategory;
 use core\models\BusinessHour;
 use core\models\BusinessFacility;
 use core\models\BusinessImage;
+use core\models\BusinessContactPerson;
+use core\models\Person;
 use sycomponent\Tools;
 use sycomponent\AjaxRequest;
 use yii\filters\VerbFilter;
@@ -41,8 +43,8 @@ class BusinessController extends \backoffice\controllers\BaseController
             ]);
     }
 
-    public function actionMember() {
-
+    public function actionMember()
+    {
         $searchModel = new BusinessSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 //         $dataProvider->query
@@ -55,8 +57,8 @@ class BusinessController extends \backoffice\controllers\BaseController
             'dataProvider' => $dataProvider,
         ]);
     }
-    public function actionViewMember($id) {
-
+    public function actionViewMember($id)
+    {
         $model = Business::find()
             ->joinWith([
                 'membershipType',
@@ -87,6 +89,11 @@ class BusinessController extends \backoffice\controllers\BaseController
                 'businessFacilities.facility',
                 'businessDetail',
                 'businessImages',
+                'businessContactPeople' => function($query) {
+                    
+                    $query->orderBy(['business_contact_person.id' => SORT_ASC]);
+                },
+                'businessContactPeople.person',
                 'applicationBusiness',
                 'applicationBusiness.logStatusApprovals' => function($query) {
                     
@@ -562,11 +569,9 @@ class BusinessController extends \backoffice\controllers\BaseController
                     
                     $modelBusinessDetail->price_min = !empty($modelBusinessDetail->price_min) ? $modelBusinessDetail->price_min : 0;
                     $modelBusinessDetail->price_max = !empty($modelBusinessDetail->price_max) ? $modelBusinessDetail->price_max : 0;
-
-                    $flag = $modelBusinessDetail->save();
                 }
 
-                if ($flag) {
+                if ($flag = $modelBusinessDetail->save()) {
 
                     Yii::$app->session->setFlash('status', 'success');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
@@ -799,6 +804,130 @@ class BusinessController extends \backoffice\controllers\BaseController
             'dataBusinessImage' => $dataBusinessImage,
         ]);
     }
+    
+    public function actionUpdateContactPerson($id, $save = null)
+    {
+        $model = Business::find()
+            ->joinWith([
+                'businessContactPeople' => function($query) {
+                    
+                    $query->orderBy(['business_contact_person.id' => SORT_ASC]);
+                },
+                'businessContactPeople.person',
+            ])
+            ->andWhere(['business.id' => $id])
+            ->one();
+            
+        $modelBusinessContactPerson = new BusinessContactPerson();
+        $dataBusinessContactPerson = [];
+        
+        if (!empty($post = Yii::$app->request->post())) {
+            
+            if (empty($save)) {
+                
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ActiveForm::validate($model);
+            } else {
+                
+                $transaction = Yii::$app->db->beginTransaction();
+                $flag = true;
+                
+                if (!empty($post['BusinessContactPersonDeleted'])) {
+                    
+                    foreach ($post['BusinessContactPersonDeleted'] as $i => $deletedValue) {
+                        
+                        if (empty($post['BusinessContactPerson'][$i]) && empty($post['Person'][$i])) {
+                            
+                            if ($flag = BusinessContactPerson::deleteAll(['person_id' => $deletedValue])) {
+                                
+                                $flag = Person::deleteAll(['id' => $deletedValue]);
+                            }
+                        }
+                    }
+                }
+                
+                if (!empty($post['Person']) && !empty($post['BusinessContactPerson'])) {
+                    
+                    foreach ($post['Person'] as $i => $value) {
+                        
+                        if ($i !== 'index') {
+                            
+                            if (!empty($model['businessContactPeople'][($i-1)])) {
+                                
+                                $newModelPerson = Person::findOne(['id' => $model['businessContactPeople'][($i-1)]['person_id']]);
+                            } else {
+                                
+                                $newModelPerson = new Person();
+                            }
+                            
+                            $newModelPerson->first_name = $post['Person'][$i]['first_name'];
+                            $newModelPerson->last_name = $post['Person'][$i]['last_name'];
+                            $newModelPerson->phone = $post['Person'][$i]['phone'];
+                            $newModelPerson->email = $post['Person'][$i]['email'];
+                            
+                            if (!($flag = $newModelPerson->save())) {
+                                
+                                break;
+                            } else {
+                                
+                                $newModelBusinessContactPerson = BusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
+                                
+                                if (empty($newModelBusinessContactPerson)) {
+                                    
+                                    $newModelBusinessContactPerson = new BusinessContactPerson();
+                                    $newModelBusinessContactPerson->business_id = $model->id;
+                                    $newModelBusinessContactPerson->person_id = $newModelPerson->id;
+                                }
+                                
+                                $newModelBusinessContactPerson->position = $post['BusinessContactPerson'][$i]['position'];
+                                $newModelBusinessContactPerson->is_primary_contact = !empty($post['BusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
+                                $newModelBusinessContactPerson->note = $post['BusinessContactPerson'][$i]['note'];
+                            }
+                            
+                            if (!($flag = $newModelBusinessContactPerson->save())) {
+                                
+                                break;
+                            } else {
+                                
+                                array_push($dataBusinessContactPerson, ArrayHelper::merge($newModelBusinessContactPerson->toArray(), $newModelPerson->toArray()));
+                            }
+                        }
+                    }
+                }
+                
+                if ($flag) {
+                    
+                    Yii::$app->session->setFlash('status', 'success');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    
+                    $transaction->commit();
+                } else {
+                    
+                    Yii::$app->session->setFlash('status', 'danger');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    
+                    $transaction->rollBack();
+                }
+            }
+        }
+        
+        if (empty($dataBusinessContactPerson)) {
+            
+            foreach ($model->businessContactPeople as $i => $value) {
+                
+                array_push($dataBusinessContactPerson, $value);
+            }
+        }
+        
+        return $this->render('update_contact_person', [
+            'model' => $model,
+            'modelBusinessContactPerson' => $modelBusinessContactPerson,
+            'dataBusinessContactPerson' => $dataBusinessContactPerson,
+        ]);
+    }
+    
     
     public function actionUp($id)
     {
