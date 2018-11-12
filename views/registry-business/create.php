@@ -19,7 +19,6 @@ use core\models\RegistryBusinessContactPerson;
 use core\models\RegistryBusinessHourAdditional;
 use dosamigos\ckeditor\CKEditor;
 
-
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
 /* @var $dataRegistryBusinessCategory core\models\RegistryBusinessCategory */
@@ -36,7 +35,6 @@ use dosamigos\ckeditor\CKEditor;
 /* @var $dataRegistryBusinessImage core\models\RegistryBusinessImage */
 /* @var $modelRegistryBusinessImage core\models\RegistryBusinessImage */
 /* @var $modelPerson core\models\Person */
-/* @var $dataPerson core\models\Person */
 /* @var $modelRegistryBusinessContactPerson core\models\RegistryBusinessContactPerson */
 /* @var $dataRegistryBusinessContactPerson core\models\RegistryBusinessContactPerson */
 /* @var $day string */
@@ -54,7 +52,7 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
 
     $notif = new NotificationDialog([
         'status' => $status,
@@ -64,29 +62,10 @@ if ($status !== null) :
     
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
+}
 
 $this->title = Yii::t('app', 'Create Application');
 $this->params['breadcrumbs'][] = $this->title;
-
-$category = Category::find()
-    ->orderBy('name')
-    ->asArray()->all();
-
-$productParentCategory = ProductCategory::find()
-    ->andWhere(['is_parent' => true])
-    ->orderBy('name')
-    ->asArray()->all();
-
-$productCategory = ProductCategory::find()
-    ->andWhere(['is_parent' => false])
-    ->orderBy('name')
-    ->asArray()->all();
-
-$facility = Facility::find()
-    ->orderBy('name')
-    ->asArray()->all();
 
 echo $ajaxRequest->component();
 
@@ -144,6 +123,7 @@ $jscript = '
 ';
 
 $this->registerJs($jscript);
+
 $jscript = '
     var indexCount = 0;
 
@@ -179,7 +159,7 @@ $jscript = '
                                     <?= $form->field($model, 'membership_type_id', [
                                         'template' => '
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                <div class="col-sm-12">
                                                     {input}
                                                     {error}
                                                 </div>
@@ -189,7 +169,7 @@ $jscript = '
                                         'item' => function ($index, $label, $name, $checked, $value) {
 
                                             return '
-                                                <div class="col-lg-2 col-md-3 col-sm-4 col-xs-12">
+                                                <div class="col-xs-12 col-sm-4">
                                                     <label>' .
                                                         Html::radio($name, $checked, ['class' => 'membership-type-id', 'value' => $label['id']]) . ' ' . $label['name'] . '
                                                     </label>
@@ -202,12 +182,12 @@ $jscript = '
                                 <h1><?= Yii::t('app', 'Business Information') ?></h1>
                                 <div>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-xs-12 col-sm-6">
 
                                             <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Name')]) ?>
 
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-xs-12 col-sm-6">
 
                                             <?= $form->field($model, 'unique_name', [
                                                 'enableAjaxValidation' => true
@@ -215,8 +195,9 @@ $jscript = '
 
                                         </div>
                                     </div>
+                                    
                                     <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-xs-12 col-md-3">
 
                                             <?= $form->field($model, 'address_type')->dropDownList(['Gang' => 'Gang', 'Jalan' => 'Jalan', 'Komplek' => 'Komplek'], [
                                                 'prompt' => Yii::t('app', 'Address Type'),
@@ -224,25 +205,27 @@ $jscript = '
                                             ]) ?>
 
                                         </div>
-                                        <div class="col-md-5">
+                                        <div class="col-xs-12 col-md-5">
 
                                             <?= $form->field($model, 'address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address')]) ?>
 
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-xs-12 col-md-4">
 
                                             <?= $form->field($model, 'address_info')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address Info')]) ?>
 
                                         </div>
                                     </div>
+                                    
                                     <div class="row">
-                                        <div class="col-lg-3 col-xs-6">
+                                        <div class="col-xs-6 col-sm-3">
 
                                             <?= $form->field($model, 'city_id')->dropDownList(
                                                 ArrayHelper::map(
                                                     City::find()->orderBy('name')->asArray()->all(),
                                                     'id',
                                                     function($data) {
+                                                        
                                                         return $data['name'];
                                                     }
                                                 ),
@@ -252,14 +235,14 @@ $jscript = '
                                                 ]) ?>
 
                                         </div>
-                                        <div class="col-lg-3 col-xs-6">
+                                        <div class="col-xs-6 col-sm-3">
 
                                             <?= $form->field($model, 'district_id')->textInput([
                                                 'style' => 'width: 100%'
                                             ]) ?>
 
                                         </div>
-                                        <div class="col-lg-3 col-xs-6">
+                                        <div class="col-xs-6 col-sm-3">
 
                                             <?= $form->field($model, 'village_id')->textInput([
                                                 'style' => 'width: 100%'
@@ -267,25 +250,27 @@ $jscript = '
 
                                         </div>
                                     </div>
+                                    
                                     <div class="row">
-                                        <div class="col-lg-6 col-xs-9">
+                                        <div class="col-xs-8 col-sm-6">
 
                                             <?= $form->field($model, 'coordinate')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Coordinate')]) ?>
 
                                         </div>
-                                        <div class="col-lg-3 col-xs-3">
+                                        <div class="col-xs-4 col-sm-3">
 
                                             <?= Html::a('<i class="fa fa-map-marker-alt"></i> ' . Yii::t('app', 'Open Map'), '', ['class' => 'btn btn-primary btn-block open-map']) ?>
 
                                         </div>
                                     </div>
+                                    
                                     <div class="row">
-                                        <div class="col-lg-3 col-xs-6">
+                                        <div class="col-xs-6 col-sm-3">
 
                                             <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Email')]) ?>
 
                                         </div>
-                                        <div class="col-lg-3 col-xs-6">
+                                        <div class="col-xs-6 col-sm-3">
 
                                             <?= $form->field($model, 'phone1')->widget(MaskedInput::className(), [
                                                 'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
@@ -296,7 +281,7 @@ $jscript = '
                                             ]) ?>
 
                                         </div>
-                                        <div class="col-lg-3 col-xs-6">
+                                        <div class="col-xs-6 col-sm-3">
 
                                             <?= $form->field($model, 'phone2')->widget(MaskedInput::className(), [
                                                 'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
@@ -307,7 +292,7 @@ $jscript = '
                                             ]) ?>
 
                                         </div>
-                                        <div class="col-lg-3 col-xs-6">
+                                        <div class="col-xs-6 col-sm-3">
 
                                             <?= $form->field($model, 'phone3')->widget(MaskedInput::className(), [
                                                 'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
@@ -319,8 +304,9 @@ $jscript = '
 
                                         </div>
                                     </div>
+                                    
                                     <div class="row">
-                                        <div class="col-lg-12">
+                                        <div class="col-xs-12">
 
                                             <?= $form->field($model, 'about', [
                                                 'template' => '{label}{input}{error}',
@@ -330,8 +316,9 @@ $jscript = '
 
                                         </div>
                                     </div>
+                                    
                                     <div class="row">
-                                        <div class="col-md-9">
+                                        <div class="col-xs-12 col-sm-9">
 
                                             <?= $form->field($model, 'note')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
 
@@ -343,32 +330,27 @@ $jscript = '
                                 <div>
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-xs-12">
 
                                                 <?= Html::label(Yii::t('app', 'Business Category')) ?>
 
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-xs-12">
 
                                                 <?php
                                                 $selectedDataCategory = [];
 
                                                 if (!empty($dataRegistryBusinessCategory)) {
 
-                                                    foreach ($dataRegistryBusinessCategory as $value) {
+                                                    foreach ($dataRegistryBusinessCategory as $registryBusinessCategory) {
 
-                                                        if (!empty($value['category_id'])) {
-
-                                                            $selectedDataCategory[$value['category_id']] = ['selected' => true];
-                                                        }
+                                                        $selectedDataCategory[$registryBusinessCategory['category_id']] = ['selected' => true];
                                                     }
                                                 }
 
                                                 echo $form->field($modelRegistryBusinessCategory, 'category_id')->dropDownList(
                                                     ArrayHelper::map(
-                                                        $category,
+                                                        Category::find()->orderBy('name')->asArray()->all(),
                                                         'id',
                                                         'name'
                                                     ),
@@ -383,36 +365,29 @@ $jscript = '
                                         </div>
                                     </div>
 
-                                    <hr>
-
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-xs-12">
 
                                                 <?= Html::label(Yii::t('app', 'Product Category')) ?>
 
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-xs-12">
 
                                                 <?php
                                                 $selectedDataProductParent = [];
 
                                                 if (!empty($dataRegistryBusinessProductCategoryParent)) {
 
-                                                    foreach ($dataRegistryBusinessProductCategoryParent as $value) {
+                                                    foreach ($dataRegistryBusinessProductCategoryParent as $registryBusinessProductCategoryParent) {
 
-                                                        if (!empty($value['product_category_id'])) {
-
-                                                            $selectedDataProductParent[$value['product_category_id']] = ['selected' => true];
-                                                        }
+                                                        $selectedDataProductParent[$registryBusinessProductCategoryParent['product_category_id']] = ['selected' => true];
                                                     }
                                                 }
 
                                                 echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[parent]')->dropDownList(
                                                     ArrayHelper::map(
-                                                        $productParentCategory,
+                                                        ProductCategory::find()->andWhere(['is_parent' => true])->orderBy('name')->asArray()->all(),
                                                         'id',
                                                         'name'
                                                     ),
@@ -424,25 +399,22 @@ $jscript = '
                                                     ]) ?>
 
                                             </div>
-                                            <div class="col-md-12">
+                                            <div class="col-xs-12">
 
                                                 <?php
                                                 $selectedDataProductChild = [];
 
-                                                if (!empty($dataRegistryBusinessProductCategoryParent)) {
+                                                if (!empty($dataRegistryBusinessProductCategoryChild)) {
 
-                                                    foreach ($dataRegistryBusinessProductCategoryChild as $value) {
+                                                    foreach ($dataRegistryBusinessProductCategoryChild as $registryBusinessProductCategoryChild) {
 
-                                                        if (!empty($value['product_category_id'])) {
-
-                                                            $selectedDataProductChild[$value['product_category_id']] = ['selected' => true];
-                                                        }
+                                                        $selectedDataProductChild[$registryBusinessProductCategoryChild['product_category_id']] = ['selected' => true];
                                                     }
                                                 }
 
                                                 echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[child]')->dropDownList(
                                                     ArrayHelper::map(
-                                                        $productCategory,
+                                                        ProductCategory::find()->andWhere(['is_parent' => false])->orderBy('name')->asArray()->all(),
                                                         'id',
                                                         'name'
                                                     ),
@@ -457,36 +429,29 @@ $jscript = '
                                         </div>
                                     </div>
 
-                                    <hr>
-
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-xs-12">
 
                                                 <?= Html::label(Yii::t('app', 'Facility')) ?>
 
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-xs-12">
 
                                                 <?php
                                                 $selectedDataFacility = [];
 
                                                 if (!empty($dataRegistryBusinessFacility)) {
 
-                                                    foreach ($dataRegistryBusinessFacility as $value) {
+                                                    foreach ($dataRegistryBusinessFacility as $dataRegistryBusinessFacility) {
 
-                                                        if (!empty($value['facility_id'])) {
-
-                                                            $selectedDataFacility[$value['facility_id']] = ['selected' => true];
-                                                        }
+                                                        $selectedDataFacility[$dataRegistryBusinessFacility['facility_id']] = ['selected' => true];
                                                     }
                                                 }
 
                                                 echo $form->field($modelRegistryBusinessFacility, 'facility_id')->dropDownList(
                                                     ArrayHelper::map(
-                                                        $facility,
+                                                        Facility::find()->orderBy('name')->asArray()->all(),
                                                         'id',
                                                         'name'
                                                     ),
@@ -501,11 +466,9 @@ $jscript = '
                                         </div>
                                     </div>
 
-                                    <hr>
-
                                     <div class="form-group">
                                         <div class="row mb-10">
-                                            <div class="col-md-12">
+                                            <div class="col-xs-12">
 
                                                 <?= Html::label(Yii::t('app', 'Business Hour')) ?>
                                                 <?= Html::button(Yii::t('app', 'Set All'), ['class' => 'btn btn-primary btn-xs set-all-business-hour']) ?>
@@ -518,55 +481,52 @@ $jscript = '
                                         $hours = Yii::$app->params['hours'];
 
                                         foreach ($days as $i => $day):
-                                        	
-                                            $countAdditional = 0; ?>
-                                        	
-                                        	<div>
-                                            
-    											<?php
-                                                $is24Hour = false;
-    
-                                                foreach ($dataRegistryBusinessHour as $value) {
-    
-                                                    if ($value['day'] == ($i + 1)) {
-    
-                                                        $modelRegistryBusinessHour->is_open = $value['is_open'];
-                                                        $modelRegistryBusinessHour->open_at = $value['open_at'];
-                                                        $modelRegistryBusinessHour->close_at = $value['close_at'];
-    
-                                                        if ($modelRegistryBusinessHour->open_at == '00:00:00' && $modelRegistryBusinessHour->close_at == '24:00:00') {
-    
-                                                            $is24Hour = true;
-                                                            
-                                                            $jscript .= '
-                                                                $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-open_at").hide();
-                                                                $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-close_at").hide();
-                                                    
-                                                                $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
-                                                    
-                                                                $(".add-business-hour-day" + "' . ($i+1) . '").hide();
-                                                                $(".delete-business-hour-day" + "' . ($i+1) . '").hide();
-                                                            ';
-                                                            
-                                                        }
+                                        
+                                            $i++;
+                                            $is24Hour = false;
+
+                                            foreach ($dataRegistryBusinessHour as $value) {
+
+                                                if ($value['day'] == $i) {
+
+                                                    $modelRegistryBusinessHour->is_open = $value['is_open'];
+                                                    $modelRegistryBusinessHour->open_at = $value['open_at'];
+                                                    $modelRegistryBusinessHour->close_at = $value['close_at'];
+
+                                                    if ($modelRegistryBusinessHour->open_at == '00:00:00' && $modelRegistryBusinessHour->close_at == '24:00:00') {
+
+                                                        $is24Hour = true;
                                                         
-                                                        break;
+                                                        $jscript .= '
+                                                            $(".field-registrybusinesshour-day" + "' . $i . '" + "-open_at").hide();
+                                                            $(".field-registrybusinesshour-day" + "' . $i . '" + "-close_at").hide();
+                                                
+                                                            $(".field-registrybusinesshour-day" + "' . $i . '" + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
+                                                
+                                                            $(".add-business-hour-day" + "' . $i . '").hide();
+                                                            $(".delete-business-hour-day" + "' . $i . '").hide();
+                                                        ';
+                                                        
                                                     }
-                                                } ?>
-    											
+                                                    
+                                                    break;
+                                                }
+                                            } ?>
+                                                
+											<div>
                                                 <div class="row">
                                                     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
     
-                                                        <?= Yii::t('app', $days[$i]) ?>
+                                                        <?= Yii::t('app', $days[$i - 1]) ?>
     
                                                     </div>
                                                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
     
-                                                        <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']is_open')
+                                                        <?= $form->field($modelRegistryBusinessHour, '[day' . $i . ']is_open')
                                                             ->checkbox([
                                                                 'label' => Yii::t('app', 'Open'),
-                                                                'class' => 'business-hour-is-open day-' . ($i + 1),
-                                                                'data-day' => $i + 1,
+                                                                'class' => 'business-hour-is-open day-' . $i,
+                                                                'data-day' => $i,
                                                             ]); ?>
     
                                                     </div>
@@ -575,10 +535,10 @@ $jscript = '
     
                                                             <?= Html::checkbox('always24', $is24Hour, [
                                                                 'label' => Yii::t('app', '24 Hours'),
-                                                                'data-day' => $i + 1,
+                                                                'data-day' => $i,
                                                                 'class' => 'business-hour-24h',
                                                                 'disabled' => !$modelRegistryBusinessHour->is_open,
-                                                                'id' => 'business-hour-24h-' . ($i + 1)
+                                                                'id' => 'business-hour-24h-' . $i
                                                             ]); ?>
     
                                                         </div>
@@ -588,7 +548,7 @@ $jscript = '
     
                                                     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
     
-                                                        <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']open_at')
+                                                        <?= $form->field($modelRegistryBusinessHour, '[day' . $i . ']open_at')
                                                             ->dropDownList($hours, [
                                                                 'prompt' => '',
                                                                 'class' => 'business-hour-time open',
@@ -599,7 +559,7 @@ $jscript = '
                                                     </div>
                                                     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
     
-                                                        <?= $form->field($modelRegistryBusinessHour, '[day' . ($i + 1) . ']close_at')
+                                                        <?= $form->field($modelRegistryBusinessHour, '[day' . $i . ']close_at')
                                                             ->dropDownList($hours, [
                                                                 'prompt' => '',
                                                                 'class' => 'business-hour-time close',
@@ -610,10 +570,10 @@ $jscript = '
                                                     </div>
                                                     <div class="col-lg-3 col-md-6 col-sm-3 col-xs-4">
                                                     	
-                                                    	<?= Html::hiddenInput('day', ($i+1), ['class' => 'daysCount']) ?>
+                                                    	<?= Html::hiddenInput('day', $i, ['class' => 'daysCount']) ?>
                                                     	
-                                                        <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default add-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
-                                                        <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default delete-business-hour-day' . ($i+1), 'data-day' => ($i+1)]) ?>
+                                                        <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default add-business-hour-day' . $i, 'data-day' => $i]) ?>
+                                                        <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default delete-business-hour-day' . $i, 'data-day' => $i]) ?>
                                                         
                                                     </div>
                                                 </div>
@@ -621,15 +581,18 @@ $jscript = '
                                                 <?php
                                                 if (!empty($dataRegistryBusinessHourAdditional)) {
                                                     
+                                                    $countAdditional = 0;
+                                                    
                                                     $jscript .= '
-                                                        indexHourCountArr["' . ($i+1) . '"] = 0;
+                                                        indexHourCountArr["' . $i . '"] = 0;
                                                     ';
                                                     
                                                     foreach ($dataRegistryBusinessHourAdditional as $valueAdditional) {
                                                         
-                                                        if ($valueAdditional['day'] == ($i+1)) {
+                                                        if ($valueAdditional['day'] == $i) {
                                                             
                                                             $countAdditional++; 
+                                                            
                                                             $modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
                                                             $modelRegistryBusinessHourAdditional->open_at = $valueAdditional['open_at'];
                                                             $modelRegistryBusinessHourAdditional->close_at = $valueAdditional['close_at']; ?>
@@ -663,14 +626,14 @@ $jscript = '
                                                     
                                                     		<?php
                                                     		$jscript .= '
-                                                                indexHourCountArr["' . ($i+1) . '"]++;
+                                                                indexHourCountArr["' . $i . '"]++;
         
-                                                                $("#registrybusinesshouradditional-day" + "' . ($i+1) . '" + "-" + indexHourCountArr["' . ($i+1) . '"] + "-open_at").select2({
+                                                                $("#registrybusinesshouradditional-day" + "' . $i . '" + "-" + indexHourCountArr["' . $i . '"] + "-open_at").select2({
                                                                     theme: "krajee",
                                                                     placeholder: "' . Yii::t('app', 'Time Open') . '"
                                                                 });
         
-                                                                $("#registrybusinesshouradditional-day" + "' . ($i+1) . '" + "-" + indexHourCountArr["' . ($i+1) . '"] + "-close_at").select2({
+                                                                $("#registrybusinesshouradditional-day" + "' . $i . '" + "-" + indexHourCountArr["' . $i . '"] + "-close_at").select2({
                                                                     theme: "krajee",
                                                                     placeholder: "' . Yii::t('app', 'Time Close') . '"
                                                                 });
@@ -687,7 +650,7 @@ $jscript = '
                                         endforeach; ?>
 
                                         <div class="row">
-                                            <div class="col-md-9">
+                                            <div class="col-xs-12 col-sm-9">
 
                                                 <?= $form->field($model, 'note_business_hour')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
 
@@ -695,18 +658,14 @@ $jscript = '
                                         </div>
                                     </div>
 
-                                    <hr>
-
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-xs-12">
 
                                                 <?= Html::label(Yii::t('app', 'Average Spending')) ?>
 
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
+                                            <div class="col-xs-5 col-sm-4 col-lg-3">
 
                                                 <?= $form->field($model, 'price_min')->widget(TouchSpin::className(), [
                                                     'options' => [
@@ -724,10 +683,10 @@ $jscript = '
                                                 ]); ?>
 
                                             </div>
-                                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
+                                            <div class="col-xs-1 text-center">
                                                 -
                                             </div>
-                                            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
+                                            <div class="col-xs-5 col-sm-4 col-lg-3">
 
                                                 <?= $form->field($model, 'price_max')->widget(TouchSpin::className(), [
                                                     'options' => [
@@ -748,8 +707,6 @@ $jscript = '
                                         </div>
                                     </div>
 
-                                    <hr>
-
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-sm-10 col-sm-offset-2">
@@ -761,7 +718,9 @@ $jscript = '
                                                         <div class="col-xs-3">
                                                             <div class="thumbnail">
                                                                 <div class="image view view-first">
+                                                                
                                                                     <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_business/', $registryBusinessImage['image'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+                                                                    
                                                                     <div class="mask">
                                                                         <p>&nbsp;</p>
                                                                         <div class="tools tools-bottom">
@@ -770,7 +729,9 @@ $jscript = '
                                                                     </div>
                                                                 </div>
                                                                 <div class="text-center mt-10">
+                                                                
                                                                     <?= Html::checkbox('RegistryBusinessImageDelete[]', false, ['class' => 'form-control', 'label' => 'Delete', 'value' => $registryBusinessImage['id']]) ?>
+                                                                
                                                                 </div>
                                                             </div>
                                                         </div>

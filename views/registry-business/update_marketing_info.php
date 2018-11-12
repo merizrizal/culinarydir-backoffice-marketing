@@ -39,7 +39,7 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
 
     $notif = new NotificationDialog([
         'status' => $status,
@@ -49,26 +49,7 @@ if ($status !== null) :
 
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
-
-$category = Category::find()
-    ->orderBy('name')
-    ->asArray()->all();
-
-$productParentCategory = ProductCategory::find()
-    ->andWhere(['is_parent' => 1])
-    ->orderBy('name')
-    ->asArray()->all();
-
-$productCategory = ProductCategory::find()
-    ->andWhere(['is_parent' => 0])
-    ->orderBy('name')
-    ->asArray()->all();
-
-$facility = Facility::find()
-    ->orderBy('name')
-    ->asArray()->all();
+}
 
 $this->title = 'Update ' . Yii::t('app', 'Marketing Information') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' => ['index-' . strtolower($statusApproval)]];
@@ -132,7 +113,7 @@ $jscript = '
 
                                         echo $form->field($modelRegistryBusinessCategory, 'category_id')->dropDownList(
                                             ArrayHelper::map(
-                                                $category,
+                                                Category::find()->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 'name'
                                             ),
@@ -169,7 +150,7 @@ $jscript = '
 
                                         echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[parent]')->dropDownList(
                                             ArrayHelper::map(
-                                                $productParentCategory,
+                                                ProductCategory::find()->andWhere(['is_parent' => true])->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 'name'
                                             ),
@@ -196,7 +177,7 @@ $jscript = '
 
                                         echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[child]')->dropDownList(
                                             ArrayHelper::map(
-                                                $productCategory,
+                                                ProductCategory::find()->andWhere(['is_parent' => false])->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 'name'
                                             ),
@@ -236,7 +217,7 @@ $jscript = '
 
                                         echo $form->field($modelRegistryBusinessFacility, 'facility_id')->dropDownList(
                                             ArrayHelper::map(
-                                                $facility,
+                                                Facility::find()->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 'name'
                                             ),
@@ -265,41 +246,37 @@ $jscript = '
 
                                 foreach ($days as $i => $day):
                                 
-                                    $countAdditional = 0; ?>
-                                        	
-                                	<div>
-                                    
-    									<?php
-                                        $is24Hour = false;
-    
-                                        foreach ($dataRegistryBusinessHour as $value) {
-    
-                                            if ($value['day'] == ($i + 1)) {
-    
-                                                $modelRegistryBusinessHour->is_open = $value['is_open'];
-                                                $modelRegistryBusinessHour->open_at = $value['open_at'];
-                                                $modelRegistryBusinessHour->close_at = $value['close_at'];
-    
-                                                if ($modelRegistryBusinessHour->open_at == '00:00:00' && $modelRegistryBusinessHour->close_at == '24:00:00') {
-    
-                                                    $is24Hour = true;
-                                                    
-                                                    $jscript .= '
-                                                        $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-open_at").hide();
-                                                        $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-close_at").hide();
-                                            
-                                                        $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
-                                            
-                                                        $(".add-business-hour-day" + "' . ($i+1) . '").hide();
-                                                        $(".delete-business-hour-day" + "' . ($i+1) . '").hide();
-                                                    ';
-                                                    
-                                                }
+                                    $is24Hour = false;
+
+                                    foreach ($dataRegistryBusinessHour as $value) {
+
+                                        if ($value['day'] == ($i + 1)) {
+
+                                            $modelRegistryBusinessHour->is_open = $value['is_open'];
+                                            $modelRegistryBusinessHour->open_at = $value['open_at'];
+                                            $modelRegistryBusinessHour->close_at = $value['close_at'];
+
+                                            if ($modelRegistryBusinessHour->open_at == '00:00:00' && $modelRegistryBusinessHour->close_at == '24:00:00') {
+
+                                                $is24Hour = true;
                                                 
-                                                break;
+                                                $jscript .= '
+                                                    $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-open_at").hide();
+                                                    $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-close_at").hide();
+                                        
+                                                    $(".field-registrybusinesshour-day" + "' . ($i+1) . '" + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
+                                        
+                                                    $(".add-business-hour-day" + "' . ($i+1) . '").hide();
+                                                    $(".delete-business-hour-day" + "' . ($i+1) . '").hide();
+                                                ';
+                                                
                                             }
-                                        } ?>
+                                            
+                                            break;
+                                        }
+                                    } ?>
     									
+									<div>
                                         <div class="row">
                                             <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
 
@@ -366,6 +343,8 @@ $jscript = '
                                         
                                         <?php
                                         if (!empty($dataRegistryBusinessHourAdditional)) {
+                                            
+                                            $countAdditional = 0;
                                             
                                             $jscript .= '
                                                 indexHourCountArr["' . ($i+1) . '"] = 0;
@@ -693,6 +672,8 @@ $jscript .= '
         });
     
         $("#business-hour-24h-" + thisObj.val()).on("ifChecked", function(e) {
+
+            console.log("masuk");
     
             var elemDay = $(this).data("day");
     
