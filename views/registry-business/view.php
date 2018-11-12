@@ -471,62 +471,36 @@ echo $ajaxRequest->component(); ?>
                     </div>
                 		
     				<?php
-				    if (!empty($model['registryBusinessContactPeople'])):
+				    if (!empty($model['registryBusinessContactPeople'])): ?>
 			            
-			            foreach ($model['registryBusinessContactPeople'] as $i => $person):
-			            	
-			                $i++;
-    			            $is_primary = !empty($person['is_primary_contact']) ? ' - ' . Yii::t('app', 'Primary Contact') : ''; ?>
-    			            
-			                <div class="row mb-20">
-			            		<div class="col-xs-12 mb-10">
-			            			<strong><?= Yii::t('app', 'Contact') . ' ' . $i . $is_primary ?></strong>
-    			            	</div>
-			            	
-			            		<div class="col-xs-6 col-sm-3">
-			            		
-    			            		<?= Html::label(Yii::t('app', 'Name')) ?><br>
-        			                <?= $person['person']['first_name'] . ' ' . $person['person']['last_name']; ?>
+				        <table class="table-contact-person">
+				        	<tr>
+			            		<th class="table-contact-person-th"><?= Html::label(Yii::t('app', 'Name')) ?></th>
+			            		<th class="table-contact-person-th"><?= Html::label(Yii::t('app', 'Position')) ?></th>
+			            		<th class="table-contact-person-th"><?= Html::label(Yii::t('app', 'Email')) ?></th>
+			            		<th class="table-contact-person-th"><?= Html::label(Yii::t('app', 'Phone')) ?></th>
+			            		<th class="table-contact-person-th"><?= Html::label(Yii::t('app', 'Note')) ?></th>
+			            		<th class="table-contact-person-th"><?= Html::label(Yii::t('app', 'Is Primary Contact')) ?></th>
+			            	</tr>
+				        
+    				    	<?php
+    			            foreach ($model['registryBusinessContactPeople'] as $person): ?>
     			                
-    			                </div>
+        			            <tr>
+        			            	<td class="table-contact-person-td"><?= $person['person']['first_name'] . ' ' . $person['person']['last_name']; ?></td>
+    			            		<td class="table-contact-person-td"><?= $person['position']; ?></td>
+    			            		<td class="table-contact-person-td"><?= !empty($person['person']['email']) ? $person['person']['email'] : '-'; ?></td>
+    			            		<td class="table-contact-person-td"><?= !empty($person['person']['phone']) ? $person['person']['phone'] : '-'; ?></td>
+    			            		<td class="table-contact-person-td"><?= !empty($person['note']) ? $person['note'] : '-'; ?></td>
+    			            		<td class="table-contact-person-td"><?= !empty($person['is_primary_contact']) ? ' YA ' : ' TIDAK ' ?></td>
+        			            </tr>
     			                
-    			                <div class="col-xs-6 col-sm-3">
-    			                	
-    			                	<?= Html::label(Yii::t('app', 'Position')) ?><br>
-    			                	<?= $person['position']; ?>
-    			                	
-    			                </div>
-			                </div>
-			                
-			                <div class="row mb-20">
-			                	<div class="col-xs-6 col-sm-3">
-			                		
-			                		<?= Html::label(Yii::t('app', 'Email')) ?><br>
-    			            		<?= !empty($person['person']['email']) ? $person['person']['email'] : '-'; ?>
-			                		
-			                	</div>
-			                	
-			                	<div class="col-xs-6 col-sm-3">
-			                		
-    			            		<?= Html::label(Yii::t('app', 'Phone')) ?><br>
-    			            		<?= !empty($person['person']['phone']) ? $person['person']['phone'] : '-'; ?>
-			                		
-			                	</div>
-			                	
-			                	<div class="col-xs-12 col-sm-6">
-			                		
-    			            		<?= Html::label(Yii::t('app', 'Note')) . '<br>'; ?>
-    			            		<?= !empty($person['note']) ? $person['note'] : '-'; ?>
-			                		
-			                	</div>
-			                	
-			                </div>
-			                
-			                <hr>
-			                
-			            <?php
-			            endforeach;
+    			            <?php
+    			            endforeach; ?>
+			            
+			            </table>
 		            
+		            <?php
 			        else: ?>
 			         	
 			         	<div class="row mb-20">
