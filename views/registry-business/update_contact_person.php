@@ -103,8 +103,7 @@ $jscript = '
                                 	                $modelRegistryBusinessContactPerson->note = $value['note'];
                                 	                $modelRegistryBusinessContactPerson->position = $value['position']; ?>
                                 	                
-                                	                <div class="mb-10 data-form">
-                                                        <hr>
+                                	                <div class="mb-40 data-form">
                                                         <div class="row mt-10">
                                                         
                                                             <div class="col-md-4 col-xs-6">
@@ -164,11 +163,12 @@ $jscript = '
                                                                 
                                                             </div>
                                                         </div>
+                                                        
+                                                        <?= Html::hiddenInput('RegistryBusinessContactPersonExisted[' . ($i + 1) . ']', $value['person_id'], ['class' => 'deletedContact']); ?>
+                                                        
                                                     </div>
                                                     
                                                     <?php
-                                                    echo Html::hiddenInput('RegistryBusinessContactPersonDeleted[' . ($i+1) . '][]', $value['person_id']);
-                                                    
                                                     $jscript .= '
                                                         indexCount++; ' .
             
@@ -224,8 +224,7 @@ $jscript = '
 </div>
 
 <div class="temp-form hide">
-    <div class="mb-10 data-form">
-        <hr>
+    <div class="mb-40 data-form">
         <div class="row mt-10">
             <div class="col-md-4 col-xs-6">
             
@@ -293,6 +292,8 @@ $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript .= '
+    var hasAdded = false;
+
     function addValidator(index) {
 
         $("#registry-business-form").yiiActiveForm("add", {
@@ -379,7 +380,8 @@ $jscript .= '
     addValidator(indexCount);
 
     $(".add-contact-person").on("click", function() {
-
+        
+        hasAdded = true;
         indexCount++;
 
         var formContactPerson = $(".temp-form").clone();
@@ -411,8 +413,18 @@ $jscript .= '
 
     $(".delete-contact-person").on("click", function() {
 
-        $(".main-form").children(".data-form").last().remove();
+        var lastData = $(".main-form").children(".data-form").last();
         
+        if (!hasAdded) {
+
+            var inputName = lastData.find(".deletedContact").attr("name");
+            inputName = inputName.replace("Existed", "Deleted");
+            lastData.find(".deletedContact").attr("name", inputName);
+        }
+
+        lastData.find(".row").remove();
+        lastData.removeClass("data-form").addClass("data-form-deleted");
+
         if (indexCount > 0) {
 
             indexCount--;
