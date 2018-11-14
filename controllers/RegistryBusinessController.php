@@ -485,9 +485,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     public function actionViewPndg($id)
     {
         $actionButton = [
-            'update' => function($model) {
+            'update' => function($model, $dropup = '') {
                 return '
-                    <div class="btn-group">
+                    <div class="btn-group ' . $dropup . '">
 
                         ' . Html::button('<i class="fa fa-pencil-alt"></i> Edit',
                             [
@@ -528,9 +528,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     public function actionViewIcorct($id)
     {
         $actionButton = [
-            'update' => function($model) {
+            'update' => function($model, $dropup = '') {
                 return '
-                    <div class="btn-group">
+                    <div class="btn-group ' . $dropup . '">
 
                         ' . Html::button('<i class="fa fa-pencil-alt"></i> Edit',
                             [
@@ -986,12 +986,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                         $newModelRegistryBusinessHourAdditional->day = $day;
                                     }
                                     
-                                    if ($i !== 'index') {
-                                        
-                                        $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
-                                        $newModelRegistryBusinessHourAdditional->open_at = !empty($businessHourAdditional['open_at']) ? $businessHourAdditional['open_at'] : null;
-                                        $newModelRegistryBusinessHourAdditional->close_at = !empty($businessHourAdditional['close_at']) ? $businessHourAdditional['close_at'] : null;
-                                    }
+                                    $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
+                                    $newModelRegistryBusinessHourAdditional->open_at = !empty($businessHourAdditional['open_at']) ? $businessHourAdditional['open_at'] : null;
+                                    $newModelRegistryBusinessHourAdditional->close_at = !empty($businessHourAdditional['close_at']) ? $businessHourAdditional['close_at'] : null;
                                     
                                     if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
                                         
@@ -1257,6 +1254,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
         $dataRegistryBusinessContactPerson = [];
         
+        $modelPerson = new Person();
+        
         $isDeletedAll = false;
         
         if (!empty($post = Yii::$app->request->post())) {
@@ -1347,15 +1346,18 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             
             if (empty($dataRegistryBusinessContactPerson)) {
                 
-                foreach ($model->registryBusinessContactPeople as $i => $businessContactPerson) {
+                foreach ($model->registryBusinessContactPeople as $dataContactPerson) {
                     
-                    array_push($dataRegistryBusinessContactPerson, $businessContactPerson);
+                    $dataContactPerson = ArrayHelper::merge($dataContactPerson->toArray(), $dataContactPerson->person->toArray());
+                    
+                    array_push($dataRegistryBusinessContactPerson, $dataContactPerson);
                 }
             }
         }
             
         return $this->render('update_contact_person', [
             'model' => $model,
+            'modelPerson' => $modelPerson,
             'modelRegistryBusinessContactPerson' => $modelRegistryBusinessContactPerson,
             'dataRegistryBusinessContactPerson' => $dataRegistryBusinessContactPerson,
             'statusApproval' => $statusApproval,
