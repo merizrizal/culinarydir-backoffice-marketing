@@ -380,7 +380,6 @@ echo $ajaxRequest->component(); ?>
                     </div>
 
                     <div class="row mb-20">
-
                         <div class="col-md-3">
                         
                             <?= Html::label(Yii::t('app', 'Price Min')) ?><br>
@@ -514,47 +513,16 @@ echo $ajaxRequest->component(); ?>
 			         	<hr>
 		            
 		            <?php
-				    endif; ?>
+				    endif;
 				    
-				    <div class="btn-group dropup">
-				    
-    				    <?= Html::button('<i class="fa fa-pencil-alt"></i> Edit',
-    				        [
-    				            'type' => 'button',
-    				            'class' => 'btn btn-primary dropdown-toggle',
-    				            'style' => 'color:white',
-    				            'data-toggle' => 'dropdown',
-    				            'aria-haspopup' => 'true',
-    				            'aria-expanded' => 'false',
-    				        ]) ?>
-    
-                        <ul class="dropdown-menu">
-                            <li><?= Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id'], 'statusApproval' => $statusApproval]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id'], 'statusApproval' => $statusApproval]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => $statusApproval]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id'], 'statusApproval' => $statusApproval]) ?></li>
-                        </ul>
-                    </div>
-					
-					<?php
-					if ($statusApproval == 'ICORCT') {
-					    
-					    echo Html::a('<i class="fa fa-check"></i> Resubmit', ['resubmit', 'id' => $model['id'], 'appBId' => $model['applicationBusiness']['id'], 'appBCounter' => $model['applicationBusiness']['counter'], 'statusApproval' => 'ICORCT'], [
-				            'id' => 'resubmit',
-				            'class' => 'btn btn-success',
-				        ]);
-					} else if ($statusApproval == 'PNDG') {
-					    
-					    echo Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model['id'], 'statusApproval' => 'pndg'], [
-					        'id' => 'delete',
-					        'class' => 'btn btn-danger',
-					        'style' => 'color:white',
-					        'data-not-ajax' => 1,
-					        'model-id' => $model['id'],
-					        'model-name' => $model['name'],
-					    ]);
-					}
-					
+                    if (!empty($actionButton)) {
+                        
+                        foreach ($actionButton as $valActionButton) {
+                            
+                            echo $valActionButton($model, 'dropup');
+                        }
+                    }
+
                     echo ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']); ?>
 
                 </div>
