@@ -520,13 +520,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                         
                         if (!empty($post['BusinessHourAdditionalDeleted'][$dayName])) {
                             
-                            foreach ($post['BusinessHourAdditionalDeleted'][$dayName] as $i => $value) {
-                                
-                                if (empty($post['BusinessHourAdditional'][$dayName][$i+1])) {
-                                    
-                                    BusinessHourAdditional::deleteAll(['id' => $value]);
-                                }
-                            }
+                            $flag = BusinessHourAdditional::deleteAll(['id' => $post['BusinessHourAdditionalDeleted'][$dayName]]);
                         }
                         
                         if (!empty($post['BusinessHourAdditional'][$dayName])) {
@@ -557,7 +551,12 @@ class BusinessController extends \backoffice\controllers\BaseController
                                         break;
                                     } else {
                                         
-                                        array_push($dataBusinessHourAdditional, $newModelBusinessHourAdditional->toArray());
+                                        if (empty($dataBusinessHourAdditional[$dayName])) {
+                                            
+                                            $dataBusinessHourAdditional[$dayName] = [];
+                                        }
+                                        
+                                        array_push($dataBusinessHourAdditional[$dayName], $newModelBusinessHourAdditional->toArray());
                                     }
                                 }
                             }
@@ -614,13 +613,17 @@ class BusinessController extends \backoffice\controllers\BaseController
         
         if (empty($dataBusinessHourAdditional)) {
             
-            foreach ($dataBusinessHour as $i => $valueHour) {
+            foreach ($dataBusinessHour as $businessHour) {
                 
-                if (!empty($valueHour['businessHourAdditionals'])) {
+                $dayName = 'day' . $businessHour['day'];
+                
+                $dataBusinessHourAdditional[$dayName] = [];
+                
+                if (!empty($businessHour['businessHourAdditionals'])) {
                     
-                    foreach ($valueHour['businessHourAdditionals'] as $value) {
+                    foreach ($businessHour['businessHourAdditionals'] as $businessHourAdditional) {
                         
-                        array_push($dataBusinessHourAdditional, $value);
+                        array_push($dataBusinessHourAdditional[$dayName], $businessHourAdditional);
                     }
                 }
             }

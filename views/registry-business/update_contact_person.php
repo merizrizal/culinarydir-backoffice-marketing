@@ -303,7 +303,7 @@ $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/i
 $jscript = '
     var indexCount = ' . count($dataRegistryBusinessContactPerson) . ';
 
-    $(".deleted-contact").parent().find(".contact-person-position").select2({
+    $(".main-form").find(".contact-person-position").select2({
         theme: "krajee",
         placeholder: "' . Yii::t('app', 'Position') . '",
         minimumResultsForSearch: "Infinity"
@@ -416,7 +416,7 @@ $jscript = '
 
         Yii::$app->params['checkbox-radio-script'](null, null, '#registrybusinesscontactperson-" + indexCount + "-is_primary_contact') . '
 
-        $(".main-form").find(".data-form").last().find(".contact-person-position").select2({
+        $(".main-form").find(".contact-person-position").select2({
             theme: "krajee",
             placeholder: "' . Yii::t('app', 'Position') . '",
             minimumResultsForSearch: "Infinity"

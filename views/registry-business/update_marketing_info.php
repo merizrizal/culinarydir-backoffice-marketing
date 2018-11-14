@@ -366,7 +366,7 @@ echo $ajaxRequest->component(); ?>
                                                         </div>
                                                     </div>
                                                     
-                                                    <?= Html::hiddenInput('RegistryBusinessHourAdditionalExisted[day' . $registryBusinessHourAdditional['day'] . '][]', $registryBusinessHourAdditional['id'], ['class' => 'deletedHour', 'data-count' => $countAdditional]) ?>
+                                                    <?= Html::hiddenInput('RegistryBusinessHourAdditionalExisted[day' . $registryBusinessHourAdditional['day'] . '][]', $registryBusinessHourAdditional['id'], ['class' => 'deleted-hour', 'data-count' => $countAdditional]) ?>
                                                     
                                                 </div>
                                         		
@@ -570,12 +570,12 @@ $jscript .= '
         placeholder: "' . Yii::t('app', 'Time Close') . '"
     });
 
-    $(".deletedHour").parent().find(".business-hour-time-additional.open-additional").select2({
+    $(".deleted-hour").parent().find(".business-hour-time-additional.open-additional").select2({
         theme: "krajee",
         placeholder: "' . Yii::t('app', 'Time Open') . '"
     });
 
-    $(".deletedHour").parent().find(".business-hour-time-additional.close-additional").select2({
+    $(".deleted-hour").parent().find(".business-hour-time-additional.close-additional").select2({
         theme: "krajee",
         placeholder: "' . Yii::t('app', 'Time Close') . '"
     });
@@ -633,7 +633,7 @@ $jscript .= '
         
         var thisObj = $(this);
         
-        var deletedHour = thisObj.parent().parent().siblings(".data-hour-form").last().find(".deletedHour");
+        var deletedHour = thisObj.parent().parent().siblings(".data-hour-form").last().find(".deleted-hour");
 
         var indexHourCount = (deletedHour.length ? deletedHour.data("count") : 0);
 
@@ -678,6 +678,8 @@ $jscript .= '
         $("#business-hour-24h-" + thisObj.val()).on("ifChecked", function(e) {
     
             var elemDay = $(this).data("day");
+
+            var deletedHourContent = thisObj.parent().parent().siblings().find(".deleted-hour");
     
             $("#registrybusinesshour-day"  + elemDay + "-open_at").val("00:00:00").trigger("change");
             $("#registrybusinesshour-day"  + elemDay + "-close_at").val("24:00:00").trigger("change");
@@ -690,14 +692,15 @@ $jscript .= '
             $(".add-business-hour-day" + elemDay).hide();
             $(".delete-business-hour-day" + elemDay).hide();
             
-            if (thisObj.parent().parent().siblings(".data-hour-form").find(".row").siblings().length) {
+            if (deletedHourContent.length) {
         
-                var replaceName = thisObj.parent().parent().siblings(".data-hour-form").find(".row").siblings().attr("name").replace("Existed", "Deleted");
-                thisObj.parent().parent().siblings(".data-hour-form").find(".row").siblings().attr("name", replaceName);
-            }
+                deletedHourContent.attr("name", (deletedHourContent.attr("name").replace("Existed", "Deleted")));
+                thisObj.parent().parent().siblings(".data-hour-form").find(".row").remove();
+                thisObj.parent().parent().siblings(".data-hour-form").removeClass("data-hour-form").addClass("data-hour-form-deleted");
+            } else {
 
-            thisObj.parent().parent().siblings(".data-hour-form").find(".row").remove();
-            thisObj.parent().parent().siblings(".data-hour-form").removeClass("data-hour-form").addClass("data-hour-form-deleted");
+                thisObj.parent().parent().siblings(".data-hour-form").remove();
+            }
 
             indexHourCount = 0;
         });
