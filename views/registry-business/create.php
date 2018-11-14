@@ -770,7 +770,7 @@ $jscript = '
 
                                 </div>
 
-                                <h1>Contact Person</h1>
+                                <h1><?= Yii::t('app', 'Contact Person') ?></h1>
                                 <div>
                                 	<div class="main-form">
                                 	
