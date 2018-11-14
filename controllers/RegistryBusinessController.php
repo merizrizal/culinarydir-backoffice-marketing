@@ -251,7 +251,12 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                             break;
                                         } else {
                                             
-                                            array_push($dataRegistryBusinessHourAdditional, $newModelRegistryBusinessHourAdditional->toArray());
+                                            if (empty($dataRegistryBusinessHourAdditional[$dayName])) {
+                                                
+                                                $dataRegistryBusinessHourAdditional[$dayName] = [];
+                                            }
+                                            
+                                            array_push($dataRegistryBusinessHourAdditional[$dayName], $newModelRegistryBusinessHourAdditional->toArray());
                                         }
                                     }
                                 }
@@ -660,9 +665,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['RegistryBusinessCategory']['category_id'])) {
 
-                        foreach ($post['RegistryBusinessCategory']['category_id'] as $value) {
+                        foreach ($post['RegistryBusinessCategory']['category_id'] as $businessCategory) {
 
-                            $newModelRegistryBusinessCategory = RegistryBusinessCategory::findOne(['unique_id' => $model->id . '-' . $value]);
+                            $newModelRegistryBusinessCategory = RegistryBusinessCategory::findOne(['unique_id' => $model->id . '-' . $businessCategory]);
 
                             if (!empty($newModelRegistryBusinessCategory)) {
 
@@ -671,9 +676,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                                 $newModelRegistryBusinessCategory = new RegistryBusinessCategory();
 
-                                $newModelRegistryBusinessCategory->unique_id = $model->id . '-' . $value;
+                                $newModelRegistryBusinessCategory->unique_id = $model->id . '-' . $businessCategory;
                                 $newModelRegistryBusinessCategory->registry_business_id = $model->id;
-                                $newModelRegistryBusinessCategory->category_id = $value;
+                                $newModelRegistryBusinessCategory->category_id = $businessCategory;
                                 $newModelRegistryBusinessCategory->is_active = true;
                             }
 
@@ -707,9 +712,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                             $exist = false;
 
-                            foreach ($post['RegistryBusinessCategory']['category_id'] as $value) {
+                            foreach ($post['RegistryBusinessCategory']['category_id'] as $businessCategory) {
 
-                                if ($valueRegistryBusinessCategory['category_id'] == $value) {
+                                if ($valueRegistryBusinessCategory['category_id'] == $businessCategory) {
 
                                     $exist = true;
                                     break;
@@ -733,9 +738,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['RegistryBusinessProductCategory']['product_category_id']['parent'])) {
 
-                        foreach ($post['RegistryBusinessProductCategory']['product_category_id']['parent'] as $value) {
+                        foreach ($post['RegistryBusinessProductCategory']['product_category_id']['parent'] as $productCategoryParent) {
 
-                            $newModelRegistryBusinessProductCategory = RegistryBusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $value]);
+                            $newModelRegistryBusinessProductCategory = RegistryBusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryParent]);
 
                             if (!empty($newModelRegistryBusinessProductCategory)) {
 
@@ -744,9 +749,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                                 $newModelRegistryBusinessProductCategory = new RegistryBusinessProductCategory();
 
-                                $newModelRegistryBusinessProductCategory->unique_id = $model->id . '-' . $value;
+                                $newModelRegistryBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryParent;
                                 $newModelRegistryBusinessProductCategory->registry_business_id = $model->id;
-                                $newModelRegistryBusinessProductCategory->product_category_id = $value;
+                                $newModelRegistryBusinessProductCategory->product_category_id = $productCategoryParent;
                                 $newModelRegistryBusinessProductCategory->is_active = true;
                             }
 
@@ -779,9 +784,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['RegistryBusinessProductCategory']['product_category_id']['child'])) {
 
-                        foreach ($post['RegistryBusinessProductCategory']['product_category_id']['child'] as $value) {
+                        foreach ($post['RegistryBusinessProductCategory']['product_category_id']['child'] as $productCategoryChild) {
 
-                            $newModelRegistryBusinessProductCategory = RegistryBusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $value]);
+                            $newModelRegistryBusinessProductCategory = RegistryBusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryChild]);
 
                             if (!empty($newModelRegistryBusinessProductCategory)) {
 
@@ -790,9 +795,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                                 $newModelRegistryBusinessProductCategory = new RegistryBusinessProductCategory();
 
-                                $newModelRegistryBusinessProductCategory->unique_id = $model->id . '-' . $value;
+                                $newModelRegistryBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryChild;
                                 $newModelRegistryBusinessProductCategory->registry_business_id = $model->id;
-                                $newModelRegistryBusinessProductCategory->product_category_id = $value;
+                                $newModelRegistryBusinessProductCategory->product_category_id = $productCategoryChild;
                                 $newModelRegistryBusinessProductCategory->is_active = true;
                             }
 
@@ -831,9 +836,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                             foreach ($post['RegistryBusinessProductCategory']['product_category_id'] as $data) {
 
-                                foreach ($data as $value) {
+                                foreach ($data as $productCategory) {
 
-                                    if ($valueRegistryBusinessProductCategory['product_category_id'] == $value) {
+                                    if ($valueRegistryBusinessProductCategory['product_category_id'] == $productCategory) {
 
                                         $exist = true;
                                         break 2;
@@ -858,9 +863,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['RegistryBusinessFacility']['facility_id'])) {
 
-                        foreach ($post['RegistryBusinessFacility']['facility_id'] as $value) {
+                        foreach ($post['RegistryBusinessFacility']['facility_id'] as $businessFacility) {
 
-                            $newModelRegistryBusinessFacility = RegistryBusinessFacility::findOne(['unique_id' => $model->id . '-' . $value]);
+                            $newModelRegistryBusinessFacility = RegistryBusinessFacility::findOne(['unique_id' => $model->id . '-' . $businessFacility]);
 
                             if (!empty($newModelRegistryBusinessFacility)) {
 
@@ -869,9 +874,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                                 $newModelRegistryBusinessFacility = new RegistryBusinessFacility();
 
-                                $newModelRegistryBusinessFacility->unique_id = $model->id . '-' . $value;
+                                $newModelRegistryBusinessFacility->unique_id = $model->id . '-' . $businessFacility;
                                 $newModelRegistryBusinessFacility->registry_business_id = $model->id;
-                                $newModelRegistryBusinessFacility->facility_id = $value;
+                                $newModelRegistryBusinessFacility->facility_id = $businessFacility;
                                 $newModelRegistryBusinessFacility->is_active = true;
                             }
 
@@ -905,9 +910,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                             $exist = false;
 
-                            foreach ($post['RegistryBusinessFacility']['facility_id'] as $value) {
+                            foreach ($post['RegistryBusinessFacility']['facility_id'] as $businessFacility) {
 
-                                if ($valueRegistryBusinessFacility['facility_id'] == $value) {
+                                if ($valueRegistryBusinessFacility['facility_id'] == $businessFacility) {
 
                                     $exist = true;
                                     break;
@@ -962,20 +967,14 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                         
                         if (!empty($post['RegistryBusinessHourAdditionalDeleted'][$dayName])) {
                         
-                            foreach ($post['RegistryBusinessHourAdditionalDeleted'][$dayName] as $i => $value) {
-                                
-                                if (empty($post['RegistryBusinessHourAdditional'][$dayName][$i+1])) {
-                                    
-                                    $flag = RegistryBusinessHourAdditional::deleteAll(['id' => $value]);
-                                }
-                            }
-                        } 
+                            $flag = RegistryBusinessHourAdditional::deleteAll(['id' => $post['RegistryBusinessHourAdditionalDeleted'][$dayName]]);
+                        }
                         
                         if (!empty($post['RegistryBusinessHourAdditional'][$dayName])) {
                             
-                            foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $value) {
+                            foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $businessHourAdditional) {
                                 
-                                if (!empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at']) || !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at'])) {
+                                if (!empty($businessHourAdditional['open_at']) || !empty($businessHourAdditional['close_at'])) {
                                 
                                     $newModelRegistryBusinessHourAdditional = RegistryBusinessHourAdditional::findOne(['unique_id' => $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i)]);
                                     
@@ -990,8 +989,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                     if ($i !== 'index') {
                                         
                                         $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
-                                        $newModelRegistryBusinessHourAdditional->open_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['open_at'] : null;
-                                        $newModelRegistryBusinessHourAdditional->close_at = !empty($post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at']) ? $post['RegistryBusinessHourAdditional'][$dayName][$i]['close_at'] : null;
+                                        $newModelRegistryBusinessHourAdditional->open_at = !empty($businessHourAdditional['open_at']) ? $businessHourAdditional['open_at'] : null;
+                                        $newModelRegistryBusinessHourAdditional->close_at = !empty($businessHourAdditional['close_at']) ? $businessHourAdditional['close_at'] : null;
                                     }
                                     
                                     if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
@@ -999,7 +998,12 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                         break;
                                     } else {
                                         
-                                        array_push($dataRegistryBusinessHourAdditional, $newModelRegistryBusinessHourAdditional->toArray());
+                                        if (empty($dataRegistryBusinessHourAdditional[$dayName])) {
+                                            
+                                            $dataRegistryBusinessHourAdditional[$dayName] = [];
+                                        }
+                                        
+                                        array_push($dataRegistryBusinessHourAdditional[$dayName], $newModelRegistryBusinessHourAdditional->toArray());
                                     }
                                 }
                             }
@@ -1050,13 +1054,17 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         
         if (empty($dataRegistryBusinessHourAdditional)) {
         
-            foreach ($dataRegistryBusinessHour as $i => $valueHour) {
+            foreach ($dataRegistryBusinessHour as $businessHour) {
                 
-                if (!empty($valueHour['registryBusinessHourAdditionals'])) {
+                $dayName = 'day' . $businessHour['day'];
+                
+                $dataRegistryBusinessHourAdditional[$dayName] = [];
                     
-                    foreach ($valueHour['registryBusinessHourAdditionals'] as $value) {
+                if (!empty($businessHour['registryBusinessHourAdditionals'])) {
+                    
+                    foreach ($businessHour['registryBusinessHourAdditionals'] as $businessHourAdditional) {
                         
-                        array_push($dataRegistryBusinessHourAdditional, $value);
+                        array_push($dataRegistryBusinessHourAdditional[$dayName], $businessHourAdditional);
                     }
                 }
             }
@@ -1249,6 +1257,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
         $dataRegistryBusinessContactPerson = [];
         
+        $isDeletedAll = false;
+        
         if (!empty($post = Yii::$app->request->post())) {
             
             if (empty($save)) {
@@ -1262,56 +1272,47 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 
                 if (!empty($post['RegistryBusinessContactPersonDeleted'])) {
                     
-                    foreach ($post['RegistryBusinessContactPersonDeleted'] as $i => $deletedValue) {
+                    if (($flag = RegistryBusinessContactPerson::deleteAll(['person_id' => $post['RegistryBusinessContactPersonDeleted']]))) {
                         
-                        if (empty($post['RegistryBusinessContactPerson'][$i]) && empty($post['Person'][$i])) {
-                            
-                            if ($flag = RegistryBusinessContactPerson::deleteAll(['person_id' => $deletedValue])) {
-                                
-                                $flag = Person::deleteAll(['id' => $deletedValue]);
-                            }
-                        }
+                        $flag = Person::deleteAll(['id' => $post['RegistryBusinessContactPersonDeleted']]);
+                        $isDeletedAll = (empty($post['Person']) && empty($post['RegistryBusinessContactPerson']));
                     }
                 }
                 
                 if (!empty($post['Person']) && !empty($post['RegistryBusinessContactPerson'])) {
                     
-                    foreach ($post['Person'] as $i => $value) {
+                    foreach ($post['Person'] as $i => $person) {
+                            
+                        if (!empty($model['registryBusinessContactPeople'][($i - 1)])) {
+                            
+                            $newModelPerson = Person::findOne(['id' => $model['registryBusinessContactPeople'][($i - 1)]['person_id']]);
+                        } else {
+                            
+                            $newModelPerson = new Person();
+                        }
                         
-                        if ($i !== 'index') {
+                        $newModelPerson->first_name = $person['first_name'];
+                        $newModelPerson->last_name = $person['last_name'];
+                        $newModelPerson->phone = $person['phone'];
+                        $newModelPerson->email = $person['email'];
+                        
+                        if (!($flag = $newModelPerson->save())) {
                             
-                            if (!empty($model['registryBusinessContactPeople'][($i-1)])) {
+                            break;
+                        } else {
+                            
+                            $newModelRegistryBusinessContactPerson = RegistryBusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
+                            
+                            if (empty($newModelRegistryBusinessContactPerson)) {
                                 
-                                $newModelPerson = Person::findOne(['id' => $model['registryBusinessContactPeople'][($i-1)]['person_id']]);
-                            } else {
-                                
-                                $newModelPerson = new Person();
+                                $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
+                                $newModelRegistryBusinessContactPerson->registry_business_id = $model->id;
+                                $newModelRegistryBusinessContactPerson->person_id = $newModelPerson->id;
                             }
                             
-                            $newModelPerson->first_name = $post['Person'][$i]['first_name'];
-                            $newModelPerson->last_name = $post['Person'][$i]['last_name'];
-                            $newModelPerson->phone = $post['Person'][$i]['phone'];
-                            $newModelPerson->email = $post['Person'][$i]['email'];
-                            
-                            if (!($flag = $newModelPerson->save())) {
-                                
-                                break;
-                            } else {
-                                
-                                $newModelRegistryBusinessContactPerson = RegistryBusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
-                                
-                                if (empty($newModelRegistryBusinessContactPerson)) {
-                                    
-                                    $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
-                                    $newModelRegistryBusinessContactPerson->registry_business_id = $model->id;
-                                    $newModelRegistryBusinessContactPerson->person_id = $newModelPerson->id;
-                                }
-                                
-                                $newModelRegistryBusinessContactPerson->position = $post['RegistryBusinessContactPerson'][$i]['position'];
-                                $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
-                                $newModelRegistryBusinessContactPerson->note = $post['RegistryBusinessContactPerson'][$i]['note'];
-                                
-                            }
+                            $newModelRegistryBusinessContactPerson->position = $post['RegistryBusinessContactPerson'][$i]['position'];
+                            $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
+                            $newModelRegistryBusinessContactPerson->note = $post['RegistryBusinessContactPerson'][$i]['note'];
                             
                             if (!($flag = $newModelRegistryBusinessContactPerson->save())) {
                                 
@@ -1342,11 +1343,14 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             }
         }
         
-        if (empty($dataRegistryBusinessContactPerson)) {
+        if (!$isDeletedAll) {
             
-            foreach ($model->registryBusinessContactPeople as $i => $value) {
+            if (empty($dataRegistryBusinessContactPerson)) {
                 
-                array_push($dataRegistryBusinessContactPerson, $value);
+                foreach ($model->registryBusinessContactPeople as $i => $businessContactPerson) {
+                    
+                    array_push($dataRegistryBusinessContactPerson, $businessContactPerson);
+                }
             }
         }
             

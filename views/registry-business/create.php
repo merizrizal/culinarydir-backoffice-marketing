@@ -126,8 +126,6 @@ $this->registerJs($jscript);
 
 $jscript = '
     var indexCount = 0;
-
-    var indexHourCountArr = [];
 '; ?>
 
 <div class="registry-business-create">
@@ -443,9 +441,9 @@ $jscript = '
 
                                                 if (!empty($dataRegistryBusinessFacility)) {
 
-                                                    foreach ($dataRegistryBusinessFacility as $dataRegistryBusinessFacility) {
+                                                    foreach ($dataRegistryBusinessFacility as $registryBusinessFacility) {
 
-                                                        $selectedDataFacility[$dataRegistryBusinessFacility['facility_id']] = ['selected' => true];
+                                                        $selectedDataFacility[$registryBusinessFacility['facility_id']] = ['selected' => true];
                                                     }
                                                 }
 
@@ -479,34 +477,26 @@ $jscript = '
                                         <?php
                                         $days = Yii::$app->params['days'];
                                         $hours = Yii::$app->params['hours'];
+                                        
+                                        $is24Hour = [];
 
                                         foreach ($days as $i => $day):
                                         
                                             $i++;
-                                            $is24Hour = false;
+                                            $is24Hour[$i - 1] = false;
+                                            $dayName = 'day' . $i;
 
-                                            foreach ($dataRegistryBusinessHour as $value) {
+                                            foreach ($dataRegistryBusinessHour as $registryBusinessHour) {
 
-                                                if ($value['day'] == $i) {
+                                                if ($registryBusinessHour['day'] == $i) {
 
-                                                    $modelRegistryBusinessHour->is_open = $value['is_open'];
-                                                    $modelRegistryBusinessHour->open_at = $value['open_at'];
-                                                    $modelRegistryBusinessHour->close_at = $value['close_at'];
+                                                    $modelRegistryBusinessHour->is_open = $registryBusinessHour['is_open'];
+                                                    $modelRegistryBusinessHour->open_at = $registryBusinessHour['open_at'];
+                                                    $modelRegistryBusinessHour->close_at = $registryBusinessHour['close_at'];
 
                                                     if ($modelRegistryBusinessHour->open_at == '00:00:00' && $modelRegistryBusinessHour->close_at == '24:00:00') {
 
-                                                        $is24Hour = true;
-                                                        
-                                                        $jscript .= '
-                                                            $(".field-registrybusinesshour-day" + "' . $i . '" + "-open_at").hide();
-                                                            $(".field-registrybusinesshour-day" + "' . $i . '" + "-close_at").hide();
-                                                
-                                                            $(".field-registrybusinesshour-day" + "' . $i . '" + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
-                                                
-                                                            $(".add-business-hour-day" + "' . $i . '").hide();
-                                                            $(".delete-business-hour-day" + "' . $i . '").hide();
-                                                        ';
-                                                        
+                                                        $is24Hour[$i - 1] = true;
                                                     }
                                                     
                                                     break;
@@ -533,7 +523,7 @@ $jscript = '
                                                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
                                                         <div class="form-group">
     
-                                                            <?= Html::checkbox('always24', $is24Hour, [
+                                                            <?= Html::checkbox('always24', $is24Hour[$i - 1], [
                                                                 'label' => Yii::t('app', '24 Hours'),
                                                                 'data-day' => $i,
                                                                 'class' => 'business-hour-24h',
@@ -579,69 +569,49 @@ $jscript = '
                                                 </div>
                                                 
                                                 <?php
-                                                if (!empty($dataRegistryBusinessHourAdditional)) {
+                                                if (!empty($dataRegistryBusinessHourAdditional[$dayName])) {
                                                     
                                                     $countAdditional = 0;
                                                     
-                                                    $jscript .= '
-                                                        indexHourCountArr["' . $i . '"] = 0;
-                                                    ';
+                                                    foreach ($dataRegistryBusinessHourAdditional[$dayName] as $registryBusinessHourAdditional) {
+                                                            
+                                                        $countAdditional++;
+                                                        $modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
+                                                        $modelRegistryBusinessHourAdditional->open_at = $registryBusinessHourAdditional['open_at'];
+                                                        $modelRegistryBusinessHourAdditional->close_at = $registryBusinessHourAdditional['close_at']; ?>
                                                     
-                                                    foreach ($dataRegistryBusinessHourAdditional as $valueAdditional) {
-                                                        
-                                                        if ($valueAdditional['day'] == $i) {
-                                                            
-                                                            $countAdditional++; 
-                                                            
-                                                            $modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
-                                                            $modelRegistryBusinessHourAdditional->open_at = $valueAdditional['open_at'];
-                                                            $modelRegistryBusinessHourAdditional->close_at = $valueAdditional['close_at']; ?>
-                                                        
-                                                            <div class="data-hour-form">
-                                                                <div class="row">
-                                                                    <div class="col-lg-2 col-lg-offset-5 col-md-3 col-sm-3 col-xs-4">
-                                                        
-                                                                        <?= $form->field($modelRegistryBusinessHourAdditional, '[day' . $valueAdditional['day'] . '][' . $countAdditional . ']open_at')
-                                                                            ->dropDownList($hours,[
-                                                                                'prompt' => '',
-                                                                                'class' => 'business-hour-time-additional open-additional',
-                                                                                'style' => 'width: 100%',
-                                                                                'disabled' => !$modelRegistryBusinessHour->is_open,
-                                                                            ]); ?>
-                                                        
-                                                                    </div>
-                                                                    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
-                                                        
-                                                                        <?= $form->field($modelRegistryBusinessHourAdditional, '[day' . $valueAdditional['day'] . '][' . $countAdditional . ']close_at')
-                                                                            ->dropDownList($hours,[
-                                                                                'prompt' => '',
-                                                                                'class' => 'business-hour-time-additional close-additional',
-                                                                                'style' => 'width: 100%',
-                                                                                'disabled' => !$modelRegistryBusinessHour->is_open,
-                                                                            ]); ?>
-                                                        
-                                                                    </div>
+                                                        <div class="data-hour-form">
+                                                            <div class="row">
+                                                                <div class="col-lg-2 col-lg-offset-5 col-md-3 col-sm-3 col-xs-4">
+                                                    
+                                                                    <?= $form->field($modelRegistryBusinessHourAdditional, '[day' . $registryBusinessHourAdditional['day'] . '][' . $countAdditional . ']open_at')
+                                                                        ->dropDownList($hours,[
+                                                                            'prompt' => '',
+                                                                            'class' => 'business-hour-time-additional open-additional',
+                                                                            'style' => 'width: 100%',
+                                                                            'disabled' => !$modelRegistryBusinessHour->is_open,
+                                                                        ]); ?>
+                                                    
+                                                                </div>
+                                                                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+                                                    
+                                                                    <?= $form->field($modelRegistryBusinessHourAdditional, '[day' . $registryBusinessHourAdditional['day'] . '][' . $countAdditional . ']close_at')
+                                                                        ->dropDownList($hours,[
+                                                                            'prompt' => '',
+                                                                            'class' => 'business-hour-time-additional close-additional',
+                                                                            'style' => 'width: 100%',
+                                                                            'disabled' => !$modelRegistryBusinessHour->is_open,
+                                                                        ]); ?>
+                                                    
                                                                 </div>
                                                             </div>
-                                                    
-                                                    		<?php
-                                                    		$jscript .= '
-                                                                indexHourCountArr["' . $i . '"]++;
-        
-                                                                $("#registrybusinesshouradditional-day" + "' . $i . '" + "-" + indexHourCountArr["' . $i . '"] + "-open_at").select2({
-                                                                    theme: "krajee",
-                                                                    placeholder: "' . Yii::t('app', 'Time Open') . '"
-                                                                });
-        
-                                                                $("#registrybusinesshouradditional-day" + "' . $i . '" + "-" + indexHourCountArr["' . $i . '"] + "-close_at").select2({
-                                                                    theme: "krajee",
-                                                                    placeholder: "' . Yii::t('app', 'Time Close') . '"
-                                                                });
-                                                            ';
-                                                		
-                                                        }
-                                                    }
-                                                    
+                                                            
+                                                            <?= Html::hiddenInput('HourCounter', $countAdditional, ['class' => 'counterHour']) ?>
+                                                            
+                                                        </div>
+                                                
+                                        		<?php
+                                                    }    
                                                 } ?>
                                             
                                             </div>
@@ -781,16 +751,16 @@ $jscript = '
                                                 indexCount = 0;
                                             ';
                             	            
-                            	            foreach ($dataRegistryBusinessContactPerson as $i => $value) {
+                            	            foreach ($dataRegistryBusinessContactPerson as $i => $contactPerson) {
                             	                
                             	                $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
-                            	                $modelPerson->first_name = $value['first_name'];
-                            	                $modelPerson->last_name = $value['last_name'];
-                            	                $modelPerson->phone = $value['phone'];
-                            	                $modelPerson->email = $value['email'];
-                            	                $modelRegistryBusinessContactPerson->is_primary_contact = $value['is_primary_contact'];
-                            	                $modelRegistryBusinessContactPerson->note = $value['note'];
-                            	                $modelRegistryBusinessContactPerson->position = $value['position']; ?>
+                            	                $modelPerson->first_name = $contactPerson['first_name'];
+                            	                $modelPerson->last_name = $contactPerson['last_name'];
+                            	                $modelPerson->phone = $contactPerson['phone'];
+                            	                $modelPerson->email = $contactPerson['email'];
+                            	                $modelRegistryBusinessContactPerson->is_primary_contact = $contactPerson['is_primary_contact'];
+                            	                $modelRegistryBusinessContactPerson->note = $contactPerson['note'];
+                            	                $modelRegistryBusinessContactPerson->position = $contactPerson['position']; ?>
                             	                
                             	                <div class="mb-10 data-form">
                                                     <hr>
@@ -1024,7 +994,82 @@ $this->registerCss($cssscript);
 $this->registerJsFile(Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-steps/build/jquery.steps.js', ['depends' => 'yii\web\YiiAsset']);
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
+$jscript .= '';
+
+foreach ($is24Hour as $i => $status24Hour) {
+    
+    $i++;
+    
+    if ($status24Hour) {
+        
+        $jscript .= '
+            $(".field-registrybusinesshour-day" + "' . $i . '" + "-open_at").hide();
+            $(".field-registrybusinesshour-day" + "' . $i . '" + "-close_at").hide();
+    
+            $(".field-registrybusinesshour-day" + "' . $i . '" + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
+    
+            $(".add-business-hour-day" + "' . $i . '").hide();
+            $(".delete-business-hour-day" + "' . $i . '").hide();
+        ';
+    }
+}
+
 $jscript .= '
+    $("#registrybusiness-address_type").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'Address Type') . '",
+        minimumResultsForSearch: Infinity
+    });
+
+    $("#registrybusiness-city_id").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'City ID') . '"
+    });
+
+    $("#registrybusinesscategory-category_id").select2({
+        theme: "krajee",
+        dropdownCssClass: "select2-grid-system",
+        placeholder: "' . Yii::t('app', 'Business Category') . '",
+    });
+
+    $("#registrybusinessproductcategory-product_category_id-parent").select2({
+        theme: "krajee",
+        dropdownCssClass: "select2-grid-system",
+        placeholder: "' . Yii::t('app', 'Product Category General') . '"
+    });
+
+    $("#registrybusinessproductcategory-product_category_id-child").select2({
+        theme: "krajee",
+        dropdownCssClass: "select2-grid-system",
+        placeholder: "' . Yii::t('app', 'Product Category Specific') . '"
+    });
+
+    $("#registrybusinessfacility-facility_id").select2({
+        theme: "krajee",
+        dropdownCssClass: "select2-grid-system",
+        placeholder: "' . Yii::t('app', 'Facility') . '"
+    });
+
+    $(".business-hour-time.open").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'Time Open') . '"
+    });
+
+    $(".business-hour-time.close").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'Time Close') . '"
+    });
+
+    $(".business-hour-time-additional.open-additional").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'Time Open') . '"
+    });
+
+    $(".business-hour-time-additional.close-additional").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'Time Close') . '"
+    });
+
     function district(executeRemote, afterSuccess) {
 
         function setDistrict(remoteData) {
@@ -1188,51 +1233,6 @@ $jscript .= '
         return contentClone;
     };
 
-    $("#registrybusiness-address_type").select2({
-        theme: "krajee",
-        placeholder: "' . Yii::t('app', 'Address Type') . '",
-        minimumResultsForSearch: Infinity
-    });
-
-    $("#registrybusiness-city_id").select2({
-        theme: "krajee",
-        placeholder: "' . Yii::t('app', 'City ID') . '"
-    });
-
-    $("#registrybusinesscategory-category_id").select2({
-        theme: "krajee",
-        dropdownCssClass: "select2-grid-system",
-        placeholder: "' . Yii::t('app', 'Business Category') . '",
-    });
-
-    $("#registrybusinessproductcategory-product_category_id-parent").select2({
-        theme: "krajee",
-        dropdownCssClass: "select2-grid-system",
-        placeholder: "' . Yii::t('app', 'Product Category General') . '"
-    });
-
-    $("#registrybusinessproductcategory-product_category_id-child").select2({
-        theme: "krajee",
-        dropdownCssClass: "select2-grid-system",
-        placeholder: "' . Yii::t('app', 'Product Category Specific') . '"
-    });
-
-    $("#registrybusinessfacility-facility_id").select2({
-        theme: "krajee",
-        dropdownCssClass: "select2-grid-system",
-        placeholder: "' . Yii::t('app', 'Facility') . '"
-    });
-
-    $(".business-hour-time.open").select2({
-        theme: "krajee",
-        placeholder: "' . Yii::t('app', 'Time Open') . '"
-    });
-
-    $(".business-hour-time.close").select2({
-        theme: "krajee",
-        placeholder: "' . Yii::t('app', 'Time Close') . '"
-    });
-
     $(".select2.select2-container").find("input.select2-search__field").css("width", "100%");
 
     district();
@@ -1368,8 +1368,10 @@ $jscript .= '
     $(".daysCount").each(function() {
 
         var thisObj = $(this);
+        
+        var counterHour = thisObj.parent().parent().siblings(".data-hour-form").last().find(".counterHour");
 
-        var indexHourCount = (indexHourCountArr[thisObj.val()] == null ? 0 : indexHourCountArr[thisObj.val()]);
+        var indexHourCount = (counterHour.length ? counterHour.val() : 0);
 
         $(".business-hour-is-open.day-" + thisObj.val()).on("ifChecked", function(e) {
 
@@ -1469,16 +1471,6 @@ $jscript .= '
                 $("#registrybusinesshouradditional-day"  + elemDay + "-" + indexHourCount + "-open_at").removeAttr("disabled");
                 $("#registrybusinesshouradditional-day"  + elemDay + "-" + indexHourCount + "-close_at").removeAttr("disabled");
             }
-
-            $("#registrybusinesshouradditional-day" + elemDay + "-" + indexHourCount + "-open_at").select2({
-                theme: "krajee",
-                placeholder: "' . Yii::t('app', 'Time Open') . '"
-            });
-        
-            $("#registrybusinesshouradditional-day" + elemDay + "-" + indexHourCount + "-close_at").select2({
-                theme: "krajee",
-                placeholder: "' . Yii::t('app', 'Time Close') . '"
-            });
 
             return false;
         });
