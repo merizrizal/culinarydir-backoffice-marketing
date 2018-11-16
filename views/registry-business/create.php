@@ -958,7 +958,7 @@ $this->registerJsFile(Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-st
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript = '
-    var indexCount = ' . (count($dataRegistryBusinessContactPerson) - 1) . ';
+    var indexCount = ' . count($dataRegistryBusinessContactPerson) . ';
 
     $("#registrybusiness-address_type").select2({
         theme: "krajee",
@@ -1241,8 +1241,6 @@ $jscript = '
 
     $(".add-contact-person").on("click", function() {
 
-        indexCount++;
-
         var formContactPerson = $(".temp-form").clone();
 
         formContactPerson = replaceComponent(formContactPerson, "person-index-first_name", "index", indexCount);
@@ -1267,6 +1265,8 @@ $jscript = '
             minimumResultsForSearch: "Infinity"
         });
 
+        indexCount++;
+
         return false;
     });
 
@@ -1274,7 +1274,7 @@ $jscript = '
 
         $(".main-form").children(".data-form").last().remove();
         
-        if (indexCount >= 0) {
+        if (indexCount > 0) {
 
             indexCount--;
         }

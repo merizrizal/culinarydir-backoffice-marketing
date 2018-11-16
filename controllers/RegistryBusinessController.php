@@ -298,9 +298,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 
                                 $newModelPerson = new Person();
                                 $newModelPerson->first_name = $dataPerson['first_name'];
-                                $newModelPerson->last_name = $dataPerson['last_name'];
-                                $newModelPerson->phone = $dataPerson['phone'];
-                                $newModelPerson->email = $dataPerson['email'];
+                                $newModelPerson->last_name = !empty($dataPerson['last_name']) ? $dataPerson['last_name'] : null;
+                                $newModelPerson->phone = !empty($dataPerson['phone']) ? $dataPerson['phone'] : null;
+                                $newModelPerson->email = !empty($dataPerson['email']) ? $dataPerson['email'] : null;
 
                                 if (!($flag = $newModelPerson->save())) {
                                     
@@ -501,6 +501,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             <li>' . Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
+                            <li>' . Html::a(Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
                         </ul>
                     </div>
@@ -544,6 +545,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             <li>' . Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
+                            <li>' . Html::a(Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
                         </ul>
                     </div>
@@ -638,12 +640,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         $modelRegistryBusinessFacility = new RegistryBusinessFacility();
         $dataRegistryBusinessFacility = [];
-
-        $modelRegistryBusinessHour = new RegistryBusinessHour();
-        $dataRegistryBusinessHour = [];
-        
-        $modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
-        $dataRegistryBusinessHourAdditional = [];
         
         if ($model->load(($post = Yii::$app->request->post()))) {
 
@@ -932,82 +928,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
-                    $loopDays = ['1', '2', '3', '4', '5', '6', '7'];
-
-                    foreach ($loopDays as $day) {
-
-                        $dayName = 'day' . $day;
-
-                        if (!empty($post['RegistryBusinessHour'][$dayName])) {
-                            
-                            $newModelRegistryBusinessHourDay = RegistryBusinessHour::findOne(['unique_id' => $model->id . '-' . $day]);
-
-                            if (empty($newModelRegistryBusinessHourDay)) {
-
-                                $newModelRegistryBusinessHourDay = new RegistryBusinessHour();
-                                $newModelRegistryBusinessHourDay->registry_business_id = $model->id;
-                                $newModelRegistryBusinessHourDay->unique_id = $model->id . '-' . $day;
-                                $newModelRegistryBusinessHourDay->day = $day;
-                            }
-
-                            $newModelRegistryBusinessHourDay->is_open = !empty($post['RegistryBusinessHour'][$dayName]['is_open']) ? true : false;
-                            $newModelRegistryBusinessHourDay->open_at = !empty($post['RegistryBusinessHour'][$dayName]['open_at']) ? $post['RegistryBusinessHour'][$dayName]['open_at'] : null;
-                            $newModelRegistryBusinessHourDay->close_at = !empty($post['RegistryBusinessHour'][$dayName]['close_at']) ? $post['RegistryBusinessHour'][$dayName]['close_at'] : null;
-
-                            if (!($flag = $newModelRegistryBusinessHourDay->save())) {
-                                
-                                break;
-                            } else {
-                                
-                                array_push($dataRegistryBusinessHour, $newModelRegistryBusinessHourDay->toArray());
-                            }
-                        }
-                        
-                        if (!empty($post['RegistryBusinessHourAdditionalDeleted'][$dayName])) {
-                        
-                            $flag = RegistryBusinessHourAdditional::deleteAll(['id' => $post['RegistryBusinessHourAdditionalDeleted'][$dayName]]);
-                        }
-                        
-                        if (!empty($post['RegistryBusinessHourAdditional'][$dayName])) {
-                            
-                            foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $businessHourAdditional) {
-                                
-                                if (!empty($businessHourAdditional['open_at']) || !empty($businessHourAdditional['close_at'])) {
-                                
-                                    $newModelRegistryBusinessHourAdditional = RegistryBusinessHourAdditional::findOne(['unique_id' => $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i)]);
-                                    
-                                    if (empty($newModelRegistryBusinessHourAdditional)) {
-                                        
-                                        $newModelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
-                                        $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i);
-                                        $newModelRegistryBusinessHourAdditional->registry_business_hour_id = $newModelRegistryBusinessHourDay->id;
-                                        $newModelRegistryBusinessHourAdditional->day = $day;
-                                    }
-                                    
-                                    $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
-                                    $newModelRegistryBusinessHourAdditional->open_at = !empty($businessHourAdditional['open_at']) ? $businessHourAdditional['open_at'] : null;
-                                    $newModelRegistryBusinessHourAdditional->close_at = !empty($businessHourAdditional['close_at']) ? $businessHourAdditional['close_at'] : null;
-                                    
-                                    if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
-                                        
-                                        break;
-                                    } else {
-                                        
-                                        if (empty($dataRegistryBusinessHourAdditional[$dayName])) {
-                                            
-                                            $dataRegistryBusinessHourAdditional[$dayName] = [];
-                                        }
-                                        
-                                        array_push($dataRegistryBusinessHourAdditional[$dayName], $newModelRegistryBusinessHourAdditional->toArray());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if ($flag) {
-
                     Yii::$app->session->setFlash('status', 'success');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
@@ -1044,26 +964,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         $dataRegistryBusinessProductCategoryParent = empty($dataRegistryBusinessProductCategoryParent) ? $registryBusinessProductCategoryParent : $dataRegistryBusinessProductCategoryParent;
         $dataRegistryBusinessProductCategoryChild = empty($dataRegistryBusinessProductCategoryChild) ? $registryBusinessProductCategoryChild : $dataRegistryBusinessProductCategoryChild;
-        
-        $dataRegistryBusinessHour = empty($dataRegistryBusinessHour) ? $model->registryBusinessHours : $dataRegistryBusinessHour;
-        
-        if (empty($dataRegistryBusinessHourAdditional)) {
-        
-            foreach ($dataRegistryBusinessHour as $businessHour) {
-                
-                $dayName = 'day' . $businessHour['day'];
-                
-                $dataRegistryBusinessHourAdditional[$dayName] = [];
-                    
-                if (!empty($businessHour['registryBusinessHourAdditionals'])) {
-                    
-                    foreach ($businessHour['registryBusinessHourAdditionals'] as $businessHourAdditional) {
-                        
-                        array_push($dataRegistryBusinessHourAdditional[$dayName], $businessHourAdditional);
-                    }
-                }
-            }
-        }
 
         $dataRegistryBusinessFacility = empty($dataRegistryBusinessFacility) ? $model->registryBusinessFacilities : $dataRegistryBusinessFacility;
 
@@ -1076,10 +976,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'dataRegistryBusinessProductCategoryChild' => $dataRegistryBusinessProductCategoryChild,
             'modelRegistryBusinessFacility' => $modelRegistryBusinessFacility,
             'dataRegistryBusinessFacility' => $dataRegistryBusinessFacility,
-            'modelRegistryBusinessHour' => $modelRegistryBusinessHour,
-            'dataRegistryBusinessHour' => $dataRegistryBusinessHour,
-            'modelRegistryBusinessHourAdditional' => $modelRegistryBusinessHourAdditional,
-            'dataRegistryBusinessHourAdditional' => $dataRegistryBusinessHourAdditional,
             'statusApproval' => $statusApproval,
         ]);
     }
@@ -1358,6 +1254,163 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'modelPerson' => $modelPerson,
             'modelRegistryBusinessContactPerson' => $modelRegistryBusinessContactPerson,
             'dataRegistryBusinessContactPerson' => $dataRegistryBusinessContactPerson,
+            'statusApproval' => $statusApproval,
+        ]);
+    }
+    
+    public function actionUpdateBusinessHour($id, $statusApproval, $save = null)
+    {
+        $model = RegistryBusiness::find()
+            ->joinWith([
+                'registryBusinessHours' => function($query) {
+                
+                    $query->orderBy(['registry_business_hour.day' => SORT_ASC]);
+                },
+                'registryBusinessHours.registryBusinessHourAdditionals',
+            ])
+            ->andWhere(['registry_business.id' => $id])
+            ->one();
+            
+        $modelRegistryBusinessHour = new RegistryBusinessHour();
+        $dataRegistryBusinessHour = [];
+        
+        $modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
+        $dataRegistryBusinessHourAdditional = [];
+        
+        $isDeletedAll = false;
+        
+        if (!empty($post = Yii::$app->request->post())) {
+            
+            if (empty($save)) {
+                
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ActiveForm::validate($model);
+            } else {
+                
+                $transaction = Yii::$app->db->beginTransaction();
+                $flag = false;
+                
+                $loopDays = ['1', '2', '3', '4', '5', '6', '7'];
+                
+                foreach ($loopDays as $day) {
+                    
+                    $dayName = 'day' . $day;
+                    
+                    if (!empty($post['RegistryBusinessHour'][$dayName])) {
+                        
+                        $newModelRegistryBusinessHourDay = RegistryBusinessHour::findOne(['unique_id' => $model->id . '-' . $day]);
+                        
+                        if (empty($newModelRegistryBusinessHourDay)) {
+                            
+                            $newModelRegistryBusinessHourDay = new RegistryBusinessHour();
+                            $newModelRegistryBusinessHourDay->registry_business_id = $model->id;
+                            $newModelRegistryBusinessHourDay->unique_id = $model->id . '-' . $day;
+                            $newModelRegistryBusinessHourDay->day = $day;
+                        }
+                        
+                        $newModelRegistryBusinessHourDay->is_open = !empty($post['RegistryBusinessHour'][$dayName]['is_open']) ? true : false;
+                        $newModelRegistryBusinessHourDay->open_at = !empty($post['RegistryBusinessHour'][$dayName]['open_at']) ? $post['RegistryBusinessHour'][$dayName]['open_at'] : null;
+                        $newModelRegistryBusinessHourDay->close_at = !empty($post['RegistryBusinessHour'][$dayName]['close_at']) ? $post['RegistryBusinessHour'][$dayName]['close_at'] : null;
+                        
+                        if (!($flag = $newModelRegistryBusinessHourDay->save())) {
+                            
+                            break;
+                        } else {
+                            
+                            array_push($dataRegistryBusinessHour, $newModelRegistryBusinessHourDay->toArray());
+                        }
+                    }
+                    
+                    if (!empty($post['RegistryBusinessHourAdditionalDeleted'][$dayName])) {
+                        
+                        $flag = RegistryBusinessHourAdditional::deleteAll(['id' => $post['RegistryBusinessHourAdditionalDeleted'][$dayName]]);
+                        $isDeletedAll = empty($post['RegistryBusinessHourAdditional']);
+                    }
+                    
+                    if (!empty($post['RegistryBusinessHourAdditional'][$dayName])) {
+                        
+                        foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $businessHourAdditional) {
+                            
+                            if (!empty($businessHourAdditional['open_at']) || !empty($businessHourAdditional['close_at'])) {
+                                
+                                $newModelRegistryBusinessHourAdditional = RegistryBusinessHourAdditional::findOne(['unique_id' => $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i)]);
+                                
+                                if (empty($newModelRegistryBusinessHourAdditional)) {
+                                    
+                                    $newModelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
+                                    $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i);
+                                    $newModelRegistryBusinessHourAdditional->registry_business_hour_id = $newModelRegistryBusinessHourDay->id;
+                                    $newModelRegistryBusinessHourAdditional->day = $day;
+                                }
+                                
+                                $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
+                                $newModelRegistryBusinessHourAdditional->open_at = !empty($businessHourAdditional['open_at']) ? $businessHourAdditional['open_at'] : null;
+                                $newModelRegistryBusinessHourAdditional->close_at = !empty($businessHourAdditional['close_at']) ? $businessHourAdditional['close_at'] : null;
+                                
+                                if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
+                                    
+                                    break;
+                                } else {
+                                    
+                                    if (empty($dataRegistryBusinessHourAdditional[$dayName])) {
+                                        
+                                        $dataRegistryBusinessHourAdditional[$dayName] = [];
+                                    }
+                                    
+                                    array_push($dataRegistryBusinessHourAdditional[$dayName], $newModelRegistryBusinessHourAdditional->toArray());
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if ($flag) {
+                    
+                    Yii::$app->session->setFlash('status', 'success');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    
+                    $transaction->commit();
+                } else {
+                    
+                    Yii::$app->session->setFlash('status', 'danger');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    
+                    $transaction->rollBack();
+                }
+            }
+        }
+        
+        $dataRegistryBusinessHour = empty($dataRegistryBusinessHour) ? $model->registryBusinessHours : $dataRegistryBusinessHour;
+        
+        if (!$isDeletedAll) {
+        
+            if (empty($dataRegistryBusinessHourAdditional)) {
+                
+                foreach ($dataRegistryBusinessHour as $businessHour) {
+                    
+                    $dayName = 'day' . $businessHour['day'];
+                    
+                    $dataRegistryBusinessHourAdditional[$dayName] = [];
+                    
+                    if (!empty($businessHour['registryBusinessHourAdditionals'])) {
+                        
+                        foreach ($businessHour['registryBusinessHourAdditionals'] as $businessHourAdditional) {
+                            
+                            array_push($dataRegistryBusinessHourAdditional[$dayName], $businessHourAdditional);
+                        }
+                    }
+                }
+            }
+        }
+            
+        return $this->render('update_business_hour', [
+            'model' => $model,
+            'modelRegistryBusinessHour' => $modelRegistryBusinessHour,
+            'dataRegistryBusinessHour' => $dataRegistryBusinessHour,
+            'modelRegistryBusinessHourAdditional' => $modelRegistryBusinessHourAdditional,
+            'dataRegistryBusinessHourAdditional' => $dataRegistryBusinessHourAdditional,
             'statusApproval' => $statusApproval,
         ]);
     }
