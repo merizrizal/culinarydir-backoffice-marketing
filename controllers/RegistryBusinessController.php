@@ -72,7 +72,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         $modelRegistryBusinessImage = new RegistryBusinessImage();
         $modelRegistryBusinessImage->setScenario(RegistryBusinessImage::SCENARIO_CREATE);
-        $dataRegistryBusinessImage = [];
         
         $modelPerson = new Person();        
         $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
@@ -296,7 +295,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                         if (!empty($post['Person']) && !empty($post['RegistryBusinessContactPerson'])) {
 
                             foreach ($post['Person'] as $i => $dataPerson) {
-                                    
+                                
                                 $newModelPerson = new Person();
                                 $newModelPerson->first_name = $dataPerson['first_name'];
                                 $newModelPerson->last_name = $dataPerson['last_name'];
@@ -364,7 +363,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'modelRegistryBusinessHourAdditional' => $modelRegistryBusinessHourAdditional,
             'dataRegistryBusinessHourAdditional' => $dataRegistryBusinessHourAdditional,
             'modelRegistryBusinessImage' => $modelRegistryBusinessImage,
-            'dataRegistryBusinessImage' => $dataRegistryBusinessImage,
             'modelPerson' => $modelPerson,
             'modelRegistryBusinessContactPerson' => $modelRegistryBusinessContactPerson,
             'dataRegistryBusinessContactPerson' => $dataRegistryBusinessContactPerson

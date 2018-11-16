@@ -473,13 +473,11 @@ $this->registerJs($jscript); ?>
                                         <?php
                                         $days = Yii::$app->params['days'];
                                         $hours = Yii::$app->params['hours'];
-                                        
-                                        $is24Hour = [];
 
                                         foreach ($days as $i => $day):
                                         
                                             $i++;
-                                            $is24Hour[$i - 1] = false;
+                                            $is24Hour = false;
                                             $dayName = 'day' . $i;
 
                                             foreach ($dataRegistryBusinessHour as $registryBusinessHour) {
@@ -492,14 +490,14 @@ $this->registerJs($jscript); ?>
 
                                                     if ($modelRegistryBusinessHour->open_at == '00:00:00' && $modelRegistryBusinessHour->close_at == '24:00:00') {
 
-                                                        $is24Hour[$i - 1] = true;
+                                                        $is24Hour = true;
                                                     }
                                                     
                                                     break;
                                                 }
                                             } ?>
                                                 
-											<div>
+											<div class="main-hour-form">
                                                 <div class="row">
                                                     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
     
@@ -508,20 +506,18 @@ $this->registerJs($jscript); ?>
                                                     </div>
                                                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
     
-                                                        <?= $form->field($modelRegistryBusinessHour, '[day' . $i . ']is_open')
+                                                        <?= $form->field($modelRegistryBusinessHour, '[' . $dayName . ']is_open')
                                                             ->checkbox([
                                                                 'label' => Yii::t('app', 'Open'),
                                                                 'class' => 'business-hour-is-open day-' . $i,
-                                                                'data-day' => $i,
                                                             ]); ?>
     
                                                     </div>
                                                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
                                                         <div class="form-group">
     
-                                                            <?= Html::checkbox('always24', $is24Hour[$i - 1], [
+                                                            <?= Html::checkbox('always24', $is24Hour, [
                                                                 'label' => Yii::t('app', '24 Hours'),
-                                                                'data-day' => $i,
                                                                 'class' => 'business-hour-24h',
                                                                 'disabled' => !$modelRegistryBusinessHour->is_open,
                                                                 'id' => 'business-hour-24h-' . $i
@@ -534,7 +530,7 @@ $this->registerJs($jscript); ?>
     
                                                     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
     
-                                                        <?= $form->field($modelRegistryBusinessHour, '[day' . $i . ']open_at')
+                                                        <?= $form->field($modelRegistryBusinessHour, '[' . $dayName . ']open_at')
                                                             ->dropDownList($hours, [
                                                                 'prompt' => '',
                                                                 'class' => 'business-hour-time open',
@@ -545,7 +541,7 @@ $this->registerJs($jscript); ?>
                                                     </div>
                                                     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
     
-                                                        <?= $form->field($modelRegistryBusinessHour, '[day' . $i . ']close_at')
+                                                        <?= $form->field($modelRegistryBusinessHour, '[' . $dayName . ']close_at')
                                                             ->dropDownList($hours, [
                                                                 'prompt' => '',
                                                                 'class' => 'business-hour-time close',
@@ -556,20 +552,20 @@ $this->registerJs($jscript); ?>
                                                     </div>
                                                     <div class="col-lg-3 col-md-6 col-sm-3 col-xs-4">
                                                     	
-                                                    	<?= Html::hiddenInput('day', $i, ['class' => 'daysCount']) ?>
+                                                    	<?= Html::hiddenInput('day', $i, ['class' => 'days-count']) ?>
                                                     	
-                                                        <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default add-business-hour-day' . $i, 'data-day' => $i]) ?>
-                                                        <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default delete-business-hour-day' . $i, 'data-day' => $i]) ?>
+                                                        <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default', 'id' =>'add-business-hour-' . $dayName]) ?>
+                                                        <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default', 'id' => 'delete-business-hour-' . $dayName]) ?>
                                                         
                                                     </div>
                                                 </div>
                                                 
                                                 <?php
-                                                if (!empty($dataRegistryBusinessHourAdditional[$dayName])) {
+                                                if (!empty($dataRegistryBusinessHourAdditional[$dayName])):
                                                     
                                                     $countAdditional = 0;
                                                     
-                                                    foreach ($dataRegistryBusinessHourAdditional[$dayName] as $registryBusinessHourAdditional) {
+                                                    foreach ($dataRegistryBusinessHourAdditional[$dayName] as $registryBusinessHourAdditional):
                                                             
                                                         $countAdditional++;
                                                         $modelRegistryBusinessHourAdditional->open_at = $registryBusinessHourAdditional['open_at'];
@@ -579,8 +575,8 @@ $this->registerJs($jscript); ?>
                                                             <div class="row">
                                                                 <div class="col-lg-2 col-lg-offset-5 col-md-3 col-sm-3 col-xs-4">
                                                     
-                                                                    <?= $form->field($modelRegistryBusinessHourAdditional, '[day' . $registryBusinessHourAdditional['day'] . '][' . $countAdditional . ']open_at')
-                                                                        ->dropDownList($hours,[
+                                                                    <?= $form->field($modelRegistryBusinessHourAdditional, '[' . $dayName . '][' . $countAdditional . ']open_at')
+                                                                        ->dropDownList($hours, [
                                                                             'prompt' => '',
                                                                             'class' => 'business-hour-time-additional open-additional',
                                                                             'style' => 'width: 100%',
@@ -590,8 +586,8 @@ $this->registerJs($jscript); ?>
                                                                 </div>
                                                                 <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
                                                     
-                                                                    <?= $form->field($modelRegistryBusinessHourAdditional, '[day' . $registryBusinessHourAdditional['day'] . '][' . $countAdditional . ']close_at')
-                                                                        ->dropDownList($hours,[
+                                                                    <?= $form->field($modelRegistryBusinessHourAdditional, '[' . $dayName . '][' . $countAdditional . ']close_at')
+                                                                        ->dropDownList($hours, [
                                                                             'prompt' => '',
                                                                             'class' => 'business-hour-time-additional close-additional',
                                                                             'style' => 'width: 100%',
@@ -605,9 +601,9 @@ $this->registerJs($jscript); ?>
                                                             
                                                         </div>
                                                 
-                                        		<?php
-                                                    }    
-                                                } ?>
+                                    				<?php
+                                                    endforeach;
+                                                endif; ?>
                                             
                                             </div>
                                             
@@ -674,43 +670,6 @@ $this->registerJs($jscript); ?>
 
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-sm-10 col-sm-offset-2">
-                                                <div class="row">
-
-                                                    <?php
-                                                    foreach ($dataRegistryBusinessImage as $registryBusinessImage): ?>
-
-                                                        <div class="col-xs-3">
-                                                            <div class="thumbnail">
-                                                                <div class="image view view-first">
-                                                                
-                                                                    <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_business/', $registryBusinessImage['image'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
-                                                                    
-                                                                    <div class="mask">
-                                                                        <p>&nbsp;</p>
-                                                                        <div class="tools tools-bottom">
-                                                                            <a class="show-image direct" href="<?= Yii::getAlias('@uploadsUrl') . '/img/registry_business/' . $registryBusinessImage['image'] ?>"><i class="fa fa-search"></i></a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="text-center mt-10">
-                                                                
-                                                                    <?= Html::checkbox('RegistryBusinessImageDelete[]', false, ['class' => 'form-control', 'label' => 'Delete', 'value' => $registryBusinessImage['id']]) ?>
-                                                                
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                    <?php
-                                                    endforeach; ?>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="row">
                                             <div class="col-sm-2">
 
                                                 <?= Html::label(Yii::t('app', 'Foto')) ?>
@@ -740,9 +699,9 @@ $this->registerJs($jscript); ?>
                                 	<div class="main-form">
                                 	
                                     	<?php
-                            	        if (!empty($dataRegistryBusinessContactPerson)) {
+                            	        if (!empty($dataRegistryBusinessContactPerson)):
                             	            
-                            	            foreach ($dataRegistryBusinessContactPerson as $i => $contactPerson) {
+                            	            foreach ($dataRegistryBusinessContactPerson as $i => $contactPerson):
                             	                
                             	                $modelPerson->first_name = $contactPerson['first_name'];
                             	                $modelPerson->last_name = $contactPerson['last_name'];
@@ -756,19 +715,19 @@ $this->registerJs($jscript); ?>
                                                     <div class="row mt-10">
                                                         <div class="col-md-4 col-xs-6">
                                                         
-                                                            <?= $form->field($modelPerson, '[' . ($i+1) .']first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
+                                                            <?= $form->field($modelPerson, '[' . $i .']first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
                                                             
                                                         </div>
                                             
                                                         <div class="col-md-4 col-xs-6">
                                                         
-                                                            <?= $form->field($modelPerson, '[' . ($i+1) .']last_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Last Name')]) ?>
+                                                            <?= $form->field($modelPerson, '[' . $i .']last_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Last Name')]) ?>
                                                             
                                                         </div>
                                             
                                                         <div class="col-md-4 col-xs-12">
                                                         
-                                                        	<?= $form->field($modelRegistryBusinessContactPerson, '[' . ($i+1) .']position')
+                                                        	<?= $form->field($modelRegistryBusinessContactPerson, '[' . $i .']position')
                                                         	    ->dropDownList([
                                                         	       'Owner' => 'Owner', 
                                                         	       'Manager' => 'Manager', 
@@ -776,7 +735,8 @@ $this->registerJs($jscript); ?>
                                                         	    ], 
                                                     	        [
                                                     	           'prompt' => Yii::t('app', 'Position'),
-                                                	               'class' => 'contact-person-position'
+                                                	               'class' => 'contact-person-position',
+                                                    	            'style' => 'width: 100%'
                                                     	        ]); ?>
                                                         	
                                                         </div>
@@ -785,7 +745,7 @@ $this->registerJs($jscript); ?>
                                                     <div class="row">
                                                         <div class="col-md-4 col-xs-6">
                                                         
-                                                            <?= $form->field($modelPerson, '[' . ($i+1) .']phone')->widget(MaskedInput::className(), [
+                                                            <?= $form->field($modelPerson, '[' . $i .']phone')->widget(MaskedInput::className(), [
                                                                 'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                                                 'options' => [
                                                                     'class' => 'form-control',
@@ -797,7 +757,7 @@ $this->registerJs($jscript); ?>
                                             
                                                         <div class="col-md-4 col-xs-6">
                                                         
-                                                            <?= $form->field($modelPerson, '[' . ($i+1) .']email', [
+                                                            <?= $form->field($modelPerson, '[' . $i .']email', [
                                                                 'enableAjaxValidation' => true
                                                             ])->textInput([
                                                                 'class' => 'form-control',
@@ -808,7 +768,7 @@ $this->registerJs($jscript); ?>
                                             
                                                         <div class="col-md-4 col-xs-6">
                                                         
-                                                        	<?= $form->field($modelRegistryBusinessContactPerson, '[' . ($i+1) .']is_primary_contact')->checkbox(['class' => 'contact-person-is-primary-contact']) ?>
+                                                        	<?= $form->field($modelRegistryBusinessContactPerson, '[' . $i .']is_primary_contact')->checkbox(['class' => 'contact-person-is-primary-contact']) ?>
                                                         	
                                                         </div>
                                                     </div>
@@ -816,15 +776,15 @@ $this->registerJs($jscript); ?>
                                                     <div class="row">
                                                     	<div class="col-md-8 col-xs-12">
                                                     	
-                                                            <?= $form->field($modelRegistryBusinessContactPerson, '[' . ($i+1) .']note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                                                            <?= $form->field($modelRegistryBusinessContactPerson, '[' . $i .']note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
                                                             
                                                         </div>
                                                     </div>
                                                 </div>
                                                 
-                                        <?php
-                            	            }
-                            	        } ?>
+                                        	<?php
+                            	            endforeach;
+                            	        endif; ?>
                             	        
                         	        </div>
                                 	
@@ -849,14 +809,13 @@ $this->registerJs($jscript); ?>
     </div>
 </div>
 
+<?php
+$modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
+$modelPerson = new Person(); ?>
+
 <div class="temp-form hide">
     <div class="mb-40 data-form">
         <div class="row mt-10">
-        	
-        	<?php
-        	$modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
-        	$modelPerson = new Person(); ?>
-        
             <div class="col-md-4 col-xs-6">
             
                 <?= $form->field($modelPerson, '[index]first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
@@ -927,17 +886,16 @@ $this->registerJs($jscript); ?>
     </div>
 </div>
 
+<?php
+$modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional(); ?>
+
 <div class="additional-hour-temp-form hide">
     <div class="data-hour-form">
         <div class="row">
-        	
-        	<?php
-        	$modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional(); ?>
-        
-            <div class="col-lg-2 col-lg-offset-5 col-md-3 col-sm-3 col-xs-4">
+        	<div class="col-lg-2 col-lg-offset-5 col-md-3 col-sm-3 col-xs-4">
 
                 <?= $form->field($modelRegistryBusinessHourAdditional, '[dayidx][index]open_at')
-                    ->dropDownList($hours,[
+                    ->dropDownList($hours, [
                         'prompt' => '',
                         'class' => 'business-hour-time-additional open-additional',
                         'style' => 'width: 100%',
@@ -948,7 +906,7 @@ $this->registerJs($jscript); ?>
             <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
 
                 <?= $form->field($modelRegistryBusinessHourAdditional, '[dayidx][index]close_at')
-                    ->dropDownList($hours,[
+                    ->dropDownList($hours, [
                         'prompt' => '',
                         'class' => 'business-hour-time-additional close-additional',
                         'style' => 'width: 100%',
@@ -999,28 +957,8 @@ $this->registerCss($cssscript);
 $this->registerJsFile(Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-steps/build/jquery.steps.js', ['depends' => 'yii\web\YiiAsset']);
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
-$jscript = '';
-
-foreach ($is24Hour as $i => $status24Hour) {
-    
-    $i++;
-    
-    if ($status24Hour) {
-        
-        $jscript .= '
-            $(".field-registrybusinesshour-day" + "' . $i . '" + "-open_at").hide();
-            $(".field-registrybusinesshour-day" + "' . $i . '" + "-close_at").hide();
-    
-            $(".field-registrybusinesshour-day" + "' . $i . '" + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
-    
-            $(".add-business-hour-day" + "' . $i . '").hide();
-            $(".delete-business-hour-day" + "' . $i . '").hide();
-        ';
-    }
-}
-
-$jscript .= '
-    var indexCount = ' . count($dataRegistryBusinessContactPerson) . ';
+$jscript = '
+    var indexCount = ' . (count($dataRegistryBusinessContactPerson) - 1) . ';
 
     $("#registrybusiness-address_type").select2({
         theme: "krajee",
@@ -1252,8 +1190,6 @@ $jscript .= '
 
     village();
 
-    addValidator(indexCount);
-
     $("#registrybusiness-city_id").val(1).trigger("change");
 
     $("#registrybusiness-city_id").on("select2:select", function(e) {
@@ -1325,7 +1261,7 @@ $jscript .= '
 
         Yii::$app->params['checkbox-radio-script'](null, null, '#registrybusinesscontactperson-" + indexCount + "-is_primary_contact') . '
 
-        $(".main-form").find(".data-form").last().find(".contact-person-position").select2({
+        $(".main-form").find(".contact-person-position").select2({
             theme: "krajee",
             placeholder: "' . Yii::t('app', 'Position') . '",
             minimumResultsForSearch: "Infinity"
@@ -1338,7 +1274,7 @@ $jscript .= '
 
         $(".main-form").children(".data-form").last().remove();
         
-        if (indexCount > 0) {
+        if (indexCount >= 0) {
 
             indexCount--;
         }
@@ -1351,10 +1287,10 @@ $jscript .= '
         $(".business-hour-is-open").each(function() {
 
             var thisObj = $(this);
-            var rootParentThisObj = thisObj.parent().parent().parent().parent().parent();
+            var rootParentThisObj = thisObj.parents(".main-hour-form");
 
             var businessHourIsOpenDay1 = $(".business-hour-is-open.day-1");
-            var rootParentbusinessHourIsOpen = $(".business-hour-is-open.day-1").parent().parent().parent().parent().parent();
+            var rootParentbusinessHourIsOpen = $(".business-hour-is-open.day-1").parents(".main-hour-form");
 
             var businessHourIsOpen = "uncheck";
             var businessHour24h = "uncheck";
@@ -1378,7 +1314,7 @@ $jscript .= '
         return false;
     });
 
-    $(".daysCount").each(function() {
+    $(".days-count").each(function() {
 
         var thisObj = $(this);
         
@@ -1386,62 +1322,63 @@ $jscript .= '
 
         var indexHourCount = (counterHour.length ? counterHour.val() : 0);
 
-        $(".business-hour-is-open.day-" + thisObj.val()).on("ifChecked", function(e) {
+        if ($("#business-hour-24h-" + thisObj.val()).is(":checked")) {
 
-            var elemDay = $(this).data("day");
+            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").parent().hide();
+            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").parent().hide();
     
-            $("#business-hour-24h-" + elemDay).iCheck("enable");
+            $("#add-business-hour-day" + thisObj.val()).hide();
+            $("#delete-business-hour-day" + thisObj.val()).hide();
+        }
 
-            $("#registrybusinesshour-day"  + elemDay + "-open_at").removeAttr("disabled");
-            $("#registrybusinesshour-day"  + elemDay + "-close_at").removeAttr("disabled");
+        $("#registrybusinesshour-day" + thisObj.val() + "-is_open").on("ifChecked", function(e) {
+    
+            $("#business-hour-24h-" + thisObj.val()).iCheck("enable");
+
+            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").removeAttr("disabled");
+            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").removeAttr("disabled");
             
             for (var counter = 1; counter <= indexHourCount; counter++) {
 
-                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-open_at").removeAttr("disabled");
-                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-close_at").removeAttr("disabled");
+                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").removeAttr("disabled");
+                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-close_at").removeAttr("disabled");
             }
         });
     
-        $(".business-hour-is-open.day-" + thisObj.val()).on("ifUnchecked", function(e) {
+        $("#registrybusinesshour-day" + thisObj.val() + "-is_open").on("ifUnchecked", function(e) {
     
-            var elemDay = $(this).data("day");
-    
-            $("#business-hour-24h-" + elemDay).iCheck("disable");
-            $("#business-hour-24h-" + elemDay).iCheck("uncheck");
-            $("#registrybusinesshour-day"  + elemDay + "-open_at").attr("disabled","disabled");
-            $("#registrybusinesshour-day"  + elemDay + "-open_at").val(null).trigger("change");
+            $("#business-hour-24h-" + thisObj.val()).iCheck("disable");
+            $("#business-hour-24h-" + thisObj.val()).iCheck("uncheck");
+            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").attr("disabled","disabled");
+            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").val(null).trigger("change");
 
-            $("#registrybusinesshour-day"  + elemDay + "-close_at").attr("disabled","disabled");
-            $("#registrybusinesshour-day"  + elemDay + "-close_at").val(null).trigger("change");
+            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").attr("disabled","disabled");
+            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").val(null).trigger("change");
     
             for (var counter = 1; counter <= indexHourCount; counter++) {
                 
-                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-open_at").attr("disabled","disabled");
-                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-open_at").val(null).trigger("change");
+                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").attr("disabled","disabled");
+                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").val(null).trigger("change");
 
-                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-close_at").attr("disabled","disabled");
-                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-close_at").val(null).trigger("change");
+                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-close_at").attr("disabled","disabled");
+                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-close_at").val(null).trigger("change");
             }
         });
     
         $("#business-hour-24h-" + thisObj.val()).on("ifChecked", function(e) {
     
-            var elemDay = $(this).data("day");
-    
-            $("#registrybusinesshour-day"  + elemDay + "-open_at").val("00:00:00").trigger("change");
-            $("#registrybusinesshour-day"  + elemDay + "-close_at").val("24:00:00").trigger("change");
+            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").val("00:00:00").trigger("change");
+            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").val("24:00:00").trigger("change");
 
-            $(".field-registrybusinesshour-day" + elemDay + "-open_at").hide();
-            $(".field-registrybusinesshour-day" + elemDay + "-close_at").hide();
+            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").parent().hide();
+            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").parent().hide();
 
-            $(".field-registrybusinesshour-day" + elemDay + "-open_at").parent().append("<div class=\"24h-temp\">' . Yii::t('app','24 Hours') . '</div>");
-
-            $(".add-business-hour-day" + elemDay).hide();
-            $(".delete-business-hour-day" + elemDay).hide();
+            $("#add-business-hour-day" + thisObj.val()).hide();
+            $("#delete-business-hour-day" + thisObj.val()).hide();
 
             for (var counter = 1; counter <= indexHourCount; counter++) {
 
-                $("#registrybusinesshouradditional-day"  + elemDay + "-" + counter + "-open_at").parents(".data-hour-form").remove();
+                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").parents(".data-hour-form").remove();
             }
 
             indexHourCount = 0;
@@ -1449,24 +1386,18 @@ $jscript .= '
     
         $("#business-hour-24h-" + thisObj.val()).on("ifUnchecked",function(e) {
     
-            var elemDay = $(this).data("day");
-    
-            $("#registrybusinesshour-day"  + elemDay + "-open_at").val(null).trigger("change");
-            $("#registrybusinesshour-day"  + elemDay + "-close_at").val(null).trigger("change");
+            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").val(null).trigger("change");
+            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").val(null).trigger("change");
 
-            $(".field-registrybusinesshour-day" + elemDay + "-open_at").parent().find(".24h-temp").remove();
+            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").parent().show();
+            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").parent().show();
 
-            $(".field-registrybusinesshour-day" + elemDay + "-open_at").show();
-            $(".field-registrybusinesshour-day" + elemDay + "-close_at").show();
-
-            $(".add-business-hour-day" + elemDay).show();
-            $(".delete-business-hour-day" + elemDay).show();
+            $("#add-business-hour-day" + thisObj.val()).show();
+            $("#delete-business-hour-day" + thisObj.val()).show();
         });
 
-        thisObj.parent().find(".add-business-hour-day" + thisObj.val()).on("click", function() {
+        thisObj.parent().find("#add-business-hour-day" + thisObj.val()).on("click", function() {
 
-            var elemDay = $(this).data("day");
-            
             indexHourCount++;
     
             var formBusinessHour = $(".additional-hour-temp-form").clone();
@@ -1474,15 +1405,15 @@ $jscript .= '
             formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-index-open_at", "index", indexHourCount);
             formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-index-close_at", "index", indexHourCount);
 
-            formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-" + indexHourCount + "-open_at", "idx", elemDay);
-            formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-" + indexHourCount + "-close_at", "idx", elemDay);
+            formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-" + indexHourCount + "-open_at", "idx", thisObj.val());
+            formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-" + indexHourCount + "-close_at", "idx", thisObj.val());
     
-            thisObj.parent().parent().parent().append(formBusinessHour.html());
+            thisObj.parents(".main-hour-form").append(formBusinessHour.html());
 
-            if ($(".business-hour-is-open.day-" + elemDay).is(":checked")) {
+            if ($("#registrybusinesshour-day" + thisObj.val() + "-is_open").is(":checked")) {
 
-                $("#registrybusinesshouradditional-day"  + elemDay + "-" + indexHourCount + "-open_at").removeAttr("disabled");
-                $("#registrybusinesshouradditional-day"  + elemDay + "-" + indexHourCount + "-close_at").removeAttr("disabled");
+                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + indexHourCount + "-open_at").removeAttr("disabled");
+                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + indexHourCount + "-close_at").removeAttr("disabled");
             }
 
             thisObj.parent().parent().siblings(".data-hour-form").last().find(".business-hour-time-additional.open-additional").select2({
@@ -1498,7 +1429,7 @@ $jscript .= '
             return false;
         });
 
-        thisObj.parent().find(".delete-business-hour-day" + thisObj.val()).on("click", function() {
+        thisObj.parent().find("#delete-business-hour-day" + thisObj.val()).on("click", function() {
     
             thisObj.parent().parent().siblings(".data-hour-form").last().remove();
             
