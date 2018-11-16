@@ -22,7 +22,7 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
 
     $notif = new NotificationDialog([
         'status' => $status,
@@ -32,8 +32,7 @@ if ($status !== null) :
 
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
+}
 
 $this->title = $model['name'];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' =>  ['index-' . strtolower($statusApproval)]];
@@ -42,11 +41,9 @@ $this->params['breadcrumbs'][] = $this->title;
 echo $ajaxRequest->component(); ?>
 
 <div class="registry-business-view">
-
     <div class="row">
         <div class="col-sm-12">
             <div class="x_panel">
-
                 <div class="x_content">
 
                     <?php
@@ -63,136 +60,134 @@ echo $ajaxRequest->component(); ?>
                     <div class="clearfix" style="margin-top: 15px"></div>
 
                     <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-xs-12">
                             <h4><strong><?= Yii::t('app', 'Membership Type') ?></strong> : <?= $model['membershipType']['name'] ?> | <strong><?= Yii::t('app', 'Status') ?></strong> : <?= $model['applicationBusiness']['logStatusApprovals'][0]['statusApproval']['name'] ?></h4>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-xs-12">
                             <h4><strong><?= Yii::t('app', 'User In Charge') ?></strong> : <?= $model['userInCharge']['full_name'] ?></h4>
-                            <hr>
                         </div>
                     </div>
+                    
+                    <hr>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
                             <h4><strong><?= Yii::t('app', 'Business Information') ?></strong></h4>
-                            <hr>
                         </div>
                     </div>
+                    
+                    <hr>
 
                     <div class="row mb-20">
-
-                        <div class="col-md-3">
+                        <div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'Name')) ?><br>
                             <?= $model['name'] ?>
                             
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'Unique Name')) ?><br>
                             <?= $model['unique_name'] ?>
                             
                         </div>
-
                     </div>
 
                     <div class="row mb-20">
-
-                        <div class="col-md-3">
+                        <div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'Address Type')) ?><br>
                             <?= $model['address_type'] ?>
                             
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'Address')) ?><br>
                             <?= $model['address'] ?>
                             
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'Address Info')) ?><br>
                             <?= $model['address_info'] ?>
                             
                         </div>
-                        <div class="col-md-3">
+                    </div>
+
+                    <div class="row mb-20">
+						<div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'City ID')) ?><br>
                             <?= $model['city']['name'] ?>
                             
                         </div>
-
-                    </div>
-
-                    <div class="row mb-20">
-
-                        <div class="col-lg-3 col-xs-6">
+                        <div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'District ID')) ?><br>
                             <?= $model['district']['name'] ?>
                             
                         </div>
-
-                        <div class="col-lg-3 col-xs-6">
+                        <div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'Village ID')) ?><br>
                             <?= $model['village']['name'] ?>
                             
                         </div>
-                        <div class="col-lg-6 col-xs-6">
+                        <div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'Coordinate')) ?><br>
                             <?= $model['coordinate'] ?>
                             
                         </div>
-
                     </div>
 
                     <div class="row mb-20">
-
-                        <div class="col-lg-3 col-xs-6">
+                        <div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'Email')) ?><br>
-                            <?= $model['email'] ?>
+                            <?= !empty($model['email']) ? $model['email'] : '-' ?>
                             
                         </div>
-
-                        <div class="col-lg-3 col-xs-6">
+                        <div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'Phone1')) ?><br>
-                            <?= $model['phone1'] ?>
+                            <?= !empty($model['phone1']) ? $model['phone1'] : '-' ?>
                             
                         </div>
-
-                        <div class="col-lg-3 col-xs-6">
+                        <div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'Phone2')) ?><br>
-                            <?= $model['phone2'] ?>
+                            <?= !empty($model['phone2']) ? $model['phone2'] : '-' ?>
                             
                         </div>
-                        <div class="col-lg-3 col-xs-6">
+                        <div class="col-xs-6 col-sm-3">
                         
                             <?= Html::label(Yii::t('app', 'Phone3')) ?><br>
-                            <?= $model['phone3'] ?>
+                            <?= !empty($model['phone3']) ? $model['phone3'] : '-' ?>
                             
                         </div>
-
                     </div>
                     
                     <div class="row mb-20">
-
-                        <div class="col-lg-9 col-xs-12">
+                        <div class="col-xs-12">
+                        
+                            <?= Html::label(Yii::t('app', 'About')) ?><br>
+                            <?= !empty($model['about']) ? $model['about'] : '-' ?>
+                        
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-20">
+                        <div class="col-xs-12">
+                        
                             <?= Html::label(Yii::t('app', 'Note')) ?><br>
-                            <?= $model['note'] ?>
+                            <?= !empty($model['note']) ? $model['note'] : '-' ?>
+                        
                         </div>
                     </div>
 
                     <div class="row mb-20">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
 
                             <?= Html::label(Yii::t('app', 'Business Location')) ?><br>
 
@@ -211,17 +206,22 @@ echo $ajaxRequest->component(); ?>
 
                         </div>
                     </div>
+                    
+                    <hr>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
                             <h4><strong><?= Yii::t('app', 'Marketing Information') ?></strong></h4>
-                            <hr>
                         </div>
                     </div>
+                    
+                    <hr>
 
                     <div class="row">
-                        <div class="col-md-12">
-                            <?= Html::label(Yii::t('app', 'Business Category'), null, ['class' => 'control-label']) ?>
+                        <div class="col-xs-12">
+                        
+                            <?= Html::label(Yii::t('app', 'Business Category')) ?>
+                        
                         </div>
                     </div>
 
@@ -230,11 +230,11 @@ echo $ajaxRequest->component(); ?>
                         <?php
                         if (!empty($model['registryBusinessCategories'])) {
                             
-                            foreach ($model['registryBusinessCategories'] as $registryBusinessCategory) {
+                            foreach ($model['registryBusinessCategories'] as $dataRegistryBusinessCategory) {
 
                                 echo '
-                                    <div class="col-sm-2 col-xs-6">
-                                        ' . $registryBusinessCategory['category']['name'] . '
+                                    <div class="col-xs-4 col-sm-2">
+                                        ' . $dataRegistryBusinessCategory['category']['name'] . '
                                     </div>';
                             }
                         } ?>
@@ -244,12 +244,13 @@ echo $ajaxRequest->component(); ?>
                     <hr>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
                         
-                            <?= Html::label(Yii::t('app', 'Product Category'), null, ['class' => 'control-label']) ?>
+                            <?= Html::label(Yii::t('app', 'Product Category')) ?>
                             
                         </div>
                     </div>
+                    
                     <div class="row">
 
                         <?php
@@ -258,30 +259,28 @@ echo $ajaxRequest->component(); ?>
 
                         if (!empty($model['registryBusinessProductCategories'])) {
                             
-                            foreach ($model['registryBusinessProductCategories'] as $value) {
+                            foreach ($model['registryBusinessProductCategories'] as $dataRegistryBusinessProductCategory) {
 
-                                if ($value['productCategory']['is_parent']) {
+                                if ($dataRegistryBusinessProductCategory['productCategory']['is_parent']) {
 
-                                    $productCategoryParent[$value['product_category_id']] = $value['productCategory']['name'];
+                                    $productCategoryParent[$dataRegistryBusinessProductCategory['product_category_id']] = $dataRegistryBusinessProductCategory['productCategory']['name'];
                                 } else {
 
-                                    $productCategoryChild[$value['product_category_id']] = $value['productCategory']['name'];
+                                    $productCategoryChild[$dataRegistryBusinessProductCategory['product_category_id']] = $dataRegistryBusinessProductCategory['productCategory']['name'];
                                 }
                             }
 
                             if (!empty($productCategoryParent)) {
 
                                 echo '
-                                    <div class="clearfix"></div>
-                                    <div class="col-sm-3 col-xs-6 mt-10">
+                                    <div class="col-xs-12">
                                         - ' . Html::label(Yii::t('app', 'Product Category General')) . ' -
-                                    </div>
-                                    <div class="clearfix"></div>';
+                                    </div>';
 
                                 foreach ($productCategoryParent as $productCategory) {
 
                                     echo '
-                                        <div class="col-sm-2 col-xs-6">
+                                        <div class="col-xs-4 col-sm-2">
                                             ' . $productCategory . '
                                         </div>';
                                 }
@@ -290,16 +289,14 @@ echo $ajaxRequest->component(); ?>
                             if (!empty($productCategoryChild)) {
 
                                 echo '
-                                    <div class="clearfix"></div>
-                                    <div class="col-sm-3 col-xs-6 mt-10">
+                                    <div class="col-xs-12">
                                         - ' . Html::label(Yii::t('app', 'Product Category Specific')) . ' -
-                                    </div>
-                                    <div class="clearfix"></div>';
+                                    </div>';
 
                                 foreach ($productCategoryChild as $productCategory) {
 
                                     echo '
-                                        <div class="col-sm-2 col-xs-6">
+                                        <div class="col-xs-4 col-sm-2">
                                             ' . $productCategory . '
                                         </div>';
                                 }
@@ -311,43 +308,42 @@ echo $ajaxRequest->component(); ?>
                     <hr>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
                         
-                            <?= Html::label(Yii::t('app', 'Business Hour'), null, ['class' => 'control-label']) ?>
+                            <?= Html::label(Yii::t('app', 'Business Hour')) ?>
                             
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
 
                             <?php
                             $days = Yii::$app->params['days'];
 
                             if (!empty($model['registryBusinessHours'])):
                             
-                                foreach ($model['registryBusinessHours'] as $businessHour):
+                                foreach ($model['registryBusinessHours'] as $dataRegistryBusinessHour):
 
-                                    $is24Hour = (($businessHour['open_at'] == '00:00:00') && ($businessHour['close_at'] == '24:00:00')); ?>
+                                    $is24Hour = (($dataRegistryBusinessHour['open_at'] == '00:00:00') && ($dataRegistryBusinessHour['close_at'] == '24:00:00')); ?>
 
                                     <div class="row">
-                                        <div class="col-md-2">
+                                        <div class="col-xs-4 col-sm-2">
                                         
-                                            <?= Html::label(Yii::t('app', $days[$businessHour['day'] - 1])) ?>
+                                            <?= Html::label(Yii::t('app', $days[$dataRegistryBusinessHour['day'] - 1])) ?>
                                             
                                         </div>
-                                        <div class="col-md-8">
+                                        <div class="col-xs-4 col-sm-4">
                                         	
                                         	<?php
-                                            echo ($is24Hour ? Yii::t('app','24 Hours') : Yii::$app->formatter->asTime($businessHour['open_at'], 'short') . ' - ' . Yii::$app->formatter->asTime($businessHour['close_at'], 'short'));
+                                        	echo ($is24Hour ? Yii::t('app','24 Hours') : Yii::$app->formatter->asTime($dataRegistryBusinessHour['open_at'], 'short') . ' - ' . Yii::$app->formatter->asTime($dataRegistryBusinessHour['close_at'], 'short'));
                                             
-                                            if (!empty($businessHour['registryBusinessHourAdditionals'])) {
+                                        	if (!empty($dataRegistryBusinessHour['registryBusinessHourAdditionals'])) {
                                                 
-                                                foreach ($businessHour['registryBusinessHourAdditionals'] as $businessHourAdditional):
+                                        	    foreach ($dataRegistryBusinessHour['registryBusinessHourAdditionals'] as $dataRegistryBusinessHourAdditional) {
                                                         
-                                                    echo ', ' . Yii::$app->formatter->asTime($businessHourAdditional['open_at'], 'short') . ' - ' . Yii::$app->formatter->asTime($businessHourAdditional['close_at'], 'short');
-                                                
-                                                endforeach;
+                                        	        echo ', ' . Yii::$app->formatter->asTime($dataRegistryBusinessHourAdditional['open_at'], 'short') . ' - ' . Yii::$app->formatter->asTime($dataRegistryBusinessHourAdditional['close_at'], 'short');
+                                        	    }
                                             } ?>
                                             
                                         </div>
@@ -372,22 +368,21 @@ echo $ajaxRequest->component(); ?>
                     <hr>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
                         
                             <?= Html::label(Yii::t('app', 'Average Spending')) ?>
                             
                         </div>
                     </div>
 
-                    <div class="row mb-20">
-                        <div class="col-md-3">
+                    <div class="row">
+                        <div class="col-xs-4 col-sm-2">
                         
                             <?= Html::label(Yii::t('app', 'Price Min')) ?><br>
                             <?= Yii::$app->formatter->asCurrency($model['price_min']); ?>
                             
                         </div>
-
-                        <div class="col-md-3">
+                        <div class="col-xs-4 col-sm-2">
                         
                             <?= Html::label(Yii::t('app', 'Price Max')) ?><br>
                             <?= Yii::$app->formatter->asCurrency($model['price_max']); ?>
@@ -398,22 +393,23 @@ echo $ajaxRequest->component(); ?>
                     <hr>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
                         
-                            <?= Html::label(Yii::t('app', 'Facility'), null, ['class' => 'control-label']) ?>
+                            <?= Html::label(Yii::t('app', 'Facility')) ?>
                             
                         </div>
                     </div>
+                    
                     <div class="row">
 
                         <?php
                         if (!empty($model['registryBusinessFacilities'])) {
                             
-                            foreach ($model['registryBusinessFacilities'] as $registryBusinessFacility) {
+                            foreach ($model['registryBusinessFacilities'] as $dataRegistryBusinessFacility) {
 
                                 echo '
-                                    <div class="col-sm-2 col-xs-6">
-                                        ' . $registryBusinessFacility['facility']['name'] . '
+                                    <div class="col-xs-4 col-sm-2">
+                                        ' . $dataRegistryBusinessFacility['facility']['name'] . '
                                     </div>';
                             }
                         } ?>
@@ -423,29 +419,30 @@ echo $ajaxRequest->component(); ?>
                     <hr>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
                         
-                            <?= Html::label(Yii::t('app', 'Photo'), null, ['class' => 'control-label']) ?>
+                            <?= Html::label(Yii::t('app', 'Photo')) ?>
                             
                         </div>
                     </div>
+                    
                     <div class="row">
 
                         <?php
                         if (!empty($model['registryBusinessImages'])):
                         
-                            foreach ($model['registryBusinessImages'] as $registryBusinessImage): ?>
+                            foreach ($model['registryBusinessImages'] as $dataRegistryBusinessImage): ?>
 
-                                <div class="col-xs-3">
+                                <div class="col-xs-6 col-sm-3">
                                     <div class="thumbnail">
                                         <div class="image view view-first">
                                         
-                                            <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_business/', $registryBusinessImage['image'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+                                            <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_business/', $dataRegistryBusinessImage['image'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
                                             
                                             <div class="mask">
                                                 <p>&nbsp;</p>
                                                 <div class="tools tools-bottom">
-                                                    <a class="show-image direct" href="<?= Yii::getAlias('@uploadsUrl') . '/img/registry_business/' . $registryBusinessImage['image'] ?>"><i class="fa fa-search"></i></a>
+                                                    <a class="show-image direct" href="<?= Yii::getAlias('@uploadsUrl') . '/img/registry_business/' . $dataRegistryBusinessImage['image'] ?>"><i class="fa fa-search"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -461,13 +458,12 @@ echo $ajaxRequest->component(); ?>
                     <hr>
                     
                     <div class="row">
-                    	<div class="col-md-12">
-                        
-                            <h4><strong><?= Html::label(Yii::t('app', 'Contact Person'), null, ['class' => 'control-label']) ?></strong></h4>
-                            
-                            <hr>
+                    	<div class="col-xs-12">
+                            <h4><strong><?= Yii::t('app', 'Contact Person') ?></strong></h4>
                         </div>
                     </div>
+                    
+                    <hr>
                 		
     				<?php
 				    if (!empty($model['registryBusinessContactPeople'])): ?>
@@ -483,15 +479,15 @@ echo $ajaxRequest->component(); ?>
 			            	</tr>
 				        
     				    	<?php
-    			            foreach ($model['registryBusinessContactPeople'] as $person): ?>
+    				    	foreach ($model['registryBusinessContactPeople'] as $dataRegistryBusinessContactPerson): ?>
     			                
         			            <tr>
-        			            	<td class="table-contact-person-td"><?= $person['person']['first_name'] . ' ' . $person['person']['last_name']; ?></td>
-    			            		<td class="table-contact-person-td"><?= $person['position']; ?></td>
-    			            		<td class="table-contact-person-td"><?= !empty($person['person']['email']) ? $person['person']['email'] : '-'; ?></td>
-    			            		<td class="table-contact-person-td"><?= !empty($person['person']['phone']) ? $person['person']['phone'] : '-'; ?></td>
-    			            		<td class="table-contact-person-td"><?= !empty($person['note']) ? $person['note'] : '-'; ?></td>
-    			            		<td class="table-contact-person-td"><?= !empty($person['is_primary_contact']) ? ' YA ' : ' TIDAK ' ?></td>
+        			            	<td class="table-contact-person-td"><?= $dataRegistryBusinessContactPerson['person']['first_name'] . ' ' . $dataRegistryBusinessContactPerson['person']['last_name']; ?></td>
+    			            		<td class="table-contact-person-td"><?= $dataRegistryBusinessContactPerson['position']; ?></td>
+    			            		<td class="table-contact-person-td"><?= !empty($dataRegistryBusinessContactPerson['person']['email']) ? $dataRegistryBusinessContactPerson['person']['email'] : '-'; ?></td>
+    			            		<td class="table-contact-person-td"><?= !empty($dataRegistryBusinessContactPerson['person']['phone']) ? $dataRegistryBusinessContactPerson['person']['phone'] : '-'; ?></td>
+    			            		<td class="table-contact-person-td"><?= !empty($dataRegistryBusinessContactPerson['note']) ? $dataRegistryBusinessContactPerson['note'] : '-'; ?></td>
+    			            		<td class="table-contact-person-td"><?= !empty($dataRegistryBusinessContactPerson['is_primary_contact']) ? ' YA ' : ' TIDAK ' ?></td>
         			            </tr>
     			                
     			            <?php
@@ -526,11 +522,9 @@ echo $ajaxRequest->component(); ?>
                     echo ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']); ?>
 
                 </div>
-
             </div>
         </div>
     </div>
-
 </div>
 
 <?php
