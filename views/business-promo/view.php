@@ -19,7 +19,8 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
+    
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -28,8 +29,7 @@ if ($status !== null) :
 
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
+}
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['business/member']];
@@ -47,36 +47,19 @@ echo $ajaxRequest->component(); ?>
 
                 <div class="x_content">
 
-                    <?= Html::a('<i class="fa fa-upload"></i> Create',
-                        ['create', 'id' => $model->business_id],
-                        [
-                            'class' => 'btn btn-success',
-                            'style' => 'color:white'
-                        ]) ?>
+                    <?= Html::a('<i class="fa fa-upload"></i> Create', ['create', 'id' => $model->business_id], ['class' => 'btn btn-success']) ?>
 
-                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit',
-                        ['update', 'id' => $model->id],
-                        [
-                            'class' => 'btn btn-primary',
-                            'style' => 'color:white'
-                        ]) ?>
+                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
 
-                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete',
-                        ['delete', 'id' => $model->id],
-                        [
+                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model->id], [
                             'id' => 'delete',
                             'class' => 'btn btn-danger',
-                            'style' => 'color:white',
                             'data-not-ajax' => 1,
                             'model-id' => $model->id,
                             'model-name' => $model->title,
                         ]) ?>
 
-                    <?= Html::a('<i class="fa fa-times"></i> Cancel',
-                        ['index', 'id' => $model->business_id],
-                        [
-                            'class' => 'btn btn-default',
-                        ]) ?>
+                    <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index', 'id' => $model->business_id], ['class' => 'btn btn-default']) ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>
 
