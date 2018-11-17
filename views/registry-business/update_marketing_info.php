@@ -296,8 +296,6 @@ echo $ajaxRequest->component(); ?>
 </div>
 
 <?php
-$this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
-
 $cssscript = '
     .select2-grid-system ul.select2-results__options > li.select2-results__option {
         float: left;
@@ -320,8 +318,6 @@ $cssscript = '
 ';
 
 $this->registerCss($cssscript);
-
-$this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript = '
     $("#registrybusinesscategory-category_id").select2({

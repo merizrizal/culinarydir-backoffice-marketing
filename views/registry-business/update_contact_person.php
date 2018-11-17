@@ -79,11 +79,10 @@ echo $ajaxRequest->component(); ?>
                                         <div class="main-form">
                                 	
                                         	<?php
-                                	        if (!empty($dataRegistryBusinessContactPerson)) {
+                                	        if (!empty($dataRegistryBusinessContactPerson)):
                                 	            
-                                	            foreach ($dataRegistryBusinessContactPerson as $i => $registryBusinessContactPerson) {
+                                	            foreach ($dataRegistryBusinessContactPerson as $i => $registryBusinessContactPerson):
                                 	                
-                                	                $i++;
                                 	                $modelPerson->first_name = $registryBusinessContactPerson['first_name'];
                                 	                $modelPerson->last_name = $registryBusinessContactPerson['last_name'];
                                 	                $modelRegistryBusinessContactPerson->position = $registryBusinessContactPerson['position'];
@@ -173,9 +172,9 @@ echo $ajaxRequest->component(); ?>
                                                         
                                                     </div>
                                                     
-                                            <?php
-                                	            }
-                                	        } ?>
+                                            	<?php
+                                	            endforeach;
+                                	        endif; ?>
                                 	        
                             	        </div>
                             	        
@@ -217,14 +216,13 @@ echo $ajaxRequest->component(); ?>
     </div>
 </div>
 
+<?php
+$modelPerson = new Person();
+$modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson(); ?>
+
 <div class="temp-form hide">
     <div class="mb-40 data-form">
         <div class="row mt-10">
-        
-        	<?php
-        	$modelPerson = new Person();
-        	$modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson(); ?>
-        
             <div class="col-md-4 col-xs-6">
             
                 <?= $form->field($modelPerson, '[index]first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
@@ -392,12 +390,8 @@ $jscript = '
         return contentClone;
     };
 
-    addValidator(indexCount);
-
     $(".add-contact-person").on("click", function() {
         
-        indexCount++;
-
         var formContactPerson = $(".temp-form").clone();
 
         formContactPerson = replaceComponent(formContactPerson, "person-index-first_name", "index", indexCount);
@@ -421,6 +415,8 @@ $jscript = '
             placeholder: "' . Yii::t('app', 'Position') . '",
             minimumResultsForSearch: "Infinity"
         });
+
+        indexCount++;
 
         return false;
     });

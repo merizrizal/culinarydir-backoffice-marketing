@@ -768,7 +768,7 @@ $this->registerJs($jscript); ?>
                                             
                                                         <div class="col-md-4 col-xs-6">
                                                         
-                                                        	<?= $form->field($modelRegistryBusinessContactPerson, '[' . $i .']is_primary_contact')->checkbox(['class' => 'contact-person-is-primary-contact']) ?>
+                                                        	<?= $form->field($modelRegistryBusinessContactPerson, '[' . $i .']is_primary_contact')->checkbox() ?>
                                                         	
                                                         </div>
                                                     </div>
@@ -871,7 +871,7 @@ $modelPerson = new Person(); ?>
 
             <div class="col-md-4 col-xs-6">
             
-            	<?= $form->field($modelRegistryBusinessContactPerson, '[index]is_primary_contact')->checkbox(['class' => 'contact-person-is-primary-contact not-checkbox']) ?>
+            	<?= $form->field($modelRegistryBusinessContactPerson, '[index]is_primary_contact')->checkbox(['class' => 'not-checkbox']) ?>
             	
             </div>
         </div>

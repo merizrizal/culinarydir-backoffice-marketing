@@ -83,8 +83,6 @@ echo $ajaxRequest->component(); ?>
                                 $days = Yii::$app->params['days'];
                                 $hours = Yii::$app->params['hours'];
                                 
-                                $is24Hour = [];
-                                
                                 foreach ($days as $i => $day):
                                     
                                     $i++;

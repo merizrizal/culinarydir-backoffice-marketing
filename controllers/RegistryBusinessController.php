@@ -622,11 +622,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     $query->andOnCondition(['registry_business_facility.is_active' => true]);
                 },
                 'registryBusinessFacilities.facility',
-                'registryBusinessHours' => function($query) {
-                    
-                    $query->orderBy(['registry_business_hour.day' => SORT_ASC]);
-                },
-                'registryBusinessHours.registryBusinessHourAdditionals',
             ])
             ->andWhere(['registry_business.id' => $id])
             ->one();
@@ -1150,7 +1145,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         
         $modelPerson = new Person();
         
-        $isDeletedAll = false;
+        $isEmpty = false;
         
         if (!empty($post = Yii::$app->request->post())) {
             
@@ -1163,12 +1158,13 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = true;
                 
+                $isEmpty = (empty($post['Person']) && empty($post['RegistryBusinessContactPerson']));
+                
                 if (!empty($post['RegistryBusinessContactPersonDeleted'])) {
                     
                     if (($flag = RegistryBusinessContactPerson::deleteAll(['person_id' => $post['RegistryBusinessContactPersonDeleted']]))) {
                         
                         $flag = Person::deleteAll(['id' => $post['RegistryBusinessContactPersonDeleted']]);
-                        $isDeletedAll = (empty($post['Person']) && empty($post['RegistryBusinessContactPerson']));
                     }
                 }
                 
@@ -1176,9 +1172,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     
                     foreach ($post['Person'] as $i => $person) {
                             
-                        if (!empty($model['registryBusinessContactPeople'][($i - 1)])) {
+                        if (!empty($model['registryBusinessContactPeople'][$i])) {
                             
-                            $newModelPerson = Person::findOne(['id' => $model['registryBusinessContactPeople'][($i - 1)]['person_id']]);
+                            $newModelPerson = Person::findOne(['id' => $model['registryBusinessContactPeople'][$i]['person_id']]);
                         } else {
                             
                             $newModelPerson = new Person();
@@ -1236,7 +1232,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             }
         }
         
-        if (!$isDeletedAll) {
+        if (!$isEmpty) {
             
             if (empty($dataRegistryBusinessContactPerson)) {
                 
@@ -1277,7 +1273,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
         $dataRegistryBusinessHourAdditional = [];
         
-        $isDeletedAll = false;
+        $isEmpty = false;
         
         if (!empty($post = Yii::$app->request->post())) {
             
@@ -1291,6 +1287,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 $flag = false;
                 
                 $loopDays = ['1', '2', '3', '4', '5', '6', '7'];
+                
+                $isEmpty = empty($post['RegistryBusinessHourAdditional']);
                 
                 foreach ($loopDays as $day) {
                     
@@ -1324,14 +1322,13 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     if (!empty($post['RegistryBusinessHourAdditionalDeleted'][$dayName])) {
                         
                         $flag = RegistryBusinessHourAdditional::deleteAll(['id' => $post['RegistryBusinessHourAdditionalDeleted'][$dayName]]);
-                        $isDeletedAll = empty($post['RegistryBusinessHourAdditional']);
                     }
                     
                     if (!empty($post['RegistryBusinessHourAdditional'][$dayName])) {
                         
-                        foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $businessHourAdditional) {
+                        foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $registryBusinessHourAdditional) {
                             
-                            if (!empty($businessHourAdditional['open_at']) || !empty($businessHourAdditional['close_at'])) {
+                            if (!empty($registryBusinessHourAdditional['open_at']) || !empty($registryBusinessHourAdditional['close_at'])) {
                                 
                                 $newModelRegistryBusinessHourAdditional = RegistryBusinessHourAdditional::findOne(['unique_id' => $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i)]);
                                 
@@ -1344,8 +1341,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 }
                                 
                                 $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
-                                $newModelRegistryBusinessHourAdditional->open_at = !empty($businessHourAdditional['open_at']) ? $businessHourAdditional['open_at'] : null;
-                                $newModelRegistryBusinessHourAdditional->close_at = !empty($businessHourAdditional['close_at']) ? $businessHourAdditional['close_at'] : null;
+                                $newModelRegistryBusinessHourAdditional->open_at = !empty($registryBusinessHourAdditional['open_at']) ? $registryBusinessHourAdditional['open_at'] : null;
+                                $newModelRegistryBusinessHourAdditional->close_at = !empty($registryBusinessHourAdditional['close_at']) ? $registryBusinessHourAdditional['close_at'] : null;
                                 
                                 if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
                                     
@@ -1384,21 +1381,21 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         
         $dataRegistryBusinessHour = empty($dataRegistryBusinessHour) ? $model->registryBusinessHours : $dataRegistryBusinessHour;
         
-        if (!$isDeletedAll) {
+        if (!$isEmpty) {
         
             if (empty($dataRegistryBusinessHourAdditional)) {
                 
-                foreach ($dataRegistryBusinessHour as $businessHour) {
+                foreach ($dataRegistryBusinessHour as $registryBusinessHour) {
                     
-                    $dayName = 'day' . $businessHour['day'];
+                    $dayName = 'day' . $registryBusinessHour['day'];
                     
                     $dataRegistryBusinessHourAdditional[$dayName] = [];
                     
-                    if (!empty($businessHour['registryBusinessHourAdditionals'])) {
+                    if (!empty($registryBusinessHour['registryBusinessHourAdditionals'])) {
                         
-                        foreach ($businessHour['registryBusinessHourAdditionals'] as $businessHourAdditional) {
+                        foreach ($registryBusinessHour['registryBusinessHourAdditionals'] as $registryBusinessHourAdditional) {
                             
-                            array_push($dataRegistryBusinessHourAdditional[$dayName], $businessHourAdditional);
+                            array_push($dataRegistryBusinessHourAdditional[$dayName], $registryBusinessHourAdditional);
                         }
                     }
                 }
