@@ -493,15 +493,15 @@ echo $ajaxRequest->component(); ?>
 			            	</tr>
 				        
     				    	<?php
-    				    	foreach ($model['businessContactPeople'] as $dataRegistryBusinessContactPerson): ?>
+    				    	foreach ($model['businessContactPeople'] as $dataBusinessContactPerson): ?>
     			                
         			            <tr>
-        			            	<td class="table-contact-person-td"><?= $dataRegistryBusinessContactPerson['person']['first_name'] . ' ' . $dataRegistryBusinessContactPerson['person']['last_name'] ?></td>
-    			            		<td class="table-contact-person-td"><?= $dataRegistryBusinessContactPerson['position'] ?></td>
-    			            		<td class="table-contact-person-td"><?= !empty($dataRegistryBusinessContactPerson['person']['email']) ? $dataRegistryBusinessContactPerson['person']['email'] : '-' ?></td>
-    			            		<td class="table-contact-person-td"><?= !empty($dataRegistryBusinessContactPerson['person']['phone']) ? $dataRegistryBusinessContactPerson['person']['phone'] : '-' ?></td>
-    			            		<td class="table-contact-person-td"><?= !empty($dataRegistryBusinessContactPerson['note']) ? $dataRegistryBusinessContactPerson['note'] : '-' ?></td>
-    			            		<td class="table-contact-person-td"><?= !empty($dataRegistryBusinessContactPerson['is_primary_contact']) ? ' YA ' : ' TIDAK ' ?></td>
+        			            	<td class="table-contact-person-td"><?= $dataBusinessContactPerson['person']['first_name'] . ' ' . $dataBusinessContactPerson['person']['last_name'] ?></td>
+    			            		<td class="table-contact-person-td"><?= $dataBusinessContactPerson['position'] ?></td>
+    			            		<td class="table-contact-person-td"><?= !empty($dataBusinessContactPerson['person']['email']) ? $dataBusinessContactPerson['person']['email'] : '-' ?></td>
+    			            		<td class="table-contact-person-td"><?= !empty($dataBusinessContactPerson['person']['phone']) ? $dataBusinessContactPerson['person']['phone'] : '-' ?></td>
+    			            		<td class="table-contact-person-td"><?= !empty($dataBusinessContactPerson['note']) ? $dataBusinessContactPerson['note'] : '-' ?></td>
+    			            		<td class="table-contact-person-td"><?= !empty($dataBusinessContactPerson['is_primary_contact']) ? ' YA ' : ' TIDAK ' ?></td>
         			            </tr>
     			                
     			            <?php

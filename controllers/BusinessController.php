@@ -57,6 +57,7 @@ class BusinessController extends \backoffice\controllers\BaseController
             'dataProvider' => $dataProvider,
         ]);
     }
+    
     public function actionViewMember($id)
     {
         $model = Business::find()
