@@ -219,9 +219,9 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['BusinessCategory']['category_id'])) {
 
-                        foreach ($post['BusinessCategory']['category_id'] as $value) {
+                        foreach ($post['BusinessCategory']['category_id'] as $categoryId) {
 
-                            $newModelBusinessCategory = BusinessCategory::findOne(['unique_id' => $model->id . '-' . $value]);
+                            $newModelBusinessCategory = BusinessCategory::findOne(['unique_id' => $model->id . '-' . $categoryId]);
 
                             if (!empty($newModelBusinessCategory)) {
 
@@ -229,10 +229,9 @@ class BusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 $newModelBusinessCategory = new BusinessCategory();
-
-                                $newModelBusinessCategory->unique_id = $model->id . '-' . $value;
+                                $newModelBusinessCategory->unique_id = $model->id . '-' . $categoryId;
                                 $newModelBusinessCategory->business_id = $model->id;
-                                $newModelBusinessCategory->category_id = $value;
+                                $newModelBusinessCategory->category_id = $categoryId;
                                 $newModelBusinessCategory->is_active = true;
                             }
 
@@ -244,44 +243,30 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 array_push($dataBusinessCategory, $newModelBusinessCategory->toArray());
                             }
                         }
-                    } else {
-
-                        foreach ($model->businessCategories as $valueBusinessCategory) {
-
-                            $valueBusinessCategory->is_active = false;
-
-                            if (!($flag = $valueBusinessCategory->save())) {
+                        
+                        if ($flag) {
+                            
+                            foreach ($model->businessCategories as $existModelBusinessCategory) {
                                 
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if ($flag) {
-
-                    if (!empty($post['BusinessCategory']['category_id'])) {
-
-                        foreach ($model->businessCategories as $valueBusinessCategory) {
-
-                            $exist = false;
-
-                            foreach ($post['BusinessCategory']['category_id'] as $value) {
-
-                                if ($valueBusinessCategory['category_id'] == $value) {
-
-                                    $exist = true;
-                                    break;
-                                }
-                            }
-
-                            if (!$exist) {
-
-                                $valueBusinessCategory->is_active = false;
-
-                                if (!($flag = $valueBusinessCategory->save())) {
+                                $exist = false;
+                                
+                                foreach ($post['BusinessCategory']['category_id'] as $categoryId) {
                                     
-                                    break;
+                                    if ($existModelBusinessCategory['category_id'] == $categoryId) {
+                                        
+                                        $exist = true;
+                                        break;
+                                    }
+                                }
+                                
+                                if (!$exist) {
+                                    
+                                    $existModelBusinessCategory->is_active = false;
+                                    
+                                    if (!($flag = $existModelBusinessCategory->save())) {
+                                        
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -292,9 +277,9 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['BusinessProductCategory']['product_category_id']['parent'])) {
 
-                        foreach ($post['BusinessProductCategory']['product_category_id']['parent'] as $value) {
+                        foreach ($post['BusinessProductCategory']['product_category_id']['parent'] as $productCategoryId) {
 
-                            $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $value]);
+                            $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
 
                             if (!empty($newModelBusinessProductCategory)) {
 
@@ -302,10 +287,9 @@ class BusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
-
-                                $newModelBusinessProductCategory->unique_id = $model->id . '-' . $value;
+                                $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
-                                $newModelBusinessProductCategory->product_category_id = $value;
+                                $newModelBusinessProductCategory->product_category_id = $productCategoryId;
                                 $newModelBusinessProductCategory->is_active = true;
                             }
 
@@ -317,20 +301,6 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 array_push($dataBusinessProductCategoryParent, $newModelBusinessProductCategory->toArray());
                             }
                         }
-                    } else {
-
-                        foreach ($model->businessProductCategories as $valueBusinessProductCategory) {
-
-                            if (empty($valueBusinessProductCategory->productCategory->parent_id)) {
-
-                                $valueBusinessProductCategory->is_active = false;
-
-                                if (!($flag = $valueBusinessProductCategory->save())) {
-                                    
-                                    break;
-                                }
-                            }
-                        }
                     }
                 }
 
@@ -338,9 +308,9 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['BusinessProductCategory']['product_category_id']['child'])) {
 
-                        foreach ($post['BusinessProductCategory']['product_category_id']['child'] as $value) {
+                        foreach ($post['BusinessProductCategory']['product_category_id']['child'] as $productCategoryId) {
 
-                            $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $value]);
+                            $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
 
                             if (!empty($newModelBusinessProductCategory)) {
 
@@ -348,10 +318,9 @@ class BusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
-
-                                $newModelBusinessProductCategory->unique_id = $model->id . '-' . $value;
+                                $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
-                                $newModelBusinessProductCategory->product_category_id = $value;
+                                $newModelBusinessProductCategory->product_category_id = $productCategoryId;
                                 $newModelBusinessProductCategory->is_active = true;
                             }
 
@@ -363,36 +332,22 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 array_push($dataBusinessProductCategoryChild, $newModelBusinessProductCategory->toArray());
                             }
                         }
-                    } else {
-
-                        foreach ($model->businessProductCategories as $valueBusinessProductCategory) {
-
-                            if (!empty($valueBusinessProductCategory->productCategory->parent_id)) {
-
-                                $valueBusinessProductCategory->is_active = false;
-
-                                if (!($flag = $valueBusinessProductCategory->save())) {
-                                    
-                                    break;
-                                }
-                            }
-                        }
                     }
                 }
 
                 if ($flag) {
 
-                    if (!empty($post['BusinessProductCategory']['product_category_id']) && !empty($post['BusinessProductCategory']['product_category_id']['parent']) && !empty($post['BusinessProductCategory']['product_category_id']['child'])) {
+                    if (!empty($post['BusinessProductCategory']['product_category_id']['parent']) && !empty($post['BusinessProductCategory']['product_category_id']['child'])) {
 
-                        foreach ($model->businessProductCategories as $valueBusinessProductCategory) {
+                        foreach ($model->businessProductCategories as $existModelBusinessProductCategory) {
 
                             $exist = false;
 
-                            foreach ($post['BusinessProductCategory']['product_category_id'] as $data) {
+                            foreach ($post['BusinessProductCategory']['product_category_id'] as $dataProductCategory) {
 
-                                foreach ($data as $value) {
+                                foreach ($dataProductCategory as $productCategoryId) {
 
-                                    if ($valueBusinessProductCategory['product_category_id'] == $value) {
+                                    if ($existModelBusinessProductCategory['product_category_id'] == $productCategoryId) {
 
                                         $exist = true;
                                         break 2;
@@ -402,9 +357,9 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                             if (!$exist) {
 
-                                $valueBusinessProductCategory->is_active = false;
+                                $existModelBusinessProductCategory->is_active = false;
 
-                                if (!($flag = $valueBusinessProductCategory->save())) {
+                                if (!($flag = $existModelBusinessProductCategory->save())) {
                                     
                                     break;
                                 }
@@ -417,9 +372,9 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['BusinessFacility']['facility_id'])) {
 
-                        foreach ($post['BusinessFacility']['facility_id'] as $value) {
+                        foreach ($post['BusinessFacility']['facility_id'] as $facilityId) {
 
-                            $newModelBusinessFacility = BusinessFacility::findOne(['unique_id' => $model->id . '-' . $value]);
+                            $newModelBusinessFacility = BusinessFacility::findOne(['unique_id' => $model->id . '-' . $facilityId]);
 
                             if (!empty($newModelBusinessFacility)) {
 
@@ -427,10 +382,9 @@ class BusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 $newModelBusinessFacility = new BusinessFacility();
-
-                                $newModelBusinessFacility->unique_id = $model->id . '-' . $value;
+                                $newModelBusinessFacility->unique_id = $model->id . '-' . $facilityId;
                                 $newModelBusinessFacility->business_id = $model->id;
-                                $newModelBusinessFacility->facility_id = $value;
+                                $newModelBusinessFacility->facility_id = $facilityId;
                                 $newModelBusinessFacility->is_active = true;
                             }
 
@@ -442,44 +396,30 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 array_push($dataBusinessFacility, $newModelBusinessFacility->toArray());
                             }
                         }
-                    } else {
-
-                        foreach ($model->businessFacilities as $valueBusinessFacility) {
-
-                            $valueBusinessFacility->is_active = false;
-
-                            if (!($flag = $valueBusinessFacility->save())) {
+                        
+                        if ($flag) {
+                            
+                            foreach ($model->businessFacilities as $existModelBusinessFacility) {
                                 
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if ($flag) {
-
-                    if (!empty($post['BusinessFacility']['facility_id'])) {
-
-                        foreach ($model->businessFacilities as $valueBusinessFacility) {
-
-                            $exist = false;
-
-                            foreach ($post['BusinessFacility']['facility_id'] as $value) {
-
-                                if ($valueBusinessFacility['facility_id'] == $value) {
-
-                                    $exist = true;
-                                    break;
-                                }
-                            }
-
-                            if (!$exist) {
-
-                                $valueBusinessFacility->is_active = false;
-
-                                if (!($flag = $valueBusinessFacility->save())) {
+                                $exist = false;
+                                
+                                foreach ($post['BusinessFacility']['facility_id'] as $facilityId) {
                                     
-                                    break;
+                                    if ($existModelBusinessFacility['facility_id'] == $facilityId) {
+                                        
+                                        $exist = true;
+                                        break;
+                                    }
+                                }
+                                
+                                if (!$exist) {
+                                    
+                                    $existModelBusinessFacility->is_active = false;
+                                    
+                                    if (!($flag = $existModelBusinessFacility->save())) {
+                                        
+                                        break;
+                                    }
                                 }
                             }
                         }
