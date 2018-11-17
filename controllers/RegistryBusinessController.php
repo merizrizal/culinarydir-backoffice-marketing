@@ -1149,11 +1149,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         
         if (!empty($post = Yii::$app->request->post())) {
             
-            if (empty($save)) {
-                
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
                 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = true;
@@ -1277,11 +1273,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         
         if (!empty($post = Yii::$app->request->post())) {
             
-            if (empty($save)) {
-                
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
                 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
@@ -1385,15 +1377,15 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         
             if (empty($dataRegistryBusinessHourAdditional)) {
                 
-                foreach ($dataRegistryBusinessHour as $registryBusinessHour) {
+                foreach ($dataRegistryBusinessHour as $businessHour) {
                     
-                    $dayName = 'day' . $registryBusinessHour['day'];
+                    $dayName = 'day' . $businessHour['day'];
                     
                     $dataRegistryBusinessHourAdditional[$dayName] = [];
                     
-                    if (!empty($registryBusinessHour['registryBusinessHourAdditionals'])) {
+                    if (!empty($businessHour['registryBusinessHourAdditionals'])) {
                         
-                        foreach ($registryBusinessHour['registryBusinessHourAdditionals'] as $registryBusinessHourAdditional) {
+                        foreach ($businessHour['registryBusinessHourAdditionals'] as $registryBusinessHourAdditional) {
                             
                             array_push($dataRegistryBusinessHourAdditional[$dayName], $registryBusinessHourAdditional);
                         }

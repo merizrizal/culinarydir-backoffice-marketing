@@ -27,31 +27,24 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
 
-$notif = new NotificationDialog([
-    'status' => $status,
-    'message1' => $message1,
-    'message2' => $message2,
-]);
-
-$notif->theScript();
-echo $notif->renderDialog();
-
-endif;
+    $notif = new NotificationDialog([
+        'status' => $status,
+        'message1' => $message1,
+        'message2' => $message2,
+    ]);
+    
+    $notif->theScript();
+    echo $notif->renderDialog();
+}
 
 $this->title = 'Update ' . Yii::t('app', 'Contact Person') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['member']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-member', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Contact Person');
 
-echo $ajaxRequest->component();
-
-$jscript = '
-    
-    var indexCount = 0;
-    
-'; ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="business-update">
     <div class="row">
@@ -84,43 +77,49 @@ $jscript = '
                                         <div class="main-form">
                                 	
                                         	<?php
-                                	        if (!empty($dataBusinessContactPerson)) {
+                                	        if (!empty($dataBusinessContactPerson)):
                                 	            
-                                	            $jscript .= '
-                                                    indexCount = 0;
-                                                ';
-                                	            
-                                	            foreach ($dataBusinessContactPerson as $i => $value) {
+                                	            foreach ($dataBusinessContactPerson as $i => $businessContactPerson):
                                 	                
-                                	                $modelBusinessContactPerson = new BusinessContactPerson();
-                                	                $modelPerson = new Person();
-                                	                $modelPerson->first_name = !empty($value['person']) ? $value['person']['first_name'] : $value['first_name'];
-                                	                $modelPerson->last_name = !empty($value['person']) ? $value['person']['last_name'] : $value['last_name'];
-                                	                $modelPerson->phone = !empty($value['person']) ? $value['person']['phone'] : $value['phone'];
-                                	                $modelPerson->email = !empty($value['person']) ? $value['person']['email'] : $value['email'];
-                                	                $modelBusinessContactPerson->is_primary_contact = $value['is_primary_contact'];
-                                	                $modelBusinessContactPerson->note = $value['note'];
-                                	                $modelBusinessContactPerson->position = $value['position']; ?>
+                                	                $modelPerson->first_name = $businessContactPerson['first_name'];
+                                	                $modelPerson->last_name = $businessContactPerson['last_name'];
+                                	                $modelBusinessContactPerson->position = $businessContactPerson['position'];
+                                	                $modelPerson->phone = $businessContactPerson['phone'];
+                                	                $modelPerson->email = $businessContactPerson['email'];
+                                	                $modelBusinessContactPerson->is_primary_contact = $businessContactPerson['is_primary_contact'];
+                                	                $modelBusinessContactPerson->note = $businessContactPerson['note']; ?>
                                 	                
-                                	                <div class="mb-10 data-form">
-                                                        <hr>
+                                	                <div class="mb-40 data-form">
                                                         <div class="row mt-10">
-                                                        
                                                             <div class="col-md-4 col-xs-6">
                                                             
-                                                                <?= $form->field($modelPerson, '[' . ($i+1) .']first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
+                                                                <?= $form->field($modelPerson, '[' . $i .']first_name')->textInput([
+                                                                    'maxlength' => true, 
+                                                                    'placeholder' => Yii::t('app', 'First Name')
+                                                                ]) ?>
                                                                 
                                                             </div>
-                                                
                                                             <div class="col-md-4 col-xs-6">
                                                             
-                                                                <?= $form->field($modelPerson, '[' . ($i+1) .']last_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Last Name')]) ?>
+                                                                <?= $form->field($modelPerson, '[' . $i .']last_name')->textInput([
+                                                                    'maxlength' => true, 
+                                                                    'placeholder' => Yii::t('app', 'Last Name')
+                                                                ]) ?>
                                                                 
                                                             </div>
-                                                
                                                             <div class="col-md-4 col-xs-12">
                                                             
-                                                            	<?= $form->field($modelBusinessContactPerson, '[' . ($i+1) .']position')->dropDownList(['Owner' => 'Owner', 'Manager' => 'Manager', 'Staff' => 'Staff'], ['prompt' => Yii::t('app', 'Position')]); ?>
+                                                            	<?= $form->field($modelBusinessContactPerson, '[' . $i . ']position')
+                                                            	    ->dropDownList([
+                                                            	       'Owner' => 'Owner', 
+                                                            	       'Manager' => 'Manager', 
+                                                            	       'Staff' => 'Staff'
+                                                            	    ],
+                                                        	        [ 
+                                                    	               'prompt' => Yii::t('app', 'Position'),
+                                                        	           'class' => 'contact-person-position',
+                                                        	           'style' => 'width: 100%'
+                                                        	        ]); ?>
                                                             	
                                                             </div>
                                                         </div>
@@ -128,30 +127,28 @@ $jscript = '
                                                         <div class="row">
                                                             <div class="col-md-4 col-xs-6">
                                                             
-                                                                <?= $form->field($modelPerson, '[' . ($i+1) .']phone')->widget(MaskedInput::className(), [
+                                                                <?= $form->field($modelPerson, '[' . $i .']phone')->widget(MaskedInput::className(), [
                                                                     'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                                                     'options' => [
                                                                         'class' => 'form-control',
-                                                                        'placeholder' => Yii::t('app', 'Phone'),
+                                                                        'placeholder' => Yii::t('app', 'Phone')
                                                                     ],
                                                                 ]) ?>
                                                                 
                                                             </div>
-                                                
                                                             <div class="col-md-4 col-xs-6">
                                                             
-                                                                <?= $form->field($modelPerson, '[' . ($i+1) .']email', [
-                                                                    'enableAjaxValidation' => true
-                                                                ])->textInput([
+                                                                <?= $form->field($modelPerson, '[' . $i .']email')->textInput([
                                                                     'class' => 'form-control',
-                                                                    'placeholder' => 'Email',
+                                                                    'placeholder' => 'Email'
                                                                 ]) ?>
                                                                 
                                                             </div>
-                                                
                                                             <div class="col-md-4 col-xs-6">
                                                             
-                                                            	<?= $form->field($modelBusinessContactPerson, '[' . ($i+1) .']is_primary_contact')->checkbox() ?>
+                                                            	<?= $form->field($modelBusinessContactPerson, '[' . $i .']is_primary_contact')->checkbox([
+                                                            	    'class' => 'is-primary-checkbox'
+                                                            	]) ?>
                                                             	
                                                             </div>
                                                         </div>
@@ -159,28 +156,21 @@ $jscript = '
                                                         <div class="row">
                                                         	<div class="col-md-8 col-xs-12">
                                                         	
-                                                                <?= $form->field($modelBusinessContactPerson, '[' . ($i+1) .']note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                                                                <?= $form->field($modelBusinessContactPerson, '[' . $i .']note')->textarea([
+                                                                    'rows' => 2, 
+                                                                    'placeholder' => Yii::t('app', 'Note')
+                                                                ]) ?>
                                                                 
                                                             </div>
                                                         </div>
+                                                        
+                                                        <?= Html::hiddenInput('BusinessContactPersonExisted[' . $i . ']', $businessContactPerson['person_id'], ['class' => 'deleted-contact']); ?>
+                                                        
                                                     </div>
                                                     
-                                                    <?php
-                                                    echo Html::hiddenInput('BusinessContactPersonDeleted[' . ($i+1) . '][]', $value['person_id']);
-                                                    
-                                                    $jscript .= '
-                                                        indexCount++; ' .
-            
-                                                        Yii::$app->params['checkbox-radio-script'](null, null, '#businesscontactperson-" + indexCount + "-is_primary_contact') . '
-            
-                                                        $("#businesscontactperson-" + indexCount + "-position").select2({
-                                                            theme: "krajee",
-                                                            placeholder: "' . Yii::t('app', 'Position') . '",
-                                                            minimumResultsForSearch: "Infinity"
-                                                        });
-                                                    ';
-                                	            }
-                                	        } ?>
+                                            	<?php
+                                	            endforeach;
+                                	        endif; ?>
                                 	        
                             	        </div>
                             	        
@@ -222,25 +212,38 @@ $jscript = '
     </div>
 </div>
 
+<?php
+$modelPerson = new Person();
+$modelBusinessContactPerson = new BusinessContactPerson(); ?>
+
 <div class="temp-form hide">
-    <div class="mb-10 data-form">
-        <hr>
+    <div class="mb-40 data-form">
         <div class="row mt-10">
             <div class="col-md-4 col-xs-6">
             
-                <?= $form->field(new Person(), '[index]first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
+                <?= $form->field($modelPerson, '[index]first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
                 
             </div>
 
             <div class="col-md-4 col-xs-6">
             
-                <?= $form->field(new Person(), '[index]last_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Last Name')]) ?>
+                <?= $form->field($modelPerson, '[index]last_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Last Name')]) ?>
                 
             </div>
 
             <div class="col-md-4 col-xs-12">
             
-            	<?= $form->field(new BusinessContactPerson(), '[index]position')->dropDownList(['Owner' => 'Owner', 'Manager' => 'Manager', 'Staff' => 'Staff'], ['prompt' => Yii::t('app', 'Position')]); ?>
+            	<?= $form->field($modelBusinessContactPerson, '[index]position')
+            	    ->dropDownList([
+            	       'Owner' => 'Owner', 
+            	       'Manager' => 'Manager', 
+            	       'Staff' => 'Staff'
+            	    ], 
+        	        [ 
+    	               'prompt' => Yii::t('app', 'Position'),
+        	           'class' => 'contact-person-position',
+        	           'style' => 'width: 100%',
+        	        ]); ?>
             	
             </div>
         </div>
@@ -248,7 +251,7 @@ $jscript = '
         <div class="row">
             <div class="col-md-4 col-xs-6">
             
-                <?= $form->field(new Person(), '[index]phone')->widget(MaskedInput::className(), [
+                <?= $form->field($modelPerson, '[index]phone')->widget(MaskedInput::className(), [
                     'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                     'options' => [
                         'class' => 'form-control',
@@ -260,9 +263,7 @@ $jscript = '
 
             <div class="col-md-4 col-xs-6">
             
-                <?= $form->field(new Person(), '[index]email', [
-                    'enableAjaxValidation' => true
-                ])->textInput([
+                <?= $form->field($modelPerson, '[index]email')->textInput([
                     'class' => 'form-control',
                     'placeholder' => 'Email',
                 ]) ?>
@@ -271,7 +272,7 @@ $jscript = '
 
             <div class="col-md-4 col-xs-6">
             
-            	<?= $form->field(new BusinessContactPerson(), '[index]is_primary_contact')->checkbox() ?>
+            	<?= $form->field($modelBusinessContactPerson, '[index]is_primary_contact')->checkbox() ?>
             	
             </div>
         </div>
@@ -279,7 +280,7 @@ $jscript = '
         <div class="row">
         	<div class="col-md-8 col-xs-12">
         	
-                <?= $form->field(new BusinessContactPerson(), '[index]note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                <?= $form->field($modelBusinessContactPerson, '[index]note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
                 
             </div>
         </div>
@@ -291,7 +292,15 @@ $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/
 
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
-$jscript .= '
+$jscript = '
+    var indexCount = ' . count($dataBusinessContactPerson) . ';
+
+    $(".main-form").find(".contact-person-position").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'Position') . '",
+        minimumResultsForSearch: "Infinity"
+    });
+
     function addValidator(index) {
 
         $("#business-form").yiiActiveForm("add", {
@@ -340,7 +349,6 @@ $jscript .= '
             "name":"[" + index + "]email",
             "container":".field-person-" + index + "-email",
             "input":"#person-" + index + "-email",
-            "enableAjaxValidation":true,
             "validate":function (attribute, value, messages, deferred, $form) {
                 yii.validation.string(value, messages, {"message":"Email harus berupa string.","max":64,"tooLong":"Email harus memiliki paling banyak 64 karakter.","skipOnEmpty":1});
                 yii.validation.email(value, messages, {"pattern":/^[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/,"fullPattern":/^[^@]*<[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$/,"allowName":false,"message":"Email bukan alamat email yang valid.","enableIDN":false,"skipOnEmpty":1});
@@ -375,12 +383,8 @@ $jscript .= '
         return contentClone;
     };
 
-    addValidator(indexCount);
-
     $(".add-contact-person").on("click", function() {
-
-        indexCount++;
-
+        
         var formContactPerson = $(".temp-form").clone();
 
         formContactPerson = replaceComponent(formContactPerson, "person-index-first_name", "index", indexCount);
@@ -399,19 +403,35 @@ $jscript .= '
 
         Yii::$app->params['checkbox-radio-script'](null, null, '#businesscontactperson-" + indexCount + "-is_primary_contact') . '
 
-        $("#businesscontactperson-" + indexCount + "-position").select2({
+        $(".main-form").find(".contact-person-position").select2({
             theme: "krajee",
             placeholder: "' . Yii::t('app', 'Position') . '",
             minimumResultsForSearch: "Infinity"
         });
+
+        indexCount++;
 
         return false;
     });
 
     $(".delete-contact-person").on("click", function() {
 
-        $(".main-form").children(".data-form").last().remove();
+        var lastData = $(".main-form").children(".data-form").last();
         
+        if (lastData.find(".deleted-contact").length) {
+
+            var inputName = lastData.find(".deleted-contact").attr("name");
+
+            inputName = inputName.replace("Existed", "Deleted");
+            lastData.find(".deleted-contact").attr("name", inputName);
+            lastData.children().not(".deleted-contact").remove();
+        } else {
+        
+            lastData.remove();    
+        }
+
+        lastData.removeClass("data-form").addClass("data-form-deleted");
+
         if (indexCount > 0) {
 
             indexCount--;
@@ -421,4 +441,4 @@ $jscript .= '
     });
 ';
 
-$this->registerJs($jscript); ?>
+$this->registerJs(Yii::$app->params['checkbox-radio-script'](null, null, '.is-primary-checkbox') . $jscript); ?>

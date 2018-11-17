@@ -26,7 +26,7 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
 
     $notif = new NotificationDialog([
         'status' => $status,
@@ -36,8 +36,7 @@ if ($status !== null) :
 
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
+}
 
 $this->title = 'Update ' . Yii::t('app', 'Business Information') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['member']];
@@ -107,18 +106,18 @@ echo $ajaxRequest->component(); ?>
                                 <div class="col-lg-3 col-xs-6">
                                 
                                     <?= $form->field($modelBusinessLocation, 'city_id')->dropDownList(
-                                            ArrayHelper::map(
-                                                City::find()->orderBy('name')->asArray()->all(),
-                                                'id',
-                                                function($data) {
-                                                    
-                                                    return $data['name'];
-                                                }
-                                            ),
-                                            [
-                                                'prompt' => '',
-                                                'style' => 'width: 100%'
-                                            ]) ?>
+                                        ArrayHelper::map(
+                                            City::find()->orderBy('name')->asArray()->all(),
+                                            'id',
+                                            function($data) {
+                                                
+                                                return $data['name'];
+                                            }
+                                        ),
+                                        [
+                                            'prompt' => '',
+                                            'style' => 'width: 100%'
+                                        ]) ?>
 
                                 </div>
                                 <div class="col-lg-3 col-xs-6">

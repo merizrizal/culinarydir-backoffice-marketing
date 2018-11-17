@@ -59,6 +59,7 @@ echo $ajaxRequest->component(); ?>
                             <li><?= Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id']]) ?></li>
                             <li><?= Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id']]) ?></li>
                             <li><?= Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id']]) ?></li>
+                            <li><?= Html::a(Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id']]) ?></li>
                             <li><?= Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id']]) ?></li>
                         </ul>
                     </div>
@@ -482,26 +483,26 @@ echo $ajaxRequest->component(); ?>
     				<?php
 				    if (!empty($model['businessContactPeople'])): ?>
 			            
-    				    <table class="table-contact-person">
+    				    <table class="table table-responsive">
 				        	<tr>
-			            		<th class="table-contact-person-th"><?= Html::label(Yii::t('app', 'Name')) ?></th>
-			            		<th class="table-contact-person-th"><?= Html::label(Yii::t('app', 'Position')) ?></th>
-			            		<th class="table-contact-person-th"><?= Html::label(Yii::t('app', 'Email')) ?></th>
-			            		<th class="table-contact-person-th"><?= Html::label(Yii::t('app', 'Phone')) ?></th>
-			            		<th class="table-contact-person-th"><?= Html::label(Yii::t('app', 'Note')) ?></th>
-			            		<th class="table-contact-person-th"><?= Html::label(Yii::t('app', 'Is Primary Contact')) ?></th>
+			            		<th><?= Html::label(Yii::t('app', 'Name')) ?></th>
+			            		<th><?= Html::label(Yii::t('app', 'Position')) ?></th>
+			            		<th><?= Html::label(Yii::t('app', 'Email')) ?></th>
+			            		<th><?= Html::label(Yii::t('app', 'Phone')) ?></th>
+			            		<th><?= Html::label(Yii::t('app', 'Note')) ?></th>
+			            		<th><?= Html::label(Yii::t('app', 'Is Primary Contact')) ?></th>
 			            	</tr>
 				        
     				    	<?php
     				    	foreach ($model['businessContactPeople'] as $dataBusinessContactPerson): ?>
     			                
         			            <tr>
-        			            	<td class="table-contact-person-td"><?= $dataBusinessContactPerson['person']['first_name'] . ' ' . $dataBusinessContactPerson['person']['last_name'] ?></td>
-    			            		<td class="table-contact-person-td"><?= $dataBusinessContactPerson['position'] ?></td>
-    			            		<td class="table-contact-person-td"><?= !empty($dataBusinessContactPerson['person']['email']) ? $dataBusinessContactPerson['person']['email'] : '-' ?></td>
-    			            		<td class="table-contact-person-td"><?= !empty($dataBusinessContactPerson['person']['phone']) ? $dataBusinessContactPerson['person']['phone'] : '-' ?></td>
-    			            		<td class="table-contact-person-td"><?= !empty($dataBusinessContactPerson['note']) ? $dataBusinessContactPerson['note'] : '-' ?></td>
-    			            		<td class="table-contact-person-td"><?= !empty($dataBusinessContactPerson['is_primary_contact']) ? ' YA ' : ' TIDAK ' ?></td>
+        			            	<td><?= $dataBusinessContactPerson['person']['first_name'] . ' ' . $dataBusinessContactPerson['person']['last_name'] ?></td>
+    			            		<td><?= $dataBusinessContactPerson['position'] ?></td>
+    			            		<td><?= !empty($dataBusinessContactPerson['person']['email']) ? $dataBusinessContactPerson['person']['email'] : '-' ?></td>
+    			            		<td><?= !empty($dataBusinessContactPerson['person']['phone']) ? $dataBusinessContactPerson['person']['phone'] : '-' ?></td>
+    			            		<td><?= !empty($dataBusinessContactPerson['note']) ? $dataBusinessContactPerson['note'] : '-' ?></td>
+    			            		<td><?= !empty($dataBusinessContactPerson['is_primary_contact']) ? ' YA ' : ' TIDAK ' ?></td>
         			            </tr>
     			                
     			            <?php
@@ -541,6 +542,7 @@ echo $ajaxRequest->component(); ?>
                             <li><?= Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id']]) ?></li>
                             <li><?= Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id']]) ?></li>
                             <li><?= Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id']]) ?></li>
+                            <li><?= Html::a(Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id']]) ?></li>
                             <li><?= Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id']]) ?></li>
                         </ul>
                     </div>

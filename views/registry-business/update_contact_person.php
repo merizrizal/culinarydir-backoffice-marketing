@@ -28,7 +28,7 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
 
     $notif = new NotificationDialog([
         'status' => $status,
@@ -38,8 +38,7 @@ if ($status !== null) :
     
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
+}
 
 $this->title = 'Update ' . Yii::t('app', 'Contact Person') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' => ['index-' . strtolower($statusApproval)]];
@@ -140,9 +139,7 @@ echo $ajaxRequest->component(); ?>
                                                             </div>
                                                             <div class="col-md-4 col-xs-6">
                                                             
-                                                                <?= $form->field($modelPerson, '[' . $i .']email', [
-                                                                    'enableAjaxValidation' => true
-                                                                ])->textInput([
+                                                                <?= $form->field($modelPerson, '[' . $i .']email')->textInput([
                                                                     'class' => 'form-control',
                                                                     'placeholder' => 'Email'
                                                                 ]) ?>
@@ -267,9 +264,7 @@ $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson(); ?>
 
             <div class="col-md-4 col-xs-6">
             
-                <?= $form->field($modelPerson, '[index]email', [
-                    'enableAjaxValidation' => true
-                ])->textInput([
+                <?= $form->field($modelPerson, '[index]email')->textInput([
                     'class' => 'form-control',
                     'placeholder' => 'Email',
                 ]) ?>
@@ -355,7 +350,6 @@ $jscript = '
             "name":"[" + index + "]email",
             "container":".field-person-" + index + "-email",
             "input":"#person-" + index + "-email",
-            "enableAjaxValidation":true,
             "validate":function (attribute, value, messages, deferred, $form) {
                 yii.validation.string(value, messages, {"message":"Email harus berupa string.","max":64,"tooLong":"Email harus memiliki paling banyak 64 karakter.","skipOnEmpty":1});
                 yii.validation.email(value, messages, {"pattern":/^[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/,"fullPattern":/^[^@]*<[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$/,"allowName":false,"message":"Email bukan alamat email yang valid.","enableIDN":false,"skipOnEmpty":1});

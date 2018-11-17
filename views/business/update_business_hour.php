@@ -4,22 +4,21 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
-use core\models\RegistryBusinessHourAdditional;
+use core\models\BusinessHourAdditional;
 
 /* @var $this yii\web\View */
-/* @var $model core\models\RegistryBusiness */
-/* @var $dataRegistryBusinessHour core\models\RegistryBusinessHour */
-/* @var $modelRegistryBusinessHour core\models\RegistryBusinessHour */
-/* @var $dataRegistryBusinessHourAdditional core\models\RegistryBusinessHourAdditional */
-/* @var $modelRegistryBusinessHourAdditional core\models\RegistryBusinessHourAdditional */
-/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $model core\models\Business */
+/* @var $dataBusinessHour core\models\BusinessHour */
+/* @var $modelBusinessHour core\models\BusinessHour */
+/* @var $dataBusinessHourAdditional core\models\BusinessHourAdditional */
+/* @var $modelBusinessHourAdditional core\models\BusinessHourAdditional */
 /* @var $day string */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
 $ajaxRequest = new AjaxRequest([
-    'modelClass' => 'RegistryBusiness',
+    'modelClass' => 'Business',
 ]);
 
 $ajaxRequest->form();
@@ -41,22 +40,22 @@ if ($status !== null) {
 }
 
 $this->title = 'Update ' . Yii::t('app', 'Operational Hours') . ' : ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' => ['index-' . strtolower($statusApproval)]];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-' . strtolower($statusApproval), 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['member']];
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-member', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Operational Hours');
 
 echo $ajaxRequest->component(); ?>
 
-<div class="registry-business-update">
+<div class="business-update">
     <div class="row">
         <div class="col-sm-12">
             <div class="x_panel">
-                <div class="registry-business-form">
+                <div class="business-form">
 
                     <?php
                     $form = ActiveForm::begin([
-                        'id' => 'registry-business-form',
-                        'action' => ['update-business-hour', 'id' => $model->id, 'statusApproval' => strtolower($statusApproval)],
+                        'id' => 'business-form',
+                        'action' => ['update-business-hour', 'id' => $model->id],
                         'options' => [
 
                         ],
@@ -89,15 +88,15 @@ echo $ajaxRequest->component(); ?>
                                     $is24Hour = false;
                                     $dayName = 'day' . $i;
                                     
-                                    foreach ($dataRegistryBusinessHour as $registryBusinessHour) {
+                                    foreach ($dataBusinessHour as $businessHour) {
                                         
-                                        if ($registryBusinessHour['day'] == $i) {
+                                        if ($businessHour['day'] == $i) {
                                             
-                                            $modelRegistryBusinessHour->is_open = $registryBusinessHour['is_open'];
-                                            $modelRegistryBusinessHour->open_at = $registryBusinessHour['open_at'];
-                                            $modelRegistryBusinessHour->close_at = $registryBusinessHour['close_at'];
+                                            $modelBusinessHour->is_open = $businessHour['is_open'];
+                                            $modelBusinessHour->open_at = $businessHour['open_at'];
+                                            $modelBusinessHour->close_at = $businessHour['close_at'];
                                             
-                                            if ($modelRegistryBusinessHour->open_at == '00:00:00' && $modelRegistryBusinessHour->close_at == '24:00:00') {
+                                            if ($modelBusinessHour->open_at == '00:00:00' && $modelBusinessHour->close_at == '24:00:00') {
                                                 
                                                 $is24Hour = true;
                                             }
@@ -115,7 +114,7 @@ echo $ajaxRequest->component(); ?>
                                             </div>
                                             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
 
-                                                <?= $form->field($modelRegistryBusinessHour, '[' . $dayName . ']is_open')
+                                                <?= $form->field($modelBusinessHour, '[' . $dayName . ']is_open')
                                                     ->checkbox([
                                                         'label' => Yii::t('app', 'Open'),
                                                         'class' => 'business-hour-is-open day-' . $i,
@@ -128,7 +127,7 @@ echo $ajaxRequest->component(); ?>
                                                     <?= Html::checkbox('always24', $is24Hour, [
                                                         'label' => Yii::t('app', '24 Hours'),
                                                         'class' => 'business-hour-24h',
-                                                        'disabled' => !$modelRegistryBusinessHour->is_open,
+                                                        'disabled' => !$modelBusinessHour->is_open,
                                                         'id' => 'business-hour-24h-' . $i
                                                     ]); ?>
 
@@ -139,23 +138,23 @@ echo $ajaxRequest->component(); ?>
 
                                             <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
 
-                                                <?= $form->field($modelRegistryBusinessHour, '[' . $dayName . ']open_at')
+                                                <?= $form->field($modelBusinessHour, '[' . $dayName . ']open_at')
                                                     ->dropDownList($hours, [
                                                         'prompt' => '',
                                                         'class' => 'business-hour-time open',
                                                         'style' => 'width: 100%',
-                                                        'disabled' => !$modelRegistryBusinessHour->is_open,
+                                                        'disabled' => !$modelBusinessHour->is_open,
                                                     ]); ?>
 
                                             </div>
                                             <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
 
-                                                <?= $form->field($modelRegistryBusinessHour, '[' . $dayName . ']close_at')
+                                                <?= $form->field($modelBusinessHour, '[' . $dayName . ']close_at')
                                                     ->dropDownList($hours, [
                                                         'prompt' => '',
                                                         'class' => 'business-hour-time close',
                                                         'style' => 'width: 100%',
-                                                        'disabled' => !$modelRegistryBusinessHour->is_open,
+                                                        'disabled' => !$modelBusinessHour->is_open,
                                                     ]); ?>
 
                                             </div>
@@ -170,43 +169,43 @@ echo $ajaxRequest->component(); ?>
                                         </div>
                                         
                                         <?php
-                                        if (!empty($dataRegistryBusinessHourAdditional[$dayName])):
+                                        if (!empty($dataBusinessHourAdditional[$dayName])):
                                             
                                             $countAdditional = 0;
                                             
-                                            foreach ($dataRegistryBusinessHourAdditional[$dayName] as $registryBusinessHourAdditional):
+                                            foreach ($dataBusinessHourAdditional[$dayName] as $businessHourAdditional):
                                                     
                                                 $countAdditional++;
-                                                $modelRegistryBusinessHourAdditional->open_at = $registryBusinessHourAdditional['open_at'];
-                                                $modelRegistryBusinessHourAdditional->close_at = $registryBusinessHourAdditional['close_at']; ?>
+                                                $modelBusinessHourAdditional->open_at = $businessHourAdditional['open_at'];
+                                                $modelBusinessHourAdditional->close_at = $businessHourAdditional['close_at']; ?>
                                             
                                                 <div class="data-hour-form">
                                                     <div class="row">
                                                         <div class="col-lg-2 col-lg-offset-5 col-md-3 col-sm-3 col-xs-4">
                                             
-                                                            <?= $form->field($modelRegistryBusinessHourAdditional, '[' . $dayName . '][' . $countAdditional . ']open_at')
+                                                            <?= $form->field($modelBusinessHourAdditional, '[' . $dayName . '][' . $countAdditional . ']open_at')
                                                                 ->dropDownList($hours, [
                                                                     'prompt' => '',
                                                                     'class' => 'business-hour-time-additional open-additional',
                                                                     'style' => 'width: 100%',
-                                                                    'disabled' => !$modelRegistryBusinessHour->is_open,
+                                                                    'disabled' => !$modelBusinessHour->is_open,
                                                                 ]); ?>
                                             
                                                         </div>
                                                         <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
                                             
-                                                            <?= $form->field($modelRegistryBusinessHourAdditional, '[' . $dayName . '][' . $countAdditional . ']close_at')
+                                                            <?= $form->field($modelBusinessHourAdditional, '[' . $dayName . '][' . $countAdditional . ']close_at')
                                                                 ->dropDownList($hours, [
                                                                     'prompt' => '',
                                                                     'class' => 'business-hour-time-additional close-additional',
                                                                     'style' => 'width: 100%',
-                                                                    'disabled' => !$modelRegistryBusinessHour->is_open,
+                                                                    'disabled' => !$modelBusinessHour->is_open,
                                                                 ]); ?>
                                             
                                                         </div>
                                                     </div>
                                                     
-                                                    <?= Html::hiddenInput('RegistryBusinessHourAdditionalExisted[day' . $registryBusinessHourAdditional['day'] . '][]', $registryBusinessHourAdditional['id'], ['class' => 'deleted-hour', 'data-count' => $countAdditional]) ?>
+                                                    <?= Html::hiddenInput('BusinessHourAdditionalExisted[day' . $businessHourAdditional['day'] . '][]', $businessHourAdditional['id'], ['class' => 'deleted-hour', 'data-count' => $countAdditional]) ?>
                                                     
                                                 </div>
                                         
@@ -227,7 +226,7 @@ echo $ajaxRequest->component(); ?>
 
                                         <?php
                                         echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-' . strtolower($statusApproval), 'id' => $model->id], ['class' => 'btn btn-default']); ?>
+                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-member', 'id' => $model->id], ['class' => 'btn btn-default']); ?>
 
                                     </div>
                                 </div>
@@ -245,14 +244,14 @@ echo $ajaxRequest->component(); ?>
 </div>
 
 <?php
-$modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional(); ?>
+$modelBusinessHourAdditional = new BusinessHourAdditional(); ?>
 
 <div class="additional-hour-temp-form hide">
     <div class="data-hour-form">
         <div class="row">
             <div class="col-lg-2 col-lg-offset-5 col-md-3 col-sm-3 col-xs-4">
 
-                <?= $form->field($modelRegistryBusinessHourAdditional, '[dayidx][index]open_at')
+                <?= $form->field($modelBusinessHourAdditional, '[dayidx][index]open_at')
                     ->dropDownList($hours, [
                         'prompt' => '',
                         'class' => 'business-hour-time-additional open-additional',
@@ -263,7 +262,7 @@ $modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional(); ?>
             </div>
             <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
 
-                <?= $form->field($modelRegistryBusinessHourAdditional, '[dayidx][index]close_at')
+                <?= $form->field($modelBusinessHourAdditional, '[dayidx][index]close_at')
                     ->dropDownList($hours, [
                         'prompt' => '',
                         'class' => 'business-hour-time-additional close-additional',
@@ -360,45 +359,45 @@ $jscript = '
 
         if ($("#business-hour-24h-" + thisObj.val()).is(":checked")) {
 
-            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").parent().hide();
-            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").parent().hide();
+            $("#businesshour-day"  + thisObj.val() + "-open_at").parent().hide();
+            $("#businesshour-day"  + thisObj.val() + "-close_at").parent().hide();
     
             $("#add-business-hour-day" + thisObj.val()).hide();
             $("#delete-business-hour-day" + thisObj.val()).hide();
         }
 
-        $("#registrybusinesshour-day" + thisObj.val() + "-is_open").on("ifChecked", function(e) {
+        $("#businesshour-day" + thisObj.val() + "-is_open").on("ifChecked", function(e) {
 
             $("#business-hour-24h-" + thisObj.val()).iCheck("enable");
 
-            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").removeAttr("disabled");
-            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").removeAttr("disabled");
+            $("#businesshour-day"  + thisObj.val() + "-open_at").removeAttr("disabled");
+            $("#businesshour-day"  + thisObj.val() + "-close_at").removeAttr("disabled");
             
             for (var counter = 1; counter <= indexHourCount; counter++) {
 
-                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").removeAttr("disabled");
-                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-close_at").removeAttr("disabled");
+                $("#businesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").removeAttr("disabled");
+                $("#businesshouradditional-day"  + thisObj.val() + "-" + counter + "-close_at").removeAttr("disabled");
             }
         });
     
-        $("#registrybusinesshour-day" + thisObj.val() + "-is_open").on("ifUnchecked", function(e) {
+        $("#businesshour-day" + thisObj.val() + "-is_open").on("ifUnchecked", function(e) {
     
             $("#business-hour-24h-" + thisObj.val()).iCheck("disable");
             $("#business-hour-24h-" + thisObj.val()).iCheck("uncheck");
 
-            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").attr("disabled","disabled");
-            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").val(null).trigger("change");
+            $("#businesshour-day"  + thisObj.val() + "-open_at").attr("disabled","disabled");
+            $("#businesshour-day"  + thisObj.val() + "-open_at").val(null).trigger("change");
 
-            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").attr("disabled","disabled");
-            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").val(null).trigger("change");
+            $("#businesshour-day"  + thisObj.val() + "-close_at").attr("disabled","disabled");
+            $("#businesshour-day"  + thisObj.val() + "-close_at").val(null).trigger("change");
     
             for (var counter = 1; counter <= indexHourCount; counter++) {
                 
-                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").attr("disabled","disabled");
-                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").val(null).trigger("change");
+                $("#businesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").attr("disabled","disabled");
+                $("#businesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").val(null).trigger("change");
 
-                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-close_at").attr("disabled","disabled");
-                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + counter + "-close_at").val(null).trigger("change");
+                $("#businesshouradditional-day"  + thisObj.val() + "-" + counter + "-close_at").attr("disabled","disabled");
+                $("#businesshouradditional-day"  + thisObj.val() + "-" + counter + "-close_at").val(null).trigger("change");
             }
         });
     
@@ -406,11 +405,11 @@ $jscript = '
 
             var deletedHourContent = thisObj.parent().parent().siblings().find(".deleted-hour");
     
-            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").val("00:00:00").trigger("change");
-            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").val("24:00:00").trigger("change");
+            $("#businesshour-day"  + thisObj.val() + "-open_at").val("00:00:00").trigger("change");
+            $("#businesshour-day"  + thisObj.val() + "-close_at").val("24:00:00").trigger("change");
 
-            $(".field-registrybusinesshour-day" + thisObj.val() + "-open_at").hide();
-            $(".field-registrybusinesshour-day" + thisObj.val() + "-close_at").hide();
+            $(".field-businesshour-day" + thisObj.val() + "-open_at").hide();
+            $(".field-businesshour-day" + thisObj.val() + "-close_at").hide();
 
             $("#add-business-hour-day" + thisObj.val()).hide();
             $("#delete-business-hour-day" + thisObj.val()).hide();
@@ -430,11 +429,11 @@ $jscript = '
     
         $("#business-hour-24h-" + thisObj.val()).on("ifUnchecked",function(e) {
     
-            $("#registrybusinesshour-day"  + thisObj.val() + "-open_at").val(null).trigger("change");
-            $("#registrybusinesshour-day"  + thisObj.val() + "-close_at").val(null).trigger("change");
+            $("#businesshour-day"  + thisObj.val() + "-open_at").val(null).trigger("change");
+            $("#businesshour-day"  + thisObj.val() + "-close_at").val(null).trigger("change");
 
-            $(".field-registrybusinesshour-day" + thisObj.val() + "-open_at").show();
-            $(".field-registrybusinesshour-day" + thisObj.val() + "-close_at").show();
+            $(".field-businesshour-day" + thisObj.val() + "-open_at").show();
+            $(".field-businesshour-day" + thisObj.val() + "-close_at").show();
 
             $("#add-business-hour-day" + thisObj.val()).show();
             $("#delete-business-hour-day" + thisObj.val()).show();
@@ -446,18 +445,18 @@ $jscript = '
     
             var formBusinessHour = $(".additional-hour-temp-form").clone();
     
-            formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-index-open_at", "index", indexHourCount);
-            formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-index-close_at", "index", indexHourCount);
+            formBusinessHour = replaceComponent(formBusinessHour, "businesshouradditional-dayidx-index-open_at", "index", indexHourCount);
+            formBusinessHour = replaceComponent(formBusinessHour, "businesshouradditional-dayidx-index-close_at", "index", indexHourCount);
 
-            formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-" + indexHourCount + "-open_at", "idx", thisObj.val());
-            formBusinessHour = replaceComponent(formBusinessHour, "registrybusinesshouradditional-dayidx-" + indexHourCount + "-close_at", "idx", thisObj.val());
+            formBusinessHour = replaceComponent(formBusinessHour, "businesshouradditional-dayidx-" + indexHourCount + "-open_at", "idx", thisObj.val());
+            formBusinessHour = replaceComponent(formBusinessHour, "businesshouradditional-dayidx-" + indexHourCount + "-close_at", "idx", thisObj.val());
     
             thisObj.parents(".main-hour-form").append(formBusinessHour.html());
 
-            if ($("#registrybusinesshour-day" + thisObj.val() + "-is_open").is(":checked")) {
+            if ($("#businesshour-day" + thisObj.val() + "-is_open").is(":checked")) {
 
-                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + indexHourCount + "-open_at").removeAttr("disabled");
-                $("#registrybusinesshouradditional-day"  + thisObj.val() + "-" + indexHourCount + "-close_at").removeAttr("disabled");
+                $("#businesshouradditional-day"  + thisObj.val() + "-" + indexHourCount + "-open_at").removeAttr("disabled");
+                $("#businesshouradditional-day"  + thisObj.val() + "-" + indexHourCount + "-close_at").removeAttr("disabled");
             }
 
             thisObj.parent().parent().siblings(".data-hour-form").last().find(".business-hour-time-additional.open-additional").select2({
