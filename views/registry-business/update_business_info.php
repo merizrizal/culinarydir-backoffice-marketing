@@ -26,7 +26,7 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -35,8 +35,7 @@ if ($status !== null) :
 
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
+}
 
 $this->title = 'Update ' . Yii::t('app', 'Business Information') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' => ['index-' . strtolower($statusApproval)]];
@@ -71,28 +70,38 @@ echo $ajaxRequest->component(); ?>
 
                             <div class="row">
                                 <div class="col-md-6">
+                                
                                     <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Name')]) ?>
+                                    
                                 </div>
                                 <div class="col-md-6">
+                                
                                     <?= $form->field($model, 'unique_name', [
                                         'enableAjaxValidation' => true
                                     ])->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Unique Name')]) ?>
+                                    
                                 </div>
                             </div>
 
                             <div class="row">
 
                                 <div class="col-md-3">
+                                
                                     <?= $form->field($model, 'address_type')->dropDownList(['Gang' => 'Gang', 'Jalan' => 'Jalan', 'Komplek' => 'Komplek'], ['prompt' => Yii::t('app', 'Address Type'), 'style' => 'width: 100%']) ?>
+                                    
                                 </div>
 
                                 <div class="col-md-5">
+                                
                                     <?= $form->field($model, 'address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address')]) ?>
+                                    
                                 </div>
 
 
                                 <div class="col-md-4">
+                                
                                     <?= $form->field($model, 'address_info')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address Info')]) ?>
+                                    
                                 </div>
 
                             </div>
@@ -100,30 +109,36 @@ echo $ajaxRequest->component(); ?>
                             <div class="row">
 
                                 <div class="col-lg-3 col-xs-6">
+                                
                                     <?= $form->field($model, 'city_id')->dropDownList(
-                                            ArrayHelper::map(
-                                                City::find()->orderBy('name')->asArray()->all(),
-                                                'id',
-                                                function($data) {
-                                                    return $data['name'];
-                                                }
-                                            ),
-                                            [
-                                                'prompt' => '',
-                                                'style' => 'width: 100%'
-                                            ]) ?>
+                                        ArrayHelper::map(
+                                            City::find()->orderBy('name')->asArray()->all(),
+                                            'id',
+                                            function($data) {
+                                                return $data['name'];
+                                            }
+                                        ),
+                                        [
+                                            'prompt' => '',
+                                            'style' => 'width: 100%'
+                                        ]) ?>
+                                        
                                 </div>
 
                                 <div class="col-lg-3 col-xs-6">
+                                
                                     <?= $form->field($model, 'district_id')->textInput([
                                         'style' => 'width: 100%'
                                     ]) ?>
+                                    
                                 </div>
 
                                 <div class="col-lg-3 col-xs-6">
+                                
                                     <?= $form->field($model, 'village_id')->textInput([
                                         'style' => 'width: 100%'
                                     ]) ?>
+                                    
                                 </div>
 
                             </div>
@@ -131,21 +146,28 @@ echo $ajaxRequest->component(); ?>
                             <div class="row">
 
                                 <div class="col-lg-6 col-xs-9">
+                                
                                     <?= $form->field($model, 'coordinate')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Coordinate')]) ?>
+                                    
                                 </div>
 
                                 <div class="col-lg-3 col-xs-3">
+                                
                                     <?= Html::a('<i class="fa fa-map-marker-alt"></i> ' . Yii::t('app', 'Open Map'), 'https://www.google.co.id/maps/@-6.9171962,107.6185384,14.75z?hl=en', ['class' => 'btn btn-primary btn-block direct', 'target' => '_blank']) ?>
+                                    
                                 </div>
                             </div>
 
                             <div class="row">
 
                                 <div class="col-lg-3 col-xs-6">
+                                
                                     <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Email')]) ?>
+                                    
                                 </div>
 
                                 <div class="col-lg-3 col-xs-6">
+                                
                                     <?= $form->field($model, 'phone1')->widget(MaskedInput::className(), [
                                         'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                         'options' => [
@@ -153,9 +175,11 @@ echo $ajaxRequest->component(); ?>
                                             'class' => 'form-control'
                                         ]
                                     ]) ?>
+                                    
                                 </div>
 
                                 <div class="col-lg-3 col-xs-6">
+                                
                                     <?= $form->field($model, 'phone2')->widget(MaskedInput::className(), [
                                         'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                         'options' => [
@@ -163,9 +187,11 @@ echo $ajaxRequest->component(); ?>
                                             'class' => 'form-control'
                                         ]
                                     ]) ?>
+                                    
                                 </div>
 
                                 <div class="col-lg-3 col-xs-6">
+                                
                                     <?= $form->field($model, 'phone3')->widget(MaskedInput::className(), [
                                         'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                         'options' => [
@@ -173,6 +199,7 @@ echo $ajaxRequest->component(); ?>
                                             'class' => 'form-control'
                                         ]
                                     ]) ?>
+                                    
                                 </div>
 
                             </div>
@@ -191,7 +218,9 @@ echo $ajaxRequest->component(); ?>
                             
                             <div class="row">
                                 <div class="col-md-9">
+                                
                                     <?= $form->field($model, 'note')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                                    
                                 </div>
                             </div>
 
@@ -239,6 +268,7 @@ $jscript = '
         var setDistrict = function(remoteData) {
 
             $("#registrybusiness-district_id").val(null).trigger("change");
+
             $("#registrybusiness-district_id").select2({
                 theme: "krajee",
                 placeholder: "' . Yii::t('app', 'District ID') . '",
@@ -262,6 +292,7 @@ $jscript = '
                 }
             });
         } else {
+
             setDistrict([]);
 
             if (afterSuccess !== undefined) {
@@ -325,6 +356,7 @@ $jscript = '
                 }
             });
         } else {
+
             setVillage([]);
 
             if (afterSuccess !== undefined) {
@@ -336,6 +368,7 @@ $jscript = '
     village();
 
     $("#registrybusiness-district_id").on("select2:select", function(e) {
+
         village(true);
     });
 ';

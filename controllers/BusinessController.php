@@ -825,68 +825,61 @@ class BusinessController extends \backoffice\controllers\BaseController
         $modelBusinessContactPerson = new BusinessContactPerson();
         $dataBusinessContactPerson = [];
         
-        if (!empty($post = Yii::$app->request->post())) {
+        $modelPerson = new Person();
+        
+        $isEmpty = false;
+        
+        if (!empty(($post = Yii::$app->request->post()))) {
             
-            if (empty($save)) {
-                
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
                 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = true;
                 
+                $isEmpty = (empty($post['Person']) && empty($post['BusinessContactPerson']));
+                
                 if (!empty($post['BusinessContactPersonDeleted'])) {
                     
-                    foreach ($post['BusinessContactPersonDeleted'] as $i => $deletedValue) {
+                    if (($flag = BusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]))) {
                         
-                        if (empty($post['BusinessContactPerson'][$i]) && empty($post['Person'][$i])) {
-                            
-                            if ($flag = BusinessContactPerson::deleteAll(['person_id' => $deletedValue])) {
-                                
-                                $flag = Person::deleteAll(['id' => $deletedValue]);
-                            }
-                        }
+                        $flag = Person::deleteAll(['id' => $post['BusinessContactPersonDeleted']]);
                     }
                 }
                 
                 if (!empty($post['Person']) && !empty($post['BusinessContactPerson'])) {
                     
-                    foreach ($post['Person'] as $i => $value) {
+                    foreach ($post['Person'] as $i => $person) {
                         
-                        if ($i !== 'index') {
+                        if (!empty($model['businessContactPeople'][$i])) {
                             
-                            if (!empty($model['businessContactPeople'][($i-1)])) {
+                            $newModelPerson = Person::findOne(['id' => $model['businessContactPeople'][$i]['person_id']]);
+                        } else {
+                            
+                            $newModelPerson = new Person();
+                        }
+                        
+                        $newModelPerson->first_name = $person['first_name'];
+                        $newModelPerson->last_name = $person['last_name'];
+                        $newModelPerson->phone = $person['phone'];
+                        $newModelPerson->email = $person['email'];
+                        
+                        if (!($flag = $newModelPerson->save())) {
+                            
+                            break;
+                        } else {
+                            
+                            $newModelBusinessContactPerson = BusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
+                            
+                            if (empty($newModelBusinessContactPerson)) {
                                 
-                                $newModelPerson = Person::findOne(['id' => $model['businessContactPeople'][($i-1)]['person_id']]);
-                            } else {
-                                
-                                $newModelPerson = new Person();
+                                $newModelBusinessContactPerson = new BusinessContactPerson();
+                                $newModelBusinessContactPerson->business_id = $model->id;
+                                $newModelBusinessContactPerson->person_id = $newModelPerson->id;
                             }
                             
-                            $newModelPerson->first_name = $post['Person'][$i]['first_name'];
-                            $newModelPerson->last_name = $post['Person'][$i]['last_name'];
-                            $newModelPerson->phone = $post['Person'][$i]['phone'];
-                            $newModelPerson->email = $post['Person'][$i]['email'];
-                            
-                            if (!($flag = $newModelPerson->save())) {
-                                
-                                break;
-                            } else {
-                                
-                                $newModelBusinessContactPerson = BusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
-                                
-                                if (empty($newModelBusinessContactPerson)) {
-                                    
-                                    $newModelBusinessContactPerson = new BusinessContactPerson();
-                                    $newModelBusinessContactPerson->business_id = $model->id;
-                                    $newModelBusinessContactPerson->person_id = $newModelPerson->id;
-                                }
-                                
-                                $newModelBusinessContactPerson->position = $post['BusinessContactPerson'][$i]['position'];
-                                $newModelBusinessContactPerson->is_primary_contact = !empty($post['BusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
-                                $newModelBusinessContactPerson->note = $post['BusinessContactPerson'][$i]['note'];
-                            }
+                            $newModelBusinessContactPerson->position = $post['BusinessContactPerson'][$i]['position'];
+                            $newModelBusinessContactPerson->is_primary_contact = !empty($post['BusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
+                            $newModelBusinessContactPerson->note = $post['BusinessContactPerson'][$i]['note'];
                             
                             if (!($flag = $newModelBusinessContactPerson->save())) {
                                 
@@ -917,18 +910,177 @@ class BusinessController extends \backoffice\controllers\BaseController
             }
         }
         
-        if (empty($dataBusinessContactPerson)) {
+        if (!$isEmpty) {
             
-            foreach ($model->businessContactPeople as $i => $value) {
+            if (empty($dataBusinessContactPerson)) {
                 
-                array_push($dataBusinessContactPerson, $value);
+                foreach ($model->businessContactPeople as $dataContactPerson) {
+                    
+                    $dataContactPerson = ArrayHelper::merge($dataContactPerson->toArray(), $dataContactPerson->person->toArray());
+                    
+                    array_push($dataBusinessContactPerson, $dataContactPerson);
+                }
             }
         }
         
         return $this->render('update_contact_person', [
             'model' => $model,
+            'modelPerson' => $modelPerson,
             'modelBusinessContactPerson' => $modelBusinessContactPerson,
             'dataBusinessContactPerson' => $dataBusinessContactPerson,
+        ]);
+    }
+    
+    public function actionUpdateBusinessHour($id, $save = null)
+    {
+        $model = Business::find()
+            ->joinWith([
+                'businessHours' => function($query) {
+            
+                    $query->orderBy(['business_hour.day' => SORT_ASC]);
+                },
+                'businessHours.businessHourAdditionals',
+            ])
+            ->andWhere(['business.id' => $id])
+            ->one();
+            
+        $modelBusinessHour = new BusinessHour();
+        $dataBusinessHour = [];
+        
+        $modelBusinessHourAdditional = new BusinessHourAdditional();
+        $dataBusinessHourAdditional = [];
+        
+        $isEmpty = false;
+        
+        if (!empty($post = Yii::$app->request->post())) {
+            
+            if (!empty($save)) {
+                
+                $transaction = Yii::$app->db->beginTransaction();
+                $flag = false;
+                
+                $loopDays = ['1', '2', '3', '4', '5', '6', '7'];
+                
+                $isEmpty = empty($post['BusinessHourAdditional']);
+                
+                foreach ($loopDays as $day) {
+                    
+                    $dayName = 'day' . $day;
+                    
+                    if (!empty($post['BusinessHour'][$dayName])) {
+                        
+                        $newmodelBusinessHourDay = BusinessHour::findOne(['unique_id' => $model->id . '-' . $day]);
+                        
+                        if (empty($newmodelBusinessHourDay)) {
+                            
+                            $newmodelBusinessHourDay = new BusinessHour();
+                            $newmodelBusinessHourDay->business_id = $model->id;
+                            $newmodelBusinessHourDay->unique_id = $model->id . '-' . $day;
+                            $newmodelBusinessHourDay->day = $day;
+                        }
+                        
+                        $newmodelBusinessHourDay->is_open = !empty($post['BusinessHour'][$dayName]['is_open']) ? true : false;
+                        $newmodelBusinessHourDay->open_at = !empty($post['BusinessHour'][$dayName]['open_at']) ? $post['BusinessHour'][$dayName]['open_at'] : null;
+                        $newmodelBusinessHourDay->close_at = !empty($post['BusinessHour'][$dayName]['close_at']) ? $post['BusinessHour'][$dayName]['close_at'] : null;
+                        
+                        if (!($flag = $newmodelBusinessHourDay->save())) {
+                            
+                            break;
+                        } else {
+                            
+                            array_push($dataBusinessHour, $newmodelBusinessHourDay->toArray());
+                        }
+                    }
+                    
+                    if (!empty($post['BusinessHourAdditionalDeleted'][$dayName])) {
+                        
+                        $flag = BusinessHourAdditional::deleteAll(['id' => $post['BusinessHourAdditionalDeleted'][$dayName]]);
+                    }
+                    
+                    if (!empty($post['BusinessHourAdditional'][$dayName])) {
+                        
+                        foreach ($post['BusinessHourAdditional'][$dayName] as $i => $businessHourAdditional) {
+                            
+                            if (!empty($businessHourAdditional['open_at']) || !empty($businessHourAdditional['close_at'])) {
+                                
+                                $newmodelBusinessHourAdditional = BusinessHourAdditional::findOne(['unique_id' => $newmodelBusinessHourDay->id . '-' . $day . '-' . ($i)]);
+                                
+                                if (empty($newmodelBusinessHourAdditional)) {
+                                    
+                                    $newmodelBusinessHourAdditional = new BusinessHourAdditional();
+                                    $newmodelBusinessHourAdditional->unique_id = $newmodelBusinessHourDay->id . '-' . $day . '-' . ($i);
+                                    $newmodelBusinessHourAdditional->business_hour_id = $newmodelBusinessHourDay->id;
+                                    $newmodelBusinessHourAdditional->day = $day;
+                                }
+                                
+                                $newmodelBusinessHourAdditional->is_open = $newmodelBusinessHourDay->is_open;
+                                $newmodelBusinessHourAdditional->open_at = !empty($businessHourAdditional['open_at']) ? $businessHourAdditional['open_at'] : null;
+                                $newmodelBusinessHourAdditional->close_at = !empty($businessHourAdditional['close_at']) ? $businessHourAdditional['close_at'] : null;
+                                
+                                if (!($flag = $newmodelBusinessHourAdditional->save())) {
+                                    
+                                    break;
+                                } else {
+                                    
+                                    if (empty($dataBusinessHourAdditional[$dayName])) {
+                                        
+                                        $dataBusinessHourAdditional[$dayName] = [];
+                                    }
+                                    
+                                    array_push($dataBusinessHourAdditional[$dayName], $newmodelBusinessHourAdditional->toArray());
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if ($flag) {
+                    
+                    Yii::$app->session->setFlash('status', 'success');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    
+                    $transaction->commit();
+                } else {
+                    
+                    Yii::$app->session->setFlash('status', 'danger');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    
+                    $transaction->rollBack();
+                }
+            }
+        }
+        
+        $dataBusinessHour = empty($dataBusinessHour) ? $model->businessHours : $dataBusinessHour;
+        
+        if (!$isEmpty) {
+            
+            if (empty($dataBusinessHourAdditional)) {
+                
+                foreach ($dataBusinessHour as $businessHour) {
+                    
+                    $dayName = 'day' . $businessHour['day'];
+                    
+                    $dataBusinessHourAdditional[$dayName] = [];
+                    
+                    if (!empty($businessHour['businessHourAdditionals'])) {
+                        
+                        foreach ($businessHour['businessHourAdditionals'] as $businessHourAdditional) {
+                            
+                            array_push($dataBusinessHourAdditional[$dayName], $businessHourAdditional);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return $this->render('update_business_hour', [
+            'model' => $model,
+            'modelBusinessHour' => $modelBusinessHour,
+            'dataBusinessHour' => $dataBusinessHour,
+            'modelBusinessHourAdditional' => $modelBusinessHourAdditional,
+            'dataBusinessHourAdditional' => $dataBusinessHourAdditional,
         ]);
     }
     
