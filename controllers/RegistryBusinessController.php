@@ -654,9 +654,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['RegistryBusinessCategory']['category_id'])) {
 
-                        foreach ($post['RegistryBusinessCategory']['category_id'] as $businessCategory) {
+                        foreach ($post['RegistryBusinessCategory']['category_id'] as $categoryId) {
 
-                            $newModelRegistryBusinessCategory = RegistryBusinessCategory::findOne(['unique_id' => $model->id . '-' . $businessCategory]);
+                            $newModelRegistryBusinessCategory = RegistryBusinessCategory::findOne(['unique_id' => $model->id . '-' . $categoryId]);
 
                             if (!empty($newModelRegistryBusinessCategory)) {
 
@@ -664,10 +664,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 $newModelRegistryBusinessCategory = new RegistryBusinessCategory();
-
-                                $newModelRegistryBusinessCategory->unique_id = $model->id . '-' . $businessCategory;
+                                $newModelRegistryBusinessCategory->unique_id = $model->id . '-' . $categoryId;
                                 $newModelRegistryBusinessCategory->registry_business_id = $model->id;
-                                $newModelRegistryBusinessCategory->category_id = $businessCategory;
+                                $newModelRegistryBusinessCategory->category_id = $categoryId;
                                 $newModelRegistryBusinessCategory->is_active = true;
                             }
 
@@ -679,44 +678,30 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 array_push($dataRegistryBusinessCategory, $newModelRegistryBusinessCategory->toArray());
                             }
                         }
-                    } else {
-
-                        foreach ($model->registryBusinessCategories as $valueRegistryBusinessCategory) {
-
-                            $valueRegistryBusinessCategory->is_active = false;
-
-                            if (!($flag = $valueRegistryBusinessCategory->save())) {
+                        
+                        if ($flag) {
+                            
+                            foreach ($model->registryBusinessCategories as $existModelRegistryBusinessCategory) {
                                 
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if ($flag) {
-
-                    if (!empty($post['RegistryBusinessCategory']['category_id'])) {
-
-                        foreach ($model->registryBusinessCategories as $valueRegistryBusinessCategory) {
-
-                            $exist = false;
-
-                            foreach ($post['RegistryBusinessCategory']['category_id'] as $businessCategory) {
-
-                                if ($valueRegistryBusinessCategory['category_id'] == $businessCategory) {
-
-                                    $exist = true;
-                                    break;
-                                }
-                            }
-
-                            if (!$exist) {
-
-                                $valueRegistryBusinessCategory->is_active = false;
-
-                                if (!($flag = $valueRegistryBusinessCategory->save())) {
+                                $exist = false;
+                                
+                                foreach ($post['RegistryBusinessCategory']['category_id'] as $categoryId) {
                                     
-                                    break;
+                                    if ($existModelRegistryBusinessCategory['category_id'] == $categoryId) {
+                                        
+                                        $exist = true;
+                                        break;
+                                    }
+                                }
+                                
+                                if (!$exist) {
+                                    
+                                    $existModelRegistryBusinessCategory->is_active = false;
+                                    
+                                    if (!($flag = $existModelRegistryBusinessCategory->save())) {
+                                        
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -727,9 +712,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['RegistryBusinessProductCategory']['product_category_id']['parent'])) {
 
-                        foreach ($post['RegistryBusinessProductCategory']['product_category_id']['parent'] as $productCategoryParent) {
+                        foreach ($post['RegistryBusinessProductCategory']['product_category_id']['parent'] as $productCategoryId) {
 
-                            $newModelRegistryBusinessProductCategory = RegistryBusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryParent]);
+                            $newModelRegistryBusinessProductCategory = RegistryBusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
 
                             if (!empty($newModelRegistryBusinessProductCategory)) {
 
@@ -737,10 +722,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 $newModelRegistryBusinessProductCategory = new RegistryBusinessProductCategory();
-
-                                $newModelRegistryBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryParent;
+                                $newModelRegistryBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelRegistryBusinessProductCategory->registry_business_id = $model->id;
-                                $newModelRegistryBusinessProductCategory->product_category_id = $productCategoryParent;
+                                $newModelRegistryBusinessProductCategory->product_category_id = $productCategoryId;
                                 $newModelRegistryBusinessProductCategory->is_active = true;
                             }
 
@@ -752,20 +736,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 array_push($dataRegistryBusinessProductCategoryParent, $newModelRegistryBusinessProductCategory->toArray());
                             }
                         }
-                    } else {
-
-                        foreach ($model->registryBusinessProductCategories as $valueRegistryBusinessProductCategory) {
-
-                            if (empty($valueRegistryBusinessProductCategory->productCategory->parent_id)) {
-
-                                $valueRegistryBusinessProductCategory->is_active = false;
-
-                                if (!($flag = $valueRegistryBusinessProductCategory->save())) {
-                                    
-                                    break;
-                                }
-                            }
-                        }
                     }
                 }
 
@@ -773,9 +743,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['RegistryBusinessProductCategory']['product_category_id']['child'])) {
 
-                        foreach ($post['RegistryBusinessProductCategory']['product_category_id']['child'] as $productCategoryChild) {
+                        foreach ($post['RegistryBusinessProductCategory']['product_category_id']['child'] as $productCategoryId) {
 
-                            $newModelRegistryBusinessProductCategory = RegistryBusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryChild]);
+                            $newModelRegistryBusinessProductCategory = RegistryBusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
 
                             if (!empty($newModelRegistryBusinessProductCategory)) {
 
@@ -783,10 +753,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 $newModelRegistryBusinessProductCategory = new RegistryBusinessProductCategory();
-
-                                $newModelRegistryBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryChild;
+                                $newModelRegistryBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelRegistryBusinessProductCategory->registry_business_id = $model->id;
-                                $newModelRegistryBusinessProductCategory->product_category_id = $productCategoryChild;
+                                $newModelRegistryBusinessProductCategory->product_category_id = $productCategoryId;
                                 $newModelRegistryBusinessProductCategory->is_active = true;
                             }
 
@@ -798,36 +767,22 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 array_push($dataRegistryBusinessProductCategoryChild, $newModelRegistryBusinessProductCategory->toArray());
                             }
                         }
-                    } else {
-
-                        foreach ($model->registryBusinessProductCategories as $valueRegistryBusinessProductCategory) {
-
-                            if (!empty($valueRegistryBusinessProductCategory->productCategory->parent_id)) {
-
-                                $valueRegistryBusinessProductCategory->is_active = false;
-
-                                if (!($flag = $valueRegistryBusinessProductCategory->save())) {
-                                    
-                                    break;
-                                }
-                            }
-                        }
                     }
                 }
 
                 if ($flag) {
 
-                    if (!empty($post['RegistryBusinessProductCategory']['product_category_id']) && !empty($post['RegistryBusinessProductCategory']['product_category_id']['parent']) && !empty($post['RegistryBusinessProductCategory']['product_category_id']['child'])) {
+                    if (!empty($post['RegistryBusinessProductCategory']['product_category_id']['parent']) && !empty($post['RegistryBusinessProductCategory']['product_category_id']['child'])) {
 
-                        foreach ($model->registryBusinessProductCategories as $valueRegistryBusinessProductCategory) {
+                        foreach ($model->registryBusinessProductCategories as $existModelRegistryBusinessProductCategory) {
 
                             $exist = false;
 
-                            foreach ($post['RegistryBusinessProductCategory']['product_category_id'] as $data) {
+                            foreach ($post['RegistryBusinessProductCategory']['product_category_id'] as $dataProductCategory) {
 
-                                foreach ($data as $productCategory) {
+                                foreach ($dataProductCategory as $productCategoryId) {
 
-                                    if ($valueRegistryBusinessProductCategory['product_category_id'] == $productCategory) {
+                                    if ($existModelRegistryBusinessProductCategory['product_category_id'] == $productCategoryId) {
 
                                         $exist = true;
                                         break 2;
@@ -837,9 +792,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                             if (!$exist) {
 
-                                $valueRegistryBusinessProductCategory->is_active = false;
+                                $existModelRegistryBusinessProductCategory->is_active = false;
 
-                                if (!($flag = $valueRegistryBusinessProductCategory->save())) {
+                                if (!($flag = $existModelRegistryBusinessProductCategory->save())) {
                                     
                                     break;
                                 }
@@ -852,9 +807,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['RegistryBusinessFacility']['facility_id'])) {
 
-                        foreach ($post['RegistryBusinessFacility']['facility_id'] as $businessFacility) {
+                        foreach ($post['RegistryBusinessFacility']['facility_id'] as $facilityId) {
 
-                            $newModelRegistryBusinessFacility = RegistryBusinessFacility::findOne(['unique_id' => $model->id . '-' . $businessFacility]);
+                            $newModelRegistryBusinessFacility = RegistryBusinessFacility::findOne(['unique_id' => $model->id . '-' . $facilityId]);
 
                             if (!empty($newModelRegistryBusinessFacility)) {
 
@@ -862,10 +817,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 $newModelRegistryBusinessFacility = new RegistryBusinessFacility();
-
-                                $newModelRegistryBusinessFacility->unique_id = $model->id . '-' . $businessFacility;
+                                $newModelRegistryBusinessFacility->unique_id = $model->id . '-' . $facilityId;
                                 $newModelRegistryBusinessFacility->registry_business_id = $model->id;
-                                $newModelRegistryBusinessFacility->facility_id = $businessFacility;
+                                $newModelRegistryBusinessFacility->facility_id = $facilityId;
                                 $newModelRegistryBusinessFacility->is_active = true;
                             }
 
@@ -877,44 +831,30 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 array_push($dataRegistryBusinessFacility, $newModelRegistryBusinessFacility->toArray());
                             }
                         }
-                    } else {
-
-                        foreach ($model->registryBusinessFacilities as $valueRegistryBusinessFacility) {
-
-                            $valueRegistryBusinessFacility->is_active = false;
-
-                            if (!($flag = $valueRegistryBusinessFacility->save())) {
+                        
+                        if ($flag) {
+                            
+                            foreach ($model->registryBusinessFacilities as $existModelRegistryBusinessFacility) {
                                 
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if ($flag) {
-
-                    if (!empty($post['RegistryBusinessFacility']['facility_id'])) {
-
-                        foreach ($model->registryBusinessFacilities as $valueRegistryBusinessFacility) {
-
-                            $exist = false;
-
-                            foreach ($post['RegistryBusinessFacility']['facility_id'] as $businessFacility) {
-
-                                if ($valueRegistryBusinessFacility['facility_id'] == $businessFacility) {
-
-                                    $exist = true;
-                                    break;
-                                }
-                            }
-
-                            if (!$exist) {
-
-                                $valueRegistryBusinessFacility->is_active = false;
-
-                                if (!($flag = $valueRegistryBusinessFacility->save())) {
+                                $exist = false;
+                                
+                                foreach ($post['RegistryBusinessFacility']['facility_id'] as $facilityId) {
                                     
-                                    break;
+                                    if ($existModelRegistryBusinessFacility['facility_id'] == $facilityId) {
+                                        
+                                        $exist = true;
+                                        break;
+                                    }
+                                }
+                                
+                                if (!$exist) {
+                                    
+                                    $existModelRegistryBusinessFacility->is_active = false;
+                                    
+                                    if (!($flag = $existModelRegistryBusinessFacility->save())) {
+                                        
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -938,28 +878,24 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 }
             }
         }
-        
-        $dataRegistryBusinessCategory = empty($dataRegistryBusinessCategory) ? $model->registryBusinessCategories : $dataRegistryBusinessCategory;
-
-        $dataRegistryBusinessProductCategory = $model->registryBusinessProductCategories;
 
         $registryBusinessProductCategoryParent = [];
         $registryBusinessProductCategoryChild = [];
 
-        foreach ($dataRegistryBusinessProductCategory as $valueRegistryBusinessProductCategory) {
+        foreach ($model->registryBusinessProductCategories as $existModelRegistryBusinessProductCategory) {
 
-            if ($valueRegistryBusinessProductCategory['productCategory']['is_parent']) {
+            if ($existModelRegistryBusinessProductCategory['productCategory']['is_parent']) {
                 
-                $registryBusinessProductCategoryParent[] = $valueRegistryBusinessProductCategory;
+                $registryBusinessProductCategoryParent[] = $existModelRegistryBusinessProductCategory;
             } else {
                 
-                $registryBusinessProductCategoryChild[] = $valueRegistryBusinessProductCategory;
+                $registryBusinessProductCategoryChild[] = $existModelRegistryBusinessProductCategory;
             }
         }
 
+        $dataRegistryBusinessCategory = empty($dataRegistryBusinessCategory) ? $model->registryBusinessCategories : $dataRegistryBusinessCategory;
         $dataRegistryBusinessProductCategoryParent = empty($dataRegistryBusinessProductCategoryParent) ? $registryBusinessProductCategoryParent : $dataRegistryBusinessProductCategoryParent;
         $dataRegistryBusinessProductCategoryChild = empty($dataRegistryBusinessProductCategoryChild) ? $registryBusinessProductCategoryChild : $dataRegistryBusinessProductCategoryChild;
-
         $dataRegistryBusinessFacility = empty($dataRegistryBusinessFacility) ? $model->registryBusinessFacilities : $dataRegistryBusinessFacility;
 
         return $this->render('update_marketing_info', [
