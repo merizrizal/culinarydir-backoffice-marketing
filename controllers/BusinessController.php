@@ -57,7 +57,7 @@ class BusinessController extends \backoffice\controllers\BaseController
             'dataProvider' => $dataProvider,
         ]);
     }
-    
+
     public function actionViewMember($id)
     {
         $model = Business::find()
@@ -68,36 +68,36 @@ class BusinessController extends \backoffice\controllers\BaseController
                 'businessLocation.village',
                 'userInCharge',
                 'businessCategories' => function($query) {
-                    
+
                     $query->andOnCondition(['business_category.is_active' => true]);
                 },
                 'businessCategories.category',
                 'businessProductCategories' => function($query) {
-                    
+
                     $query->andOnCondition(['business_product_category.is_active' => true]);
                 },
                 'businessHours' => function($query) {
-                    
+
                     $query->andOnCondition(['business_hour.is_open' => true])
                         ->orderBy(['business_hour.day' => SORT_ASC]);
                 },
                 'businessHours.businessHourAdditionals',
                 'businessProductCategories.productCategory',
                 'businessFacilities' => function($query) {
-                    
+
                     $query->andOnCondition(['business_facility.is_active' => true]);
                 },
                 'businessFacilities.facility',
                 'businessDetail',
                 'businessImages',
                 'businessContactPeople' => function($query) {
-                    
+
                     $query->orderBy(['business_contact_person.id' => SORT_ASC]);
                 },
                 'businessContactPeople.person',
                 'applicationBusiness',
                 'applicationBusiness.logStatusApprovals' => function($query) {
-                    
+
                     $query->andOnCondition(['log_status_approval.is_actual' => true]);
                 },
                 'applicationBusiness.logStatusApprovals.statusApproval',
@@ -162,25 +162,20 @@ class BusinessController extends \backoffice\controllers\BaseController
         $model = Business::find()
             ->joinWith([
                 'businessCategories' => function($query) {
-                    
+
                     $query->andOnCondition(['business_category.is_active' => true]);
                 },
                 'businessCategories.category',
                 'businessProductCategories' => function($query) {
-                    
+
                     $query->andOnCondition(['business_product_category.is_active' => true]);
                 },
                 'businessProductCategories.productCategory',
                 'businessFacilities' => function($query) {
-                    
+
                     $query->andOnCondition(['business_facility.is_active' => true]);
                 },
                 'businessFacilities.facility',
-                'businessHours' => function($query) {
-                    
-                    $query->orderBy(['business_hour.day' => SORT_ASC]);
-                },
-                'businessHours.businessHourAdditionals',
                 'businessDetail',
             ])
             ->andWhere(['business.id' => $id])
@@ -195,12 +190,6 @@ class BusinessController extends \backoffice\controllers\BaseController
 
         $modelBusinessFacility = new BusinessFacility();
         $dataBusinessFacility = [];
-
-        $modelBusinessHour = new BusinessHour();
-        $dataBusinessHour = [];
-        
-        $modelBusinessHourAdditional = new BusinessHourAdditional();
-        $dataBusinessHourAdditional = [];
 
         $modelBusinessDetail = $model->businessDetail;
 
@@ -219,9 +208,9 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['BusinessCategory']['category_id'])) {
 
-                        foreach ($post['BusinessCategory']['category_id'] as $value) {
+                        foreach ($post['BusinessCategory']['category_id'] as $categoryId) {
 
-                            $newModelBusinessCategory = BusinessCategory::findOne(['unique_id' => $model->id . '-' . $value]);
+                            $newModelBusinessCategory = BusinessCategory::findOne(['unique_id' => $model->id . '-' . $categoryId]);
 
                             if (!empty($newModelBusinessCategory)) {
 
@@ -229,59 +218,44 @@ class BusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 $newModelBusinessCategory = new BusinessCategory();
-
-                                $newModelBusinessCategory->unique_id = $model->id . '-' . $value;
+                                $newModelBusinessCategory->unique_id = $model->id . '-' . $categoryId;
                                 $newModelBusinessCategory->business_id = $model->id;
-                                $newModelBusinessCategory->category_id = $value;
+                                $newModelBusinessCategory->category_id = $categoryId;
                                 $newModelBusinessCategory->is_active = true;
                             }
 
                             if (!($flag = $newModelBusinessCategory->save())) {
-                                
+
                                 break;
                             } else {
-                                
+
                                 array_push($dataBusinessCategory, $newModelBusinessCategory->toArray());
                             }
                         }
-                    } else {
 
-                        foreach ($model->businessCategories as $valueBusinessCategory) {
+                        if ($flag) {
 
-                            $valueBusinessCategory->is_active = false;
+                            foreach ($model->businessCategories as $existModelBusinessCategory) {
 
-                            if (!($flag = $valueBusinessCategory->save())) {
-                                
-                                break;
-                            }
-                        }
-                    }
-                }
+                                $exist = false;
 
-                if ($flag) {
+                                foreach ($post['BusinessCategory']['category_id'] as $categoryId) {
 
-                    if (!empty($post['BusinessCategory']['category_id'])) {
+                                    if ($existModelBusinessCategory['category_id'] == $categoryId) {
 
-                        foreach ($model->businessCategories as $valueBusinessCategory) {
-
-                            $exist = false;
-
-                            foreach ($post['BusinessCategory']['category_id'] as $value) {
-
-                                if ($valueBusinessCategory['category_id'] == $value) {
-
-                                    $exist = true;
-                                    break;
+                                        $exist = true;
+                                        break;
+                                    }
                                 }
-                            }
 
-                            if (!$exist) {
+                                if (!$exist) {
 
-                                $valueBusinessCategory->is_active = false;
+                                    $existModelBusinessCategory->is_active = false;
 
-                                if (!($flag = $valueBusinessCategory->save())) {
-                                    
-                                    break;
+                                    if (!($flag = $existModelBusinessCategory->save())) {
+
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -292,9 +266,9 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['BusinessProductCategory']['product_category_id']['parent'])) {
 
-                        foreach ($post['BusinessProductCategory']['product_category_id']['parent'] as $value) {
+                        foreach ($post['BusinessProductCategory']['product_category_id']['parent'] as $productCategoryId) {
 
-                            $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $value]);
+                            $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
 
                             if (!empty($newModelBusinessProductCategory)) {
 
@@ -302,33 +276,18 @@ class BusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
-
-                                $newModelBusinessProductCategory->unique_id = $model->id . '-' . $value;
+                                $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
-                                $newModelBusinessProductCategory->product_category_id = $value;
+                                $newModelBusinessProductCategory->product_category_id = $productCategoryId;
                                 $newModelBusinessProductCategory->is_active = true;
                             }
 
                             if(!($flag = $newModelBusinessProductCategory->save())) {
-                                
+
                                 break;
                             } else {
-                                
+
                                 array_push($dataBusinessProductCategoryParent, $newModelBusinessProductCategory->toArray());
-                            }
-                        }
-                    } else {
-
-                        foreach ($model->businessProductCategories as $valueBusinessProductCategory) {
-
-                            if (empty($valueBusinessProductCategory->productCategory->parent_id)) {
-
-                                $valueBusinessProductCategory->is_active = false;
-
-                                if (!($flag = $valueBusinessProductCategory->save())) {
-                                    
-                                    break;
-                                }
                             }
                         }
                     }
@@ -338,9 +297,9 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['BusinessProductCategory']['product_category_id']['child'])) {
 
-                        foreach ($post['BusinessProductCategory']['product_category_id']['child'] as $value) {
+                        foreach ($post['BusinessProductCategory']['product_category_id']['child'] as $productCategoryId) {
 
-                            $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $value]);
+                            $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
 
                             if (!empty($newModelBusinessProductCategory)) {
 
@@ -348,33 +307,18 @@ class BusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
-
-                                $newModelBusinessProductCategory->unique_id = $model->id . '-' . $value;
+                                $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
-                                $newModelBusinessProductCategory->product_category_id = $value;
+                                $newModelBusinessProductCategory->product_category_id = $productCategoryId;
                                 $newModelBusinessProductCategory->is_active = true;
                             }
 
                             if(!($flag = $newModelBusinessProductCategory->save())) {
-                                
+
                                 break;
                             } else {
-                                
+
                                 array_push($dataBusinessProductCategoryChild, $newModelBusinessProductCategory->toArray());
-                            }
-                        }
-                    } else {
-
-                        foreach ($model->businessProductCategories as $valueBusinessProductCategory) {
-
-                            if (!empty($valueBusinessProductCategory->productCategory->parent_id)) {
-
-                                $valueBusinessProductCategory->is_active = false;
-
-                                if (!($flag = $valueBusinessProductCategory->save())) {
-                                    
-                                    break;
-                                }
                             }
                         }
                     }
@@ -382,17 +326,17 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
-                    if (!empty($post['BusinessProductCategory']['product_category_id']) && !empty($post['BusinessProductCategory']['product_category_id']['parent']) && !empty($post['BusinessProductCategory']['product_category_id']['child'])) {
+                    if (!empty($post['BusinessProductCategory']['product_category_id']['parent']) && !empty($post['BusinessProductCategory']['product_category_id']['child'])) {
 
-                        foreach ($model->businessProductCategories as $valueBusinessProductCategory) {
+                        foreach ($model->businessProductCategories as $existModelBusinessProductCategory) {
 
                             $exist = false;
 
-                            foreach ($post['BusinessProductCategory']['product_category_id'] as $data) {
+                            foreach ($post['BusinessProductCategory']['product_category_id'] as $dataProductCategory) {
 
-                                foreach ($data as $value) {
+                                foreach ($dataProductCategory as $productCategoryId) {
 
-                                    if ($valueBusinessProductCategory['product_category_id'] == $value) {
+                                    if ($existModelBusinessProductCategory['product_category_id'] == $productCategoryId) {
 
                                         $exist = true;
                                         break 2;
@@ -402,10 +346,10 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                             if (!$exist) {
 
-                                $valueBusinessProductCategory->is_active = false;
+                                $existModelBusinessProductCategory->is_active = false;
 
-                                if (!($flag = $valueBusinessProductCategory->save())) {
-                                    
+                                if (!($flag = $existModelBusinessProductCategory->save())) {
+
                                     break;
                                 }
                             }
@@ -417,9 +361,9 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['BusinessFacility']['facility_id'])) {
 
-                        foreach ($post['BusinessFacility']['facility_id'] as $value) {
+                        foreach ($post['BusinessFacility']['facility_id'] as $facilityId) {
 
-                            $newModelBusinessFacility = BusinessFacility::findOne(['unique_id' => $model->id . '-' . $value]);
+                            $newModelBusinessFacility = BusinessFacility::findOne(['unique_id' => $model->id . '-' . $facilityId]);
 
                             if (!empty($newModelBusinessFacility)) {
 
@@ -427,137 +371,43 @@ class BusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 $newModelBusinessFacility = new BusinessFacility();
-
-                                $newModelBusinessFacility->unique_id = $model->id . '-' . $value;
+                                $newModelBusinessFacility->unique_id = $model->id . '-' . $facilityId;
                                 $newModelBusinessFacility->business_id = $model->id;
-                                $newModelBusinessFacility->facility_id = $value;
+                                $newModelBusinessFacility->facility_id = $facilityId;
                                 $newModelBusinessFacility->is_active = true;
                             }
 
                             if (!($flag = $newModelBusinessFacility->save())) {
-                                
+
                                 break;
                             } else {
-                                
+
                                 array_push($dataBusinessFacility, $newModelBusinessFacility->toArray());
                             }
                         }
-                    } else {
 
-                        foreach ($model->businessFacilities as $valueBusinessFacility) {
+                        if ($flag) {
 
-                            $valueBusinessFacility->is_active = false;
+                            foreach ($model->businessFacilities as $existModelBusinessFacility) {
 
-                            if (!($flag = $valueBusinessFacility->save())) {
-                                
-                                break;
-                            }
-                        }
-                    }
-                }
+                                $exist = false;
 
-                if ($flag) {
+                                foreach ($post['BusinessFacility']['facility_id'] as $facilityId) {
 
-                    if (!empty($post['BusinessFacility']['facility_id'])) {
+                                    if ($existModelBusinessFacility['facility_id'] == $facilityId) {
 
-                        foreach ($model->businessFacilities as $valueBusinessFacility) {
-
-                            $exist = false;
-
-                            foreach ($post['BusinessFacility']['facility_id'] as $value) {
-
-                                if ($valueBusinessFacility['facility_id'] == $value) {
-
-                                    $exist = true;
-                                    break;
-                                }
-                            }
-
-                            if (!$exist) {
-
-                                $valueBusinessFacility->is_active = false;
-
-                                if (!($flag = $valueBusinessFacility->save())) {
-                                    
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if ($flag) {
-
-                    $loopDays = ['1', '2', '3', '4', '5', '6', '7'];
-
-                    foreach ($loopDays as $day) {
-
-                        $dayName = 'day' . $day;
-
-                        if (!empty($post['BusinessHour'][$dayName])) {
-
-                            $newModelBusinessHourDay = BusinessHour::findOne(['unique_id' => $model->id . '-' . $day]);
-
-                            if (empty($newModelBusinessHourDay)) {
-
-                                $newModelBusinessHourDay = new BusinessHour();
-                                $newModelBusinessHourDay->business_id = $model->id;
-                                $newModelBusinessHourDay->unique_id = $model->id . '-' . $day;
-                                $newModelBusinessHourDay->day = $day;
-                            }
-
-                            $newModelBusinessHourDay->is_open = !empty($post['BusinessHour'][$dayName]['is_open']) ? true : false;
-                            $newModelBusinessHourDay->open_at = !empty($post['BusinessHour'][$dayName]['open_at']) ? $post['BusinessHour'][$dayName]['open_at'] : null;
-                            $newModelBusinessHourDay->close_at = !empty($post['BusinessHour'][$dayName]['close_at']) ? $post['BusinessHour'][$dayName]['close_at'] : null;
-
-                            if (!$flag = $newModelBusinessHourDay->save()) {
-                                
-                                break;
-                            } else {
-                                
-                                array_push($dataBusinessHour, $newModelBusinessHourDay->toArray());
-                            }
-                        }
-                        
-                        if (!empty($post['BusinessHourAdditionalDeleted'][$dayName])) {
-                            
-                            $flag = BusinessHourAdditional::deleteAll(['id' => $post['BusinessHourAdditionalDeleted'][$dayName]]);
-                        }
-                        
-                        if (!empty($post['BusinessHourAdditional'][$dayName])) {
-                            
-                            foreach ($post['BusinessHourAdditional'][$dayName] as $i => $value) {
-                                
-                                if (!empty($post['BusinessHourAdditional'][$dayName][$i]['open_at']) || !empty($post['BusinessHourAdditional'][$dayName][$i]['close_at'])) {
-                                    
-                                    $newModelBusinessHourAdditional = BusinessHourAdditional::findOne(['unique_id' => $newModelBusinessHourDay->id . '-' . $day . '-' . ($i)]);
-                                    
-                                    if (empty($newModelBusinessHourAdditional)) {
-                                        
-                                        $newModelBusinessHourAdditional = new BusinessHourAdditional();
-                                        $newModelBusinessHourAdditional->unique_id = $newModelBusinessHourDay->id . '-' . $day . '-' . ($i);
-                                        $newModelBusinessHourAdditional->business_hour_id = $newModelBusinessHourDay->id;
-                                        $newModelBusinessHourAdditional->day = $day;
-                                    }
-                                    
-                                    if ($i !== 'index') {
-                                        
-                                        $newModelBusinessHourAdditional->is_open = $newModelBusinessHourDay->is_open;
-                                        $newModelBusinessHourAdditional->open_at = !empty($post['BusinessHourAdditional'][$dayName][$i]['open_at']) ? $post['BusinessHourAdditional'][$dayName][$i]['open_at'] : null;
-                                        $newModelBusinessHourAdditional->close_at = !empty($post['BusinessHourAdditional'][$dayName][$i]['close_at']) ? $post['BusinessHourAdditional'][$dayName][$i]['close_at'] : null;
-                                    }
-                                    
-                                    if (!($flag = $newModelBusinessHourAdditional->save())) {
-                                        
+                                        $exist = true;
                                         break;
-                                    } else {
-                                        
-                                        if (empty($dataBusinessHourAdditional[$dayName])) {
-                                            
-                                            $dataBusinessHourAdditional[$dayName] = [];
-                                        }
-                                        
-                                        array_push($dataBusinessHourAdditional[$dayName], $newModelBusinessHourAdditional->toArray());
+                                    }
+                                }
+
+                                if (!$exist) {
+
+                                    $existModelBusinessFacility->is_active = false;
+
+                                    if (!($flag = $existModelBusinessFacility->save())) {
+
+                                        break;
                                     }
                                 }
                             }
@@ -566,7 +416,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                 }
 
                 if ($flag) {
-                    
+
                     $modelBusinessDetail->price_min = !empty($modelBusinessDetail->price_min) ? $modelBusinessDetail->price_min : 0;
                     $modelBusinessDetail->price_max = !empty($modelBusinessDetail->price_max) ? $modelBusinessDetail->price_max : 0;
                 }
@@ -599,36 +449,16 @@ class BusinessController extends \backoffice\controllers\BaseController
         foreach ($dataBusinessProductCategory as $valueBusinessProductCategory) {
 
             if ($valueBusinessProductCategory['productCategory']['is_parent']) {
-                
+
                 $businessProductCategoryParent[] = $valueBusinessProductCategory;
             } else {
-                
+
                 $businessProductCategoryChild[] = $valueBusinessProductCategory;
             }
         }
 
         $dataBusinessProductCategoryParent = empty($dataBusinessProductCategoryParent) ? $businessProductCategoryParent : $dataBusinessProductCategoryParent;
         $dataBusinessProductCategoryChild = empty($dataBusinessProductCategoryChild) ? $businessProductCategoryChild : $dataBusinessProductCategoryChild;
-
-        $dataBusinessHour = empty($dataBusinessHour) ? $model['businessHours'] : $dataBusinessHour;
-        
-        if (empty($dataBusinessHourAdditional)) {
-            
-            foreach ($dataBusinessHour as $businessHour) {
-                
-                $dayName = 'day' . $businessHour['day'];
-                
-                $dataBusinessHourAdditional[$dayName] = [];
-                
-                if (!empty($businessHour['businessHourAdditionals'])) {
-                    
-                    foreach ($businessHour['businessHourAdditionals'] as $businessHourAdditional) {
-                        
-                        array_push($dataBusinessHourAdditional[$dayName], $businessHourAdditional);
-                    }
-                }
-            }
-        }
 
         $dataBusinessFacility = empty($dataBusinessFacility) ? $model['businessFacilities'] : $dataBusinessFacility;
 
@@ -641,10 +471,6 @@ class BusinessController extends \backoffice\controllers\BaseController
             'dataBusinessProductCategoryChild' => $dataBusinessProductCategoryChild,
             'modelBusinessFacility' => $modelBusinessFacility,
             'dataBusinessFacility' => $dataBusinessFacility,
-            'modelBusinessHour' => $modelBusinessHour,
-            'dataBusinessHour' => $dataBusinessHour,
-            'modelBusinessHourAdditional' => $modelBusinessHourAdditional,
-            'dataBusinessHourAdditional' => $dataBusinessHourAdditional,
             'modelBusinessDetail' => $modelBusinessDetail,
         ]);
     }
@@ -654,7 +480,7 @@ class BusinessController extends \backoffice\controllers\BaseController
         $model = Business::find()
             ->joinWith([
                 'businessImages' => function($query) {
-                 
+
                     $query->orderBy(['order' => SORT_ASC]);
                 }
             ])
@@ -673,39 +499,39 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = true;
-                
+
                 $order = count($model->businessImages);
-                    
+
                 if (!empty($post['BusinessImageDelete'])) {
-                    
+
                     if (($flag = BusinessImage::deleteAll(['id' => $post['BusinessImageDelete']]))) {
-                        
+
                         $deletedBusinessImageId = $post['BusinessImageDelete'];
                     }
-                    
+
                     if ($flag) {
-                        
+
                         $order = 0;
-                        
+
                         foreach ($model->businessImages as $dataModelBusinessImage) {
-                            
+
                             $deleted = false;
-                            
+
                             foreach ($deletedBusinessImageId as $businessImageId) {
-                                
+
                                 if ($dataModelBusinessImage->id == $businessImageId) {
-                                    
+
                                     $deleted = true;
                                     break;
                                 }
                             }
-                            
+
                             if (!$deleted) {
-                                
+
                                 $order++;
-                                
+
                                 $dataModelBusinessImage->order = $order;
-                                
+
                                 if (!($flag = $dataModelBusinessImage->save())) {
                                     break;
                                 }
@@ -713,19 +539,19 @@ class BusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
-                
+
                 if ($flag) {
-                    
+
                     $newModelBusinessImage = new BusinessImage(['business_id' => $model->id]);
-                    
+
                     if ($newModelBusinessImage->load($post)) {
-                        
+
                         $images = Tools::uploadFiles('/img/registry_business/', $newModelBusinessImage, 'image', 'business_id', '', true);
-                        
+
                         foreach ($images as $image) {
-                            
+
                             $order++;
-                            
+
                             $newModelBusinessImage = new BusinessImage();
                             $newModelBusinessImage->business_id = $model->id;
                             $newModelBusinessImage->image = $image;
@@ -733,12 +559,12 @@ class BusinessController extends \backoffice\controllers\BaseController
                             $newModelBusinessImage->is_primary = false;
                             $newModelBusinessImage->category = 'Ambience';
                             $newModelBusinessImage->order = $order;
-                            
+
                             if (!($flag = $newModelBusinessImage->save())) {
-                                
+
                                 break;
                             } else {
-                                
+
                                 array_push($newDataBusinessImage, $newModelBusinessImage->toArray());
                             }
                         }
@@ -754,7 +580,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                         $existModelBusinessImage->category = !empty($post['category'][$existModelBusinessImage->id]) ? $post['category'][$existModelBusinessImage->id] : $modelBusinessImage->category;
 
                         if (!($flag = $modelBusinessImage->save())) {
-                            
+
                             break;
                         }
                     }
@@ -785,20 +611,20 @@ class BusinessController extends \backoffice\controllers\BaseController
             foreach ($deletedBusinessImageId as $businessImageId) {
 
                 if ($businessImageId == $valueBusinessImage['id']) {
-                    
+
                     $deleted = true;
                     break;
                 }
             }
 
             if (!$deleted) {
-                
+
                 array_push($dataBusinessImage, $valueBusinessImage);
             }
         }
-        
+
         if (!empty($newDataBusinessImage)) {
-            
+
             $dataBusinessImage = ArrayHelper::merge($dataBusinessImage, $newDataBusinessImage);
         }
 
@@ -808,121 +634,121 @@ class BusinessController extends \backoffice\controllers\BaseController
             'dataBusinessImage' => $dataBusinessImage,
         ]);
     }
-    
+
     public function actionUpdateContactPerson($id, $save = null)
     {
         $model = Business::find()
             ->joinWith([
                 'businessContactPeople' => function($query) {
-                    
+
                     $query->orderBy(['business_contact_person.id' => SORT_ASC]);
                 },
                 'businessContactPeople.person',
             ])
             ->andWhere(['business.id' => $id])
             ->one();
-            
+
         $modelBusinessContactPerson = new BusinessContactPerson();
         $dataBusinessContactPerson = [];
-        
+
         $modelPerson = new Person();
-        
+
         $isEmpty = false;
-        
+
         if (!empty(($post = Yii::$app->request->post()))) {
-            
+
             if (!empty($save)) {
-                
+
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = true;
-                
+
                 $isEmpty = (empty($post['Person']) && empty($post['BusinessContactPerson']));
-                
+
                 if (!empty($post['BusinessContactPersonDeleted'])) {
-                    
+
                     if (($flag = BusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]))) {
-                        
+
                         $flag = Person::deleteAll(['id' => $post['BusinessContactPersonDeleted']]);
                     }
                 }
-                
+
                 if (!empty($post['Person']) && !empty($post['BusinessContactPerson'])) {
-                    
+
                     foreach ($post['Person'] as $i => $person) {
-                        
+
                         if (!empty($model['businessContactPeople'][$i])) {
-                            
+
                             $newModelPerson = Person::findOne(['id' => $model['businessContactPeople'][$i]['person_id']]);
                         } else {
-                            
+
                             $newModelPerson = new Person();
                         }
-                        
+
                         $newModelPerson->first_name = $person['first_name'];
                         $newModelPerson->last_name = $person['last_name'];
                         $newModelPerson->phone = $person['phone'];
                         $newModelPerson->email = $person['email'];
-                        
+
                         if (!($flag = $newModelPerson->save())) {
-                            
+
                             break;
                         } else {
-                            
+
                             $newModelBusinessContactPerson = BusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
-                            
+
                             if (empty($newModelBusinessContactPerson)) {
-                                
+
                                 $newModelBusinessContactPerson = new BusinessContactPerson();
                                 $newModelBusinessContactPerson->business_id = $model->id;
                                 $newModelBusinessContactPerson->person_id = $newModelPerson->id;
                             }
-                            
+
                             $newModelBusinessContactPerson->position = $post['BusinessContactPerson'][$i]['position'];
                             $newModelBusinessContactPerson->is_primary_contact = !empty($post['BusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
                             $newModelBusinessContactPerson->note = $post['BusinessContactPerson'][$i]['note'];
-                            
+
                             if (!($flag = $newModelBusinessContactPerson->save())) {
-                                
+
                                 break;
                             } else {
-                                
+
                                 array_push($dataBusinessContactPerson, ArrayHelper::merge($newModelBusinessContactPerson->toArray(), $newModelPerson->toArray()));
                             }
                         }
                     }
                 }
-                
+
                 if ($flag) {
-                    
+
                     Yii::$app->session->setFlash('status', 'success');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
-                    
+
                     $transaction->commit();
                 } else {
-                    
+
                     Yii::$app->session->setFlash('status', 'danger');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                    
+
                     $transaction->rollBack();
                 }
             }
         }
-        
+
         if (!$isEmpty) {
-            
+
             if (empty($dataBusinessContactPerson)) {
-                
+
                 foreach ($model->businessContactPeople as $dataContactPerson) {
-                    
+
                     $dataContactPerson = ArrayHelper::merge($dataContactPerson->toArray(), $dataContactPerson->person->toArray());
-                    
+
                     array_push($dataBusinessContactPerson, $dataContactPerson);
                 }
             }
         }
-        
+
         return $this->render('update_contact_person', [
             'model' => $model,
             'modelPerson' => $modelPerson,
@@ -930,151 +756,151 @@ class BusinessController extends \backoffice\controllers\BaseController
             'dataBusinessContactPerson' => $dataBusinessContactPerson,
         ]);
     }
-    
+
     public function actionUpdateBusinessHour($id, $save = null)
     {
         $model = Business::find()
             ->joinWith([
                 'businessHours' => function($query) {
-            
+
                     $query->orderBy(['business_hour.day' => SORT_ASC]);
                 },
                 'businessHours.businessHourAdditionals',
             ])
             ->andWhere(['business.id' => $id])
             ->one();
-            
+
         $modelBusinessHour = new BusinessHour();
         $dataBusinessHour = [];
-        
+
         $modelBusinessHourAdditional = new BusinessHourAdditional();
         $dataBusinessHourAdditional = [];
-        
+
         $isEmpty = false;
-        
+
         if (!empty($post = Yii::$app->request->post())) {
-            
+
             if (!empty($save)) {
-                
+
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
-                
+
                 $loopDays = ['1', '2', '3', '4', '5', '6', '7'];
-                
+
                 $isEmpty = empty($post['BusinessHourAdditional']);
-                
+
                 foreach ($loopDays as $day) {
-                    
+
                     $dayName = 'day' . $day;
-                    
+
                     if (!empty($post['BusinessHour'][$dayName])) {
-                        
+
                         $newmodelBusinessHourDay = BusinessHour::findOne(['unique_id' => $model->id . '-' . $day]);
-                        
+
                         if (empty($newmodelBusinessHourDay)) {
-                            
+
                             $newmodelBusinessHourDay = new BusinessHour();
                             $newmodelBusinessHourDay->business_id = $model->id;
                             $newmodelBusinessHourDay->unique_id = $model->id . '-' . $day;
                             $newmodelBusinessHourDay->day = $day;
                         }
-                        
+
                         $newmodelBusinessHourDay->is_open = !empty($post['BusinessHour'][$dayName]['is_open']) ? true : false;
                         $newmodelBusinessHourDay->open_at = !empty($post['BusinessHour'][$dayName]['open_at']) ? $post['BusinessHour'][$dayName]['open_at'] : null;
                         $newmodelBusinessHourDay->close_at = !empty($post['BusinessHour'][$dayName]['close_at']) ? $post['BusinessHour'][$dayName]['close_at'] : null;
-                        
+
                         if (!($flag = $newmodelBusinessHourDay->save())) {
-                            
+
                             break;
                         } else {
-                            
+
                             array_push($dataBusinessHour, $newmodelBusinessHourDay->toArray());
                         }
                     }
-                    
+
                     if (!empty($post['BusinessHourAdditionalDeleted'][$dayName])) {
-                        
+
                         $flag = BusinessHourAdditional::deleteAll(['id' => $post['BusinessHourAdditionalDeleted'][$dayName]]);
                     }
-                    
+
                     if (!empty($post['BusinessHourAdditional'][$dayName])) {
-                        
+
                         foreach ($post['BusinessHourAdditional'][$dayName] as $i => $businessHourAdditional) {
-                            
+
                             if (!empty($businessHourAdditional['open_at']) || !empty($businessHourAdditional['close_at'])) {
-                                
+
                                 $newmodelBusinessHourAdditional = BusinessHourAdditional::findOne(['unique_id' => $newmodelBusinessHourDay->id . '-' . $day . '-' . ($i)]);
-                                
+
                                 if (empty($newmodelBusinessHourAdditional)) {
-                                    
+
                                     $newmodelBusinessHourAdditional = new BusinessHourAdditional();
                                     $newmodelBusinessHourAdditional->unique_id = $newmodelBusinessHourDay->id . '-' . $day . '-' . ($i);
                                     $newmodelBusinessHourAdditional->business_hour_id = $newmodelBusinessHourDay->id;
                                     $newmodelBusinessHourAdditional->day = $day;
                                 }
-                                
+
                                 $newmodelBusinessHourAdditional->is_open = $newmodelBusinessHourDay->is_open;
                                 $newmodelBusinessHourAdditional->open_at = !empty($businessHourAdditional['open_at']) ? $businessHourAdditional['open_at'] : null;
                                 $newmodelBusinessHourAdditional->close_at = !empty($businessHourAdditional['close_at']) ? $businessHourAdditional['close_at'] : null;
-                                
+
                                 if (!($flag = $newmodelBusinessHourAdditional->save())) {
-                                    
+
                                     break;
                                 } else {
-                                    
+
                                     if (empty($dataBusinessHourAdditional[$dayName])) {
-                                        
+
                                         $dataBusinessHourAdditional[$dayName] = [];
                                     }
-                                    
+
                                     array_push($dataBusinessHourAdditional[$dayName], $newmodelBusinessHourAdditional->toArray());
                                 }
                             }
                         }
                     }
                 }
-                
+
                 if ($flag) {
-                    
+
                     Yii::$app->session->setFlash('status', 'success');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
-                    
+
                     $transaction->commit();
                 } else {
-                    
+
                     Yii::$app->session->setFlash('status', 'danger');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                    
+
                     $transaction->rollBack();
                 }
             }
         }
-        
+
         $dataBusinessHour = empty($dataBusinessHour) ? $model->businessHours : $dataBusinessHour;
-        
+
         if (!$isEmpty) {
-            
+
             if (empty($dataBusinessHourAdditional)) {
-                
+
                 foreach ($dataBusinessHour as $businessHour) {
-                    
+
                     $dayName = 'day' . $businessHour['day'];
-                    
+
                     $dataBusinessHourAdditional[$dayName] = [];
-                    
+
                     if (!empty($businessHour['businessHourAdditionals'])) {
-                        
+
                         foreach ($businessHour['businessHourAdditionals'] as $businessHourAdditional) {
-                            
+
                             array_push($dataBusinessHourAdditional[$dayName], $businessHourAdditional);
                         }
                     }
                 }
             }
         }
-        
+
         return $this->render('update_business_hour', [
             'model' => $model,
             'modelBusinessHour' => $modelBusinessHour,
@@ -1083,93 +909,93 @@ class BusinessController extends \backoffice\controllers\BaseController
             'dataBusinessHourAdditional' => $dataBusinessHourAdditional,
         ]);
     }
-    
-    
+
+
     public function actionUp($id)
     {
         $modelBusinessImage = BusinessImage::findOne($id);
-        
+
         $modelBusinessImageTemp = BusinessImage::find()
             ->andWhere(['business_id' => $modelBusinessImage->business_id])
             ->andWhere(['order' => $modelBusinessImage->order - 1])
             ->one();
-        
+
         if ($modelBusinessImage->order > 1) {
-            
+
             $transaction = Yii::$app->db->beginTransaction();
             $flag = false;
-            
+
             $modelBusinessImageTemp->order = $modelBusinessImage->order;
-            
+
             if (($flag = $modelBusinessImageTemp->save())) {
-                
+
                 $modelBusinessImage->order -= 1;
-                
+
                 $flag = $modelBusinessImage->save();
             }
-            
+
             if ($flag) {
-                
+
                 $transaction->commit();
             } else {
-                
+
                 Yii::$app->session->setFlash('status', 'danger');
                 Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
                 Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                
+
                 $transaction->rollBack();
             }
         }
-        
+
         return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/update-gallery-photo', 'id' => $modelBusinessImage->business_id]));
     }
-    
+
     public function actionDown($id)
     {
         $modelBusinessImage = BusinessImage::findOne($id);
-        
+
         $modelBusinessImageTemp = BusinessImage::find()
             ->andWhere(['business_id' => $modelBusinessImage->business_id])
             ->andWhere(['order' => $modelBusinessImage->order + 1])
             ->one();
-        
+
         if ($modelBusinessImageTemp !== null) {
-            
+
             $transaction = Yii::$app->db->beginTransaction();
             $flag = false;
-            
+
             $modelBusinessImageTemp->order = $modelBusinessImage->order;
-            
+
             if (($flag = $modelBusinessImageTemp->save())) {
-                    
+
                 $modelBusinessImage->order += 1;
-                
+
                 $flag = $modelBusinessImage->save();
             }
-            
+
             if ($flag) {
-                
+
                 $transaction->commit();
             } else {
-                
+
                 Yii::$app->session->setFlash('status', 'danger');
                 Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
                 Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                
+
                 $transaction->rollBack();
             }
         }
-        
+
         return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/update-gallery-photo', 'id' => $modelBusinessImage->business_id]));
     }
 
     protected function findModel($id)
     {
         if (($model = Business::findOne($id)) !== null) {
-            
+
             return $model;
         } else {
-            
+
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }

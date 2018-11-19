@@ -163,7 +163,7 @@ echo $ajaxRequest->component(); ?>
                                             	
                                             	<?= Html::hiddenInput('day', $i, ['class' => 'days-count']) ?>
                                             	
-                                                <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default', 'id' =>'add-business-hour-' . $dayName]) ?>
+                                                <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default', 'id' => 'add-business-hour-' . $dayName]) ?>
                                                 <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default', 'id' => 'delete-business-hour-' . $dayName]) ?>
                                                 
                                             </div>
