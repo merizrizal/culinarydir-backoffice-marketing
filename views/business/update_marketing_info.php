@@ -9,7 +9,6 @@ use sycomponent\NotificationDialog;
 use core\models\Category;
 use core\models\ProductCategory;
 use core\models\Facility;
-use core\models\BusinessHourAdditional;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\Business */
