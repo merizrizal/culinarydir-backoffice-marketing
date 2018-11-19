@@ -1076,10 +1076,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             ->andWhere(['registry_business.id' => $id])
             ->one();
             
+        $modelPerson = new Person();
         $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
         $dataRegistryBusinessContactPerson = [];
-        
-        $modelPerson = new Person();
         
         $isEmpty = false;
         

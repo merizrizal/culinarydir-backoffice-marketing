@@ -84,9 +84,9 @@ echo $ajaxRequest->component(); ?>
                                 	                
                                 	                $modelPerson->first_name = $registryBusinessContactPerson['first_name'];
                                 	                $modelPerson->last_name = $registryBusinessContactPerson['last_name'];
-                                	                $modelRegistryBusinessContactPerson->position = $registryBusinessContactPerson['position'];
                                 	                $modelPerson->phone = $registryBusinessContactPerson['phone'];
                                 	                $modelPerson->email = $registryBusinessContactPerson['email'];
+                                	                $modelRegistryBusinessContactPerson->position = $registryBusinessContactPerson['position'];
                                 	                $modelRegistryBusinessContactPerson->is_primary_contact = $registryBusinessContactPerson['is_primary_contact'];
                                 	                $modelRegistryBusinessContactPerson->note = $registryBusinessContactPerson['note']; ?>
                                 	                
@@ -110,8 +110,7 @@ echo $ajaxRequest->component(); ?>
                                                             </div>
                                                             <div class="col-md-4 col-xs-12">
                                                             
-                                                            	<?= $form->field($modelRegistryBusinessContactPerson, '[' . $i . ']position')
-                                                            	    ->dropDownList([
+                                                            	<?= $form->field($modelRegistryBusinessContactPerson, '[' . $i . ']position')->dropDownList([
                                                             	       'Owner' => 'Owner', 
                                                             	       'Manager' => 'Manager', 
                                                             	       'Staff' => 'Staff'
@@ -222,20 +221,23 @@ $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson(); ?>
         <div class="row mt-10">
             <div class="col-md-4 col-xs-6">
             
-                <?= $form->field($modelPerson, '[index]first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
+                <?= $form->field($modelPerson, '[index]first_name')->textInput([
+                    'maxlength' => true,
+                    'placeholder' => Yii::t('app', 'First Name')
+                ]) ?>
                 
             </div>
-
             <div class="col-md-4 col-xs-6">
             
-                <?= $form->field($modelPerson, '[index]last_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Last Name')]) ?>
+                <?= $form->field($modelPerson, '[index]last_name')->textInput([
+                    'maxlength' => true,
+                    'placeholder' => Yii::t('app', 'Last Name')
+                ]) ?>
                 
             </div>
-
             <div class="col-md-4 col-xs-12">
             
-            	<?= $form->field($modelRegistryBusinessContactPerson, '[index]position')
-            	    ->dropDownList([
+            	<?= $form->field($modelRegistryBusinessContactPerson, '[index]position')->dropDownList([
             	       'Owner' => 'Owner', 
             	       'Manager' => 'Manager', 
             	       'Staff' => 'Staff'
@@ -261,7 +263,6 @@ $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson(); ?>
                 ]) ?>
                 
             </div>
-
             <div class="col-md-4 col-xs-6">
             
                 <?= $form->field($modelPerson, '[index]email')->textInput([
@@ -270,7 +271,6 @@ $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson(); ?>
                 ]) ?>
                 
             </div>
-
             <div class="col-md-4 col-xs-6">
             
             	<?= $form->field($modelRegistryBusinessContactPerson, '[index]is_primary_contact')->checkbox() ?>
@@ -281,7 +281,10 @@ $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson(); ?>
         <div class="row">
         	<div class="col-md-8 col-xs-12">
         	
-                <?= $form->field($modelRegistryBusinessContactPerson, '[index]note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                <?= $form->field($modelRegistryBusinessContactPerson, '[index]note')->textarea([
+                    'rows' => 2,
+                    'placeholder' => Yii::t('app', 'Note')
+                ]) ?>
                 
             </div>
         </div>
