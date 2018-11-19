@@ -373,11 +373,8 @@ $jscript = '
             $("#businesshour-day"  + thisObj.val() + "-open_at").removeAttr("disabled");
             $("#businesshour-day"  + thisObj.val() + "-close_at").removeAttr("disabled");
             
-            for (var counter = 1; counter <= indexHourCount; counter++) {
-
-                $("#businesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").removeAttr("disabled");
-                $("#businesshouradditional-day"  + thisObj.val() + "-" + counter + "-close_at").removeAttr("disabled");
-            }
+            thisObj.parents(".main-hour-form").find(".business-hour-time-additional.open-additional").removeAttr("disabled");
+            thisObj.parents(".main-hour-form").find(".business-hour-time-additional.close-additional").removeAttr("disabled");
         });
     
         $("#businesshour-day" + thisObj.val() + "-is_open").on("ifUnchecked", function(e) {
@@ -391,14 +388,22 @@ $jscript = '
             $("#businesshour-day"  + thisObj.val() + "-close_at").attr("disabled","disabled");
             $("#businesshour-day"  + thisObj.val() + "-close_at").val(null).trigger("change");
     
-            for (var counter = 1; counter <= indexHourCount; counter++) {
-                
-                $("#businesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").attr("disabled","disabled");
-                $("#businesshouradditional-day"  + thisObj.val() + "-" + counter + "-open_at").val(null).trigger("change");
+            thisObj.parents(".main-hour-form").children(".data-hour-form").each(function() {
 
-                $("#businesshouradditional-day"  + thisObj.val() + "-" + counter + "-close_at").attr("disabled","disabled");
-                $("#businesshouradditional-day"  + thisObj.val() + "-" + counter + "-close_at").val(null).trigger("change");
-            }
+                var deletedHourContent = $(this).find(".deleted-hour");
+            
+                if (deletedHourContent.length) {
+            
+                    deletedHourContent.attr("name", (deletedHourContent.attr("name").replace("Existed", "Deleted")));
+                    thisObj.parent().parent().siblings(".data-hour-form").find(".row").remove();
+                    thisObj.parent().parent().siblings(".data-hour-form").removeClass("data-hour-form").addClass("data-hour-form-deleted");
+                } else {
+    
+                    $(this).remove();
+                }
+            });
+
+            indexHourCount = 0;
         });
     
         $("#business-hour-24h-" + thisObj.val()).on("ifChecked", function(e) {
@@ -408,21 +413,26 @@ $jscript = '
             $("#businesshour-day"  + thisObj.val() + "-open_at").val("00:00:00").trigger("change");
             $("#businesshour-day"  + thisObj.val() + "-close_at").val("24:00:00").trigger("change");
 
-            $(".field-businesshour-day" + thisObj.val() + "-open_at").hide();
-            $(".field-businesshour-day" + thisObj.val() + "-close_at").hide();
+            $("#businesshour-day"  + thisObj.val() + "-open_at").parent().hide();
+            $("#businesshour-day"  + thisObj.val() + "-close_at").parent().hide();
 
             $("#add-business-hour-day" + thisObj.val()).hide();
             $("#delete-business-hour-day" + thisObj.val()).hide();
             
-            if (deletedHourContent.length) {
-        
-                deletedHourContent.attr("name", (deletedHourContent.attr("name").replace("Existed", "Deleted")));
-                thisObj.parent().parent().siblings(".data-hour-form").find(".row").remove();
-                thisObj.parent().parent().siblings(".data-hour-form").removeClass("data-hour-form").addClass("data-hour-form-deleted");
-            } else {
+            thisObj.parents(".main-hour-form").children(".data-hour-form").each(function() {
 
-                thisObj.parent().parent().siblings(".data-hour-form").remove();
-            }
+                var deletedHourContent = $(this).find(".deleted-hour");
+            
+                if (deletedHourContent.length) {
+            
+                    deletedHourContent.attr("name", (deletedHourContent.attr("name").replace("Existed", "Deleted")));
+                    thisObj.parent().parent().siblings(".data-hour-form").find(".row").remove();
+                    thisObj.parent().parent().siblings(".data-hour-form").removeClass("data-hour-form").addClass("data-hour-form-deleted");
+                } else {
+    
+                    $(this).remove();
+                }
+            });
 
             indexHourCount = 0;
         });
@@ -432,8 +442,8 @@ $jscript = '
             $("#businesshour-day"  + thisObj.val() + "-open_at").val(null).trigger("change");
             $("#businesshour-day"  + thisObj.val() + "-close_at").val(null).trigger("change");
 
-            $(".field-businesshour-day" + thisObj.val() + "-open_at").show();
-            $(".field-businesshour-day" + thisObj.val() + "-close_at").show();
+            $("#businesshour-day"  + thisObj.val() + "-open_at").parent().show();
+            $("#businesshour-day"  + thisObj.val() + "-close_at").parent().show();
 
             $("#add-business-hour-day" + thisObj.val()).show();
             $("#delete-business-hour-day" + thisObj.val()).show();
