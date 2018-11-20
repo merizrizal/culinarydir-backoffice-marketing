@@ -11,6 +11,7 @@ use core\models\BusinessHour;
 use core\models\BusinessFacility;
 use core\models\BusinessImage;
 use core\models\BusinessContactPerson;
+use core\models\RegistryBusinessContactPerson;
 use core\models\Person;
 use sycomponent\Tools;
 use sycomponent\AjaxRequest;
@@ -665,10 +666,20 @@ class BusinessController extends \backoffice\controllers\BaseController
                 $isEmpty = (empty($post['Person']) && empty($post['BusinessContactPerson']));
 
                 if (!empty($post['BusinessContactPersonDeleted'])) {
-
-                    if (($flag = BusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]))) {
-
-                        $flag = Person::deleteAll(['id' => $post['BusinessContactPersonDeleted']]);
+                    
+                    $modelRegistryBusinessContactPerson = RegistryBusinessContactPerson::findOne(['person_id' => $post['BusinessContactPersonDeleted']]);
+                    
+                    if (!empty($modelRegistryBusinessContactPerson)) {
+                        
+                        $flag = RegistryBusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]);
+                    }
+                    
+                    if ($flag) {
+                        
+                        if (($flag = BusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]))) {
+                            
+                            $flag = Person::deleteAll(['id' => $post['BusinessContactPersonDeleted']]);
+                        }
                     }
                 }
 
