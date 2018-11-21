@@ -570,7 +570,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
-
+                
                 if ($flag) {
 
                     foreach ($model->businessImages as $existModelBusinessImage) {
@@ -579,7 +579,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                         $existModelBusinessImage->is_primary = !empty($post['thumbnail']) && $post['thumbnail'] == $existModelBusinessImage->id ? true : false;
                         $existModelBusinessImage->category = !empty($post['category'][$existModelBusinessImage->id]) ? $post['category'][$existModelBusinessImage->id] : $modelBusinessImage->category;
 
-                        if (!($flag = $modelBusinessImage->save())) {
+                        if (!($flag = $existModelBusinessImage->save())) {
 
                             break;
                         }
