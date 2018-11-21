@@ -11,6 +11,7 @@ use core\models\BusinessHour;
 use core\models\BusinessFacility;
 use core\models\BusinessImage;
 use core\models\BusinessContactPerson;
+use core\models\RegistryBusinessContactPerson;
 use core\models\Person;
 use sycomponent\Tools;
 use sycomponent\AjaxRequest;
@@ -648,11 +649,10 @@ class BusinessController extends \backoffice\controllers\BaseController
             ->andWhere(['business.id' => $id])
             ->one();
 
+        $modelPerson = new Person();
         $modelBusinessContactPerson = new BusinessContactPerson();
         $dataBusinessContactPerson = [];
-
-        $modelPerson = new Person();
-
+        
         $isEmpty = false;
 
         if (!empty(($post = Yii::$app->request->post()))) {
@@ -665,10 +665,20 @@ class BusinessController extends \backoffice\controllers\BaseController
                 $isEmpty = (empty($post['Person']) && empty($post['BusinessContactPerson']));
 
                 if (!empty($post['BusinessContactPersonDeleted'])) {
-
-                    if (($flag = BusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]))) {
-
-                        $flag = Person::deleteAll(['id' => $post['BusinessContactPersonDeleted']]);
+                    
+                    $modelRegistryBusinessContactPerson = RegistryBusinessContactPerson::findOne(['person_id' => $post['BusinessContactPersonDeleted']]);
+                    
+                    if (!empty($modelRegistryBusinessContactPerson)) {
+                        
+                        $flag = RegistryBusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]);
+                    }
+                    
+                    if ($flag) {
+                        
+                        if (($flag = BusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]))) {
+                            
+                            $flag = Person::deleteAll(['id' => $post['BusinessContactPersonDeleted']]);
+                        }
                     }
                 }
 
@@ -795,26 +805,26 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     if (!empty($post['BusinessHour'][$dayName])) {
 
-                        $newmodelBusinessHourDay = BusinessHour::findOne(['unique_id' => $model->id . '-' . $day]);
+                        $newModelBusinessHourDay = BusinessHour::findOne(['unique_id' => $model->id . '-' . $day]);
 
-                        if (empty($newmodelBusinessHourDay)) {
+                        if (empty($newModelBusinessHourDay)) {
 
-                            $newmodelBusinessHourDay = new BusinessHour();
-                            $newmodelBusinessHourDay->business_id = $model->id;
-                            $newmodelBusinessHourDay->unique_id = $model->id . '-' . $day;
-                            $newmodelBusinessHourDay->day = $day;
+                            $newModelBusinessHourDay = new BusinessHour();
+                            $newModelBusinessHourDay->business_id = $model->id;
+                            $newModelBusinessHourDay->unique_id = $model->id . '-' . $day;
+                            $newModelBusinessHourDay->day = $day;
                         }
 
-                        $newmodelBusinessHourDay->is_open = !empty($post['BusinessHour'][$dayName]['is_open']) ? true : false;
-                        $newmodelBusinessHourDay->open_at = !empty($post['BusinessHour'][$dayName]['open_at']) ? $post['BusinessHour'][$dayName]['open_at'] : null;
-                        $newmodelBusinessHourDay->close_at = !empty($post['BusinessHour'][$dayName]['close_at']) ? $post['BusinessHour'][$dayName]['close_at'] : null;
+                        $newModelBusinessHourDay->is_open = !empty($post['BusinessHour'][$dayName]['is_open']) ? true : false;
+                        $newModelBusinessHourDay->open_at = !empty($post['BusinessHour'][$dayName]['open_at']) ? $post['BusinessHour'][$dayName]['open_at'] : null;
+                        $newModelBusinessHourDay->close_at = !empty($post['BusinessHour'][$dayName]['close_at']) ? $post['BusinessHour'][$dayName]['close_at'] : null;
 
-                        if (!($flag = $newmodelBusinessHourDay->save())) {
+                        if (!($flag = $newModelBusinessHourDay->save())) {
 
                             break;
                         } else {
 
-                            array_push($dataBusinessHour, $newmodelBusinessHourDay->toArray());
+                            array_push($dataBusinessHour, $newModelBusinessHourDay->toArray());
                         }
                     }
 
@@ -829,21 +839,21 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                             if (!empty($businessHourAdditional['open_at']) || !empty($businessHourAdditional['close_at'])) {
 
-                                $newmodelBusinessHourAdditional = BusinessHourAdditional::findOne(['unique_id' => $newmodelBusinessHourDay->id . '-' . $day . '-' . ($i)]);
+                                $newModelBusinessHourAdditional = BusinessHourAdditional::findOne(['unique_id' => $newModelBusinessHourDay->id . '-' . $day . '-' . ($i)]);
 
-                                if (empty($newmodelBusinessHourAdditional)) {
+                                if (empty($newModelBusinessHourAdditional)) {
 
-                                    $newmodelBusinessHourAdditional = new BusinessHourAdditional();
-                                    $newmodelBusinessHourAdditional->unique_id = $newmodelBusinessHourDay->id . '-' . $day . '-' . ($i);
-                                    $newmodelBusinessHourAdditional->business_hour_id = $newmodelBusinessHourDay->id;
-                                    $newmodelBusinessHourAdditional->day = $day;
+                                    $newModelBusinessHourAdditional = new BusinessHourAdditional();
+                                    $newModelBusinessHourAdditional->unique_id = $newModelBusinessHourDay->id . '-' . $day . '-' . ($i);
+                                    $newModelBusinessHourAdditional->business_hour_id = $newModelBusinessHourDay->id;
+                                    $newModelBusinessHourAdditional->day = $day;
                                 }
 
-                                $newmodelBusinessHourAdditional->is_open = $newmodelBusinessHourDay->is_open;
-                                $newmodelBusinessHourAdditional->open_at = !empty($businessHourAdditional['open_at']) ? $businessHourAdditional['open_at'] : null;
-                                $newmodelBusinessHourAdditional->close_at = !empty($businessHourAdditional['close_at']) ? $businessHourAdditional['close_at'] : null;
+                                $newModelBusinessHourAdditional->is_open = $newModelBusinessHourDay->is_open;
+                                $newModelBusinessHourAdditional->open_at = !empty($businessHourAdditional['open_at']) ? $businessHourAdditional['open_at'] : null;
+                                $newModelBusinessHourAdditional->close_at = !empty($businessHourAdditional['close_at']) ? $businessHourAdditional['close_at'] : null;
 
-                                if (!($flag = $newmodelBusinessHourAdditional->save())) {
+                                if (!($flag = $newModelBusinessHourAdditional->save())) {
 
                                     break;
                                 } else {
@@ -853,7 +863,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                                         $dataBusinessHourAdditional[$dayName] = [];
                                     }
 
-                                    array_push($dataBusinessHourAdditional[$dayName], $newmodelBusinessHourAdditional->toArray());
+                                    array_push($dataBusinessHourAdditional[$dayName], $newModelBusinessHourAdditional->toArray());
                                 }
                             }
                         }

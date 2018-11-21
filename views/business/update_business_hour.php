@@ -407,8 +407,6 @@ $jscript = '
         });
     
         $("#business-hour-24h-" + thisObj.val()).on("ifChecked", function(e) {
-
-            var deletedHourContent = thisObj.parent().parent().siblings().find(".deleted-hour");
     
             $("#businesshour-day"  + thisObj.val() + "-open_at").val("00:00:00").trigger("change");
             $("#businesshour-day"  + thisObj.val() + "-close_at").val("24:00:00").trigger("change");
