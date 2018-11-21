@@ -571,7 +571,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
-
+                
                 if ($flag) {
 
                     foreach ($model->businessImages as $existModelBusinessImage) {
