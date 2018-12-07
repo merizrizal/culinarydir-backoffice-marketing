@@ -506,8 +506,14 @@ class BusinessController extends \backoffice\controllers\BaseController
                 if (!empty($post['BusinessImageDelete'])) {
 
                     if (($flag = BusinessImage::deleteAll(['id' => $post['BusinessImageDelete']]))) {
-
-                        $deletedBusinessImageId = $post['BusinessImageDelete'];
+                        
+                        if ($order == count($post['BusinessImageDelete'])) {
+                            
+                            $flag = false;
+                        } else {
+                            
+                            $deletedBusinessImageId = $post['BusinessImageDelete'];
+                        }
                     }
 
                     if ($flag) {

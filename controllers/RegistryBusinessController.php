@@ -942,7 +942,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     
                     if (($flag = RegistryBusinessImage::deleteAll(['id' => $post['RegistryBusinessImageDelete']]))) {
                         
-                        if (empty($newDataRegistryBusinessImage) && ($order == count($post['RegistryBusinessImageDelete']))) {
+                        if ($order == count($post['RegistryBusinessImageDelete'])) {
                             
                             $flag = false;
                         } else {
