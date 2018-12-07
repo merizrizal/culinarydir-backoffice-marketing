@@ -8,7 +8,6 @@ use kartik\file\FileInput;
 use kartik\touchspin\TouchSpin;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
-use sycomponent\Tools;
 use core\models\MembershipType;
 use core\models\City;
 use core\models\Category;
