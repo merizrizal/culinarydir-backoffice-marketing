@@ -22,7 +22,8 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
+    
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -31,8 +32,7 @@ if ($status !== null) :
 
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
+}
 
 $this->title = Yii::t('app', 'Product');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['business/member']];
@@ -74,11 +74,11 @@ echo $ajaxRequest->component(true); ?>
         'toolbar' => [
             [
                 'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index', 'id' => $modelBusiness['id']], [
-                            'id' => 'refresh',
-                            'class' => 'btn btn-success',
-                            'data-placement' => 'top',
-                            'data-toggle' => 'tooltip',
-                            'title' => 'Refresh'
+                    'id' => 'refresh',
+                    'class' => 'btn btn-success',
+                    'data-placement' => 'top',
+                    'data-toggle' => 'tooltip',
+                    'title' => 'Refresh'
                 ])
             ],
         ],
@@ -94,27 +94,29 @@ echo $ajaxRequest->component(true); ?>
                 'format' => 'raw',
                 'filter' =>  [true => 'True', false => 'False'],
                 'value' => function ($model, $index, $widget) {
+                    
                     return Html::checkbox('not_active[]', $model->not_active, ['value' => $index, 'disabled' => 'disabled']);
                 },
             ],
-
+            'order',
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '
                     <div class="btn-container hide">
                         <div class="visible-lg visible-md">
-                            <div class="btn-group btn-group-md" role="group" style="width: 120px">
-                                {view}{update}{delete}
+                            <div class="btn-group btn-group-md" role="group" style="width: 200px">
+                                {view}{update}{delete}{up}{down}
                             </div>
                         </div>
                         <div class="visible-sm visible-xs">
-                            <div class="btn-group btn-group-lg" role="group" style="width: 156px">
-                                {view}{update}{delete}
+                            <div class="btn-group btn-group-lg" role="group" style="width: 260px">
+                                {view}{update}{delete}{up}{down}
                             </div>
                         </div>
                     </div>',
                 'buttons' => [
-                    'view' =>  function($url, $model, $key) {
+                    'view' => function($url, $model, $key) {
+                        
                         return Html::a('<i class="fa fa-search-plus"></i>', ['view', 'id' => $model->id], [
                             'id' => 'view',
                             'class' => 'btn btn-primary',
@@ -123,7 +125,8 @@ echo $ajaxRequest->component(true); ?>
                             'title' => 'View',
                         ]);
                     },
-                    'update' =>  function($url, $model, $key) {
+                    'update' => function($url, $model, $key) {
+                        
                         return Html::a('<i class="fa fa-pencil-alt"></i>', ['update', 'id' => $model->id], [
                             'id' => 'update',
                             'class' => 'btn btn-success',
@@ -132,7 +135,8 @@ echo $ajaxRequest->component(true); ?>
                             'title' => 'Edit',
                         ]);
                     },
-                    'delete' =>  function($url, $model, $key) {
+                    'delete' => function($url, $model, $key) {
+                        
                         return Html::a('<i class="fa fa-trash-alt"></i>', ['delete', 'id' => $model->id], [
                             'id' => 'delete',
                             'class' => 'btn btn-danger',
@@ -144,6 +148,26 @@ echo $ajaxRequest->component(true); ?>
                             'model-name' => $model->name,
                         ]);
                     },
+                    'up' => function($url, $model, $key) {
+                        
+                        return Html::a('<i class="fa fa-arrow-up"></i>', ['up', 'id' => $model->id], [
+                            'id' => 'up',
+                            'class' => 'btn btn-default',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => 'Up'
+                        ]);
+                    },
+                    'down' => function($url, $model, $key) {
+                        
+                        return Html::a('<i class="fa fa-arrow-down"></i>', ['down', 'id' => $model->id], [
+                            'id' => 'down',
+                            'class' => 'btn btn-default',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => 'Down'
+                        ]);
+                    }
                 ]
             ],
         ],
@@ -151,6 +175,7 @@ echo $ajaxRequest->component(true); ?>
             'class' => 'table table-striped table-hover'
         ],
         'rowOptions' => function ($model, $key, $index, $grid) {
+            
             return ['id' => $model['id'], 'class' => 'row-grid-view-business-product', 'style' => 'cursor: pointer;'];
         },
         'pager' => [

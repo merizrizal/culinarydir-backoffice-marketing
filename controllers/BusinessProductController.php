@@ -12,6 +12,7 @@ use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use sycomponent\AjaxRequest;
 
 /**
  * BusinessProductController implements the CRUD actions for BusinessProduct model.
@@ -88,10 +89,15 @@ class BusinessProductController extends BaseController
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             } else {
+                
+                $last = BusinessProduct::find()
+                    ->orderBy(['order' => SORT_DESC])
+                    ->asArray()->one();
 
                 $model->business_id = $id;
                 $model->image = Tools::uploadFile('/img/business_product/', $model, 'image', 'id', $model->business_id);
-
+                $model->order = $last['order'] + 1;
+                
                 if ($model->save()) {
 
                     Yii::$app->session->setFlash('status', 'success');
@@ -204,6 +210,84 @@ class BusinessProductController extends BaseController
 
         Yii::$app->response->format = Response::FORMAT_JSON;
         return $return;
+    }
+    
+    public function actionUp($id)
+    {
+        $model = $this->findModel($id);
+        
+        $modelTemp = BusinessProduct::find()
+            ->andWhere(['business_id' => $model->business_id])
+            ->andWhere(['order' => $model->order - 1])
+            ->one();
+        
+        if ($model->order > 1) {
+            
+            $transaction = Yii::$app->db->beginTransaction();
+            $flag = false;
+            
+            $modelTemp->order = $model->order;
+            
+            if (($flag = $modelTemp->save())) {
+                
+                $model->order -= 1;
+                
+                $flag = $model->save();
+            }
+            
+            if ($flag) {
+                
+                $transaction->commit();
+            } else {
+                
+                Yii::$app->session->setFlash('status', 'danger');
+                Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                
+                $transaction->rollBack();
+            }
+        }
+        
+        return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business-product/index', 'id' => $model->business_id]));
+    }
+    
+    public function actionDown($id)
+    {
+        $model = $this->findModel($id);
+        
+        $modelTemp = BusinessProduct::find()
+            ->andWhere(['business_id' => $model->business_id])
+            ->andWhere(['order' => $model->order + 1])
+            ->one();
+        
+        if ($modelTemp !== null) {
+            
+            $transaction = Yii::$app->db->beginTransaction();
+            $flag = false;
+            
+            $modelTemp->order = $model->order;
+            
+            if (($flag = $modelTemp->save())) {
+                
+                $model->order += 1;
+                
+                $flag = $model->save();
+            }
+            
+            if ($flag) {
+                
+                $transaction->commit();
+            } else {
+                
+                Yii::$app->session->setFlash('status', 'danger');
+                Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                
+                $transaction->rollBack();
+            }
+        }
+        
+        return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business-product/index', 'id' => $model->business_id]));
     }
 
     /**
