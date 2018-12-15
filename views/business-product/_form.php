@@ -1,16 +1,21 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use kartik\file\FileInput;
 use kartik\number\NumberControl;
 use yii\widgets\ActiveForm;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
+use core\models\BusinessProductCategory;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\BusinessProduct */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $modelBusiness core\models\Business */
+
+kartik\select2\Select2Asset::register($this);
+kartik\select2\ThemeKrajeeAsset::register($this);
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'BusinessProduct',
@@ -86,6 +91,23 @@ echo $ajaxRequest->component(); ?>
                     <div class="x_content">
 
                         <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                        
+                        <?= $form->field($model, 'business_product_category_id')->dropDownList(
+                            ArrayHelper::map(
+                                BusinessProductCategory::find()
+                                    ->joinWith(['productCategory'])
+                                    ->andWhere(['business_id' => $modelBusiness['id']])
+                                    ->orderBy('product_category.name')->asArray()->all(),
+                                'id',
+                                function($data) {
+                                    
+                                    return $data['productCategory']['name'];
+                                }
+                            ),
+                            [
+                                'prompt' => '',
+                                'style' => 'width: 100%'
+                            ]) ?>
 
                         <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
@@ -140,4 +162,11 @@ $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/
 
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
-$this->registerJs(Yii::$app->params['checkbox-radio-script']()); ?>
+$jscript = '
+    $("#businessproduct-business_product_category_id").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'Product Category') . '"
+    });
+';
+
+$this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>
