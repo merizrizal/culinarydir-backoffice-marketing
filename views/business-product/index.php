@@ -1,10 +1,12 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use kartik\grid\GridView;
 use sycomponent\AjaxRequest;
 use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
+use core\models\BusinessProductCategory;
 
 /* @var $this yii\web\View */
 /* @var $searchModel core\models\search\BusinessProductSearch */
@@ -87,7 +89,7 @@ echo $ajaxRequest->component(true); ?>
             ['class' => 'yii\grid\SerialColumn'],
 
             'name',
-            'description:ntext',
+            'businessProductCategory.productCategory.name',
             'price:currency',
             [
                 'attribute' => 'not_active',
@@ -98,7 +100,6 @@ echo $ajaxRequest->component(true); ?>
                     return Html::checkbox('not_active[]', $model->not_active, ['value' => $index, 'disabled' => 'disabled']);
                 },
             ],
-            'order',
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '
