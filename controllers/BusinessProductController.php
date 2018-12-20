@@ -45,7 +45,7 @@ class BusinessProductController extends BaseController
         $searchModel = new BusinessProductSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query
-            ->andWhere(['business_id' => $id]);
+            ->andWhere(['business_product.business_id' => $id]);
 
         $modelBusiness = Business::find()
             ->andWhere(['id' => $id])
