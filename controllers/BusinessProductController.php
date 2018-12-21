@@ -91,6 +91,7 @@ class BusinessProductController extends BaseController
             } else {
                 
                 $last = BusinessProduct::find()
+                    ->andWhere(['business_id' => $id])
                     ->orderBy(['order' => SORT_DESC])
                     ->asArray()->one();
 
