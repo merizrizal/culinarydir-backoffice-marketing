@@ -1004,6 +1004,39 @@ class BusinessController extends \backoffice\controllers\BaseController
 
         return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/update-gallery-photo', 'id' => $modelBusinessImage->business_id]));
     }
+    
+    public function actionUpgradeMembership($id, $save = null)
+    {
+        $model = $this->findModel($id);
+        
+        if ($model->load(Yii::$app->request->post())) {
+            
+            if (empty($save)) {
+                
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ActiveForm::validate($model);
+            } else {
+                
+                if ($model->save()) {
+                    
+                    Yii::$app->session->setFlash('status', 'success');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                } else {
+                    
+                    $model->setIsNewRecord(true);
+                    
+                    Yii::$app->session->setFlash('status', 'danger');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                }
+            }
+        }
+        
+        return $this->render('upgrade_membership', [
+            'model' => $model,
+        ]);
+    }
 
     protected function findModel($id)
     {

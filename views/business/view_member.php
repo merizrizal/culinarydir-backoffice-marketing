@@ -68,7 +68,7 @@ echo $ajaxRequest->component(); ?>
 
                     <?= Html::a('<i class="fas fa-percent"></i> Special Discount', ['business-promo/index', 'id' => $model['id']], ['class' => 'btn btn-default']) ?>
 
-                    <?= Html::a('<i class="fa fa-level-up-alt"></i> Upgrade', ['upgrade-member'], ['class' => 'btn btn-success']) ?>
+                    <?= Html::a('<i class="fa fa-level-up-alt"></i> Upgrade', ['upgrade-membership', 'id' => $model['id']], ['class' => 'btn btn-success']) ?>
 
                     <?= Html::a('<i class="fa fa-times"></i> Cancel', ['member'], ['class' => 'btn btn-default']) ?>
 
@@ -551,7 +551,7 @@ echo $ajaxRequest->component(); ?>
 
                     <?= Html::a('<i class="fas fa-percent"></i> Special Discount', ['business-promo/index', 'id' => $model['id']], ['class' => 'btn btn-default']) ?>
 
-                    <?= Html::a('<i class="fa fa-level-up-alt"></i> Upgrade', ['upgrade-member'], ['class' => 'btn btn-success']) ?>
+                    <?= Html::a('<i class="fa fa-level-up-alt"></i> Upgrade', ['upgrade-membership', 'id' => $model['id']], ['class' => 'btn btn-success']) ?>
 
                     <?= Html::a('<i class="fa fa-times"></i> Cancel', ['member'], ['class' => 'btn btn-default']) ?>
 

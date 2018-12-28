@@ -158,13 +158,21 @@ $this->registerJs($jscript); ?>
                                                 </div>
                                             </div>
                                         ',
-                                    ])->radioList(MembershipType::find()->andWhere(['as_archive' => false])->andWhere(['is_premium' => false])->orderBy('order')->asArray()->all(), [
+                                    ])->radioList(
+                                        ArrayHelper::map(
+                                            MembershipType::find()->andWhere(['as_archive' => false])->andWhere(['is_premium' => false])->orderBy('order')->asArray()->all(),
+                                            'id',
+                                            function($data) {
+                                                
+                                                return $data['name'];
+                                            }
+                                        ), [
                                         'item' => function ($index, $label, $name, $checked, $value) {
 
                                             return '
                                                 <div class="col-xs-12 col-sm-4">
                                                     <label>' .
-                                                        Html::radio($name, $checked, ['class' => 'membership-type-id', 'value' => $label['id']]) . ' ' . $label['name'] . '
+                                                        Html::radio($name, $checked, ['value' => $value]) . ' ' . $label . '
                                                     </label>
                                                 </div>';
                                         }
