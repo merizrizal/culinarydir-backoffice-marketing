@@ -166,7 +166,7 @@ echo $ajaxRequest->component(false); ?>
                         ]);
                     },
                     'upgrade-member' =>  function($url, $model, $key) {
-                        return Html::a('<i class="fa fa-level-up-alt"></i>', ['upgrade-member', 'id' => $model->id], [
+                        return Html::a('<i class="fa fa-level-up-alt"></i>', ['upgrade-membership', 'id' => $model->id], [
                             'id' => 'upgrade-membership',
                             'class' => 'btn btn-default',
                             'data-toggle' => 'tooltip',
