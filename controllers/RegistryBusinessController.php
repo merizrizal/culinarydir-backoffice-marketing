@@ -1288,6 +1288,16 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     }
                 }
                 
+                if (!empty($post['RegistryBusiness']['note_business_hour'])) {
+                    
+                    $model->note_business_hour = $post['RegistryBusiness']['note_business_hour'];
+                    
+                    if ($flag) {
+                        
+                        $flag = $model->save();
+                    }
+                }
+                
                 if ($flag) {
                     
                     Yii::$app->session->setFlash('status', 'success');

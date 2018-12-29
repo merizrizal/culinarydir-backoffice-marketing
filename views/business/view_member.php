@@ -375,7 +375,7 @@ echo $ajaxRequest->component(); ?>
                     	<div class="col-xs-12">
                     	
                     		<?= Html::label(Yii::t('app', 'Note')) ?><br>
-                    		<?= !empty($model['note_business_hour']) ? $model['note_business_hour'] : '-' ?>
+                    		<?= !empty($model['businessDetail']['note_business_hour']) ? $model['businessDetail']['note_business_hour'] : '-' ?>
                     	
                     	</div>
                     </div>

@@ -21,6 +21,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use core\models\BusinessHourAdditional;
+use core\models\BusinessDetail;
 
 /**
  * BusinessController
@@ -777,6 +778,7 @@ class BusinessController extends \backoffice\controllers\BaseController
     {
         $model = Business::find()
             ->joinWith([
+                'businessDetail',
                 'businessHours' => function($query) {
 
                     $query->orderBy(['business_hour.day' => SORT_ASC]);
@@ -873,6 +875,16 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 }
                             }
                         }
+                    }
+                }
+                
+                if (!empty($post['BusinessDetail']['note_business_hour'])) {
+                    
+                    $model->businessDetail->note_business_hour = $post['BusinessDetail']['note_business_hour'];
+                    
+                    if ($flag) {
+                        
+                        $flag = $model->businessDetail->save();
                     }
                 }
 

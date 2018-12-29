@@ -611,9 +611,7 @@ $this->registerJs($jscript); ?>
 
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-9">
-
                                                 <?= $form->field($model, 'note_business_hour')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
-
                                             </div>
                                         </div>
                                     </div>
@@ -621,9 +619,7 @@ $this->registerJs($jscript); ?>
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-xs-12">
-
                                                 <?= Html::label(Yii::t('app', 'Average Spending')) ?>
-
                                             </div>
                                             <div class="col-xs-5 col-sm-4 col-lg-3">
 
@@ -670,9 +666,7 @@ $this->registerJs($jscript); ?>
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-sm-2">
-
                                                 <?= Html::label(Yii::t('app', 'Foto')) ?>
-
                                             </div>
                                             <div class="col-sm-10">
 
@@ -814,15 +808,11 @@ $modelPerson = new Person(); ?>
     <div class="mb-40 data-form">
         <div class="row mt-10">
             <div class="col-md-4 col-xs-6">
-            
                 <?= $form->field($modelPerson, '[index]first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
-                
             </div>
 
             <div class="col-md-4 col-xs-6">
-            
                 <?= $form->field($modelPerson, '[index]last_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Last Name')]) ?>
-                
             </div>
 
             <div class="col-md-4 col-xs-12">
@@ -865,17 +855,13 @@ $modelPerson = new Person(); ?>
             </div>
 
             <div class="col-md-4 col-xs-6">
-            
             	<?= $form->field($modelRegistryBusinessContactPerson, '[index]is_primary_contact')->checkbox(['class' => 'not-checkbox']) ?>
-            	
             </div>
         </div>
 
         <div class="row">
         	<div class="col-md-8 col-xs-12">
-        	
                 <?= $form->field($modelRegistryBusinessContactPerson, '[index]note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
-                
             </div>
         </div>
     </div>

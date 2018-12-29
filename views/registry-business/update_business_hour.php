@@ -218,7 +218,12 @@ echo $ajaxRequest->component(); ?>
                                     
                                 <?php
                                 endforeach; ?>
-
+								
+								<div class="row">
+                                    <div class="col-xs-12 col-sm-9">
+                                        <?= $form->field($model, 'note_business_hour')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="form-group">
