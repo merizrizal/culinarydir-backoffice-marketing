@@ -16,6 +16,8 @@ use core\models\RegistryBusinessHourAdditional;
 use core\models\RegistryBusinessFacility;
 use core\models\RegistryBusinessImage;
 use core\models\RegistryBusinessContactPerson;
+use core\models\RegistryBusinessPayment;
+use core\models\RegistryBusinessDelivery;
 use core\models\StatusApproval;
 use core\models\StatusApprovalAction;
 use sycomponent\AjaxRequest;
@@ -63,6 +65,12 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         $modelRegistryBusinessFacility = new RegistryBusinessFacility();
         $dataRegistryBusinessFacility = [];
+        
+        $modelRegistryBusinessPayment = new RegistryBusinessPayment();
+        $dataRegistryBusinessPayment = [];
+        
+        $modelRegistryBusinessDelivery = new RegistryBusinessDelivery();
+        $dataRegistryBusinessDelivery = [];
 
         $modelRegistryBusinessHour = new RegistryBusinessHour();
         $dataRegistryBusinessHour = [];
@@ -199,6 +207,52 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 } else {
                                     
                                     array_push($dataRegistryBusinessFacility, $newModelRegistryBusinessFacility->toArray());
+                                }
+                            }
+                        }
+                    }
+                    
+                    if ($flag) {
+                        
+                        if (!empty($post['RegistryBusinessPayment']['payment_method_id'])) {
+                            
+                            foreach ($post['RegistryBusinessPayment']['payment_method_id'] as $paymentId) {
+                                
+                                $newModelRegistryBusinessPayment = new RegistryBusinessPayment();
+                                $newModelRegistryBusinessPayment->unique_id = $model->id . '-' . $paymentId;
+                                $newModelRegistryBusinessPayment->registry_business_id = $model->id;
+                                $newModelRegistryBusinessPayment->payment_method_id = $paymentId;
+                                $newModelRegistryBusinessPayment->is_active = true;
+                                
+                                if (!($flag = $newModelRegistryBusinessPayment->save())) {
+                                    
+                                    break;
+                                } else {
+                                    
+                                    array_push($dataRegistryBusinessPayment, $newModelRegistryBusinessPayment->toArray());
+                                }
+                            }
+                        }
+                    }
+                    
+                    if ($flag) {
+                        
+                        if (!empty($post['RegistryBusinessDelivery']['delivery_method_id'])) {
+                            
+                            foreach ($post['RegistryBusinessDelivery']['delivery_method_id'] as $deliveryId) {
+                                
+                                $newModelRegistryBusinessDelivery = new RegistryBusinessDelivery();
+                                $newModelRegistryBusinessDelivery->unique_id = $model->id . '-' . $deliveryId;
+                                $newModelRegistryBusinessDelivery->registry_business_id = $model->id;
+                                $newModelRegistryBusinessDelivery->delivery_method_id = $deliveryId;
+                                $newModelRegistryBusinessDelivery->is_active = true;
+                                
+                                if (!($flag = $newModelRegistryBusinessDelivery->save())) {
+                                    
+                                    break;
+                                } else {
+                                    
+                                    array_push($dataRegistryBusinessDelivery, $newModelRegistryBusinessDelivery->toArray());
                                 }
                             }
                         }
@@ -358,6 +412,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'dataRegistryBusinessProductCategoryChild' => $dataRegistryBusinessProductCategoryChild,
             'modelRegistryBusinessFacility' => $modelRegistryBusinessFacility,
             'dataRegistryBusinessFacility' => $dataRegistryBusinessFacility,
+            'modelRegistryBusinessPayment' => $modelRegistryBusinessPayment,
+            'dataRegistryBusinessPayment' => $dataRegistryBusinessPayment,
+            'modelRegistryBusinessDelivery' => $modelRegistryBusinessDelivery,
+            'dataRegistryBusinessDelivery' => $dataRegistryBusinessDelivery,
             'modelRegistryBusinessHour' => $modelRegistryBusinessHour,
             'dataRegistryBusinessHour' => $dataRegistryBusinessHour,
             'modelRegistryBusinessHourAdditional' => $modelRegistryBusinessHourAdditional,
@@ -622,6 +680,16 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     $query->andOnCondition(['registry_business_facility.is_active' => true]);
                 },
                 'registryBusinessFacilities.facility',
+                'registryBusinessPayments' => function ($query) {
+                
+                $query->andOnCondition(['registry_business_payment.is_active' => true]);
+                },
+                'registryBusinessPayments.paymentMethod',
+                'registryBusinessDeliveries' => function ($query) {
+                
+                $query->andOnCondition(['registry_business_delivery.is_active' => true]);
+                },
+                'registryBusinessDeliveries.deliveryMethod',
             ])
             ->andWhere(['registry_business.id' => $id])
             ->one();
@@ -635,6 +703,12 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         $modelRegistryBusinessFacility = new RegistryBusinessFacility();
         $dataRegistryBusinessFacility = [];
+        
+        $modelRegistryBusinessPayment = new RegistryBusinessPayment();
+        $dataRegistryBusinessPayment = [];
+        
+        $modelRegistryBusinessDelivery = new RegistryBusinessDelivery();
+        $dataRegistryBusinessDelivery = [];
         
         if ($model->load(($post = Yii::$app->request->post()))) {
 
@@ -860,6 +934,122 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
+                
+                if ($flag) {
+                    
+                    if (!empty($post['RegistryBusinessPayment']['payment_method_id'])) {
+                        
+                        foreach ($post['RegistryBusinessPayment']['payment_method_id'] as $paymentId) {
+                            
+                            $newModelRegistryBusinessPayment = RegistryBusinessPayment::findOne(['unique_id' => $model->id . '-' . $paymentId]);
+                            
+                            if (!empty($newModelRegistryBusinessPayment)) {
+                                
+                                $newModelRegistryBusinessPayment->is_active = true;
+                            } else {
+                                
+                                $newModelRegistryBusinessPayment = new RegistryBusinessPayment();
+                                $newModelRegistryBusinessPayment->unique_id = $model->id . '-' . $paymentId;
+                                $newModelRegistryBusinessPayment->registry_business_id = $model->id;
+                                $newModelRegistryBusinessPayment->payment_method_id = $paymentId;
+                                $newModelRegistryBusinessPayment->is_active = true;
+                            }
+                            
+                            if (!($flag = $newModelRegistryBusinessPayment->save())) {
+                                
+                                break;
+                            } else {
+                                
+                                array_push($dataRegistryBusinessPayment, $newModelRegistryBusinessPayment->toArray());
+                            }
+                        }
+                        
+                        if ($flag) {
+                            
+                            foreach ($model->registryBusinessPayments as $existModelRegistryBusinessPayment) {
+                                
+                                $exist = false;
+                                
+                                foreach ($post['RegistryBusinessPayment']['payment_method_id'] as $paymentId) {
+                                    
+                                    if ($existModelRegistryBusinessPayment['payment_method_id'] == $paymentId) {
+                                        
+                                        $exist = true;
+                                        break;
+                                    }
+                                }
+                                
+                                if (!$exist) {
+                                    
+                                    $existModelRegistryBusinessPayment->is_active = false;
+                                    
+                                    if (!($flag = $existModelRegistryBusinessPayment->save())) {
+                                        
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if ($flag) {
+                    
+                    if (!empty($post['RegistryBusinessDelivery']['delivery_method_id'])) {
+                        
+                        foreach ($post['RegistryBusinessDelivery']['delivery_method_id'] as $deliveryId) {
+                            
+                            $newModelRegistryBusinessDelivery = RegistryBusinessDelivery::findOne(['unique_id' => $model->id . '-' . $deliveryId]);
+                            
+                            if (!empty($newModelRegistryBusinessDelivery)) {
+                                
+                                $newModelRegistryBusinessDelivery->is_active = true;
+                            } else {
+                                
+                                $newModelRegistryBusinessDelivery = new RegistryBusinessDelivery();
+                                $newModelRegistryBusinessDelivery->unique_id = $model->id . '-' . $deliveryId;
+                                $newModelRegistryBusinessDelivery->registry_business_id = $model->id;
+                                $newModelRegistryBusinessDelivery->delivery_method_id = $deliveryId;
+                                $newModelRegistryBusinessDelivery->is_active = true;
+                            }
+                            
+                            if (!($flag = $newModelRegistryBusinessDelivery->save())) {
+                                
+                                break;
+                            } else {
+                                
+                                array_push($dataRegistryBusinessDelivery, $newModelRegistryBusinessDelivery->toArray());
+                            }
+                        }
+                        
+                        if ($flag) {
+                            
+                            foreach ($model->registryBusinessDeliveries as $existModelRegistryBusinessDelivery) {
+                                
+                                $exist = false;
+                                
+                                foreach ($post['RegistryBusinessDelivery']['delivery_method_id'] as $deliveryId) {
+                                    
+                                    if ($existModelRegistryBusinessDelivery['delivery_method_id'] == $deliveryId) {
+                                        
+                                        $exist = true;
+                                        break;
+                                    }
+                                }
+                                
+                                if (!$exist) {
+                                    
+                                    $existModelRegistryBusinessDelivery->is_active = false;
+                                    
+                                    if (!($flag = $existModelRegistryBusinessDelivery->save())) {
+                                        
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 if ($flag) {
 
@@ -897,6 +1087,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $dataRegistryBusinessProductCategoryParent = empty($dataRegistryBusinessProductCategoryParent) ? $registryBusinessProductCategoryParent : $dataRegistryBusinessProductCategoryParent;
         $dataRegistryBusinessProductCategoryChild = empty($dataRegistryBusinessProductCategoryChild) ? $registryBusinessProductCategoryChild : $dataRegistryBusinessProductCategoryChild;
         $dataRegistryBusinessFacility = empty($dataRegistryBusinessFacility) ? $model->registryBusinessFacilities : $dataRegistryBusinessFacility;
+        $dataRegistryBusinessPayment = empty($dataRegistryBusinessPayment) ? $model->registryBusinessPayments : $dataRegistryBusinessPayment;
+        $dataRegistryBusinessDelivery = empty($dataRegistryBusinessDelivery) ? $model->registryBusinessDeliveries : $dataRegistryBusinessDelivery;
 
         return $this->render('update_marketing_info', [
             'model' => $model,
@@ -907,6 +1099,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'dataRegistryBusinessProductCategoryChild' => $dataRegistryBusinessProductCategoryChild,
             'modelRegistryBusinessFacility' => $modelRegistryBusinessFacility,
             'dataRegistryBusinessFacility' => $dataRegistryBusinessFacility,
+            'modelRegistryBusinessPayment' => $modelRegistryBusinessPayment,
+            'dataRegistryBusinessPayment' => $dataRegistryBusinessPayment,
+            'modelRegistryBusinessDelivery' => $modelRegistryBusinessDelivery,
+            'dataRegistryBusinessDelivery' => $dataRegistryBusinessDelivery,
             'statusApproval' => $statusApproval,
         ]);
     }
@@ -1559,35 +1755,45 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 'district',
                 'village',
                 'userInCharge',
-                'registryBusinessCategories' => function($query) {
+                'registryBusinessCategories' => function ($query) {
                     
                     $query->andOnCondition(['registry_business_category.is_active' => true]);
                 },
                 'registryBusinessCategories.category',
-                'registryBusinessProductCategories' => function($query) {
+                'registryBusinessProductCategories' => function ($query) {
                     
                     $query->andOnCondition(['registry_business_product_category.is_active' => true]);
                 },
-                'registryBusinessHours' => function($query) {
+                'registryBusinessHours' => function ($query) {
                     
                     $query->andOnCondition(['registry_business_hour.is_open' => true])
                         ->orderBy(['registry_business_hour.day' => SORT_ASC]);
                 },
                 'registryBusinessHours.registryBusinessHourAdditionals',
                 'registryBusinessProductCategories.productCategory',
-                'registryBusinessFacilities' => function($query) {
+                'registryBusinessFacilities' => function ($query) {
                     
                     $query->andOnCondition(['registry_business_facility.is_active' => true]);
                 },
                 'registryBusinessFacilities.facility',
+                'registryBusinessPayments' => function ($query) {
+                
+                    $query->andOnCondition(['registry_business_payment.is_active' => true]);
+                },
+                'registryBusinessPayments.paymentMethod',
+                'registryBusinessDeliveries' => function ($query) {
+                
+                    $query->andOnCondition(['registry_business_delivery.is_active' => true]);
+                },
+                'registryBusinessDeliveries.deliveryMethod',
                 'registryBusinessImages',
-                'registryBusinessContactPeople' => function($query) {
+                'registryBusinessContactPeople' => function ($query) {
                     
                     $query->orderBy(['registry_business_contact_person.id' => SORT_ASC]);
                 },
                 'registryBusinessContactPeople.person',
                 'applicationBusiness',
-                'applicationBusiness.logStatusApprovals' => function($query) {
+                'applicationBusiness.logStatusApprovals' => function ($query) {
                     
                     $query->andOnCondition(['log_status_approval.is_actual' => true]);
                 },

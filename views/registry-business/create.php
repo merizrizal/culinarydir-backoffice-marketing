@@ -13,6 +13,8 @@ use core\models\City;
 use core\models\Category;
 use core\models\ProductCategory;
 use core\models\Facility;
+use core\models\PaymentMethod;
+use core\models\DeliveryMethod;
 use core\models\Person;
 use core\models\RegistryBusinessContactPerson;
 use core\models\RegistryBusinessHourAdditional;
@@ -27,6 +29,10 @@ use dosamigos\ckeditor\CKEditor;
 /* @var $modelRegistryBusinessProductCategory core\models\RegistryBusinessProductCategory */
 /* @var $dataRegistryBusinessFacility core\models\RegistryBusinessFacility */
 /* @var $modelRegistryBusinessFacility core\models\RegistryBusinessFacility */
+/* @var $dataRegistryBusinessPayment core\models\RegistryBusinessPayment */
+/* @var $modelRegistryBusinessPayment core\models\RegistryBusinessPayment */
+/* @var $dataRegistryBusinessDelivery core\models\RegistryBusinessDelivery */
+/* @var $modelRegistryBusinessDelivery core\models\RegistryBusinessDelivery */
 /* @var $dataRegistryBusinessHour core\models\RegistryBusinessHour */
 /* @var $modelRegistryBusinessHour core\models\RegistryBusinessHour */
 /* @var $dataRegistryBusinessHourAdditional core\models\RegistryBusinessHourAdditional */
@@ -332,9 +338,7 @@ $this->registerJs($jscript); ?>
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-xs-12">
-
                                                 <?= Html::label(Yii::t('app', 'Business Category')) ?>
-
                                             </div>
                                             <div class="col-xs-12">
 
@@ -369,9 +373,7 @@ $this->registerJs($jscript); ?>
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-xs-12">
-
                                                 <?= Html::label(Yii::t('app', 'Product Category')) ?>
-
                                             </div>
                                             <div class="col-xs-12">
 
@@ -433,9 +435,7 @@ $this->registerJs($jscript); ?>
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-xs-12">
-
                                                 <?= Html::label(Yii::t('app', 'Facility')) ?>
-
                                             </div>
                                             <div class="col-xs-12">
 
@@ -461,6 +461,76 @@ $this->registerJs($jscript); ?>
                                                         'prompt' => '',
                                                         'style' => 'width: 100%',
                                                         'options' => $selectedDataFacility
+                                                    ]) ?>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <?= Html::label(Yii::t('app', 'Payment Methods')) ?>
+                                            </div>
+                                            <div class="col-xs-12">
+
+                                                <?php
+                                                $selectedDataPayment = [];
+
+                                                if (!empty($dataRegistryBusinessPayment)) {
+
+                                                    foreach ($dataRegistryBusinessPayment as $registryBusinessPayment) {
+
+                                                        $selectedDataPayment[$registryBusinessPayment['payment_method_id']] = ['selected' => true];
+                                                    }
+                                                }
+
+                                                echo $form->field($modelRegistryBusinessPayment, 'payment_method_id')->dropDownList(
+                                                    ArrayHelper::map(
+                                                        PaymentMethod::find()->orderBy('payment_name')->asArray()->all(),
+                                                        'id',
+                                                        'payment_name'
+                                                    ),
+                                                    [
+                                                        'multiple' => 'multiple',
+                                                        'prompt' => '',
+                                                        'style' => 'width: 100%',
+                                                        'options' => $selectedDataPayment
+                                                    ]) ?>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <?= Html::label(Yii::t('app', 'Delivery Methods')) ?>
+                                            </div>
+                                            <div class="col-xs-12">
+
+                                                <?php
+                                                $selectedDataDelivery = [];
+
+                                                if (!empty($dataRegistryBusinessDelivery)) {
+
+                                                    foreach ($dataRegistryBusinessDelivery as $registryBusinessDelivery) {
+
+                                                        $selectedDataDelivery[$registryBusinessDelivery['delivery_method_id']] = ['selected' => true];
+                                                    }
+                                                }
+
+                                                echo $form->field($modelRegistryBusinessDelivery, 'delivery_method_id')->dropDownList(
+                                                    ArrayHelper::map(
+                                                        DeliveryMethod::find()->orderBy('delivery_name')->asArray()->all(),
+                                                        'id',
+                                                        'delivery_name'
+                                                    ),
+                                                    [
+                                                        'multiple' => 'multiple',
+                                                        'prompt' => '',
+                                                        'style' => 'width: 100%',
+                                                        'options' => $selectedDataDelivery
                                                     ]) ?>
 
                                             </div>
@@ -507,9 +577,7 @@ $this->registerJs($jscript); ?>
 											<div class="main-hour-form">
                                                 <div class="row">
                                                     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
-    
                                                         <?= Yii::t('app', $day) ?>
-    
                                                     </div>
                                                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
     
@@ -766,17 +834,13 @@ $this->registerJs($jscript); ?>
                                                         </div>
                                             
                                                         <div class="col-md-4 col-xs-6">
-                                                        
                                                         	<?= $form->field($modelRegistryBusinessContactPerson, '[' . $i .']is_primary_contact')->checkbox() ?>
-                                                        	
                                                         </div>
                                                     </div>
                                             
                                                     <div class="row">
                                                     	<div class="col-md-8 col-xs-12">
-                                                    	
                                                             <?= $form->field($modelRegistryBusinessContactPerson, '[' . $i .']note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
-                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -982,6 +1046,18 @@ $jscript = '
         theme: "krajee",
         dropdownCssClass: "select2-grid-system",
         placeholder: "' . Yii::t('app', 'Facility') . '"
+    });
+
+    $("#registrybusinesspayment-payment_method_id").select2({
+        theme: "krajee",
+        dropdownCssClass: "select2-grid-system",
+        placeholder: "' . Yii::t('app', 'Payment Methods') . '"
+    });
+
+    $("#registrybusinessdelivery-delivery_method_id").select2({
+        theme: "krajee",
+        dropdownCssClass: "select2-grid-system",
+        placeholder: "' . Yii::t('app', 'Delivery Methods') . '"
     });
 
     $(".business-hour-time.open").select2({
