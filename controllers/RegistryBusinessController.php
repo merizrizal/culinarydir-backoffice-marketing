@@ -1525,8 +1525,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             }
         }
         
-        echo '<pre>'; print_r($dataRegistryBusinessHour); print_r($dataRegistryBusinessHourAdditional); exit();
-        
         return $this->render('update_business_hour', [
             'model' => $model,
             'modelRegistryBusinessHour' => $modelRegistryBusinessHour,
