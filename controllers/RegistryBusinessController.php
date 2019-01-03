@@ -1385,7 +1385,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     {
         $model = RegistryBusiness::find()
             ->joinWith([
-                'registryBusinessHours' => function($query) {
+                'registryBusinessHours' => function ($query) {
                 
                     $query->orderBy(['registry_business_hour.day' => SORT_ASC]);
                 },
@@ -1400,8 +1400,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
         $dataRegistryBusinessHourAdditional = [];
         
-        $isEmpty = false;
-        
         if (!empty($post = Yii::$app->request->post())) {
             
             if (!empty($save)) {
@@ -1410,8 +1408,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 $flag = false;
                 
                 $loopDays = ['1', '2', '3', '4', '5', '6', '7'];
-                
-                $isEmpty = empty($post['RegistryBusinessHourAdditional']);
                 
                 foreach ($loopDays as $day) {
                     
@@ -1442,23 +1438,23 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                     
-                    if (!empty($post['RegistryBusinessHourAdditionalDeleted'][$dayName])) {
+                    if ($flag && !empty($post['RegistryBusinessHourAdditionalDeleted'][$dayName])) {
                         
                         $flag = RegistryBusinessHourAdditional::deleteAll(['id' => $post['RegistryBusinessHourAdditionalDeleted'][$dayName]]);
                     }
-                    
-                    if (!empty($post['RegistryBusinessHourAdditional'][$dayName])) {
+
+                    if ($flag && !empty($post['RegistryBusinessHourAdditional'][$dayName])) {
                         
                         foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $registryBusinessHourAdditional) {
                             
                             if (!empty($registryBusinessHourAdditional['open_at']) || !empty($registryBusinessHourAdditional['close_at'])) {
                                 
-                                $newModelRegistryBusinessHourAdditional = RegistryBusinessHourAdditional::findOne(['unique_id' => $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i)]);
+                                $newModelRegistryBusinessHourAdditional = RegistryBusinessHourAdditional::findOne(['unique_id' => $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . $i]);
                                 
                                 if (empty($newModelRegistryBusinessHourAdditional)) {
                                     
                                     $newModelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
-                                    $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . ($i);
+                                    $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . $i;
                                     $newModelRegistryBusinessHourAdditional->registry_business_hour_id = $newModelRegistryBusinessHourDay->id;
                                     $newModelRegistryBusinessHourAdditional->day = $day;
                                 }
@@ -1484,14 +1480,11 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     }
                 }
                 
-                if (!empty($post['RegistryBusiness']['note_business_hour'])) {
+                if ($flag) {
+                
+                    $model->note_business_hour = !empty($post['RegistryBusiness']['note_business_hour']) ? $post['RegistryBusiness']['note_business_hour'] : null;
                     
-                    $model->note_business_hour = $post['RegistryBusiness']['note_business_hour'];
-                    
-                    if ($flag) {
-                        
-                        $flag = $model->save();
-                    }
+                    $flag = $model->save();
                 }
                 
                 if ($flag) {
@@ -1514,27 +1507,26 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         
         $dataRegistryBusinessHour = empty($dataRegistryBusinessHour) ? $model->registryBusinessHours : $dataRegistryBusinessHour;
         
-        if (!$isEmpty) {
-        
-            if (empty($dataRegistryBusinessHourAdditional)) {
+        if (empty($dataRegistryBusinessHourAdditional)) {
+            
+            foreach ($dataRegistryBusinessHour as $businessHour) {
                 
-                foreach ($dataRegistryBusinessHour as $businessHour) {
+                $dayName = 'day' . $businessHour['day'];
+                
+                $dataRegistryBusinessHourAdditional[$dayName] = [];
+                
+                if (!empty($businessHour['registryBusinessHourAdditionals'])) {
                     
-                    $dayName = 'day' . $businessHour['day'];
-                    
-                    $dataRegistryBusinessHourAdditional[$dayName] = [];
-                    
-                    if (!empty($businessHour['registryBusinessHourAdditionals'])) {
+                    foreach ($businessHour['registryBusinessHourAdditionals'] as $registryBusinessHourAdditional) {
                         
-                        foreach ($businessHour['registryBusinessHourAdditionals'] as $registryBusinessHourAdditional) {
-                            
-                            array_push($dataRegistryBusinessHourAdditional[$dayName], $registryBusinessHourAdditional);
-                        }
+                        array_push($dataRegistryBusinessHourAdditional[$dayName], $registryBusinessHourAdditional);
                     }
                 }
             }
         }
-            
+        
+        echo '<pre>'; print_r($dataRegistryBusinessHour); print_r($dataRegistryBusinessHourAdditional); exit();
+        
         return $this->render('update_business_hour', [
             'model' => $model,
             'modelRegistryBusinessHour' => $modelRegistryBusinessHour,
