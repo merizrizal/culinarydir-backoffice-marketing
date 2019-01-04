@@ -87,7 +87,6 @@ echo $ajaxRequest->component(true) ?>
             ['class' => 'yii\grid\SerialColumn'],
 
             'deliveryMethod.delivery_name',
-            'note:ntext',
             [
                 'attribute' => 'is_active',
                 'format' => 'raw',
