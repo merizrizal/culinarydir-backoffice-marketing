@@ -32,10 +32,9 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$url = $statusApproval == 'pndg' ? 'registry-business/view-pndg' : 'registry-business/view-icorct';
-
 $this->title = $model->paymentMethod->payment_name;
-$this->params['breadcrumbs'][] = ['label' => $model->registryBusiness->name, 'url' => [$url, 'id' => $model->registry_business_id, 'statusApproval' => $statusApproval]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' =>  ['registry-business/index-' . strtolower($statusApproval)]];
+$this->params['breadcrumbs'][] = ['label' => $model->registryBusiness->name, 'url' => ['registry-business/view-' . strtolower($statusApproval), 'id' => $model->registry_business_id, 'statusApproval' => $statusApproval]];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Payment Methods'), 'url' => ['index', 'id' => $model->registry_business_id, 'statusApproval' => $statusApproval]];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -48,36 +47,19 @@ echo $ajaxRequest->component(); ?>
             <div class="x_panel">
                 <div class="x_content">
 
-                    <?= Html::a('<i class="fa fa-upload"></i> ' . 'Create',
-                        ['create', 'id' => $model->registry_business_id, 'statusApproval' => $statusApproval],
-                        [
-                            'class' => 'btn btn-success',
-                            'style' => 'color:white'
-                        ]) ?>
+                    <?= Html::a('<i class="fa fa-upload"></i> Create', ['create', 'id' => $model->registry_business_id, 'statusApproval' => $statusApproval], ['class' => 'btn btn-success']) ?>
 
-                    <?= Html::a('<i class="fa fa-pencil-alt"></i> ' . 'Edit',
-                        ['update', 'id' => $model->id, 'statusApproval' => $statusApproval],
-                        [
-                            'class' => 'btn btn-primary',
-                            'style' => 'color:white'
-                        ]) ?>
+                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model->id, 'statusApproval' => $statusApproval], ['class' => 'btn btn-primary']) ?>
 
-                    <?= Html::a('<i class="fa fa-trash-alt"></i> ' . 'Delete',
-                        ['delete', 'id' => $model->id, 'statusApproval' => $statusApproval],
-                        [
+                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete',['delete', 'id' => $model->id, 'statusApproval' => $statusApproval], [
                             'id' => 'delete',
                             'class' => 'btn btn-danger',
-                            'style' => 'color:white',
                             'data-not-ajax' => 1,
                             'model-id' => $model->id,
                             'model-name' => $model->paymentMethod->payment_name,
                         ]) ?>
 
-                    <?= Html::a('<i class="fa fa-times"></i> ' . 'Cancel',
-                        ['index', 'id' => $model->registry_business_id, 'statusApproval' => $statusApproval],
-                        [
-                            'class' => 'btn btn-default',
-                        ]) ?>
+                    <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index', 'id' => $model->registry_business_id, 'statusApproval' => $statusApproval], ['class' => 'btn btn-default']) ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>
 

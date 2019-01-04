@@ -87,7 +87,6 @@ echo $ajaxRequest->component(true) ?>
             ['class' => 'yii\grid\SerialColumn'],
 
             'paymentMethod.payment_name',
-            'note:ntext',
             [
                 'attribute' => 'is_active',
                 'format' => 'raw',
