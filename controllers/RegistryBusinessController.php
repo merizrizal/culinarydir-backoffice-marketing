@@ -341,7 +341,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             foreach ($post['RegistryBusinessPayment'] as $dataPaymentMethod) {
                                 
                                 $newModelRegistryBusinessPayment = new RegistryBusinessPayment();
-                                $newModelRegistryBusinessPayment->unique_id = $model->id . '-' . $dataPaymentMethod['payment_method_id'];
                                 $newModelRegistryBusinessPayment->registry_business_id = $model->id;
                                 $newModelRegistryBusinessPayment->payment_method_id = $dataPaymentMethod['payment_method_id'];
                                 $newModelRegistryBusinessPayment->is_active = true;
@@ -365,7 +364,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             foreach ($post['RegistryBusinessDelivery'] as $dataDeliveryMethod) {
                                 
                                 $newModelRegistryBusinessDelivery = new RegistryBusinessDelivery();
-                                $newModelRegistryBusinessDelivery->unique_id = $model->id . '-' . $dataDeliveryMethod['delivery_method_id'];
                                 $newModelRegistryBusinessDelivery->registry_business_id = $model->id;
                                 $newModelRegistryBusinessDelivery->delivery_method_id = $dataDeliveryMethod['delivery_method_id'];
                                 $newModelRegistryBusinessDelivery->is_active = true;

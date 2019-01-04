@@ -1,14 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 use kartik\grid\GridView;
 use sycomponent\AjaxRequest;
 use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
-use core\models\BusinessProductCategory;
-use kartik\sortable\Sortable;
-use kartik\sortinput\SortableInput;
 
 /* @var $this yii\web\View */
 /* @var $searchModel core\models\search\BusinessProductSearch */
@@ -52,25 +48,6 @@ echo $ajaxRequest->component(true); ?>
         'clickedComponent' => 'a#delete',
         'modelAttributeId' => 'model-id',
         'modelAttributeName' => 'model-name',
-    ]);
-    
-    $list = [];
-    
-    foreach ($dataProvider->getModels() as $dataBusinessProduct) {
-        
-        $list[$dataBusinessProduct['id']] = ['content' => $dataBusinessProduct['name']]; 
-    }
-    
-    echo SortableInput::widget([
-        'name' => 'sort_list',
-        'model' => $dataProvider->getModels(),
-        'attribute' => 'sort_list',
-        'items' => $list,
-        'sortableOptions' => [
-            'type' => Sortable::TYPE_LIST
-        ],
-        'hideInput' => true,
-        'options' => ['class' => 'form-control']
     ]);
 
     echo GridView::widget([

@@ -90,7 +90,6 @@ class RegistryBusinessDeliveryController extends \backoffice\controllers\BaseCon
             } else {
                 
                 $model->registry_business_id = $id;
-                $model->unique_id = $id . '-' . Yii::$app->request->post('RegistryBusinessDelivery')['delivery_method_id'];
 
                 if ($model->save()) {
 

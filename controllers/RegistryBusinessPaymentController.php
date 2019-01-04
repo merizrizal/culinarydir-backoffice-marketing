@@ -91,7 +91,6 @@ class RegistryBusinessPaymentController extends BaseController
             } else {
                 
                 $model->registry_business_id = $id;
-                $model->unique_id = $id . '-' . Yii::$app->request->post('RegistryBusinessPayment')['payment_method_id'];
 
                 if ($model->save()) {
 
