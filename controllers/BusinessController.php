@@ -89,6 +89,16 @@ class BusinessController extends \backoffice\controllers\BaseController
                     $query->andOnCondition(['business_facility.is_active' => true]);
                 },
                 'businessFacilities.facility',
+                'businessPayments' => function ($query) {
+                    
+                    $query->andOnCondition(['business_payment.is_active' => true]);
+                },
+                'businessPayments.paymentMethod',
+                'businessDeliveries' => function ($query) {
+                
+                    $query->andOnCondition(['business_delivery.is_active' => true]);
+                },
+                'businessDeliveries.deliveryMethod',
                 'businessDetail',
                 'businessImages',
                 'businessContactPeople' => function($query) {
