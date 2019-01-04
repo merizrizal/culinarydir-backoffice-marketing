@@ -407,13 +407,11 @@ echo $ajaxRequest->component(); ?>
                     
                     <hr>
                     
-                    <div class="row">
+                    <div class="row mb-20">
                     	<div class="col-xs-12">
                             <h4><strong><?= Yii::t('app', 'Contact Person') ?></strong></h4>
                         </div>
                     </div>
-                    
-                    <hr>
                 		
     				<?php
 				    if (!empty($model['registryBusinessContactPeople'])): ?>
@@ -453,11 +451,11 @@ echo $ajaxRequest->component(); ?>
 	         		  			<?= Yii::t('app', 'Data Not Available') ?>
 		         		  	</div>
 			         	</div>
-			         	
-			         	<hr>
 		            
 		            <?php
 				    endif; ?>
+				    
+				    <hr>
 				    
 				    <div class="row">
                     	<div class="col-xs-12">
