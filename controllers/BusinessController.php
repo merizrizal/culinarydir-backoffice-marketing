@@ -8,6 +8,7 @@ use core\models\search\BusinessSearch;
 use core\models\BusinessCategory;
 use core\models\BusinessProductCategory;
 use core\models\BusinessHour;
+use core\models\BusinessHourAdditional;
 use core\models\BusinessFacility;
 use core\models\BusinessImage;
 use core\models\BusinessContactPerson;
@@ -20,8 +21,6 @@ use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use core\models\BusinessHourAdditional;
-use core\models\BusinessDetail;
 
 /**
  * BusinessController
@@ -779,7 +778,7 @@ class BusinessController extends \backoffice\controllers\BaseController
         $model = Business::find()
             ->joinWith([
                 'businessDetail',
-                'businessHours' => function($query) {
+                'businessHours' => function ($query) {
 
                     $query->orderBy(['business_hour.day' => SORT_ASC]);
                 },
@@ -794,8 +793,6 @@ class BusinessController extends \backoffice\controllers\BaseController
         $modelBusinessHourAdditional = new BusinessHourAdditional();
         $dataBusinessHourAdditional = [];
 
-        $isEmpty = false;
-
         if (!empty($post = Yii::$app->request->post())) {
 
             if (!empty($save)) {
@@ -804,8 +801,6 @@ class BusinessController extends \backoffice\controllers\BaseController
                 $flag = false;
 
                 $loopDays = ['1', '2', '3', '4', '5', '6', '7'];
-
-                $isEmpty = empty($post['BusinessHourAdditional']);
 
                 foreach ($loopDays as $day) {
 
@@ -836,23 +831,23 @@ class BusinessController extends \backoffice\controllers\BaseController
                         }
                     }
 
-                    if (!empty($post['BusinessHourAdditionalDeleted'][$dayName])) {
+                    if ($flag && !empty($post['BusinessHourAdditionalDeleted'][$dayName])) {
 
                         $flag = BusinessHourAdditional::deleteAll(['id' => $post['BusinessHourAdditionalDeleted'][$dayName]]);
                     }
 
-                    if (!empty($post['BusinessHourAdditional'][$dayName])) {
+                    if ($flag && !empty($post['BusinessHourAdditional'][$dayName])) {
 
                         foreach ($post['BusinessHourAdditional'][$dayName] as $i => $businessHourAdditional) {
 
                             if (!empty($businessHourAdditional['open_at']) || !empty($businessHourAdditional['close_at'])) {
 
-                                $newModelBusinessHourAdditional = BusinessHourAdditional::findOne(['unique_id' => $newModelBusinessHourDay->id . '-' . $day . '-' . ($i)]);
+                                $newModelBusinessHourAdditional = BusinessHourAdditional::findOne(['unique_id' => $newModelBusinessHourDay->id . '-' . $day . '-' . $i]);
 
                                 if (empty($newModelBusinessHourAdditional)) {
 
                                     $newModelBusinessHourAdditional = new BusinessHourAdditional();
-                                    $newModelBusinessHourAdditional->unique_id = $newModelBusinessHourDay->id . '-' . $day . '-' . ($i);
+                                    $newModelBusinessHourAdditional->unique_id = $newModelBusinessHourDay->id . '-' . $day . '-' . $i;
                                     $newModelBusinessHourAdditional->business_hour_id = $newModelBusinessHourDay->id;
                                     $newModelBusinessHourAdditional->day = $day;
                                 }
@@ -878,14 +873,11 @@ class BusinessController extends \backoffice\controllers\BaseController
                     }
                 }
                 
-                if (!empty($post['BusinessDetail']['note_business_hour'])) {
+                if ($flag) {
                     
-                    $model->businessDetail->note_business_hour = $post['BusinessDetail']['note_business_hour'];
+                    $model->businessDetail->note_business_hour = !empty($post['BusinessDetail']['note_business_hour']) ? $post['BusinessDetail']['note_business_hour'] : null;
                     
-                    if ($flag) {
-                        
-                        $flag = $model->businessDetail->save();
-                    }
+                    $flag = $model->businessDetail->save();
                 }
 
                 if ($flag) {
@@ -908,22 +900,19 @@ class BusinessController extends \backoffice\controllers\BaseController
 
         $dataBusinessHour = empty($dataBusinessHour) ? $model->businessHours : $dataBusinessHour;
 
-        if (!$isEmpty) {
+        if (empty($dataBusinessHourAdditional)) {
 
-            if (empty($dataBusinessHourAdditional)) {
+            foreach ($dataBusinessHour as $businessHour) {
 
-                foreach ($dataBusinessHour as $businessHour) {
+                $dayName = 'day' . $businessHour['day'];
 
-                    $dayName = 'day' . $businessHour['day'];
+                $dataBusinessHourAdditional[$dayName] = [];
 
-                    $dataBusinessHourAdditional[$dayName] = [];
+                if (!empty($businessHour['businessHourAdditionals'])) {
 
-                    if (!empty($businessHour['businessHourAdditionals'])) {
+                    foreach ($businessHour['businessHourAdditionals'] as $businessHourAdditional) {
 
-                        foreach ($businessHour['businessHourAdditionals'] as $businessHourAdditional) {
-
-                            array_push($dataBusinessHourAdditional[$dayName], $businessHourAdditional);
-                        }
+                        array_push($dataBusinessHourAdditional[$dayName], $businessHourAdditional);
                     }
                 }
             }
