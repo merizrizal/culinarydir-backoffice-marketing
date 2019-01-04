@@ -80,109 +80,79 @@ echo $ajaxRequest->component(); ?>
 
                     <div class="row mb-20">
                         <div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'Name')) ?><br>
                             <?= $model['name'] ?>
-                            
                         </div>
                         <div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'Unique Name')) ?><br>
                             <?= $model['unique_name'] ?>
-                            
                         </div>
                     </div>
 
                     <div class="row mb-20">
                         <div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'Address Type')) ?><br>
                             <?= $model['address_type'] ?>
-                            
                         </div>
                         <div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'Address')) ?><br>
                             <?= $model['address'] ?>
-                            
                         </div>
                         <div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'Address Info')) ?><br>
                             <?= $model['address_info'] ?>
-                            
                         </div>
                     </div>
 
                     <div class="row mb-20">
 						<div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'City ID')) ?><br>
                             <?= $model['city']['name'] ?>
-                            
                         </div>
                         <div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'District ID')) ?><br>
                             <?= $model['district']['name'] ?>
-                            
                         </div>
                         <div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'Village ID')) ?><br>
                             <?= $model['village']['name'] ?>
-                            
                         </div>
                         <div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'Coordinate')) ?><br>
                             <?= $model['coordinate'] ?>
-                            
                         </div>
                     </div>
 
                     <div class="row mb-20">
                         <div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'Email')) ?><br>
                             <?= !empty($model['email']) ? $model['email'] : '-' ?>
-                            
                         </div>
                         <div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'Phone1')) ?><br>
                             <?= !empty($model['phone1']) ? $model['phone1'] : '-' ?>
-                            
                         </div>
                         <div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'Phone2')) ?><br>
                             <?= !empty($model['phone2']) ? $model['phone2'] : '-' ?>
-                            
                         </div>
                         <div class="col-xs-6 col-sm-3">
-                        
                             <?= Html::label(Yii::t('app', 'Phone3')) ?><br>
                             <?= !empty($model['phone3']) ? $model['phone3'] : '-' ?>
-                            
                         </div>
                     </div>
                     
                     <div class="row mb-20">
                         <div class="col-xs-12">
-                        
                             <?= Html::label(Yii::t('app', 'About')) ?><br>
                             <?= !empty($model['about']) ? $model['about'] : '-' ?>
-                        
                         </div>
                     </div>
                     
                     <div class="row mb-20">
                         <div class="col-xs-12">
-                        
                             <?= Html::label(Yii::t('app', 'Note')) ?><br>
                             <?= !empty($model['note']) ? $model['note'] : '-' ?>
-                        
                         </div>
                     </div>
 
@@ -323,9 +293,7 @@ echo $ajaxRequest->component(); ?>
 
                                     <div class="row">
                                         <div class="col-xs-4 col-sm-2">
-                                        
                                             <?= Html::label(Yii::t('app', $days[$dataRegistryBusinessHour['day'] - 1])) ?>
-                                            
                                         </div>
                                         <div class="col-xs-4 col-sm-4">
                                         	
@@ -352,10 +320,8 @@ echo $ajaxRequest->component(); ?>
                     
                     <div class="row">
                         <div class="col-xs-12">
-                        
                             <?= Html::label(Yii::t('app', 'Note')) ?><br>
                             <?= !empty($model['note_business_hour']) ? $model['note_business_hour'] : '-' ?>
-                            
                         </div>
                     </div>
 
@@ -369,16 +335,12 @@ echo $ajaxRequest->component(); ?>
 
                     <div class="row">
                         <div class="col-xs-4 col-sm-2">
-                        
                             <?= Html::label(Yii::t('app', 'Price Min')) ?><br>
                             <?= Yii::$app->formatter->asCurrency($model['price_min']); ?>
-                            
                         </div>
                         <div class="col-xs-4 col-sm-2">
-                        
                             <?= Html::label(Yii::t('app', 'Price Max')) ?><br>
                             <?= Yii::$app->formatter->asCurrency($model['price_max']); ?>
-                            
                         </div>
                     </div>
 
@@ -407,60 +369,10 @@ echo $ajaxRequest->component(); ?>
                     </div>
 
                     <hr>
-                    
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <?= Html::label(Yii::t('app', 'Payment Methods')) ?>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-
-                        <?php
-                        if (!empty($model['registryBusinessPayments'])) {
-                            
-                            foreach ($model['registryBusinessPayments'] as $dataRegistryBusinessPayment) {
-
-                                echo '
-                                    <div class="col-xs-4 col-sm-2">
-                                        ' . $dataRegistryBusinessPayment['paymentMethod']['payment_name'] . '
-                                    </div>';
-                            }
-                        } ?>
-
-                    </div>
-
-                    <hr>
-                    
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <?= Html::label(Yii::t('app', 'Delivery Methods')) ?>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-
-                        <?php
-                        if (!empty($model['registryBusinessDeliveries'])) {
-                            
-                            foreach ($model['registryBusinessDeliveries'] as $dataRegistryBusinessDelivery) {
-
-                                echo '
-                                    <div class="col-xs-4 col-sm-2">
-                                        ' . $dataRegistryBusinessDelivery['deliveryMethod']['delivery_name'] . '
-                                    </div>';
-                            }
-                        } ?>
-
-                    </div>
-
-                    <hr>
 
                     <div class="row">
                         <div class="col-xs-12">
-                        
                             <?= Html::label(Yii::t('app', 'Photo')) ?>
-                            
                         </div>
                     </div>
                     
@@ -538,17 +450,90 @@ echo $ajaxRequest->component(); ?>
 			         	
 			         	<div class="row mb-20">
 			         		<div class="col-xs-12">
-    			         		
 	         		  			<?= Yii::t('app', 'Data Not Available') ?>
-    			         		  
 		         		  	</div>
 			         	</div>
 			         	
 			         	<hr>
 		            
 		            <?php
-				    endif;
+				    endif; ?>
 				    
+				    <div class="row">
+                    	<div class="col-xs-12">
+                            <h4><strong><?= Yii::t('app', 'Online Order') ?></strong></h4>
+                        </div>
+                    </div>
+                    
+                    <hr>
+				    
+				    <div class="row">
+                        <div class="col-sm-3 col-xs-5">
+                            <?= Html::label(Yii::t('app', 'Payment Methods')) ?>
+                        </div>
+                        <div class="col-sm-9 col-xs-7">
+                            <?= Html::label(Yii::t('app', 'Note')) ?>
+                        </div>
+                    </div>
+
+                        <?php
+                        if (!empty($model['registryBusinessPayments'])) {
+                            
+                            foreach ($model['registryBusinessPayments'] as $dataRegistryBusinessPayment) {
+
+                                echo '
+                                    <div class="row mb-10">
+                                        <div class="col-sm-3 col-xs-5">
+                                            ' . $dataRegistryBusinessPayment['paymentMethod']['payment_name'] . '
+                                        </div>
+                                        <div class="col-sm-9 col-xs-7">
+                                            ' . (!empty($dataRegistryBusinessPayment['note']) ? $dataRegistryBusinessPayment['note'] : '-') . '
+                                        </div>
+                                    </div>';
+                            }
+                        } else {
+                          
+                            echo '
+                                <div class="col-sm-3 col-xs-5"> - </div>
+                                <div class="col-sm-9 col-xs-7"> - </div>';
+                        } ?>
+
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-sm-3 col-xs-5">
+                            <?= Html::label(Yii::t('app', 'Delivery Methods')) ?>
+                        </div>
+                        <div class="col-sm-9 col-xs-7">
+                            <?= Html::label(Yii::t('app', 'Note')) ?>
+                        </div>
+                    </div>
+
+                        <?php
+                        if (!empty($model['registryBusinessDeliveries'])) {
+                            
+                            foreach ($model['registryBusinessDeliveries'] as $dataRegistryBusinessDelivery) {
+
+                                echo '
+                                    <div class="row mb-10">
+                                        <div class="col-sm-3 col-xs-5">
+                                            ' . $dataRegistryBusinessDelivery['deliveryMethod']['delivery_name'] . '
+                                        </div>
+                                        <div class="col-sm-9 col-xs-7">
+                                            ' . (!empty($dataRegistryBusinessDelivery['note']) ? $dataRegistryBusinessDelivery['note'] : '-') . '
+                                        </div>
+                                    </div>';
+                            }
+                        } else {
+                            
+                            echo '
+                                <div class="col-sm-3 col-xs-5"> - </div>
+                                <div class="col-sm-9 col-xs-7"> - </div>';
+                        } ?>
+                    
+                    <hr>
+				    
+				    <?php
                     if (!empty($actionButton)) {
                         
                         foreach ($actionButton as $valActionButton) {

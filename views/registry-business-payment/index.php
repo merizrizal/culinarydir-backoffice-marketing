@@ -1,23 +1,20 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 use kartik\grid\GridView;
 use sycomponent\AjaxRequest;
 use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
-use core\models\BusinessProductCategory;
-use kartik\sortable\Sortable;
-use kartik\sortinput\SortableInput;
 
 /* @var $this yii\web\View */
-/* @var $searchModel core\models\search\BusinessProductSearch */
+/* @var $searchModel core\models\search\RegistryBusinessPaymentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-/* @var $modelBusiness core\models\Business */
+/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $modelRegistryBusiness core\models\RegistryBusiness */
 
 $ajaxRequest = new AjaxRequest([
-    'modelClass' => 'BusinessProduct',
-    'createUrl'  => ['create', 'id' => $modelBusiness['id']],
+    'modelClass' => 'RegistryBusinessPayment',
+    'createUrl'  => ['create', 'id' => $modelRegistryBusiness['id'], 'statusApproval' => $statusApproval],
 ]);
 
 $ajaxRequest->index();
@@ -38,14 +35,15 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = Yii::t('app', 'Product');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['business/member']];
-$this->params['breadcrumbs'][] = ['label' => $modelBusiness['name'], 'url' => ['business/view-member', 'id' => $modelBusiness['id']]];
+$url = $statusApproval == 'pndg' ? 'registry-business/view-pndg' : 'registry-business/view-icorct';
+
+$this->title = Yii::t('app', 'Payment Methods');
+$this->params['breadcrumbs'][] = ['label' => $modelRegistryBusiness['name'], 'url' => [$url, 'id' => $modelRegistryBusiness['id']]];
 $this->params['breadcrumbs'][] = $this->title;
 
 echo $ajaxRequest->component(true); ?>
 
-<div class="business-product-index">
+<div class="registry-business-payment-index">
 
     <?php
     $modalDialog = new ModalDialog([
@@ -53,28 +51,9 @@ echo $ajaxRequest->component(true); ?>
         'modelAttributeId' => 'model-id',
         'modelAttributeName' => 'model-name',
     ]);
-    
-    $list = [];
-    
-    foreach ($dataProvider->getModels() as $dataBusinessProduct) {
-        
-        $list[$dataBusinessProduct['id']] = ['content' => $dataBusinessProduct['name']]; 
-    }
-    
-    echo SortableInput::widget([
-        'name' => 'sort_list',
-        'model' => $dataProvider->getModels(),
-        'attribute' => 'sort_list',
-        'items' => $list,
-        'sortableOptions' => [
-            'type' => Sortable::TYPE_LIST
-        ],
-        'hideInput' => true,
-        'options' => ['class' => 'form-control']
-    ]);
 
     echo GridView::widget([
-        'id' => 'grid-view-business-product',
+        'id' => 'grid-view-registry-business-payment',
         'dataProvider' => $dataProvider,
         'pjax' => false,
         'bordered' => false,
@@ -96,12 +75,12 @@ echo $ajaxRequest->component(true); ?>
         ],
         'toolbar' => [
             [
-                'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index', 'id' => $modelBusiness['id']], [
-                    'id' => 'refresh',
-                    'class' => 'btn btn-success',
-                    'data-placement' => 'top',
-                    'data-toggle' => 'tooltip',
-                    'title' => 'Refresh'
+                'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index', 'id' => $modelRegistryBusiness['id'], 'statusApproval' => $statusApproval], [
+                            'id' => 'refresh',
+                            'class' => 'btn btn-success',
+                            'data-placement' => 'top',
+                            'data-toggle' => 'tooltip',
+                            'title' => 'Refresh'
                 ])
             ],
         ],
@@ -109,16 +88,14 @@ echo $ajaxRequest->component(true); ?>
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'name',
-            'businessProductCategory.productCategory.name',
-            'price:currency',
+            'paymentMethod.payment_name',
             [
-                'attribute' => 'not_active',
+                'attribute' => 'is_active',
                 'format' => 'raw',
                 'filter' =>  [true => 'True', false => 'False'],
                 'value' => function ($model, $index, $widget) {
-                    
-                    return Html::checkbox('not_active[]', $model->not_active, ['value' => $index, 'disabled' => 'disabled']);
+                
+                    return Html::checkbox('is_active[]', $model->is_active, ['value' => $index, 'disabled' => 'disabled']);
                 },
             ],
             [
@@ -126,20 +103,20 @@ echo $ajaxRequest->component(true); ?>
                 'template' => '
                     <div class="btn-container hide">
                         <div class="visible-lg visible-md">
-                            <div class="btn-group btn-group-md" role="group" style="width: 200px">
-                                {view}{update}{delete}{up}{down}
+                            <div class="btn-group btn-group-md" role="group" style="width: 120px">
+                                {view}{update}{delete}
                             </div>
                         </div>
                         <div class="visible-sm visible-xs">
-                            <div class="btn-group btn-group-lg" role="group" style="width: 260px">
-                                {view}{update}{delete}{up}{down}
+                            <div class="btn-group btn-group-lg" role="group" style="width: 156px">
+                                {view}{update}{delete}
                             </div>
                         </div>
                     </div>',
                 'buttons' => [
-                    'view' => function($url, $model, $key) {
+                    'view' => function($url, $model, $key) use ($statusApproval) {
                         
-                        return Html::a('<i class="fa fa-search-plus"></i>', ['view', 'id' => $model->id], [
+                        return Html::a('<i class="fa fa-search-plus"></i>', ['view', 'id' => $model->id, 'statusApproval' => $statusApproval], [
                             'id' => 'view',
                             'class' => 'btn btn-primary',
                             'data-toggle' => 'tooltip',
@@ -147,9 +124,9 @@ echo $ajaxRequest->component(true); ?>
                             'title' => 'View',
                         ]);
                     },
-                    'update' => function($url, $model, $key) {
+                    'update' => function($url, $model, $key) use ($statusApproval) {
                         
-                        return Html::a('<i class="fa fa-pencil-alt"></i>', ['update', 'id' => $model->id], [
+                        return Html::a('<i class="fa fa-pencil-alt"></i>', ['update', 'id' => $model->id, 'statusApproval' => $statusApproval], [
                             'id' => 'update',
                             'class' => 'btn btn-success',
                             'data-toggle' => 'tooltip',
@@ -157,9 +134,9 @@ echo $ajaxRequest->component(true); ?>
                             'title' => 'Edit',
                         ]);
                     },
-                    'delete' => function($url, $model, $key) {
+                    'delete' => function($url, $model, $key) use ($statusApproval) {
                         
-                        return Html::a('<i class="fa fa-trash-alt"></i>', ['delete', 'id' => $model->id], [
+                        return Html::a('<i class="fa fa-trash-alt"></i>', ['delete', 'id' => $model->id, 'statusApproval' => $statusApproval], [
                             'id' => 'delete',
                             'class' => 'btn btn-danger',
                             'data-toggle' => 'tooltip',
@@ -167,29 +144,9 @@ echo $ajaxRequest->component(true); ?>
                             'data-not-ajax' => 1,
                             'title' => 'Delete',
                             'model-id' => $model->id,
-                            'model-name' => $model->name,
+                            'model-name' => $model->paymentMethod->payment_name,
                         ]);
                     },
-                    'up' => function($url, $model, $key) {
-                        
-                        return Html::a('<i class="fa fa-arrow-up"></i>', ['up', 'id' => $model->id], [
-                            'id' => 'up',
-                            'class' => 'btn btn-default',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'title' => 'Up'
-                        ]);
-                    },
-                    'down' => function($url, $model, $key) {
-                        
-                        return Html::a('<i class="fa fa-arrow-down"></i>', ['down', 'id' => $model->id], [
-                            'id' => 'down',
-                            'class' => 'btn btn-default',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'title' => 'Down'
-                        ]);
-                    }
                 ]
             ],
         ],
@@ -197,8 +154,7 @@ echo $ajaxRequest->component(true); ?>
             'class' => 'table table-striped table-hover'
         ],
         'rowOptions' => function ($model, $key, $index, $grid) {
-            
-            return ['id' => $model['id'], 'class' => 'row-grid-view-business-product', 'style' => 'cursor: pointer;'];
+            return ['id' => $model['id'], 'class' => 'row-grid-view-registry-business-payment', 'style' => 'cursor: pointer;'];
         },
         'pager' => [
             'firstPageLabel' => '<i class="fa fa-angle-double-left"></i>',
@@ -225,7 +181,7 @@ $jscript = ''
     $("div.container.body").off("click");
     $("div.container.body").on("click", function(event) {
 
-        if ($(event.target).parent(".row-grid-view-business-product").length > 0) {
+        if ($(event.target).parent(".row-grid-view-registry-business-payment").length > 0) {
 
             $("td").not(event.target).popover("destroy");
         } else {
@@ -233,10 +189,10 @@ $jscript = ''
         }
     });
 
-    $(".row-grid-view-business-product").popover({
+    $(".row-grid-view-registry-business-payment").popover({
         trigger: "click",
         placement: "top",
-        container: ".row-grid-view-business-product",
+        container: ".row-grid-view-registry-business-payment",
         html: true,
         selector: "td",
         content: function () {
@@ -246,7 +202,7 @@ $jscript = ''
         }
     });
 
-    $(".row-grid-view-business-product").on("shown.bs.popover", function(event) {
+    $(".row-grid-view-registry-business-payment").on("shown.bs.popover", function(event) {
 
         $(\'[data-toggle="tooltip"]\').tooltip();
 

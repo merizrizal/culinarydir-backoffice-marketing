@@ -109,9 +109,7 @@ echo $ajaxRequest->component(); ?>
 									<div class="main-hour-form">
                                         <div class="row">
                                             <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
-
                                                 <?= Yii::t('app', $day) ?>
-
                                             </div>
                                             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
 

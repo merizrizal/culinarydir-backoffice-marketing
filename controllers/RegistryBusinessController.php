@@ -65,12 +65,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         $modelRegistryBusinessFacility = new RegistryBusinessFacility();
         $dataRegistryBusinessFacility = [];
-        
-        $modelRegistryBusinessPayment = new RegistryBusinessPayment();
-        $dataRegistryBusinessPayment = [];
-        
-        $modelRegistryBusinessDelivery = new RegistryBusinessDelivery();
-        $dataRegistryBusinessDelivery = [];
 
         $modelRegistryBusinessHour = new RegistryBusinessHour();
         $dataRegistryBusinessHour = [];
@@ -84,6 +78,12 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $modelPerson = new Person();        
         $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
         $dataRegistryBusinessContactPerson = [];
+        
+        $modelRegistryBusinessPayment = new RegistryBusinessPayment();
+        $dataRegistryBusinessPayment = [];
+        
+        $modelRegistryBusinessDelivery = new RegistryBusinessDelivery();
+        $dataRegistryBusinessDelivery = [];
 
         if ($model->load(($post = Yii::$app->request->post()))) {
             
@@ -211,52 +211,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             }
                         }
                     }
-                    
-                    if ($flag) {
-                        
-                        if (!empty($post['RegistryBusinessPayment']['payment_method_id'])) {
-                            
-                            foreach ($post['RegistryBusinessPayment']['payment_method_id'] as $paymentId) {
-                                
-                                $newModelRegistryBusinessPayment = new RegistryBusinessPayment();
-                                $newModelRegistryBusinessPayment->unique_id = $model->id . '-' . $paymentId;
-                                $newModelRegistryBusinessPayment->registry_business_id = $model->id;
-                                $newModelRegistryBusinessPayment->payment_method_id = $paymentId;
-                                $newModelRegistryBusinessPayment->is_active = true;
-                                
-                                if (!($flag = $newModelRegistryBusinessPayment->save())) {
-                                    
-                                    break;
-                                } else {
-                                    
-                                    array_push($dataRegistryBusinessPayment, $newModelRegistryBusinessPayment->toArray());
-                                }
-                            }
-                        }
-                    }
-                    
-                    if ($flag) {
-                        
-                        if (!empty($post['RegistryBusinessDelivery']['delivery_method_id'])) {
-                            
-                            foreach ($post['RegistryBusinessDelivery']['delivery_method_id'] as $deliveryId) {
-                                
-                                $newModelRegistryBusinessDelivery = new RegistryBusinessDelivery();
-                                $newModelRegistryBusinessDelivery->unique_id = $model->id . '-' . $deliveryId;
-                                $newModelRegistryBusinessDelivery->registry_business_id = $model->id;
-                                $newModelRegistryBusinessDelivery->delivery_method_id = $deliveryId;
-                                $newModelRegistryBusinessDelivery->is_active = true;
-                                
-                                if (!($flag = $newModelRegistryBusinessDelivery->save())) {
-                                    
-                                    break;
-                                } else {
-                                    
-                                    array_push($dataRegistryBusinessDelivery, $newModelRegistryBusinessDelivery->toArray());
-                                }
-                            }
-                        }
-                    }
 
                     if ($flag) {
 
@@ -375,6 +329,54 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                         
                                         array_push($dataRegistryBusinessContactPerson, ArrayHelper::merge($newModelRegistryBusinessContactPerson->toArray(), $newModelPerson->toArray()));
                                     }
+                                }
+                            }
+                        }
+                    }
+                    
+                    if ($flag) {
+                        
+                        if (!empty($post['RegistryBusinessPayment'])) {
+                            
+                            foreach ($post['RegistryBusinessPayment'] as $dataPaymentMethod) {
+                                
+                                $newModelRegistryBusinessPayment = new RegistryBusinessPayment();
+                                $newModelRegistryBusinessPayment->unique_id = $model->id . '-' . $dataPaymentMethod['payment_method_id'];
+                                $newModelRegistryBusinessPayment->registry_business_id = $model->id;
+                                $newModelRegistryBusinessPayment->payment_method_id = $dataPaymentMethod['payment_method_id'];
+                                $newModelRegistryBusinessPayment->is_active = true;
+                                $newModelRegistryBusinessPayment->note = $dataPaymentMethod['note'];
+                                
+                                if (!($flag = $newModelRegistryBusinessPayment->save())) {
+                                    
+                                    break;
+                                } else {
+                                    
+                                    array_push($dataRegistryBusinessPayment, $newModelRegistryBusinessPayment->toArray());
+                                }
+                            }
+                        }
+                    }
+                    
+                    if ($flag) {
+                        
+                        if (!empty($post['RegistryBusinessDelivery'])) {
+                            
+                            foreach ($post['RegistryBusinessDelivery'] as $dataDeliveryMethod) {
+                                
+                                $newModelRegistryBusinessDelivery = new RegistryBusinessDelivery();
+                                $newModelRegistryBusinessDelivery->unique_id = $model->id . '-' . $dataDeliveryMethod['delivery_method_id'];
+                                $newModelRegistryBusinessDelivery->registry_business_id = $model->id;
+                                $newModelRegistryBusinessDelivery->delivery_method_id = $dataDeliveryMethod['delivery_method_id'];
+                                $newModelRegistryBusinessDelivery->is_active = true;
+                                $newModelRegistryBusinessDelivery->note = $dataDeliveryMethod['note'];
+                                
+                                if (!($flag = $newModelRegistryBusinessDelivery->save())) {
+                                    
+                                    break;
+                                } else {
+                                    
+                                    array_push($dataRegistryBusinessDelivery, $newModelRegistryBusinessDelivery->toArray());
                                 }
                             }
                         }
@@ -561,6 +563,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             <li>' . Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
+                            <li>' . Html::a(Yii::t('app', 'Payment Methods'), ['registry-business-payment/index', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
+                            <li>' . Html::a(Yii::t('app', 'Delivery Methods'), ['registry-business-delivery/index', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
                         </ul>
                     </div>
                 ';
@@ -605,6 +609,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             <li>' . Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
                             <li>' . Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
+                            <li>' . Html::a(Yii::t('app', 'Payment Methods'), ['registry-business-payment/index', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
+                            <li>' . Html::a(Yii::t('app', 'Delivery Methods'), ['registry-business-delivery/index', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
                         </ul>
                     </div>
                 ';
@@ -665,31 +671,21 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     {
         $model = RegistryBusiness::find()
             ->joinWith([
-                'registryBusinessCategories' => function($query) {
+                'registryBusinessCategories' => function ($query) {
                     
                     $query->andOnCondition(['registry_business_category.is_active' => true]);
                 },
                 'registryBusinessCategories.category',
-                'registryBusinessProductCategories' => function($query) {
+                'registryBusinessProductCategories' => function ($query) {
                     
                     $query->andOnCondition(['registry_business_product_category.is_active' => true]);
                 },
                 'registryBusinessProductCategories.productCategory',
-                'registryBusinessFacilities' => function($query) {
+                'registryBusinessFacilities' => function ($query) {
                     
                     $query->andOnCondition(['registry_business_facility.is_active' => true]);
                 },
-                'registryBusinessFacilities.facility',
-                'registryBusinessPayments' => function ($query) {
-                
-                $query->andOnCondition(['registry_business_payment.is_active' => true]);
-                },
-                'registryBusinessPayments.paymentMethod',
-                'registryBusinessDeliveries' => function ($query) {
-                
-                $query->andOnCondition(['registry_business_delivery.is_active' => true]);
-                },
-                'registryBusinessDeliveries.deliveryMethod',
+                'registryBusinessFacilities.facility'
             ])
             ->andWhere(['registry_business.id' => $id])
             ->one();
@@ -703,12 +699,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         $modelRegistryBusinessFacility = new RegistryBusinessFacility();
         $dataRegistryBusinessFacility = [];
-        
-        $modelRegistryBusinessPayment = new RegistryBusinessPayment();
-        $dataRegistryBusinessPayment = [];
-        
-        $modelRegistryBusinessDelivery = new RegistryBusinessDelivery();
-        $dataRegistryBusinessDelivery = [];
         
         if ($model->load(($post = Yii::$app->request->post()))) {
 
@@ -934,122 +924,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
-                
-                if ($flag) {
-                    
-                    if (!empty($post['RegistryBusinessPayment']['payment_method_id'])) {
-                        
-                        foreach ($post['RegistryBusinessPayment']['payment_method_id'] as $paymentId) {
-                            
-                            $newModelRegistryBusinessPayment = RegistryBusinessPayment::findOne(['unique_id' => $model->id . '-' . $paymentId]);
-                            
-                            if (!empty($newModelRegistryBusinessPayment)) {
-                                
-                                $newModelRegistryBusinessPayment->is_active = true;
-                            } else {
-                                
-                                $newModelRegistryBusinessPayment = new RegistryBusinessPayment();
-                                $newModelRegistryBusinessPayment->unique_id = $model->id . '-' . $paymentId;
-                                $newModelRegistryBusinessPayment->registry_business_id = $model->id;
-                                $newModelRegistryBusinessPayment->payment_method_id = $paymentId;
-                                $newModelRegistryBusinessPayment->is_active = true;
-                            }
-                            
-                            if (!($flag = $newModelRegistryBusinessPayment->save())) {
-                                
-                                break;
-                            } else {
-                                
-                                array_push($dataRegistryBusinessPayment, $newModelRegistryBusinessPayment->toArray());
-                            }
-                        }
-                        
-                        if ($flag) {
-                            
-                            foreach ($model->registryBusinessPayments as $existModelRegistryBusinessPayment) {
-                                
-                                $exist = false;
-                                
-                                foreach ($post['RegistryBusinessPayment']['payment_method_id'] as $paymentId) {
-                                    
-                                    if ($existModelRegistryBusinessPayment['payment_method_id'] == $paymentId) {
-                                        
-                                        $exist = true;
-                                        break;
-                                    }
-                                }
-                                
-                                if (!$exist) {
-                                    
-                                    $existModelRegistryBusinessPayment->is_active = false;
-                                    
-                                    if (!($flag = $existModelRegistryBusinessPayment->save())) {
-                                        
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                if ($flag) {
-                    
-                    if (!empty($post['RegistryBusinessDelivery']['delivery_method_id'])) {
-                        
-                        foreach ($post['RegistryBusinessDelivery']['delivery_method_id'] as $deliveryId) {
-                            
-                            $newModelRegistryBusinessDelivery = RegistryBusinessDelivery::findOne(['unique_id' => $model->id . '-' . $deliveryId]);
-                            
-                            if (!empty($newModelRegistryBusinessDelivery)) {
-                                
-                                $newModelRegistryBusinessDelivery->is_active = true;
-                            } else {
-                                
-                                $newModelRegistryBusinessDelivery = new RegistryBusinessDelivery();
-                                $newModelRegistryBusinessDelivery->unique_id = $model->id . '-' . $deliveryId;
-                                $newModelRegistryBusinessDelivery->registry_business_id = $model->id;
-                                $newModelRegistryBusinessDelivery->delivery_method_id = $deliveryId;
-                                $newModelRegistryBusinessDelivery->is_active = true;
-                            }
-                            
-                            if (!($flag = $newModelRegistryBusinessDelivery->save())) {
-                                
-                                break;
-                            } else {
-                                
-                                array_push($dataRegistryBusinessDelivery, $newModelRegistryBusinessDelivery->toArray());
-                            }
-                        }
-                        
-                        if ($flag) {
-                            
-                            foreach ($model->registryBusinessDeliveries as $existModelRegistryBusinessDelivery) {
-                                
-                                $exist = false;
-                                
-                                foreach ($post['RegistryBusinessDelivery']['delivery_method_id'] as $deliveryId) {
-                                    
-                                    if ($existModelRegistryBusinessDelivery['delivery_method_id'] == $deliveryId) {
-                                        
-                                        $exist = true;
-                                        break;
-                                    }
-                                }
-                                
-                                if (!$exist) {
-                                    
-                                    $existModelRegistryBusinessDelivery->is_active = false;
-                                    
-                                    if (!($flag = $existModelRegistryBusinessDelivery->save())) {
-                                        
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
 
                 if ($flag) {
 
@@ -1111,7 +985,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     {
         $model = RegistryBusiness::find()
             ->joinWith([
-                'registryBusinessImages' => function($query) {
+                'registryBusinessImages' => function ($query) {
                 
                     $query->orderBy(['order' => SORT_ASC]);
                 }
@@ -1263,7 +1137,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     {
         $model = RegistryBusiness::find()
             ->joinWith([
-                'registryBusinessContactPeople' => function($query) {
+                'registryBusinessContactPeople' => function ($query) {
                     
                     $query->orderBy(['registry_business_contact_person.id' => SORT_ASC]);
                 },
@@ -1385,7 +1259,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     {
         $model = RegistryBusiness::find()
             ->joinWith([
-                'registryBusinessHours' => function($query) {
+                'registryBusinessHours' => function ($query) {
                 
                     $query->orderBy(['registry_business_hour.day' => SORT_ASC]);
                 },
@@ -1544,7 +1418,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'statusApproval' => $statusApproval,
         ]);
     }
-
+    
     /**
      * Deletes an existing RegistryBusiness model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
