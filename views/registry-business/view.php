@@ -459,6 +459,8 @@ echo $ajaxRequest->component(); ?>
 		            <?php
 				    endif; ?>
 				    
+				    <hr>
+				    
 				    <div class="row">
                     	<div class="col-xs-12">
                             <h4><strong><?= Yii::t('app', 'Online Order') ?></strong></h4>
@@ -494,8 +496,10 @@ echo $ajaxRequest->component(); ?>
                         } else {
                           
                             echo '
-                                <div class="col-sm-3 col-xs-5"> - </div>
-                                <div class="col-sm-9 col-xs-7"> - </div>';
+                                <div class="row">
+                                    <div class="col-sm-3 col-xs-5"> - </div>
+                                    <div class="col-sm-9 col-xs-7"> - </div>
+                                <div class="row">';
                         } ?>
 
                     <hr>
@@ -527,8 +531,10 @@ echo $ajaxRequest->component(); ?>
                         } else {
                             
                             echo '
-                                <div class="col-sm-3 col-xs-5"> - </div>
-                                <div class="col-sm-9 col-xs-7"> - </div>';
+                                <div class="row">
+                                    <div class="col-sm-3 col-xs-5"> - </div>
+                                    <div class="col-sm-9 col-xs-7"> - </div>
+                                <div class="row">';
                         } ?>
                     
                     <hr>

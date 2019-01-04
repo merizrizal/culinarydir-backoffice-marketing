@@ -389,66 +389,6 @@ echo $ajaxRequest->component(); ?>
 
                     <div class="row">
                         <div class="col-xs-12">
-                            <?= Html::label(Yii::t('app', 'Payment Methods')) ?>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-
-                        <?php
-                        if (!empty($model['businessPayments'])) {
-                            
-                            foreach ($model['businessPayments'] as $dataBusinessPayment) {
-
-                                echo '
-                                    <div class="col-xs-4 col-sm-2">
-                                        ' . $dataBusinessPayment['paymentMethod']['payment_name'] . '
-                                    </div>';
-                            }
-                        } else {
-                            
-                            echo '
-                                <div class="col-xs-12">
-                                    ' . Yii::t('app', 'Data Not Available') . '
-                                </div>';
-                        } ?>
-
-                    </div>
-
-                    <hr>
-                    
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <?= Html::label(Yii::t('app', 'Delivery Methods')) ?>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-
-                        <?php
-                        if (!empty($model['businessDeliveries'])) {
-                            
-                            foreach ($model['businessDeliveries'] as $dataBusinessDelivery) {
-
-                                echo '
-                                    <div class="col-xs-4 col-sm-2">
-                                        ' . $dataBusinessDelivery['deliveryMethod']['delivery_name'] . '
-                                    </div>';
-                            }
-                        } else {
-                            
-                            echo '
-                                <div class="col-xs-12">
-                                    ' . Yii::t('app', 'Data Not Available') . '
-                                </div>';
-                        } ?>
-
-                    </div>
-
-                    <hr>
-
-                    <div class="row">
-                        <div class="col-xs-12">
                             <?= Html::label(Yii::t('app', 'Photo')) ?>
                         </div>
                     </div>
@@ -533,6 +473,86 @@ echo $ajaxRequest->component(); ?>
 		            
 		            <?php
 				    endif; ?>
+				    
+				    <hr>
+				    
+				    <div class="row">
+                    	<div class="col-xs-12">
+                            <h4><strong><?= Yii::t('app', 'Online Order') ?></strong></h4>
+                        </div>
+                    </div>
+				    
+				    <hr>
+				    
+				    <div class="row">
+                        <div class="col-sm-3 col-xs-5">
+                            <?= Html::label(Yii::t('app', 'Payment Methods')) ?>
+                        </div>
+                        <div class="col-sm-9 col-xs-7">
+                            <?= Html::label(Yii::t('app', 'Note')) ?>
+                        </div>
+                    </div>
+                    
+                    <?php
+                    if (!empty($model['businessPayments'])) {
+                        
+                        foreach ($model['businessPayments'] as $dataBusinessPayment) {
+
+                            echo '
+                                <div class="row mb-10">
+                                    <div class="col-sm-3 col-xs-5">
+                                        ' . $dataBusinessPayment['paymentMethod']['payment_name'] . '
+                                    </div>
+                                    <div class="col-sm-9 col-xs-7">
+                                        ' . (!empty($dataBusinessPayment['note']) ? $dataBusinessPayment['note'] : '-') . '
+                                    </div>
+                                </div>';
+                        }
+                    } else {
+                        
+                        echo '
+                            <div class="row">
+                                <div class="col-sm-3 col-xs-5"> - </div>
+                                <div class="col-sm-9 col-xs-7"> - </div>
+                            </div>';
+                    } ?>
+
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-sm-3 col-xs-5">
+                            <?= Html::label(Yii::t('app', 'Delivery Methods')) ?>
+                        </div>
+                        <div class="col-sm-9 col-xs-7">
+                            <?= Html::label(Yii::t('app', 'Note')) ?>
+                        </div>
+                    </div>
+                    
+                    <?php
+                    if (!empty($model['businessDeliveries'])) {
+                        
+                        foreach ($model['businessDeliveries'] as $dataBusinessDelivery) {
+
+                            echo '
+                                <div class="row mb-10">
+                                    <div class="col-sm-3 col-xs-5">
+                                        ' . $dataBusinessDelivery['deliveryMethod']['delivery_name'] . '
+                                    </div>
+                                    <div class="col-sm-9 col-xs-7">
+                                        ' . (!empty($dataBusinessDelivery['note']) ? $dataBusinessDelivery['note'] : '-') . '
+                                    </div>
+                                </div>';
+                        }
+                    } else {
+                        
+                        echo '
+                            <div class="row">
+                                <div class="col-sm-3 col-xs-5"> - </div>
+                                <div class="col-sm-9 col-xs-7"> - </div>
+                            </div>';
+                    } ?>
+
+                    <hr>
 				    
 				    <div class="btn-group dropup">
 
