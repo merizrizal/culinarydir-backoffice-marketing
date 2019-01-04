@@ -84,11 +84,7 @@ class RegistryBusinessPaymentController extends BaseController
 
         if ($model->load(Yii::$app->request->post())) {
 
-            if (empty($save)) {
-
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
                 
                 $model->registry_business_id = $id;
 
@@ -133,11 +129,7 @@ class RegistryBusinessPaymentController extends BaseController
 
         if ($model->load(Yii::$app->request->post())) {
 
-            if (empty($save)) {
-
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
 
                 if ($model->save()) {
 
