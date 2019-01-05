@@ -19,10 +19,6 @@ use core\models\Facility;
 /* @var $modelRegistryBusinessProductCategory core\models\RegistryBusinessProductCategory */
 /* @var $dataRegistryBusinessFacility core\models\RegistryBusinessFacility */
 /* @var $modelRegistryBusinessFacility core\models\RegistryBusinessFacility */
-/* @var $dataRegistryBusinessPayment core\models\RegistryBusinessPayment */
-/* @var $modelRegistryBusinessPayment core\models\RegistryBusinessPayment */
-/* @var $dataRegistryBusinessDelivery core\models\RegistryBusinessDelivery */
-/* @var $modelRegistryBusinessDelivery core\models\RegistryBusinessDelivery */
 /* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
 /* @var $day string */
 
