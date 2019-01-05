@@ -68,23 +68,23 @@ class BusinessController extends \backoffice\controllers\BaseController
                 'businessLocation.district',
                 'businessLocation.village',
                 'userInCharge',
-                'businessCategories' => function($query) {
+                'businessCategories' => function ($query) {
 
                     $query->andOnCondition(['business_category.is_active' => true]);
                 },
                 'businessCategories.category',
-                'businessProductCategories' => function($query) {
+                'businessProductCategories' => function ($query) {
 
                     $query->andOnCondition(['business_product_category.is_active' => true]);
                 },
-                'businessHours' => function($query) {
+                'businessHours' => function ($query) {
 
                     $query->andOnCondition(['business_hour.is_open' => true])
                         ->orderBy(['business_hour.day' => SORT_ASC]);
                 },
                 'businessHours.businessHourAdditionals',
                 'businessProductCategories.productCategory',
-                'businessFacilities' => function($query) {
+                'businessFacilities' => function ($query) {
 
                     $query->andOnCondition(['business_facility.is_active' => true]);
                 },
@@ -101,13 +101,13 @@ class BusinessController extends \backoffice\controllers\BaseController
                 'businessDeliveries.deliveryMethod',
                 'businessDetail',
                 'businessImages',
-                'businessContactPeople' => function($query) {
+                'businessContactPeople' => function ($query) {
 
                     $query->orderBy(['business_contact_person.id' => SORT_ASC]);
                 },
                 'businessContactPeople.person',
                 'applicationBusiness',
-                'applicationBusiness.logStatusApprovals' => function($query) {
+                'applicationBusiness.logStatusApprovals' => function ($query) {
 
                     $query->andOnCondition(['log_status_approval.is_actual' => true]);
                 },
@@ -172,17 +172,17 @@ class BusinessController extends \backoffice\controllers\BaseController
     {
         $model = Business::find()
             ->joinWith([
-                'businessCategories' => function($query) {
+                'businessCategories' => function ($query) {
 
                     $query->andOnCondition(['business_category.is_active' => true]);
                 },
                 'businessCategories.category',
-                'businessProductCategories' => function($query) {
+                'businessProductCategories' => function ($query) {
 
                     $query->andOnCondition(['business_product_category.is_active' => true]);
                 },
                 'businessProductCategories.productCategory',
-                'businessFacilities' => function($query) {
+                'businessFacilities' => function ($query) {
 
                     $query->andOnCondition(['business_facility.is_active' => true]);
                 },
@@ -490,7 +490,7 @@ class BusinessController extends \backoffice\controllers\BaseController
     {
         $model = Business::find()
             ->joinWith([
-                'businessImages' => function($query) {
+                'businessImages' => function ($query) {
 
                     $query->orderBy(['order' => SORT_ASC]);
                 }
@@ -656,7 +656,7 @@ class BusinessController extends \backoffice\controllers\BaseController
     {
         $model = Business::find()
             ->joinWith([
-                'businessContactPeople' => function($query) {
+                'businessContactPeople' => function ($query) {
 
                     $query->orderBy(['business_contact_person.id' => SORT_ASC]);
                 },

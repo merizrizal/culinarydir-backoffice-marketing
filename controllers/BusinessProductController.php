@@ -6,7 +6,6 @@ use Yii;
 use core\models\BusinessProduct;
 use core\models\search\BusinessProductSearch;
 use core\models\Business;
-use backoffice\controllers\BaseController;
 use sycomponent\Tools;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -17,7 +16,7 @@ use sycomponent\AjaxRequest;
 /**
  * BusinessProductController implements the CRUD actions for BusinessProduct model.
  */
-class BusinessProductController extends BaseController
+class BusinessProductController extends \backoffice\controllers\BaseController
 {
     /**
      * @inheritdoc

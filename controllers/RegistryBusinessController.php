@@ -959,8 +959,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $dataRegistryBusinessProductCategoryParent = empty($dataRegistryBusinessProductCategoryParent) ? $registryBusinessProductCategoryParent : $dataRegistryBusinessProductCategoryParent;
         $dataRegistryBusinessProductCategoryChild = empty($dataRegistryBusinessProductCategoryChild) ? $registryBusinessProductCategoryChild : $dataRegistryBusinessProductCategoryChild;
         $dataRegistryBusinessFacility = empty($dataRegistryBusinessFacility) ? $model->registryBusinessFacilities : $dataRegistryBusinessFacility;
-        $dataRegistryBusinessPayment = empty($dataRegistryBusinessPayment) ? $model->registryBusinessPayments : $dataRegistryBusinessPayment;
-        $dataRegistryBusinessDelivery = empty($dataRegistryBusinessDelivery) ? $model->registryBusinessDeliveries : $dataRegistryBusinessDelivery;
 
         return $this->render('update_marketing_info', [
             'model' => $model,
@@ -971,10 +969,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'dataRegistryBusinessProductCategoryChild' => $dataRegistryBusinessProductCategoryChild,
             'modelRegistryBusinessFacility' => $modelRegistryBusinessFacility,
             'dataRegistryBusinessFacility' => $dataRegistryBusinessFacility,
-            'modelRegistryBusinessPayment' => $modelRegistryBusinessPayment,
-            'dataRegistryBusinessPayment' => $dataRegistryBusinessPayment,
-            'modelRegistryBusinessDelivery' => $modelRegistryBusinessDelivery,
-            'dataRegistryBusinessDelivery' => $dataRegistryBusinessDelivery,
             'statusApproval' => $statusApproval,
         ]);
     }

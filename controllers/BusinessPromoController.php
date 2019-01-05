@@ -6,7 +6,6 @@ use Yii;
 use core\models\BusinessPromo;
 use core\models\search\BusinessPromoSearch;
 use core\models\Business;
-use backoffice\controllers\BaseController;
 use sycomponent\Tools;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -16,7 +15,7 @@ use yii\widgets\ActiveForm;
 /**
  * BusinessPromoController implements the CRUD actions for BusinessPromo model.
  */
-class BusinessPromoController extends BaseController
+class BusinessPromoController extends \backoffice\controllers\BaseController
 {
     /**
      * @inheritdoc
