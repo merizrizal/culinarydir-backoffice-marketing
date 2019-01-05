@@ -10,7 +10,6 @@ use sycomponent\Tools;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\widgets\ActiveForm;
 
 /**
  * BusinessPromoController implements the CRUD actions for BusinessPromo model.
@@ -42,8 +41,7 @@ class BusinessPromoController extends \backoffice\controllers\BaseController
     {
         $searchModel = new BusinessPromoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query
-            ->andWhere(['business_id' => $id]);
+        $dataProvider->query->andWhere(['business_id' => $id]);
 
         $modelBusiness = Business::find()
             ->andWhere(['id' => $id])
@@ -82,11 +80,7 @@ class BusinessPromoController extends \backoffice\controllers\BaseController
 
         if ($model->load(Yii::$app->request->post())) {
 
-            if (empty($save)) {
-
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
 
                 $model->business_id = $id;
                 $model->image = Tools::uploadFile('/img/business_promo/', $model, 'image', 'id', $model->business_id);
@@ -131,11 +125,7 @@ class BusinessPromoController extends \backoffice\controllers\BaseController
 
         if ($model->load(Yii::$app->request->post())) {
 
-            if (empty($save)) {
-
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
 
                 if (($model->image = Tools::uploadFile('/img/business_promo/', $model, 'image', 'id', $model->business_id))){
 

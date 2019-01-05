@@ -445,7 +445,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     </div>
                 </div>',
             'buttons' => [
-                'view' => function($url, $model, $key) {
+                'view' => function ($url, $model, $key) {
                     return Html::a('<i class="fa fa-search-plus"></i>', ['view-pndg', 'id' => $model->id], [
                         'id' => 'view',
                         'class' => 'btn btn-primary',
@@ -454,7 +454,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                         'title' => 'View',
                     ]);
                 },
-                'delete' => function($url, $model, $key) {
+                'delete' => function ($url, $model, $key) {
                     return Html::a('<i class="fa fa-trash-alt"></i>', ['delete', 'id' => $model->id, 'statusApproval' => 'pndg'], [
                         'id' => 'delete',
                         'class' => 'btn btn-danger',
@@ -490,7 +490,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     </div>
                 </div>',
             'buttons' => [
-                'resubmit' => function($url, $model, $key) {
+                'resubmit' => function ($url, $model, $key) {
                     return Html::a('<i class="fa fa-check"></i>', ['view-icorct', 'id' => $model->id], [
                         'id' => 'resubmit',
                         'class' => 'btn btn-primary',
@@ -523,7 +523,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     </div>
                 </div>',
             'buttons' => [
-                'view' => function($url, $model, $key) {
+                'view' => function ($url, $model, $key) {
                     return Html::a('<i class="fa fa-search-plus"></i>', ['view-rjct', 'id' => $model->id], [
                         'id' => 'view',
                         'class' => 'btn btn-primary',
@@ -541,7 +541,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     public function actionViewPndg($id)
     {
         $actionButton = [
-            'update' => function($model, $dropup = '') {
+            'update' => function ($model, $dropup = '') {
                 return '
                     <div class="btn-group ' . $dropup . '">
 
@@ -567,7 +567,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     </div>
                 ';
             },
-            'delete' => function($model) {
+            'delete' => function ($model) {
                 return Html::a('<i class="fa fa-trash-alt"></i> Delete',
                     ['delete', 'id' => $model['id'], 'statusApproval' => 'pndg'],
                     [
@@ -587,7 +587,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     public function actionViewIcorct($id)
     {
         $actionButton = [
-            'update' => function($model, $dropup = '') {
+            'update' => function ($model, $dropup = '') {
                 return '
                     <div class="btn-group ' . $dropup . '">
 
@@ -613,7 +613,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     </div>
                 ';
             },
-            'resubmit' => function($model) {
+            'resubmit' => function ($model) {
                 return Html::a('<i class="fa fa-check"></i> Resubmit',
                     ['resubmit', 'id' => $model['id'], 'appBId' => $model['applicationBusiness']['id'], 'appBCounter' => $model['applicationBusiness']['counter'], 'statusApproval' => 'ICORCT'],
                     [
@@ -700,11 +700,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         
         if ($model->load(($post = Yii::$app->request->post()))) {
 
-            if (empty($save)) {
-
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;

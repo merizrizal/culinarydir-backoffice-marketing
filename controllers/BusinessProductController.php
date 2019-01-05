@@ -7,11 +7,10 @@ use core\models\BusinessProduct;
 use core\models\search\BusinessProductSearch;
 use core\models\Business;
 use sycomponent\Tools;
+use sycomponent\AjaxRequest;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\widgets\ActiveForm;
-use sycomponent\AjaxRequest;
 
 /**
  * BusinessProductController implements the CRUD actions for BusinessProduct model.
@@ -43,8 +42,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
     {
         $searchModel = new BusinessProductSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query
-            ->andWhere(['business_product.business_id' => $id]);
+        $dataProvider->query->andWhere(['business_product.business_id' => $id]);
 
         $modelBusiness = Business::find()
             ->andWhere(['id' => $id])
@@ -83,11 +81,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
 
         if ($model->load(Yii::$app->request->post())) {
 
-            if (empty($save)) {
-
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
                 
                 $last = BusinessProduct::find()
                     ->andWhere(['business_id' => $id])
@@ -138,11 +132,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
 
         if ($model->load(Yii::$app->request->post())) {
 
-            if (empty($save)) {
-
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
 
                 if (($model->image = Tools::uploadFile('/img/business_product/', $model, 'image', 'id', $model->business_id))){
 

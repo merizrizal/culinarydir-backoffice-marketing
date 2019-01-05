@@ -48,8 +48,7 @@ class BusinessController extends \backoffice\controllers\BaseController
     {
         $searchModel = new BusinessSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//         $dataProvider->query
-//             ->andWhere(['user_in_charge' => Yii::$app->user->getIdentity()->id]);
+//         $dataProvider->query->andWhere(['user_in_charge' => Yii::$app->user->getIdentity()->id]);
 
         Yii::$app->formatter->timeZone = 'Asia/Jakarta';
 
@@ -206,11 +205,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
         if ($modelBusinessDetail->load(($post = Yii::$app->request->post()))) {
 
-            if (empty($save)) {
-
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
@@ -1022,11 +1017,7 @@ class BusinessController extends \backoffice\controllers\BaseController
         
         if ($model->load(Yii::$app->request->post())) {
             
-            if (empty($save)) {
-                
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
                 
                 if ($model->save()) {
                     
@@ -1052,10 +1043,8 @@ class BusinessController extends \backoffice\controllers\BaseController
     protected function findModel($id)
     {
         if (($model = Business::findOne($id)) !== null) {
-
             return $model;
         } else {
-
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }

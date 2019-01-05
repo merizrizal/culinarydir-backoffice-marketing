@@ -40,8 +40,7 @@ class RegistryBusinessPaymentController extends \backoffice\controllers\BaseCont
     {
         $searchModel = new RegistryBusinessPaymentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query
-            ->andWhere(['registry_business_id' => $id]);
+        $dataProvider->query->andWhere(['registry_business_id' => $id]);
         
         $modelRegistryBusiness = RegistryBusiness::find()
             ->andWhere(['id' => $id])
@@ -50,8 +49,8 @@ class RegistryBusinessPaymentController extends \backoffice\controllers\BaseCont
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'statusApproval' => $statusApproval,
             'modelRegistryBusiness' => $modelRegistryBusiness,
+            'statusApproval' => $statusApproval,
         ]);
     }
 
