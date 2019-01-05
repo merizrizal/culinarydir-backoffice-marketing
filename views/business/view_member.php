@@ -35,7 +35,27 @@ $this->title = $model['name'];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' =>  ['member']];
 $this->params['breadcrumbs'][] = $this->title;
 
-echo $ajaxRequest->component(); ?>
+echo $ajaxRequest->component();
+
+$actionButton =
+    Html::button('<i class="fa fa-pencil-alt"></i> Edit', [
+        'type' => 'button',
+        'class' => 'btn btn-primary dropdown-toggle',
+        'data-toggle' => 'dropdown',
+        'aria-haspopup' => 'true',
+        'aria-expanded' => 'false',
+    ]) . '
+    
+    <ul class="dropdown-menu">
+        <li>' . Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id']]) . '</li>
+        <li>' . Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id']]) . '</li>
+        <li>' . Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id']]) . '</li>
+        <li>' . Html::a(Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id']]) . '</li>
+        <li>' . Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id']]) . '</li>
+        <li>' . Html::a(Yii::t('app', 'Payment Methods'), ['business-payment/index', 'id' => $model['id']])  . '</li>
+        <li>' . Html::a(Yii::t('app', 'Delivery Methods'), ['business-delivery/index', 'id' => $model['id']]) . '</li>
+    </ul>
+'; ?>
 
 <div class="business-view">
     <div class="row">
@@ -44,26 +64,7 @@ echo $ajaxRequest->component(); ?>
                 <div class="x_content">
 
                     <div class="btn-group">
-
-                        <?= Html::button('<i class="fa fa-pencil-alt"></i> Edit',
-                            [
-                                'type' => 'button',
-                                'class' => 'btn btn-primary dropdown-toggle',
-                                'style' => 'color:white',
-                                'data-toggle' => 'dropdown',
-                                'aria-haspopup' => 'true',
-                                'aria-expanded' => 'false',
-                            ]) ?>
-
-                        <ul class="dropdown-menu">
-                            <li><?= Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id']]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id']]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id']]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id']]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id']]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Payment Methods'), ['business-payment/index', 'id' => $model['id']]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Delivery Methods'), ['business-delivery/index', 'id' => $model['id']]) ?></li>
-                        </ul>
+						<?= $actionButton ?>
                     </div>
 
                     <?= Html::a('<i class="fas fa-utensils"></i> Menu', ['business-product/index', 'id' => $model['id']], ['class' => 'btn btn-default']) ?>
@@ -500,29 +501,29 @@ echo $ajaxRequest->component(); ?>
                         </div>
                     </div>
                     
-                    <?php
-                    if (!empty($model['businessPayments'])) {
-                        
-                        foreach ($model['businessPayments'] as $dataBusinessPayment) {
-
-                            echo '
-                                <div class="row mb-10">
-                                    <div class="col-sm-3 col-xs-5">
+                    <div class="row">
+                    
+                        <?php
+                        if (!empty($model['businessPayments'])) {
+                            
+                            foreach ($model['businessPayments'] as $dataBusinessPayment) {
+    
+                                echo '
+                                    <div class="col-sm-3 col-xs-5 mb-10">
                                         ' . $dataBusinessPayment['paymentMethod']['payment_name'] . '
                                     </div>
-                                    <div class="col-sm-9 col-xs-7">
+                                    <div class="col-sm-9 col-xs-7 mb-10">
                                         ' . (!empty($dataBusinessPayment['note']) ? $dataBusinessPayment['note'] : '-') . '
-                                    </div>
-                                </div>';
-                        }
-                    } else {
-                        
-                        echo '
-                            <div class="row">
+                                    </div>';
+                            }
+                        } else {
+                            
+                            echo '
                                 <div class="col-sm-3 col-xs-5"> - </div>
-                                <div class="col-sm-9 col-xs-7"> - </div>
-                            </div>';
-                    } ?>
+                                <div class="col-sm-9 col-xs-7"> - </div>';
+                        } ?>
+                        
+                    </div>
 
                     <hr>
                     
@@ -535,53 +536,34 @@ echo $ajaxRequest->component(); ?>
                         </div>
                     </div>
                     
-                    <?php
-                    if (!empty($model['businessDeliveries'])) {
-                        
-                        foreach ($model['businessDeliveries'] as $dataBusinessDelivery) {
-
-                            echo '
-                                <div class="row mb-10">
-                                    <div class="col-sm-3 col-xs-5">
+                    <div class = "row">
+                    
+                        <?php
+                        if (!empty($model['businessDeliveries'])) {
+                            
+                            foreach ($model['businessDeliveries'] as $dataBusinessDelivery) {
+    
+                                echo '
+                                    <div class="col-sm-3 col-xs-5 mb-10">
                                         ' . $dataBusinessDelivery['deliveryMethod']['delivery_name'] . '
                                     </div>
-                                    <div class="col-sm-9 col-xs-7">
+                                    <div class="col-sm-9 col-xs-7 mb-10">
                                         ' . (!empty($dataBusinessDelivery['note']) ? $dataBusinessDelivery['note'] : '-') . '
-                                    </div>
-                                </div>';
-                        }
-                    } else {
-                        
-                        echo '
-                            <div class="row">
+                                    </div>';
+                            }
+                        } else {
+                            
+                            echo '
                                 <div class="col-sm-3 col-xs-5"> - </div>
-                                <div class="col-sm-9 col-xs-7"> - </div>
-                            </div>';
-                    } ?>
+                                <div class="col-sm-9 col-xs-7"> - </div>';
+                        } ?>
+                        
+                    </div>
 
                     <hr>
 				    
 				    <div class="btn-group dropup">
-
-                        <?= Html::button('<i class="fa fa-pencil-alt"></i> Edit',
-                            [
-                                'type' => 'button',
-                                'class' => 'btn btn-primary dropdown-toggle',
-                                'style' => 'color:white',
-                                'data-toggle' => 'dropdown',
-                                'aria-haspopup' => 'true',
-                                'aria-expanded' => 'false',
-                            ]) ?>
-
-                        <ul class="dropdown-menu">
-                            <li><?= Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id']]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id']]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id']]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id']]) ?></li>
-                            <li><?= Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id']]) ?></li>
-                        	<li><?= Html::a(Yii::t('app', 'Payment Methods'), ['business-payment/index', 'id' => $model['id']]) ?></li>
-                        	<li><?= Html::a(Yii::t('app', 'Delivery Methods'), ['business-delivery/index', 'id' => $model['id']]) ?></li>
-                        </ul>
+                        <?= $actionButton ?>
                     </div>
 
                     <?= Html::a('<i class="fas fa-utensils"></i> Menu', ['business-product/index', 'id' => $model['id']], ['class' => 'btn btn-default']) ?>

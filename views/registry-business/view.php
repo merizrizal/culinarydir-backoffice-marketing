@@ -484,6 +484,8 @@ echo $ajaxRequest->component(); ?>
                             <?= Html::label(Yii::t('app', 'Note')) ?>
                         </div>
                     </div>
+                    
+                    <div class="row">
 
                         <?php
                         if (!empty($model['registryBusinessPayments'])) {
@@ -491,23 +493,21 @@ echo $ajaxRequest->component(); ?>
                             foreach ($model['registryBusinessPayments'] as $dataRegistryBusinessPayment) {
 
                                 echo '
-                                    <div class="row mb-10">
-                                        <div class="col-sm-3 col-xs-5">
-                                            ' . $dataRegistryBusinessPayment['paymentMethod']['payment_name'] . '
-                                        </div>
-                                        <div class="col-sm-9 col-xs-7">
-                                            ' . (!empty($dataRegistryBusinessPayment['note']) ? $dataRegistryBusinessPayment['note'] : '-') . '
-                                        </div>
+                                    <div class="col-sm-3 col-xs-5 mb-10">
+                                        ' . $dataRegistryBusinessPayment['paymentMethod']['payment_name'] . '
+                                    </div>
+                                    <div class="col-sm-9 col-xs-7 mb-10">
+                                        ' . (!empty($dataRegistryBusinessPayment['note']) ? $dataRegistryBusinessPayment['note'] : '-') . '
                                     </div>';
                             }
                         } else {
                           
                             echo '
-                                <div class="row">
-                                    <div class="col-sm-3 col-xs-5"> - </div>
-                                    <div class="col-sm-9 col-xs-7"> - </div>
-                                <div class="row">';
+                                <div class="col-sm-3 col-xs-5"> - </div>
+                                <div class="col-sm-9 col-xs-7"> - </div>';
                         } ?>
+                    
+                    </div>
 
                     <hr>
                     
@@ -519,6 +519,8 @@ echo $ajaxRequest->component(); ?>
                             <?= Html::label(Yii::t('app', 'Note')) ?>
                         </div>
                     </div>
+                    
+                    <div class="row">
 
                         <?php
                         if (!empty($model['registryBusinessDeliveries'])) {
@@ -526,23 +528,21 @@ echo $ajaxRequest->component(); ?>
                             foreach ($model['registryBusinessDeliveries'] as $dataRegistryBusinessDelivery) {
 
                                 echo '
-                                    <div class="row mb-10">
-                                        <div class="col-sm-3 col-xs-5">
-                                            ' . $dataRegistryBusinessDelivery['deliveryMethod']['delivery_name'] . '
-                                        </div>
-                                        <div class="col-sm-9 col-xs-7">
-                                            ' . (!empty($dataRegistryBusinessDelivery['note']) ? $dataRegistryBusinessDelivery['note'] : '-') . '
-                                        </div>
+                                    <div class="col-sm-3 col-xs-5 mb-10">
+                                        ' . $dataRegistryBusinessDelivery['deliveryMethod']['delivery_name'] . '
+                                    </div>
+                                    <div class="col-sm-9 col-xs-7 mb-10">
+                                        ' . (!empty($dataRegistryBusinessDelivery['note']) ? $dataRegistryBusinessDelivery['note'] : '-') . '
                                     </div>';
                             }
                         } else {
                             
                             echo '
-                                <div class="row">
-                                    <div class="col-sm-3 col-xs-5"> - </div>
-                                    <div class="col-sm-9 col-xs-7"> - </div>
-                                <div class="row">';
+                                <div class="col-sm-3 col-xs-5"> - </div>
+                                <div class="col-sm-9 col-xs-7"> - </div>';
                         } ?>
+                    
+                    </div>
                     
                     <hr>
 				    
