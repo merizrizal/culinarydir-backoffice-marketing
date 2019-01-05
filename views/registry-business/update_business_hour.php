@@ -8,11 +8,11 @@ use core\models\RegistryBusinessHourAdditional;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
-/* @var $dataRegistryBusinessHour core\models\RegistryBusinessHour */
+/* @var $dataRegistryBusinessHour array */
 /* @var $modelRegistryBusinessHour core\models\RegistryBusinessHour */
-/* @var $dataRegistryBusinessHourAdditional core\models\RegistryBusinessHourAdditional */
+/* @var $dataRegistryBusinessHourAdditional array */
 /* @var $modelRegistryBusinessHourAdditional core\models\RegistryBusinessHourAdditional */
-/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $statusApproval string */
 /* @var $day string */
 
 kartik\select2\Select2Asset::register($this);

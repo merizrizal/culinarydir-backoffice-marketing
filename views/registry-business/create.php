@@ -24,25 +24,25 @@ use core\models\RegistryBusinessDelivery;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
-/* @var $dataRegistryBusinessCategory core\models\RegistryBusinessCategory */
+/* @var $dataRegistryBusinessCategory array*/
 /* @var $modelRegistryBusinessCategory core\models\RegistryBusinessCategory */
-/* @var $dataRegistryBusinessProductCategoryParent core\models\RegistryBusinessProductCategory */
-/* @var $dataRegistryBusinessProductCategoryChild core\models\RegistryBusinessProductCategory */
+/* @var $dataRegistryBusinessProductCategoryParent array */
+/* @var $dataRegistryBusinessProductCategoryChild array */
 /* @var $modelRegistryBusinessProductCategory core\models\RegistryBusinessProductCategory */
-/* @var $dataRegistryBusinessFacility core\models\RegistryBusinessFacility */
+/* @var $dataRegistryBusinessFacility array */
 /* @var $modelRegistryBusinessFacility core\models\RegistryBusinessFacility */
-/* @var $dataRegistryBusinessHour core\models\RegistryBusinessHour */
+/* @var $dataRegistryBusinessHour array */
 /* @var $modelRegistryBusinessHour core\models\RegistryBusinessHour */
-/* @var $dataRegistryBusinessHourAdditional core\models\RegistryBusinessHourAdditional */
+/* @var $dataRegistryBusinessHourAdditional array */
 /* @var $modelRegistryBusinessHourAdditional core\models\RegistryBusinessHourAdditional */
-/* @var $dataRegistryBusinessImage core\models\RegistryBusinessImage */
+/* @var $dataRegistryBusinessImage array */
 /* @var $modelRegistryBusinessImage core\models\RegistryBusinessImage */
 /* @var $modelPerson core\models\Person */
 /* @var $modelRegistryBusinessContactPerson core\models\RegistryBusinessContactPerson */
-/* @var $dataRegistryBusinessContactPerson core\models\RegistryBusinessContactPerson */
-/* @var $dataRegistryBusinessPayment core\models\RegistryBusinessPayment */
+/* @var $dataRegistryBusinessContactPerson array */
+/* @var $dataRegistryBusinessPayment array */
 /* @var $modelRegistryBusinessPayment core\models\RegistryBusinessPayment */
-/* @var $dataRegistryBusinessDelivery core\models\RegistryBusinessDelivery */
+/* @var $dataRegistryBusinessDelivery array */
 /* @var $modelRegistryBusinessDelivery core\models\RegistryBusinessDelivery */
 /* @var $day string */
 

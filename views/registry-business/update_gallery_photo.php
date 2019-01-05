@@ -10,8 +10,8 @@ use sycomponent\Tools;
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
 /* @var $modelRegistryBusinessImage core\models\RegistryBusinessImage */
-/* @var $dataRegistryBusinessImage core\models\RegistryBusinessImage */
-/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $dataRegistryBusinessImage array */
+/* @var $statusApproval string */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryBusiness',

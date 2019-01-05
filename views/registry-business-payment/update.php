@@ -3,7 +3,7 @@
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusinessPayment */
 /* @var $modelRegistryBusiness core\models\RegistryBusiness */
-/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $statusApproval string */
 
 $this->title = 'Update ' . Yii::t('app', 'Payment Methods');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' =>  ['registry-business/index-' . strtolower($statusApproval)]];

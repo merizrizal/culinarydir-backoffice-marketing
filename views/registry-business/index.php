@@ -13,9 +13,9 @@ use core\models\MembershipType;
 /* @var $this yii\web\View */
 /* @var $searchModel core\models\search\RegistryBusinessSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-/* @var $title backoffice\modules\marketing\controllers\RegistryBusinessController */
-/* @var $actionColumn backoffice\modules\marketing\controllers\RegistryBusinessController */
-/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $title string */
+/* @var $actionColumn array */
+/* @var $statusApproval string */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);

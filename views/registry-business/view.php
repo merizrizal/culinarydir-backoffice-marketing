@@ -9,8 +9,8 @@ use backoffice\components\AppComponent;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
-/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
-/* @var $actionButton backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $statusApproval string */
+/* @var $actionButton array */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryBusiness',

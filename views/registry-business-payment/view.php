@@ -8,7 +8,7 @@ use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusinessPayment */
-/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $statusApproval string */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryBusinessPayment',
@@ -52,32 +52,32 @@ echo $ajaxRequest->component(); ?>
                     <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model->id, 'statusApproval' => $statusApproval], ['class' => 'btn btn-primary']) ?>
 
                     <?= Html::a('<i class="fa fa-trash-alt"></i> Delete',['delete', 'id' => $model->id, 'statusApproval' => $statusApproval], [
-                            'id' => 'delete',
-                            'class' => 'btn btn-danger',
-                            'data-not-ajax' => 1,
-                            'model-id' => $model->id,
-                            'model-name' => $model->paymentMethod->payment_name,
-                        ]) ?>
+                        'id' => 'delete',
+                        'class' => 'btn btn-danger',
+                        'data-not-ajax' => 1,
+                        'model-id' => $model->id,
+                        'model-name' => $model->paymentMethod->payment_name,
+                    ]) ?>
 
                     <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index', 'id' => $model->registry_business_id, 'statusApproval' => $statusApproval], ['class' => 'btn btn-default']) ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>
 
-                        <?= DetailView::widget([
-                            'model' => $model,
-                            'options' => [
-                                'class' => 'table'
+                    <?= DetailView::widget([
+                        'model' => $model,
+                        'options' => [
+                            'class' => 'table'
+                        ],
+                        'attributes' => [
+                            'paymentMethod.payment_name',
+                            'note:ntext',
+                            [
+                                'attribute' => 'is_active',
+                                'format' => 'raw',
+                                'value' => Html::checkbox('is_active', $model->is_active, ['value' => $model->is_active, 'disabled' => 'disabled']),
                             ],
-                            'attributes' => [
-                                'paymentMethod.payment_name',
-                                'note:ntext',
-                                [
-                                    'attribute' => 'is_active',
-                                    'format' => 'raw',
-                                    'value' => Html::checkbox('is_active', $model->is_active, ['value' => $model->is_active, 'disabled' => 'disabled']),
-                                ],
-                            ],
-                        ]) ?>
+                        ],
+                    ]) ?>
 
                 </div>
             </div>

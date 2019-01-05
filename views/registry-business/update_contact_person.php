@@ -11,9 +11,9 @@ use core\models\RegistryBusinessContactPerson;
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
 /* @var $modelRegistryBusinessContactPerson core\models\RegistryBusinessContactPerson */
-/* @var $dataRegistryBusinessContactPerson core\models\RegistryBusinessContactPerson */
+/* @var $dataRegistryBusinessContactPerson array */
 /* @var $modelPerson core\models\Person */
-/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $statusApproval string */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);

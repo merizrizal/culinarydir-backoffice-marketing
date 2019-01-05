@@ -10,7 +10,7 @@ use sycomponent\NotificationDialog;
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusinessPayment */
 /* @var $modelRegistryBusiness core\models\RegistryBusiness */
-/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $statusApproval string */
 /* @var $form yii\widgets\ActiveForm */
 
 kartik\select2\Select2Asset::register($this);

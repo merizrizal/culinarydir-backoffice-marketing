@@ -3,7 +3,7 @@
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusinessDelivery */
 /* @var $modelRegistryBusiness core\models\RegistryBusiness */
-/* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
+/* @var $statusApproval string */
 
 $this->title = 'Create ' . Yii::t('app', 'Delivery Methods');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' =>  ['registry-business/index-' . strtolower($statusApproval)]];
