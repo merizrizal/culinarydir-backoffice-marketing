@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => [
 $this->params['breadcrumbs'][] = ['label' => $modelBusiness['name'], 'url' => ['business/view-member', 'id' => $modelBusiness['id']]];
 $this->params['breadcrumbs'][] = $this->title;
 
-echo $ajaxRequest->component(true) ?>
+echo $ajaxRequest->component(true); ?>
 
 <div class="business-delivery-index">
 
@@ -74,11 +74,11 @@ echo $ajaxRequest->component(true) ?>
         'toolbar' => [
             [
                 'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index', 'id' => $modelBusiness['id']], [
-                            'id' => 'refresh',
-                            'class' => 'btn btn-success',
-                            'data-placement' => 'top',
-                            'data-toggle' => 'tooltip',
-                            'title' => 'Refresh'
+                    'id' => 'refresh',
+                    'class' => 'btn btn-success',
+                    'data-placement' => 'top',
+                    'data-toggle' => 'tooltip',
+                    'title' => 'Refresh'
                 ])
             ],
         ],

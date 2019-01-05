@@ -545,11 +545,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 return '
                     <div class="btn-group ' . $dropup . '">
 
-                        ' . Html::button('<i class="fa fa-pencil-alt"></i> Edit',
-                            [
+                        ' . Html::button('<i class="fa fa-pencil-alt"></i> Edit', [
                                 'type' => 'button',
                                 'class' => 'btn btn-primary dropdown-toggle',
-                                'style' => 'color:white',
                                 'data-toggle' => 'dropdown',
                                 'aria-haspopup' => 'true',
                                 'aria-expanded' => 'false',
@@ -568,16 +566,14 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 ';
             },
             'delete' => function ($model) {
-                return Html::a('<i class="fa fa-trash-alt"></i> Delete',
-                    ['delete', 'id' => $model['id'], 'statusApproval' => 'pndg'],
-                    [
-                        'id' => 'delete',
-                        'class' => 'btn btn-danger',
-                        'style' => 'color:white',
-                        'data-not-ajax' => 1,
-                        'model-id' => $model['id'],
-                        'model-name' => $model['name'],
-                    ]);
+                return Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model['id'], 'statusApproval' => 'pndg'], [
+                    'id' => 'delete',
+                    'class' => 'btn btn-danger',
+                    'style' => 'color:white',
+                    'data-not-ajax' => 1,
+                    'model-id' => $model['id'],
+                    'model-name' => $model['name'],
+                ]);
             },
         ];
 
@@ -591,11 +587,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 return '
                     <div class="btn-group ' . $dropup . '">
 
-                        ' . Html::button('<i class="fa fa-pencil-alt"></i> Edit',
-                            [
+                        ' . Html::button('<i class="fa fa-pencil-alt"></i> Edit', [
                                 'type' => 'button',
                                 'class' => 'btn btn-primary dropdown-toggle',
-                                'style' => 'color:white',
                                 'data-toggle' => 'dropdown',
                                 'aria-haspopup' => 'true',
                                 'aria-expanded' => 'false',
@@ -614,12 +608,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 ';
             },
             'resubmit' => function ($model) {
-                return Html::a('<i class="fa fa-check"></i> Resubmit',
-                    ['resubmit', 'id' => $model['id'], 'appBId' => $model['applicationBusiness']['id'], 'appBCounter' => $model['applicationBusiness']['counter'], 'statusApproval' => 'ICORCT'],
-                    [
-                        'id' => 'resubmit',
-                        'class' => 'btn btn-success',
-                    ]);
+                return Html::a('<i class="fa fa-check"></i> Resubmit', ['resubmit', 'id' => $model['id'], 'appBId' => $model['applicationBusiness']['id'], 'appBCounter' => $model['applicationBusiness']['counter'], 'statusApproval' => 'ICORCT'], [
+                    'id' => 'resubmit',
+                    'class' => 'btn btn-success',
+                ]);
             },
         ];
 

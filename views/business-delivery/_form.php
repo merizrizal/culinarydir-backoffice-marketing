@@ -43,29 +43,30 @@ echo $ajaxRequest->component() ?>
         <div class="x_panel">
             <div class="business-delivery-form">
 
-                <?php $form = ActiveForm::begin([
-                        'id' => 'business-delivery-form',
-                        'action' => $model->isNewRecord ? ['create', 'id' => $modelBusiness['id']] : ['update', 'id' => $model->id],
-                        'options' => [
+                <?php
+                $form = ActiveForm::begin([
+                    'id' => 'business-delivery-form',
+                    'action' => $model->isNewRecord ? ['create', 'id' => $modelBusiness['id']] : ['update', 'id' => $model->id],
+                    'options' => [
 
+                    ],
+                    'fieldConfig' => [
+                        'parts' => [
+                            '{inputClass}' => 'col-lg-6'
                         ],
-                        'fieldConfig' => [
-                            'parts' => [
-                                '{inputClass}' => 'col-lg-6'
-                            ],
-                            'template' => '
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        {label}
-                                    </div>
-                                    <div class="{inputClass}">
-                                        {input}
-                                    </div>
-                                    <div class="col-lg-3">
-                                        {error}
-                                    </div>
-                                </div>',
-                        ]
+                        'template' => '
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    {label}
+                                </div>
+                                <div class="{inputClass}">
+                                    {input}
+                                </div>
+                                <div class="col-lg-3">
+                                    {error}
+                                </div>
+                            </div>',
+                    ]
                 ]); ?>
 
                     <div class="x_title">

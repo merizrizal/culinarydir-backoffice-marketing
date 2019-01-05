@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = ['label' => $model->business->name, 'url' => ['
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Delivery Methods'), 'url' => ['index', 'id' => $model->business_id]];
 $this->params['breadcrumbs'][] = $this->title;
 
-echo $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="business-delivery-view">
 
@@ -52,12 +52,12 @@ echo $ajaxRequest->component() ?>
                     <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
 
                     <?= Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model->id], [
-                            'id' => 'delete',
-                            'class' => 'btn btn-danger',
-                            'data-not-ajax' => 1,
-                            'model-id' => $model->id,
-                            'model-name' => $model->deliveryMethod->delivery_name,
-                        ]) ?>
+                        'id' => 'delete',
+                        'class' => 'btn btn-danger',
+                        'data-not-ajax' => 1,
+                        'model-id' => $model->id,
+                        'model-name' => $model->deliveryMethod->delivery_name,
+                    ]) ?>
 
                     <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index', 'id' => $model->business_id], ['class' => 'btn btn-default']) ?>
 
@@ -103,7 +103,7 @@ $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript = Yii::$app->params['checkbox-radio-script']()
-. '$(".iCheck-helper").parent().removeClass("disabled");
+    . '$(".iCheck-helper").parent().removeClass("disabled");
 ';
 
 $this->registerJs($jscript); ?>
