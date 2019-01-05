@@ -428,37 +428,48 @@ echo $ajaxRequest->component(); ?>
                         </div>
                     </div>
                     
+                    <hr>
+                    
     				<?php
-				    if (!empty($model['businessContactPeople'])): ?>
-			            
-    				    <table class="table table-responsive">
-				        	<tr>
-			            		<th><?= Html::label(Yii::t('app', 'Name')) ?></th>
-			            		<th><?= Html::label(Yii::t('app', 'Position')) ?></th>
-			            		<th><?= Html::label(Yii::t('app', 'Email')) ?></th>
-			            		<th><?= Html::label(Yii::t('app', 'Phone')) ?></th>
-			            		<th><?= Html::label(Yii::t('app', 'Note')) ?></th>
-			            		<th><?= Html::label(Yii::t('app', 'Is Primary Contact')) ?></th>
-			            	</tr>
-				        
-    				    	<?php
-    				    	foreach ($model['businessContactPeople'] as $dataBusinessContactPerson): ?>
-    			                
-        			            <tr>
-        			            	<td><?= $dataBusinessContactPerson['person']['first_name'] . ' ' . $dataBusinessContactPerson['person']['last_name'] ?></td>
-    			            		<td><?= $dataBusinessContactPerson['position'] ?></td>
-    			            		<td><?= !empty($dataBusinessContactPerson['person']['email']) ? $dataBusinessContactPerson['person']['email'] : '-' ?></td>
-    			            		<td><?= !empty($dataBusinessContactPerson['person']['phone']) ? $dataBusinessContactPerson['person']['phone'] : '-' ?></td>
-    			            		<td><?= !empty($dataBusinessContactPerson['note']) ? $dataBusinessContactPerson['note'] : '-' ?></td>
-    			            		<td><?= !empty($dataBusinessContactPerson['is_primary_contact']) ? ' YA ' : ' TIDAK ' ?></td>
-        			            </tr>
-    			                
-    			            <?php
-    			            endforeach; ?>
-			            
-			            </table>
-			        
-			        <?php    
+				    if (!empty($model['businessContactPeople'])):
+				    
+				        foreach ($model['businessContactPeople'] as $i => $dataBusinessContactPerson):
+			            	
+				            $is_primary = !empty($dataBusinessContactPerson['is_primary_contact']) ? ' - ' . Yii::t('app', 'Primary Contact') : ''; ?>
+    			            
+			                <div class="row mb-20">
+			            		<div class="col-xs-12 mb-10">
+			            			<strong><?= Yii::t('app', 'Contact') . ' ' . ($i + 1) . $is_primary ?></strong>
+    			            	</div>
+			            		<div class="col-sm-3 col-xs-6 mb-10">
+    			            		<?= Html::label(Yii::t('app', 'Name')) ?><br>
+        			                <?= $dataBusinessContactPerson['person']['first_name'] . ' ' . $dataBusinessContactPerson['person']['last_name']; ?>
+    			                </div>
+    			                <div class="col-sm-3 col-xs-6 mb-10">
+    			                	<?= Html::label(Yii::t('app', 'Position')) ?><br>
+    			                	<?= $dataBusinessContactPerson['position']; ?>
+    			                </div>
+    			                <div class="col-sm-3 col-xs-6">
+			                		<?= Html::label(Yii::t('app', 'Email')) ?><br>
+    			            		<?= !empty($dataBusinessContactPerson['person']['email']) ? $dataBusinessContactPerson['person']['email'] : '-'; ?>
+			                	</div>
+			                	<div class="col-sm-3 col-xs-6">
+    			            		<?= Html::label(Yii::t('app', 'Phone')) ?><br>
+    			            		<?= !empty($dataBusinessContactPerson['person']['phone']) ? $dataBusinessContactPerson['person']['phone'] : '-'; ?>
+			                	</div>
+			                </div>
+			                
+			                <div class="row mb-20">
+			                	<div class="col-xs-12">
+    			            		<?= Html::label(Yii::t('app', 'Note')) . '<br>'; ?>
+    			            		<?= !empty($dataBusinessContactPerson['note']) ? $dataBusinessContactPerson['note'] : '-'; ?>
+			                	</div>
+			                </div>
+			                
+			                <hr>
+			                
+			            <?php
+			            endforeach;
 		            else: ?>
 			         	
 			         	<div class="row mb-20">
@@ -467,10 +478,10 @@ echo $ajaxRequest->component(); ?>
 		         		  	</div>
 			         	</div>
 			         	
+			         	<hr>
+			         	
 		            <?php
 				    endif; ?>
-				    
-				    <hr>
 				    
 				    <div class="row">
                     	<div class="col-xs-12">

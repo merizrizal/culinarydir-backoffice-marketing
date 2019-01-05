@@ -9,8 +9,6 @@ use sycomponent\NotificationDialog;
 use core\models\Category;
 use core\models\ProductCategory;
 use core\models\Facility;
-use core\models\PaymentMethod;
-use core\models\DeliveryMethod;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
@@ -21,10 +19,6 @@ use core\models\DeliveryMethod;
 /* @var $modelRegistryBusinessProductCategory core\models\RegistryBusinessProductCategory */
 /* @var $dataRegistryBusinessFacility core\models\RegistryBusinessFacility */
 /* @var $modelRegistryBusinessFacility core\models\RegistryBusinessFacility */
-/* @var $dataRegistryBusinessPayment core\models\RegistryBusinessPayment */
-/* @var $modelRegistryBusinessPayment core\models\RegistryBusinessPayment */
-/* @var $dataRegistryBusinessDelivery core\models\RegistryBusinessDelivery */
-/* @var $modelRegistryBusinessDelivery core\models\RegistryBusinessDelivery */
 /* @var $statusApproval backoffice\modules\marketing\controllers\RegistryBusinessController */
 /* @var $day string */
 
@@ -222,86 +216,6 @@ echo $ajaxRequest->component(); ?>
                                                 'prompt' => '',
                                                 'style' => 'width: 100%',
                                                 'options' => $selectedDataFacility
-                                            ]) ?>
-
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <?= Html::label(Yii::t('app', 'Payment Methods'), null, ['class' => 'control-label']) ?>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-
-                                        <?php
-                                        $selectedDataPayment = [];
-
-                                        if (!empty($dataRegistryBusinessPayment)) {
-
-                                            foreach ($dataRegistryBusinessPayment as $registryBusinessPayment) {
-
-                                                if (!empty($registryBusinessPayment['payment_method_id'])) {
-
-                                                    $selectedDataPayment[$registryBusinessPayment['payment_method_id']] = ['selected' => true];
-                                                }
-                                            }
-                                        }
-
-                                        echo $form->field($modelRegistryBusinessPayment, 'payment_method_id')->dropDownList(
-                                            ArrayHelper::map(
-                                                PaymentMethod::find()->orderBy('payment_name')->asArray()->all(),
-                                                'id',
-                                                'payment_name'
-                                            ),
-                                            [
-                                                'multiple' => 'multiple',
-                                                'prompt' => '',
-                                                'style' => 'width: 100%',
-                                                'options' => $selectedDataPayment
-                                            ]) ?>
-
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <?= Html::label(Yii::t('app', 'Delivery Methods'), null, ['class' => 'control-label']) ?>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-
-                                        <?php
-                                        $selectedDataDelivery = [];
-
-                                        if (!empty($dataRegistryBusinessDelivery)) {
-
-                                            foreach ($dataRegistryBusinessDelivery as $registryBusinessDelivery) {
-
-                                                if (!empty($registryBusinessDelivery['delivery_method_id'])) {
-
-                                                    $selectedDataDelivery[$registryBusinessDelivery['delivery_method_id']] = ['selected' => true];
-                                                }
-                                            }
-                                        }
-
-                                        echo $form->field($modelRegistryBusinessDelivery, 'delivery_method_id')->dropDownList(
-                                            ArrayHelper::map(
-                                                DeliveryMethod::find()->orderBy('delivery_name')->asArray()->all(),
-                                                'id',
-                                                'delivery_name'
-                                            ),
-                                            [
-                                                'multiple' => 'multiple',
-                                                'prompt' => '',
-                                                'style' => 'width: 100%',
-                                                'options' => $selectedDataDelivery
                                             ]) ?>
 
                                     </div>

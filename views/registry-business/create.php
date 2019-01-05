@@ -1428,7 +1428,15 @@ $jscript = '
 
         $(".payment-main-form").append(formPaymentMethod.html());
 
-        addValidator(paymentIndexCount);
+        $("#registry-business-form").yiiActiveForm("add", {
+            "id":"registrybusinesspayment-" + paymentIndexCount + "-payment_method_id",
+            "name":"[" + paymentIndexCount + "]payment_method_id",
+            "container":".field-registrybusinesspayment-" + paymentIndexCount + "-payment_method_id",
+            "input":"#registrybusinesspayment-" + paymentIndexCount + "-payment_method_id",
+            "validate":function (attribute, value, messages, deferred, $form) {
+                yii.validation.required(value, messages, {"message":"Metode pembayaran tidak boleh kosong."});
+            }
+        });
 
         $(".payment-main-form").find(".payment-method").select2({
             theme: "krajee",
@@ -1462,7 +1470,15 @@ $jscript = '
 
         $(".delivery-main-form").append(formDeliveryMethod.html());
 
-        addValidator(deliveryIndexCount);
+        $("#registry-business-form").yiiActiveForm("add", {
+            "id":"registrybusinessdelivery-" + deliveryIndexCount + "-delivery_method_id",
+            "name":"[" + deliveryIndexCount + "]delivery_method_id",
+            "container":".field-registrybusinessdelivery-" + deliveryIndexCount + "-delivery_method_id",
+            "input":"#registrybusinessdelivery-" + deliveryIndexCount + "-delivery_method_id",
+            "validate":function (attribute, value, messages, deferred, $form) {
+                yii.validation.required(value, messages, {"message":"Metode pengiriman tidak boleh kosong."});
+            }
+        });
 
         $(".delivery-main-form").find(".delivery-method").select2({
             theme: "krajee",
