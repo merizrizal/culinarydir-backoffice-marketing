@@ -412,38 +412,49 @@ echo $ajaxRequest->component(); ?>
                             <h4><strong><?= Yii::t('app', 'Contact Person') ?></strong></h4>
                         </div>
                     </div>
+                    
+                    <hr>
                 		
     				<?php
-				    if (!empty($model['registryBusinessContactPeople'])): ?>
+				    if (!empty($model['registryBusinessContactPeople'])):
 			            
-				        <table class="table table-responsive">
-				        	<tr>
-			            		<th><?= Html::label(Yii::t('app', 'Name')) ?></th>
-			            		<th><?= Html::label(Yii::t('app', 'Position')) ?></th>
-			            		<th><?= Html::label(Yii::t('app', 'Email')) ?></th>
-			            		<th><?= Html::label(Yii::t('app', 'Phone')) ?></th>
-			            		<th><?= Html::label(Yii::t('app', 'Note')) ?></th>
-			            		<th><?= Html::label(Yii::t('app', 'Is Primary Contact')) ?></th>
-			            	</tr>
-				        
-    				    	<?php
-    				    	foreach ($model['registryBusinessContactPeople'] as $dataRegistryBusinessContactPerson): ?>
-    			                
-        			            <tr>
-        			            	<td><?= $dataRegistryBusinessContactPerson['person']['first_name'] . ' ' . $dataRegistryBusinessContactPerson['person']['last_name']; ?></td>
-    			            		<td><?= $dataRegistryBusinessContactPerson['position']; ?></td>
-    			            		<td><?= !empty($dataRegistryBusinessContactPerson['person']['email']) ? $dataRegistryBusinessContactPerson['person']['email'] : '-'; ?></td>
-    			            		<td><?= !empty($dataRegistryBusinessContactPerson['person']['phone']) ? $dataRegistryBusinessContactPerson['person']['phone'] : '-'; ?></td>
-    			            		<td><?= !empty($dataRegistryBusinessContactPerson['note']) ? $dataRegistryBusinessContactPerson['note'] : '-'; ?></td>
-    			            		<td><?= !empty($dataRegistryBusinessContactPerson['is_primary_contact']) ? ' YA ' : ' TIDAK ' ?></td>
-        			            </tr>
-    			                
-    			            <?php
-    			            endforeach; ?>
-			            
-			            </table>
-		            
-		            <?php
+				        foreach ($model['registryBusinessContactPeople'] as $i => $person):
+			            	
+    			            $is_primary = !empty($person['is_primary_contact']) ? ' - ' . Yii::t('app', 'Primary Contact') : ''; ?>
+    			            
+			                <div class="row mb-20">
+			            		<div class="col-xs-12 mb-10">
+			            			<strong><?= Yii::t('app', 'Contact') . ' ' . ($i + 1) . $is_primary ?></strong>
+    			            	</div>
+			            		<div class="col-sm-3 col-xs-6 mb-10">
+    			            		<?= Html::label(Yii::t('app', 'Name')) ?><br>
+        			                <?= $person['person']['first_name'] . ' ' . $person['person']['last_name']; ?>
+    			                </div>
+    			                <div class="col-sm-3 col-xs-6 mb-10">
+    			                	<?= Html::label(Yii::t('app', 'Position')) ?><br>
+    			                	<?= $person['position']; ?>
+    			                </div>
+    			                <div class="col-sm-3 col-xs-6">
+			                		<?= Html::label(Yii::t('app', 'Email')) ?><br>
+    			            		<?= !empty($person['person']['email']) ? $person['person']['email'] : '-'; ?>
+			                	</div>
+			                	<div class="col-sm-3 col-xs-6">
+    			            		<?= Html::label(Yii::t('app', 'Phone')) ?><br>
+    			            		<?= !empty($person['person']['phone']) ? $person['person']['phone'] : '-'; ?>
+			                	</div>
+			                </div>
+			                
+			                <div class="row mb-20">
+			                	<div class="col-xs-12">
+    			            		<?= Html::label(Yii::t('app', 'Note')) . '<br>'; ?>
+    			            		<?= !empty($person['note']) ? $person['note'] : '-'; ?>
+			                	</div>
+			                </div>
+			                
+			                <hr>
+			                
+			            <?php
+			            endforeach;
 			        else: ?>
 			         	
 			         	<div class="row mb-20">
@@ -451,11 +462,11 @@ echo $ajaxRequest->component(); ?>
 	         		  			<?= Yii::t('app', 'Data Not Available') ?>
 		         		  	</div>
 			         	</div>
+			         	
+			         	<hr>
 		            
 		            <?php
 				    endif; ?>
-				    
-				    <hr>
 				    
 				    <div class="row">
                     	<div class="col-xs-12">

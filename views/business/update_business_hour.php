@@ -136,7 +136,7 @@ echo $ajaxRequest->component(); ?>
 
                                             <div class="visible-md visible-sm visible-xs clearfix"></div>
 
-                                            <div class="ol-lg-2 col-xs-3">
+                                            <div class="col-lg-2 col-xs-3">
 
                                                 <?= $form->field($modelBusinessHour, '[' . $dayName . ']open_at')
                                                     ->dropDownList($hours, [
@@ -147,7 +147,7 @@ echo $ajaxRequest->component(); ?>
                                                     ]); ?>
 
                                             </div>
-                                            <div class="ol-lg-2 col-xs-3">
+                                            <div class="col-lg-2 col-xs-3">
 
                                                 <?= $form->field($modelBusinessHour, '[' . $dayName . ']close_at')
                                                     ->dropDownList($hours, [

@@ -6,16 +6,14 @@ use Yii;
 use core\models\RegistryBusiness;
 use core\models\RegistryBusinessPayment;
 use core\models\search\RegistryBusinessPaymentSearch;
-use backoffice\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
-use yii\widgets\ActiveForm;
 
 /**
  * RegistryBusinessPaymentController implements the CRUD actions for RegistryBusinessPayment model.
  */
-class RegistryBusinessPaymentController extends BaseController
+class RegistryBusinessPaymentController extends \backoffice\controllers\BaseController
 {
     /**
      * @inheritdoc
