@@ -631,7 +631,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         return $this->view($id, 'RJCT');
     }
 
-    public function actionUpdateBusinessInfo($id, $statusApproval, $save = null)
+    public function actionUpdateBusinessInfo($id, $save = null, $statusApproval)
     {
         $model = $this->findModel($id);
 
@@ -665,7 +665,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         ]);
     }
 
-    public function actionUpdateMarketingInfo($id, $statusApproval, $save = null)
+    public function actionUpdateMarketingInfo($id, $save = null, $statusApproval)
     {
         $model = RegistryBusiness::find()
             ->joinWith([
@@ -979,7 +979,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         ]);
     }
 
-    public function actionUpdateGalleryPhoto($id, $statusApproval, $save = null)
+    public function actionUpdateGalleryPhoto($id, $save = null, $statusApproval)
     {
         $model = RegistryBusiness::find()
             ->joinWith([
@@ -1131,7 +1131,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         ]);
     }
     
-    public function actionUpdateContactPerson($id, $statusApproval, $save = null)
+    public function actionUpdateContactPerson($id, $save = null, $statusApproval)
     {
         $model = RegistryBusiness::find()
             ->joinWith([
@@ -1253,7 +1253,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         ]);
     }
     
-    public function actionUpdateBusinessHour($id, $statusApproval, $save = null)
+    public function actionUpdateBusinessHour($id, $save = null, $statusApproval)
     {
         $model = RegistryBusiness::find()
             ->joinWith([
