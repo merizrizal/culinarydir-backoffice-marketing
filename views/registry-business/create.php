@@ -791,7 +791,7 @@ $this->registerJs($jscript); ?>
                                                         
                                                         	<?= $form->field($modelRegistryBusinessPayment, '[' . $i .']payment_method_id')->dropDownList(
                                                     	        ArrayHelper::map(
-                                                        	        PaymentMethod::find()->andWhere(['not_active' => false])->orderBy('payment_name')->asArray()->all(),
+                                                    	            PaymentMethod::find()->andWhere(['not_active' => false])->orderBy(['id' => SORT_ASC])->asArray()->all(),
                                                         	        'id',
                                                         	        'payment_name'
                                                     	        ),
@@ -831,18 +831,18 @@ $this->registerJs($jscript); ?>
                                     	<?php
                             	        if (!empty($dataRegistryBusinessDelivery)):
                             	            
-                            	        foreach ($dataRegistryBusinessDelivery as $i => $registryBusinessDelivery):
-                            	                
-                            	            $modelRegistryBusinessDelivery->delivery_method_id = $registryBusinessDelivery['delivery_method_id'];
-                        	                $modelRegistryBusinessDelivery->note = $registryBusinessDelivery['note']; ?>
-                            	                
+                                	        foreach ($dataRegistryBusinessDelivery as $i => $registryBusinessDelivery):
+                                	                
+                                	            $modelRegistryBusinessDelivery->delivery_method_id = $registryBusinessDelivery['delivery_method_id'];
+                            	                $modelRegistryBusinessDelivery->note = $registryBusinessDelivery['note']; ?>
+                                	                
                             	                <div class="mb-40 delivery-data-form">
                                                     <div class="row mt-10">
                                                         <div class="col-md-4 col-xs-12">
                                                         
                                                         	<?= $form->field($modelRegistryBusinessDelivery, '[' . $i .']delivery_method_id')->dropDownList(
                                                     	        ArrayHelper::map(
-                                                        	        DeliveryMethod::find()->andWhere(['not_active' => false])->orderBy('delivery_name')->asArray()->all(),
+                                                    	            DeliveryMethod::find()->andWhere(['not_active' => false])->orderBy(['id' => SORT_ASC])->asArray()->all(),
                                                         	        'id',
                                                         	        'delivery_name'
                                                     	        ),
@@ -993,7 +993,7 @@ $modelRegistryBusinessPayment = new RegistryBusinessPayment(); ?>
             
             	<?= $form->field($modelRegistryBusinessPayment, '[index]payment_method_id')->dropDownList(
         	        ArrayHelper::map(
-            	        PaymentMethod::find()->andWhere(['not_active' => false])->orderBy('payment_name')->asArray()->all(),
+            	        PaymentMethod::find()->andWhere(['not_active' => false])->orderBy(['id' => SORT_ASC])->asArray()->all(),
             	        'id',
             	        'payment_name'
         	        ),
@@ -1021,7 +1021,7 @@ $modelRegistryBusinessDelivery = new RegistryBusinessDelivery(); ?>
             
             	<?= $form->field($modelRegistryBusinessDelivery, '[index]delivery_method_id')->dropDownList(
         	        ArrayHelper::map(
-            	        DeliveryMethod::find()->andWhere(['not_active' => false])->orderBy('delivery_name')->asArray()->all(),
+        	            DeliveryMethod::find()->andWhere(['not_active' => false])->orderBy(['id' => SORT_ASC])->asArray()->all(),
             	        'id',
             	        'delivery_name'
         	        ),
