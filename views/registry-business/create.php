@@ -782,8 +782,8 @@ $this->registerJs($jscript); ?>
                             	            
                             	            foreach ($dataRegistryBusinessPayment as $i => $registryBusinessPayment):
                             	                
-                            	                $modelRegistryBusinessPayment->payment_method_id = $registryBusinessPayment['payment_method_id']; 
-                            	                $modelRegistryBusinessPayment->note = $registryBusinessPayment['note']; ?>
+                        	                $modelRegistryBusinessPayment->payment_method_id = $registryBusinessPayment['payment_method_id']; 
+                        	                $modelRegistryBusinessPayment->note = $registryBusinessPayment['note']; ?>
                             	                
                             	                <div class="mb-40 payment-data-form">
                                                     <div class="row mt-10">
@@ -831,8 +831,8 @@ $this->registerJs($jscript); ?>
                                     	<?php
                             	        if (!empty($dataRegistryBusinessDelivery)):
                             	            
-                            	        foreach ($dataRegistryBusinessDelivery as $i => $registryBusinessDelivery):
-                            	                
+                                	        foreach ($dataRegistryBusinessDelivery as $i => $registryBusinessDelivery):
+                                	                
                             	            $modelRegistryBusinessDelivery->delivery_method_id = $registryBusinessDelivery['delivery_method_id'];
                         	                $modelRegistryBusinessDelivery->note = $registryBusinessDelivery['note']; ?>
                             	                

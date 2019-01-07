@@ -23,7 +23,7 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
 
     $notif = new NotificationDialog([
         'status' => $status,
@@ -33,8 +33,7 @@ if ($status !== null) :
 
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
+}
 
 $this->title = 'Update ' . Yii::t('app', 'Gallery Photo') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Data Application'), 'url' => ['index-' . strtolower($statusApproval)]];
@@ -76,7 +75,7 @@ echo $ajaxRequest->component(); ?>
                                             <?php
                                             foreach ($dataRegistryBusinessImage as $registryBusinessImage): ?>
 
-                                                <div class="col-xs-3">
+                                                <div class="col-xs-6 col-sm-3">
                                                     <div class="thumbnail">
                                                         <div class="image view view-first">
                                                         
@@ -108,10 +107,10 @@ echo $ajaxRequest->component(); ?>
 
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-sm-2">
-                                        <?= Html::label(Yii::t('app', 'Foto'), null, ['class' => 'control-label']) ?>
+                                    <div class="col-xs-12 col-sm-2">
+                                        <?= Html::label(Yii::t('app', 'Foto')) ?>
                                     </div>
-                                    <div class="col-sm-10">
+                                    <div class="col-xs-12 col-sm-10">
 
                                         <?= $form->field($modelRegistryBusinessImage, 'image[]')->widget(FileInput::classname(), [
                                             'options' => [
@@ -128,15 +127,13 @@ echo $ajaxRequest->component(); ?>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-xs-12">
 
-                                        <?php
-                                        echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-' . strtolower($statusApproval), 'id' => $model->id], ['class' => 'btn btn-default']); ?>
+                                    <?php
+                                    echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
+                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-' . strtolower($statusApproval), 'id' => $model->id], ['class' => 'btn btn-default']); ?>
 
-                                    </div>
                                 </div>
                             </div>
 
