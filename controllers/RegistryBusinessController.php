@@ -412,10 +412,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'dataRegistryBusinessProductCategoryChild' => $dataRegistryBusinessProductCategoryChild,
             'modelRegistryBusinessFacility' => $modelRegistryBusinessFacility,
             'dataRegistryBusinessFacility' => $dataRegistryBusinessFacility,
-            'modelRegistryBusinessPayment' => $modelRegistryBusinessPayment,
-            'dataRegistryBusinessPayment' => $dataRegistryBusinessPayment,
-            'modelRegistryBusinessDelivery' => $modelRegistryBusinessDelivery,
-            'dataRegistryBusinessDelivery' => $dataRegistryBusinessDelivery,
             'modelRegistryBusinessHour' => $modelRegistryBusinessHour,
             'dataRegistryBusinessHour' => $dataRegistryBusinessHour,
             'modelRegistryBusinessHourAdditional' => $modelRegistryBusinessHourAdditional,
@@ -423,7 +419,11 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'modelRegistryBusinessImage' => $modelRegistryBusinessImage,
             'modelPerson' => $modelPerson,
             'modelRegistryBusinessContactPerson' => $modelRegistryBusinessContactPerson,
-            'dataRegistryBusinessContactPerson' => $dataRegistryBusinessContactPerson
+            'dataRegistryBusinessContactPerson' => $dataRegistryBusinessContactPerson,
+            'modelRegistryBusinessPayment' => $modelRegistryBusinessPayment,
+            'dataRegistryBusinessPayment' => $dataRegistryBusinessPayment,
+            'modelRegistryBusinessDelivery' => $modelRegistryBusinessDelivery,
+            'dataRegistryBusinessDelivery' => $dataRegistryBusinessDelivery,
         ]);
     }
 
