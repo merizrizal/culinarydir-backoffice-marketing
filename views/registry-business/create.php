@@ -24,26 +24,25 @@ use core\models\RegistryBusinessDelivery;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
-/* @var $dataRegistryBusinessCategory array*/
 /* @var $modelRegistryBusinessCategory core\models\RegistryBusinessCategory */
+/* @var $dataRegistryBusinessCategory array*/
+/* @var $modelRegistryBusinessProductCategory core\models\RegistryBusinessProductCategory */
 /* @var $dataRegistryBusinessProductCategoryParent array */
 /* @var $dataRegistryBusinessProductCategoryChild array */
-/* @var $modelRegistryBusinessProductCategory core\models\RegistryBusinessProductCategory */
-/* @var $dataRegistryBusinessFacility array */
 /* @var $modelRegistryBusinessFacility core\models\RegistryBusinessFacility */
-/* @var $dataRegistryBusinessHour array */
+/* @var $dataRegistryBusinessFacility array */
 /* @var $modelRegistryBusinessHour core\models\RegistryBusinessHour */
-/* @var $dataRegistryBusinessHourAdditional array */
+/* @var $dataRegistryBusinessHour array */
 /* @var $modelRegistryBusinessHourAdditional core\models\RegistryBusinessHourAdditional */
-/* @var $dataRegistryBusinessImage array */
+/* @var $dataRegistryBusinessHourAdditional array */
 /* @var $modelRegistryBusinessImage core\models\RegistryBusinessImage */
 /* @var $modelPerson core\models\Person */
 /* @var $modelRegistryBusinessContactPerson core\models\RegistryBusinessContactPerson */
 /* @var $dataRegistryBusinessContactPerson array */
-/* @var $dataRegistryBusinessPayment array */
 /* @var $modelRegistryBusinessPayment core\models\RegistryBusinessPayment */
-/* @var $dataRegistryBusinessDelivery array */
+/* @var $dataRegistryBusinessPayment array */
 /* @var $modelRegistryBusinessDelivery core\models\RegistryBusinessDelivery */
+/* @var $dataRegistryBusinessDelivery array */
 /* @var $day string */
 
 kartik\select2\Select2Asset::register($this);
@@ -1080,7 +1079,7 @@ $this->registerJsFile(Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-st
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript = '
-    var indexCount = ' . count($dataRegistryBusinessContactPerson) . ';
+    var contactIndexCount = ' . count($dataRegistryBusinessContactPerson) . ';
     
     var paymentIndexCount = ' . count($dataRegistryBusinessPayment) .';
 
@@ -1380,21 +1379,21 @@ $jscript = '
 
         var formContactPerson = $(".temp-form").clone();
 
-        formContactPerson = replaceComponent(formContactPerson, "person-index-first_name", "index", indexCount);
-        formContactPerson = replaceComponent(formContactPerson, "person-index-last_name", "index", indexCount);
-        formContactPerson = replaceComponent(formContactPerson, "registrybusinesscontactperson-index-is_primary_contact", "index", indexCount);
-        formContactPerson = replaceComponent(formContactPerson, "person-index-phone", "index", indexCount);
-        formContactPerson = replaceComponent(formContactPerson, "person-index-email", "index", indexCount);
-        formContactPerson = replaceComponent(formContactPerson, "registrybusinesscontactperson-index-note", "index", indexCount);
-        formContactPerson = replaceComponent(formContactPerson, "registrybusinesscontactperson-index-position", "index", indexCount);
+        formContactPerson = replaceComponent(formContactPerson, "person-index-first_name", "index", contactIndexCount);
+        formContactPerson = replaceComponent(formContactPerson, "person-index-last_name", "index", contactIndexCount);
+        formContactPerson = replaceComponent(formContactPerson, "registrybusinesscontactperson-index-is_primary_contact", "index", contactIndexCount);
+        formContactPerson = replaceComponent(formContactPerson, "person-index-phone", "index", contactIndexCount);
+        formContactPerson = replaceComponent(formContactPerson, "person-index-email", "index", contactIndexCount);
+        formContactPerson = replaceComponent(formContactPerson, "registrybusinesscontactperson-index-note", "index", contactIndexCount);
+        formContactPerson = replaceComponent(formContactPerson, "registrybusinesscontactperson-index-position", "index", contactIndexCount);
 
         $(".main-form").append(formContactPerson.html());
 
-        addValidator(indexCount);
+        addValidator(contactIndexCount);
 
-        $("#person-" + indexCount + "-phone").inputmask({"mask":["999-999-9999","9999-999-9999","9999-9999-9999","9999-99999-9999"]});' .
+        $("#person-" + contactIndexCount + "-phone").inputmask({"mask":["999-999-9999","9999-999-9999","9999-9999-9999","9999-99999-9999"]});' .
 
-        Yii::$app->params['checkbox-radio-script'](null, null, '#registrybusinesscontactperson-" + indexCount + "-is_primary_contact') . '
+        Yii::$app->params['checkbox-radio-script'](null, null, '#registrybusinesscontactperson-" + contactIndexCount + "-is_primary_contact') . '
 
         $(".main-form").find(".contact-person-position").select2({
             theme: "krajee",
@@ -1402,7 +1401,7 @@ $jscript = '
             minimumResultsForSearch: "Infinity"
         });
 
-        indexCount++;
+        contactIndexCount++;
 
         return false;
     });
@@ -1411,9 +1410,9 @@ $jscript = '
 
         $(".main-form").children(".data-form").last().remove();
         
-        if (indexCount > 0) {
+        if (contactIndexCount > 0) {
 
-            indexCount--;
+            contactIndexCount--;
         }
         
         return false;
