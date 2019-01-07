@@ -1081,9 +1081,9 @@ $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/i
 $jscript = '
     var contactIndexCount = ' . count($dataRegistryBusinessContactPerson) . ';
     
-    var paymentIndexCount = ' . count($dataRegistryBusinessPayment) .';
+    var paymentIndexCount = ' . count($dataRegistryBusinessPayment) . ';
 
-    var deliveryIndexCount = ' . count($dataRegistryBusinessDelivery) .';
+    var deliveryIndexCount = ' . count($dataRegistryBusinessDelivery) . ';
 
     $("#registrybusiness-address_type").select2({
         theme: "krajee",
