@@ -782,8 +782,8 @@ $this->registerJs($jscript); ?>
                             	            
                             	            foreach ($dataRegistryBusinessPayment as $i => $registryBusinessPayment):
                             	                
-                        	                $modelRegistryBusinessPayment->payment_method_id = $registryBusinessPayment['payment_method_id']; 
-                        	                $modelRegistryBusinessPayment->note = $registryBusinessPayment['note']; ?>
+                            	                $modelRegistryBusinessPayment->payment_method_id = $registryBusinessPayment['payment_method_id']; 
+                            	                $modelRegistryBusinessPayment->note = $registryBusinessPayment['note']; ?>
                             	                
                             	                <div class="mb-40 payment-data-form">
                                                     <div class="row mt-10">
@@ -791,7 +791,7 @@ $this->registerJs($jscript); ?>
                                                         
                                                         	<?= $form->field($modelRegistryBusinessPayment, '[' . $i .']payment_method_id')->dropDownList(
                                                     	        ArrayHelper::map(
-                                                        	        PaymentMethod::find()->andWhere(['not_active' => false])->orderBy('payment_name')->asArray()->all(),
+                                                    	            PaymentMethod::find()->andWhere(['not_active' => false])->orderBy(['id' => SORT_ASC])->asArray()->all(),
                                                         	        'id',
                                                         	        'payment_name'
                                                     	        ),
@@ -833,8 +833,8 @@ $this->registerJs($jscript); ?>
                             	            
                                 	        foreach ($dataRegistryBusinessDelivery as $i => $registryBusinessDelivery):
                                 	                
-                            	            $modelRegistryBusinessDelivery->delivery_method_id = $registryBusinessDelivery['delivery_method_id'];
-                        	                $modelRegistryBusinessDelivery->note = $registryBusinessDelivery['note']; ?>
+                                	            $modelRegistryBusinessDelivery->delivery_method_id = $registryBusinessDelivery['delivery_method_id'];
+                            	                $modelRegistryBusinessDelivery->note = $registryBusinessDelivery['note']; ?>
                             	                
                             	                <div class="mb-40 delivery-data-form">
                                                     <div class="row mt-10">
@@ -842,7 +842,7 @@ $this->registerJs($jscript); ?>
                                                         
                                                         	<?= $form->field($modelRegistryBusinessDelivery, '[' . $i .']delivery_method_id')->dropDownList(
                                                     	        ArrayHelper::map(
-                                                        	        DeliveryMethod::find()->andWhere(['not_active' => false])->orderBy('delivery_name')->asArray()->all(),
+                                                    	            DeliveryMethod::find()->andWhere(['not_active' => false])->orderBy(['id' => SORT_ASC])->asArray()->all(),
                                                         	        'id',
                                                         	        'delivery_name'
                                                     	        ),
@@ -993,7 +993,7 @@ $modelRegistryBusinessPayment = new RegistryBusinessPayment(); ?>
             
             	<?= $form->field($modelRegistryBusinessPayment, '[index]payment_method_id')->dropDownList(
         	        ArrayHelper::map(
-            	        PaymentMethod::find()->andWhere(['not_active' => false])->orderBy('payment_name')->asArray()->all(),
+            	        PaymentMethod::find()->andWhere(['not_active' => false])->orderBy(['id' => SORT_ASC])->asArray()->all(),
             	        'id',
             	        'payment_name'
         	        ),
@@ -1021,7 +1021,7 @@ $modelRegistryBusinessDelivery = new RegistryBusinessDelivery(); ?>
             
             	<?= $form->field($modelRegistryBusinessDelivery, '[index]delivery_method_id')->dropDownList(
         	        ArrayHelper::map(
-            	        DeliveryMethod::find()->andWhere(['not_active' => false])->orderBy('delivery_name')->asArray()->all(),
+        	            DeliveryMethod::find()->andWhere(['not_active' => false])->orderBy(['id' => SORT_ASC])->asArray()->all(),
             	        'id',
             	        'delivery_name'
         	        ),
@@ -1081,9 +1081,9 @@ $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/i
 $jscript = '
     var contactIndexCount = ' . count($dataRegistryBusinessContactPerson) . ';
     
-    var paymentIndexCount = ' . count($dataRegistryBusinessPayment) .';
+    var paymentIndexCount = ' . count($dataRegistryBusinessPayment) . ';
 
-    var deliveryIndexCount = ' . count($dataRegistryBusinessDelivery) .';
+    var deliveryIndexCount = ' . count($dataRegistryBusinessDelivery) . ';
 
     $("#registrybusiness-address_type").select2({
         theme: "krajee",

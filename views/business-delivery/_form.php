@@ -89,10 +89,7 @@ echo $ajaxRequest->component() ?>
 
                         <?= $form->field($model, 'delivery_method_id')->dropDownList(
                             ArrayHelper::map(
-                                DeliveryMethod::find()
-                                    ->andWhere(['not_active' => false])
-                                    ->orderBy(['id' => SORT_ASC])
-                                    ->asArray()->all(),
+                                DeliveryMethod::find()->andWhere(['not_active' => false])->orderBy(['id' => SORT_ASC])->asArray()->all(),
                                 'id',
                                 function ($data) {
                                     return $data['delivery_name'];
