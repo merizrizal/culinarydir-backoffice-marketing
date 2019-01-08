@@ -100,7 +100,9 @@ echo $ajaxRequest->component() ?>
                             'style' => 'width: 100%'
                         ]) ?>
                     
-                        <?= $form->field($model, 'note')->textarea(['rows' => 6]) ?>
+                        <?= $form->field($model, 'note')->textarea(['rows' => 2]) ?>
+                        
+                        <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
                         
                         <?= $form->field($model, 'is_active')->checkbox(['value' => true], false) ?>
 

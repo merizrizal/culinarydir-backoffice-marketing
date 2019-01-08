@@ -344,7 +344,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $newModelRegistryBusinessPayment->registry_business_id = $model->id;
                                 $newModelRegistryBusinessPayment->payment_method_id = $dataPaymentMethod['payment_method_id'];
                                 $newModelRegistryBusinessPayment->is_active = true;
-                                $newModelRegistryBusinessPayment->note = $dataPaymentMethod['note'];
+                                $newModelRegistryBusinessPayment->note = !empty($dataPaymentMethod['note']) ? $dataPaymentMethod['note'] : null;
+                                $newModelRegistryBusinessPayment->description = !empty($dataPaymentMethod['description']) ? $dataPaymentMethod['description'] : null;
                                 
                                 if (!($flag = $newModelRegistryBusinessPayment->save())) {
                                     
@@ -367,7 +368,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $newModelRegistryBusinessDelivery->registry_business_id = $model->id;
                                 $newModelRegistryBusinessDelivery->delivery_method_id = $dataDeliveryMethod['delivery_method_id'];
                                 $newModelRegistryBusinessDelivery->is_active = true;
-                                $newModelRegistryBusinessDelivery->note = $dataDeliveryMethod['note'];
+                                $newModelRegistryBusinessDelivery->note = !empty($dataDeliveryMethod['note']) ? $dataDeliveryMethod['note'] : null;
+                                $newModelRegistryBusinessDelivery->description = !empty($dataDeliveryMethod['description']) ? $dataDeliveryMethod['description'] : null;
                                 
                                 if (!($flag = $newModelRegistryBusinessDelivery->save())) {
                                     

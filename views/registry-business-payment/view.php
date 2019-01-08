@@ -71,6 +71,7 @@ echo $ajaxRequest->component(); ?>
                         'attributes' => [
                             'paymentMethod.payment_name',
                             'note:ntext',
+                            'description:ntext',
                             [
                                 'attribute' => 'is_active',
                                 'format' => 'raw',

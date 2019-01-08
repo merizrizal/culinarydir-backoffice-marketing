@@ -805,6 +805,9 @@ $this->registerJs($jscript); ?>
                                                         <div class="col-md-8 col-xs-12">
                                                             <?= $form->field($modelRegistryBusinessPayment, '[' . $i .']note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
                                                         </div>
+                                                        <div class="col-md-offset-4 col-md-8 col-xs-12">
+                                                            <?= $form->field($modelRegistryBusinessPayment, '[' . $i .']description')->textarea(['rows' => 6, 'placeholder' => Yii::t('app', 'Description')]) ?>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 
@@ -855,6 +858,9 @@ $this->registerJs($jscript); ?>
                                                         </div>
                                                         <div class="col-md-8 col-xs-12">
                                                             <?= $form->field($modelRegistryBusinessDelivery, '[' . $i .']note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                                                        </div>
+                                                        <div class="col-md-offset-4 col-md-8 col-xs-12">
+                                                            <?= $form->field($modelRegistryBusinessDelivery, '[' . $i .']description')->textarea(['rows' => 6, 'placeholder' => Yii::t('app', 'Description')]) ?>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1007,6 +1013,9 @@ $modelRegistryBusinessPayment = new RegistryBusinessPayment(); ?>
             <div class="col-md-8 col-xs-12">
                 <?= $form->field($modelRegistryBusinessPayment, '[index]note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
             </div>
+            <div class="col-md-offset-4 col-md-8 col-xs-12">
+                <?= $form->field($modelRegistryBusinessPayment, '[index]description')->textarea(['rows' => 6, 'placeholder' => Yii::t('app', 'Description')]) ?>
+            </div>
         </div>
     </div>
 </div>
@@ -1034,6 +1043,9 @@ $modelRegistryBusinessDelivery = new RegistryBusinessDelivery(); ?>
             </div>
             <div class="col-md-8 col-xs-12">
                 <?= $form->field($modelRegistryBusinessDelivery, '[index]note')->textarea(['rows' => 2, 'placeholder' => Yii::t('app', 'Note')]) ?>
+            </div>
+            <div class="col-md-offset-4 col-md-8 col-xs-12">
+                <?= $form->field($modelRegistryBusinessDelivery, '[index]description')->textarea(['rows' => 6, 'placeholder' => Yii::t('app', 'Description')]) ?>
             </div>
         </div>
     </div>
@@ -1424,6 +1436,7 @@ $jscript = '
 
         formPaymentMethod = replaceComponent(formPaymentMethod, "registrybusinesspayment-index-payment_method_id", "index", paymentIndexCount);
         formPaymentMethod = replaceComponent(formPaymentMethod, "registrybusinesspayment-index-note", "index", paymentIndexCount);
+        formPaymentMethod = replaceComponent(formPaymentMethod, "registrybusinesspayment-index-description", "index", paymentIndexCount);
 
         $(".payment-main-form").append(formPaymentMethod.html());
 
@@ -1466,6 +1479,7 @@ $jscript = '
 
         formDeliveryMethod = replaceComponent(formDeliveryMethod, "registrybusinessdelivery-index-delivery_method_id", "index", deliveryIndexCount);
         formDeliveryMethod = replaceComponent(formDeliveryMethod, "registrybusinessdelivery-index-note", "index", deliveryIndexCount);
+        formDeliveryMethod = replaceComponent(formDeliveryMethod, "registrybusinessdelivery-index-description", "index", deliveryIndexCount);
 
         $(".delivery-main-form").append(formDeliveryMethod.html());
 
