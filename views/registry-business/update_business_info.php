@@ -27,6 +27,7 @@ $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
 if ($status !== null) {
+    
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -69,12 +70,10 @@ echo $ajaxRequest->component(); ?>
                         <div class="x_content">
 
                             <div class="row">
-                                <div class="col-md-6">
-                                
+                                <div class="col-xs-12 col-sm-6">
                                     <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Name')]) ?>
-                                    
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-xs-12 col-sm-6">
                                 
                                     <?= $form->field($model, 'unique_name', [
                                         'enableAjaxValidation' => true
@@ -84,37 +83,31 @@ echo $ajaxRequest->component(); ?>
                             </div>
 
                             <div class="row">
-
-                                <div class="col-md-3">
+                                <div class="col-xs-12 col-sm-3">
                                 
-                                    <?= $form->field($model, 'address_type')->dropDownList(['Gang' => 'Gang', 'Jalan' => 'Jalan', 'Komplek' => 'Komplek'], ['prompt' => Yii::t('app', 'Address Type'), 'style' => 'width: 100%']) ?>
-                                    
+                                    <?= $form->field($model, 'address_type')->dropDownList(['Gang' => 'Gang', 'Jalan' => 'Jalan', 'Komplek' => 'Komplek'], [
+                                        'prompt' => Yii::t('app', 'Address Type'),
+                                        'style' => 'width: 100%'
+                                    ]) ?>
+                                
                                 </div>
-
-                                <div class="col-md-5">
-                                
+                                <div class="col-xs-12 col-sm-5">
                                     <?= $form->field($model, 'address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address')]) ?>
-                                    
                                 </div>
-
-
-                                <div class="col-md-4">
-                                
+                                <div class="col-xs-12 col-sm-4">
                                     <?= $form->field($model, 'address_info')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address Info')]) ?>
-                                    
                                 </div>
-
                             </div>
 
                             <div class="row">
-
-                                <div class="col-lg-3 col-xs-6">
+                                <div class="col-xs-6 col-sm-3">
                                 
                                     <?= $form->field($model, 'city_id')->dropDownList(
                                         ArrayHelper::map(
                                             City::find()->orderBy('name')->asArray()->all(),
                                             'id',
                                             function($data) {
+                                                
                                                 return $data['name'];
                                             }
                                         ),
@@ -124,49 +117,36 @@ echo $ajaxRequest->component(); ?>
                                         ]) ?>
                                         
                                 </div>
-
-                                <div class="col-lg-3 col-xs-6">
+                                <div class="col-xs-6 col-sm-3">
                                 
                                     <?= $form->field($model, 'district_id')->textInput([
                                         'style' => 'width: 100%'
                                     ]) ?>
                                     
                                 </div>
-
-                                <div class="col-lg-3 col-xs-6">
+                                <div class="col-xs-6 col-sm-3">
                                 
                                     <?= $form->field($model, 'village_id')->textInput([
                                         'style' => 'width: 100%'
                                     ]) ?>
                                     
                                 </div>
-
                             </div>
 
                             <div class="row">
-
-                                <div class="col-lg-6 col-xs-9">
-                                
+                                <div class="col-xs-9 col-sm-6">
                                     <?= $form->field($model, 'coordinate')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Coordinate')]) ?>
-                                    
                                 </div>
-
-                                <div class="col-lg-3 col-xs-3">
-                                
+                                <div class="col-xs-3 col-sm-3">
                                     <?= Html::a('<i class="fa fa-map-marker-alt"></i> ' . Yii::t('app', 'Open Map'), 'https://www.google.co.id/maps/@-6.9171962,107.6185384,14.75z?hl=en', ['class' => 'btn btn-primary btn-block direct', 'target' => '_blank']) ?>
-                                    
                                 </div>
                             </div>
 
                             <div class="row">
-
-                                <div class="col-lg-3 col-xs-6">
-                                
+                                <div class="col-xs-6 col-sm-3">
                                     <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Email')]) ?>
-                                    
                                 </div>
-
-                                <div class="col-lg-3 col-xs-6">
+                                <div class="col-xs-6 col-sm-3">
                                 
                                     <?= $form->field($model, 'phone1')->widget(MaskedInput::className(), [
                                         'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
@@ -177,8 +157,7 @@ echo $ajaxRequest->component(); ?>
                                     ]) ?>
                                     
                                 </div>
-
-                                <div class="col-lg-3 col-xs-6">
+                                <div class="col-xs-6 col-sm-3">
                                 
                                     <?= $form->field($model, 'phone2')->widget(MaskedInput::className(), [
                                         'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
@@ -189,8 +168,7 @@ echo $ajaxRequest->component(); ?>
                                     ]) ?>
                                     
                                 </div>
-
-                                <div class="col-lg-3 col-xs-6">
+                                <div class="col-xs-6 col-sm-3">
                                 
                                     <?= $form->field($model, 'phone3')->widget(MaskedInput::className(), [
                                         'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
@@ -201,11 +179,10 @@ echo $ajaxRequest->component(); ?>
                                     ]) ?>
                                     
                                 </div>
-
                             </div>
                             
                             <div class="row">
-                                <div class="col-lg-12">
+                                <div class="col-xs-12">
 
                                     <?= $form->field($model, 'about', [
                                         'template' => '{label}{input}{error}',
@@ -217,22 +194,18 @@ echo $ajaxRequest->component(); ?>
                             </div>
                             
                             <div class="row">
-                                <div class="col-md-9">
-                                
+                                <div class="col-xs-12 col-sm-9">
                                     <?= $form->field($model, 'note')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
-                                    
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-xs-12">
 
-                                        <?php
-                                        echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-' . strtolower($statusApproval), 'id' => $model->id], ['class' => 'btn btn-default']); ?>
+                                    <?php
+                                    echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
+                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-' . strtolower($statusApproval), 'id' => $model->id], ['class' => 'btn btn-default']); ?>
 
-                                    </div>
                                 </div>
                             </div>
 
@@ -248,24 +221,10 @@ echo $ajaxRequest->component(); ?>
 </div>
 
 <?php
-
 $jscript = '
-    $("#registrybusiness-address_type").select2({
-        theme: "krajee",
-        placeholder: "' . Yii::t('app', 'Address Type') . '",
-        minimumResultsForSearch: "Infinity"
-    });
-
-    $("#registrybusiness-city_id").select2({
-        theme: "krajee",
-        placeholder: "' . Yii::t('app', 'City ID') . '"
-    });
-
-    $("#registrybusiness-city_id").val(1).trigger("change");
-
     function district(executeRemote, afterSuccess) {
 
-        var setDistrict = function(remoteData) {
+        function setDistrict(remoteData) {
 
             $("#registrybusiness-district_id").val(null).trigger("change");
 
@@ -287,6 +246,7 @@ $jscript = '
                     setDistrict(response);
 
                     if (afterSuccess !== undefined) {
+
                         afterSuccess();
                     }
                 }
@@ -296,43 +256,18 @@ $jscript = '
             setDistrict([]);
 
             if (afterSuccess !== undefined) {
+
                 afterSuccess();
             }
         }
     };
-
-    district();
-
-    if ($("#registrybusiness-city_id").select2("data")[0].id) {
-
-        district(true, function() {
-
-            $("input#registrybusiness-district_id").val("' . $model->district_id . '").trigger("change");
-
-            if ($("#registrybusiness-district_id").select2("data")[0] && $("#registrybusiness-district_id").select2("data")[0].id) {
-
-                village(true, function() {
-
-                    $("input#registrybusiness-village_id").val("' . $model->village_id . '").trigger("change");
-                });
-            }
-        });
-    }
-
-    $("#registrybusiness-city_id").on("select2:select", function(e) {
-
-        district(true, function() {
-
-            $("input#registrybusiness-village_id").val(null).trigger("change");
-            village();
-        });
-    });
 
     function village(executeRemote, afterSuccess) {
 
         function setVillage(remoteData) {
 
             $("#registrybusiness-village_id").val(null).trigger("change");
+
             $("#registrybusiness-village_id").select2({
                 theme: "krajee",
                 placeholder: "' . Yii::t('app', 'Village ID') . '",
@@ -351,6 +286,7 @@ $jscript = '
                     setVillage(response);
 
                     if (afterSuccess !== undefined) {
+
                         afterSuccess();
                     }
                 }
@@ -360,14 +296,55 @@ $jscript = '
             setVillage([]);
 
             if (afterSuccess !== undefined) {
+
                 afterSuccess();
             }
         }
     };
 
+    $("#registrybusiness-address_type").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'Address Type') . '",
+        minimumResultsForSearch: Infinity
+    });
+
+    $("#registrybusiness-city_id").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'City ID') . '"
+    });
+
+    district();
+
     village();
 
-    $("#registrybusiness-district_id").on("select2:select", function(e) {
+    $("#registrybusiness-city_id").val(1).trigger("change");
+
+    if ($("#registrybusiness-city_id").select2("data")[0].id) {
+
+        district(true, function() {
+
+            $("input#registrybusiness-district_id").val("' . $model->district_id . '").trigger("change");
+
+            if ($("#registrybusiness-district_id").select2("data")[0] && $("#registrybusiness-district_id").select2("data")[0].id) {
+
+                village(true, function() {
+
+                    $("input#registrybusiness-village_id").val("' . $model->village_id . '").trigger("change");
+                });
+            }
+        });
+    }
+
+    $("#registrybusiness-city_id").on("select2:select", function() {
+
+        district(true, function() {
+
+            $("input#registrybusiness-village_id").val(null).trigger("change");
+            village();
+        });
+    });
+
+    $("#registrybusiness-district_id").on("select2:select", function() {
 
         village(true);
     });

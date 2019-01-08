@@ -838,7 +838,7 @@ $this->registerJs($jscript); ?>
                                 	                
                                 	            $modelRegistryBusinessDelivery->delivery_method_id = $registryBusinessDelivery['delivery_method_id'];
                             	                $modelRegistryBusinessDelivery->note = $registryBusinessDelivery['note']; ?>
-                                	                
+                            	                
                             	                <div class="mb-40 delivery-data-form">
                                                     <div class="row mt-10">
                                                         <div class="col-md-4 col-xs-12">

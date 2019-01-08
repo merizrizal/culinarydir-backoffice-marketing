@@ -12,13 +12,13 @@ use core\models\Facility;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryBusiness */
-/* @var $dataRegistryBusinessCategory array */
 /* @var $modelRegistryBusinessCategory core\models\RegistryBusinessCategory */
+/* @var $dataRegistryBusinessCategory array */
+/* @var $modelRegistryBusinessProductCategory core\models\RegistryBusinessProductCategory */
 /* @var $dataRegistryBusinessProductCategoryParent array */
 /* @var $dataRegistryBusinessProductCategoryChild array */
-/* @var $modelRegistryBusinessProductCategory core\models\RegistryBusinessProductCategory */
-/* @var $dataRegistryBusinessFacility array */
 /* @var $modelRegistryBusinessFacility core\models\RegistryBusinessFacility */
+/* @var $dataRegistryBusinessFacility array */
 /* @var $statusApproval string */
 /* @var $day string */
 
@@ -80,27 +80,22 @@ echo $ajaxRequest->component(); ?>
 
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <?= Html::label(Yii::t('app', 'Business Category'), null, ['class' => 'control-label']) ?>
+                                    <div class="col-xs-12">
+                                        <?= Html::label(Yii::t('app', 'Business Category')) ?>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-
+                                    <div class="col-xs-12">
+    
                                         <?php
                                         $selectedDataCategory = [];
-
+    
                                         if (!empty($dataRegistryBusinessCategory)) {
-
+    
                                             foreach ($dataRegistryBusinessCategory as $registryBusinessCategory) {
-
-                                                if (!empty($registryBusinessCategory['category_id'])) {
-
-                                                    $selectedDataCategory[$registryBusinessCategory['category_id']] = ['selected' => true];
-                                                }
+    
+                                                $selectedDataCategory[$registryBusinessCategory['category_id']] = ['selected' => true];
                                             }
                                         }
-
+    
                                         echo $form->field($modelRegistryBusinessCategory, 'category_id')->dropDownList(
                                             ArrayHelper::map(
                                                 Category::find()->orderBy('name')->asArray()->all(),
@@ -113,19 +108,17 @@ echo $ajaxRequest->component(); ?>
                                                 'style' => 'width: 100%',
                                                 'options' => $selectedDataCategory
                                             ]) ?>
-
+    
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <?= Html::label(Yii::t('app', 'Product Category'), null, ['class' => 'control-label']) ?>
+                                    <div class="col-xs-12">
+                                        <?= Html::label(Yii::t('app', 'Product Category')) ?>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-xs-12">
 
                                         <?php
                                         $selectedDataProductParent = [];
@@ -152,7 +145,7 @@ echo $ajaxRequest->component(); ?>
                                             ]) ?>
 
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-xs-12">
 
                                         <?php
                                         $selectedDataProductChild = [];
@@ -184,12 +177,10 @@ echo $ajaxRequest->component(); ?>
 
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <?= Html::label(Yii::t('app', 'Facility'), null, ['class' => 'control-label']) ?>
+                                    <div class="col-xs-12">
+                                        <?= Html::label(Yii::t('app', 'Facility')) ?>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-xs-12">
 
                                         <?php
                                         $selectedDataFacility = [];
@@ -198,10 +189,7 @@ echo $ajaxRequest->component(); ?>
 
                                             foreach ($dataRegistryBusinessFacility as $registryBusinessFacility) {
 
-                                                if (!empty($registryBusinessFacility['facility_id'])) {
-
-                                                    $selectedDataFacility[$registryBusinessFacility['facility_id']] = ['selected' => true];
-                                                }
+                                                $selectedDataFacility[$registryBusinessFacility['facility_id']] = ['selected' => true];
                                             }
                                         }
 
@@ -224,63 +212,58 @@ echo $ajaxRequest->component(); ?>
                             
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <label class="control-label"><?= Yii::t('app', 'Price Range') ?></label>
+                                    <div class="col-xs-12">
+                                        <?= Html::label(Yii::t('app', 'Average Spending')) ?>
+                                    </div>
+                                    <div class="col-xs-5 col-sm-4 col-lg-3">
+
+                                        <?= $form->field($model, 'price_min')->widget(TouchSpin::className(), [
+                                            'options' => [
+                                                'placeholder' => Yii::t('app', 'Price Min'),
+                                            ],
+                                            'pluginOptions' => [
+                                                'min' => 0,
+                                                'max' => 1000000,
+                                                'step' => 10000,
+                                                'prefix' => 'Rp',
+                                                'verticalbuttons' => true,
+                                                'verticalup' => '<i class="glyphicon glyphicon-plus"></i>',
+                                                'verticaldown' => '<i class="glyphicon glyphicon-minus"></i>'
+                                            ],
+                                        ]); ?>
+    
+                                    </div>
+                                    <div class="col-xs-1 text-center">
+                                        -
+                                    </div>
+                                    <div class="col-xs-5 col-sm-4 col-lg-3">
+    
+                                        <?= $form->field($model, 'price_max')->widget(TouchSpin::className(), [
+                                            'options' => [
+                                                'placeholder' => Yii::t('app', 'Price Max'),
+                                            ],
+                                            'pluginOptions' => [
+                                                'min' => 0,
+                                                'max' => 1000000,
+                                                'step' => 10000,
+                                                'prefix' => 'Rp',
+                                                'verticalbuttons' => true,
+                                                'verticalup' => '<i class="glyphicon glyphicon-plus"></i>',
+                                                'verticaldown' => '<i class="glyphicon glyphicon-minus"></i>'
+                                            ],
+                                        ]); ?>
+    
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
+                                <div class="col-xs-12">
 
-                                    <?= $form->field($model, 'price_min')->widget(TouchSpin::className(), [
-                                        'options' => [
-                                            'placeholder' => Yii::t('app', 'Price Min'),
-                                        ],
-                                        'pluginOptions' => [
-                                            'min' => 0,
-                                            'max' => 1000000,
-                                            'step' => 10000,
-                                            'prefix' => 'Rp',
-                                            'verticalbuttons' => true,
-                                            'verticalup' => '<i class="glyphicon glyphicon-plus"></i>',
-                                            'verticaldown' => '<i class="glyphicon glyphicon-minus"></i>'
-                                        ],
-                                    ]); ?>
+                                    <?php
+                                    echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
+                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-' . strtolower($statusApproval), 'id' => $model->id], ['class' => 'btn btn-default']); ?>
 
-                                </div>
-                                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
-                                    -
-                                </div>
-                                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
-
-                                    <?= $form->field($model, 'price_max')->widget(TouchSpin::className(), [
-                                        'options' => [
-                                            'placeholder' => Yii::t('app', 'Price Max'),
-                                        ],
-                                        'pluginOptions' => [
-                                            'min' => 0,
-                                            'max' => 1000000,
-                                            'step' => 10000,
-                                            'prefix' => 'Rp',
-                                            'verticalbuttons' => true,
-                                            'verticalup' => '<i class="glyphicon glyphicon-plus"></i>',
-                                            'verticaldown' => '<i class="glyphicon glyphicon-minus"></i>'
-                                        ],
-                                    ]); ?>
-
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-lg-12">
-
-                                        <?php
-                                        echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-' . strtolower($statusApproval), 'id' => $model->id], ['class' => 'btn btn-default']); ?>
-
-                                    </div>
                                 </div>
                             </div>
 
@@ -342,18 +325,6 @@ $jscript = '
         theme: "krajee",
         dropdownCssClass: "select2-grid-system",
         placeholder: "' . Yii::t('app', 'Facility') . '"
-    });
-
-    $("#registrybusinesspayment-payment_method_id").select2({
-        theme: "krajee",
-        dropdownCssClass: "select2-grid-system",
-        placeholder: "' . Yii::t('app', 'Payment Methods') . '"
-    });
-
-    $("#registrybusinessdelivery-delivery_method_id").select2({
-        theme: "krajee",
-        dropdownCssClass: "select2-grid-system",
-        placeholder: "' . Yii::t('app', 'Delivery Methods') . '"
     });
 ';
 
