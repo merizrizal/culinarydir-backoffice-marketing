@@ -22,17 +22,17 @@ $status = Yii::$app->session->getFlash('status');
 $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
-if ($status !== null) :
+if ($status !== null) {
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
         'message2' => $message2,
     ]);
-
+    
     $notif->theScript();
     echo $notif->renderDialog();
-
-endif;
+}
 
 $this->title = Yii::t('app', 'Promo');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['business/member']];
@@ -75,11 +75,11 @@ echo $ajaxRequest->component(true); ?>
             [
                 'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index', 'id' => $modelBusiness['id']],
                 [
-                'id' => 'refresh',
-                'class' => 'btn btn-success',
-                'data-placement' => 'top',
-                'data-toggle' => 'tooltip',
-                'title' => 'Refresh'
+                    'id' => 'refresh',
+                    'class' => 'btn btn-success',
+                    'data-placement' => 'top',
+                    'data-toggle' => 'tooltip',
+                    'title' => 'Refresh'
                 ])
             ],
         ],
@@ -109,6 +109,7 @@ echo $ajaxRequest->component(true); ?>
                     </div>',
                 'buttons' => [
                     'view' =>  function($url, $model, $key) {
+                        
                         return Html::a('<i class="fa fa-search-plus"></i>', ['view', 'id' => $model->id], [
                             'id' => 'view',
                             'class' => 'btn btn-primary',
@@ -118,6 +119,7 @@ echo $ajaxRequest->component(true); ?>
                         ]);
                     },
                     'update' =>  function($url, $model, $key) {
+                        
                         return Html::a('<i class="fa fa-pencil-alt"></i>', ['update', 'id' => $model->id], [
                             'id' => 'update',
                             'class' => 'btn btn-success',
@@ -127,6 +129,7 @@ echo $ajaxRequest->component(true); ?>
                         ]);
                     },
                     'delete' =>  function($url, $model, $key) {
+                        
                         return Html::a('<i class="fa fa-trash-alt"></i>', ['delete', 'id' => $model->id], [
                             'id' => 'delete',
                             'class' => 'btn btn-danger',

@@ -9,8 +9,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => [
 $this->params['breadcrumbs'][] = ['label' => $modelBusiness['name'], 'url' => ['business/view-member', 'id' => $modelBusiness['id']]];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Product'), 'url' => ['index', 'id' => $modelBusiness['id']]];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = $this->title;
-?>
+$this->params['breadcrumbs'][] = $this->title; ?>
+
 <div class="business-product-create">
 
     <?= $this->render('_form', [

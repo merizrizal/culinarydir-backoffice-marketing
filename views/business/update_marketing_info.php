@@ -47,24 +47,6 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$category = Category::find()
-    ->orderBy('name')
-    ->asArray()->all();
-
-$productParentCategory = ProductCategory::find()
-    ->andWhere(['is_parent' => 1])
-    ->orderBy('name')
-    ->asArray()->all();
-
-$productCategory = ProductCategory::find()
-    ->andWhere(['is_parent' => 0])
-    ->orderBy('name')
-    ->asArray()->all();
-
-$facility = Facility::find()
-    ->orderBy('name')
-    ->asArray()->all();
-
 $this->title = 'Update ' . Yii::t('app', 'Marketing Information') . ' : ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['member']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-member', 'id' => $model->id]];
@@ -98,15 +80,10 @@ echo $ajaxRequest->component(); ?>
 
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                    
+                                    <div class="col-xs-12">
                                         <?= Html::label(Yii::t('app', 'Business Category')) ?>
-                                        
                                     </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-xs-12">
 
                                         <?php
                                         $selectedDataCategory = [];
@@ -115,16 +92,13 @@ echo $ajaxRequest->component(); ?>
 
                                             foreach ($dataBusinessCategory as $businessCategory) {
 
-                                                if (!empty($businessCategory['category_id'])) {
-
-                                                    $selectedDataCategory[$businessCategory['category_id']] = ['selected' => true];
-                                                }
+                                                $selectedDataCategory[$businessCategory['category_id']] = ['selected' => true];
                                             }
                                         }
 
                                         echo $form->field($modelBusinessCategory, 'category_id')->dropDownList(
                                             ArrayHelper::map(
-                                                $category,
+                                                Category::find()->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 'name'
                                             ),
@@ -141,15 +115,10 @@ echo $ajaxRequest->component(); ?>
 
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                    
+                                    <div class="col-xs-12">
                                         <?= Html::label(Yii::t('app', 'Product Category')) ?>
-                                        
                                     </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-xs-12">
 
                                         <?php
                                         $selectedDataProductParent = [];
@@ -164,7 +133,7 @@ echo $ajaxRequest->component(); ?>
 
                                         echo $form->field($modelBusinessProductCategory, 'product_category_id[parent]')->dropDownList(
                                             ArrayHelper::map(
-                                                $productParentCategory,
+                                                ProductCategory::find()->andWhere(['is_parent' => true])->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 'name'
                                             ),
@@ -176,7 +145,7 @@ echo $ajaxRequest->component(); ?>
                                             ]) ?>
 
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-xs-12">
 
                                         <?php
                                         $selectedDataProductChild = [];
@@ -191,7 +160,7 @@ echo $ajaxRequest->component(); ?>
 
                                         echo $form->field($modelBusinessProductCategory, 'product_category_id[child]')->dropDownList(
                                             ArrayHelper::map(
-                                                $productCategory,
+                                                ProductCategory::find()->andWhere(['is_parent' => false])->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 'name'
                                             ),
@@ -208,15 +177,10 @@ echo $ajaxRequest->component(); ?>
 
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                    
+                                    <div class="col-xs-12">
                                         <?= Html::label(Yii::t('app', 'Facility')) ?>
-                                        
                                     </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-xs-12">
 
                                         <?php
                                         $selectedDataFacility = [];
@@ -225,16 +189,13 @@ echo $ajaxRequest->component(); ?>
 
                                             foreach ($dataBusinessFacility as $businessFacility) {
 
-                                                if (!empty($businessFacility['facility_id'])) {
-
-                                                    $selectedDataFacility[$businessFacility['facility_id']] = ['selected' => true];
-                                                }
+                                                $selectedDataFacility[$businessFacility['facility_id']] = ['selected' => true];
                                             }
                                         }
 
                                         echo $form->field($modelBusinessFacility, 'facility_id')->dropDownList(
                                             ArrayHelper::map(
-                                                $facility,
+                                                Facility::find()->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 'name'
                                             ),
@@ -251,15 +212,10 @@ echo $ajaxRequest->component(); ?>
 
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                    
-                                        <?= Html::label(Yii::t('app', 'Price Range')) ?>
-                                        
+                                    <div class="col-xs-12">
+                                        <?= Html::label(Yii::t('app', 'Average Spending')) ?>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
+                                    <div class="col-xs-5 col-sm-4 col-lg-3">
     
                                         <?= $form->field($modelBusinessDetail, 'price_min')->widget(TouchSpin::className(), [
                                             'options' => [
@@ -277,10 +233,10 @@ echo $ajaxRequest->component(); ?>
                                         ]); ?>
     
                                     </div>
-                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
+                                    <div class="col-xs-1 text-center">
                                         -
                                     </div>
-                                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
+                                    <div class="col-xs-5 col-sm-4 col-lg-3">
     
                                         <?= $form->field($modelBusinessDetail, 'price_max')->widget(TouchSpin::className(), [
                                             'options' => [
@@ -302,7 +258,7 @@ echo $ajaxRequest->component(); ?>
                             </div>
                             
                             <div class="row">
-                                <div class="col-lg-12">
+                                <div class="col-xs-12">
 
                                     <?php
                                     echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
@@ -323,29 +279,6 @@ echo $ajaxRequest->component(); ?>
 </div>
 
 <?php
-$cssscript = '
-    .select2-grid-system ul.select2-results__options > li.select2-results__option {
-        float: left;
-        width: 50%;
-    }
-
-    @media (min-width: 768px) {
-        .select2-grid-system ul.select2-results__options > li.select2-results__option {
-            float: left;
-            width: 33.33333333%;
-        }
-    }
-
-    @media (min-width: 1200px) {
-        .select2-grid-system ul.select2-results__options > li.select2-results__option {
-            float: left;
-            width: 20%;
-        }
-    }
-';
-
-$this->registerCss($cssscript);
-
 $jscript = '
     $("#businesscategory-category_id").select2({
         theme: "krajee",

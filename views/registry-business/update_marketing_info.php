@@ -279,29 +279,6 @@ echo $ajaxRequest->component(); ?>
 </div>
 
 <?php
-$cssscript = '
-    .select2-grid-system ul.select2-results__options > li.select2-results__option {
-        float: left;
-        width: 50%;
-    }
-
-    @media (min-width: 768px) {
-        .select2-grid-system ul.select2-results__options > li.select2-results__option {
-            float: left;
-            width: 33.33333333%;
-        }
-    }
-
-    @media (min-width: 1200px) {
-        .select2-grid-system ul.select2-results__options > li.select2-results__option {
-            float: left;
-            width: 20%;
-        }
-    }
-';
-
-$this->registerCss($cssscript);
-
 $jscript = '
     $("#registrybusinesscategory-category_id").select2({
         theme: "krajee",

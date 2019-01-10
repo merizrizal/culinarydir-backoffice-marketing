@@ -9,7 +9,7 @@ use sycomponent\NotificationDialog;
 /* @var $this yii\web\View */
 /* @var $searchModel core\models\search\BusinessProductSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-/* @var $modelBusiness core\models\Business */
+/* @var $modelBusiness array */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'BusinessProduct',

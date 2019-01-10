@@ -125,7 +125,7 @@ class BusinessController extends \backoffice\controllers\BaseController
         $model = $this->findModel($id);
         $modelBusinessLocation = $model->businessLocation;
 
-        if (!empty(($post = Yii::$app->request->post())) && $model->load($post) && $modelBusinessLocation->load($post)) {
+        if ($model->load(Yii::$app->request->post()) && $modelBusinessLocation->load(Yii::$app->request->post())) {
 
             if (empty($save)) {
 
@@ -445,14 +445,10 @@ class BusinessController extends \backoffice\controllers\BaseController
             }
         }
 
-        $dataBusinessCategory = empty($dataBusinessCategory) ? $model['businessCategories'] : $dataBusinessCategory;
-
-        $dataBusinessProductCategory = $model['businessProductCategories'];
-
         $businessProductCategoryParent = [];
         $businessProductCategoryChild = [];
 
-        foreach ($dataBusinessProductCategory as $valueBusinessProductCategory) {
+        foreach ($model['businessProductCategories'] as $valueBusinessProductCategory) {
 
             if ($valueBusinessProductCategory['productCategory']['is_parent']) {
 
@@ -463,9 +459,9 @@ class BusinessController extends \backoffice\controllers\BaseController
             }
         }
 
+        $dataBusinessCategory = empty($dataBusinessCategory) ? $model['businessCategories'] : $dataBusinessCategory;
         $dataBusinessProductCategoryParent = empty($dataBusinessProductCategoryParent) ? $businessProductCategoryParent : $dataBusinessProductCategoryParent;
         $dataBusinessProductCategoryChild = empty($dataBusinessProductCategoryChild) ? $businessProductCategoryChild : $dataBusinessProductCategoryChild;
-
         $dataBusinessFacility = empty($dataBusinessFacility) ? $model['businessFacilities'] : $dataBusinessFacility;
 
         return $this->render('update_marketing_info', [
@@ -545,6 +541,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 $dataModelBusinessImage->order = $order;
 
                                 if (!($flag = $dataModelBusinessImage->save())) {
+                                    
                                     break;
                                 }
                             }

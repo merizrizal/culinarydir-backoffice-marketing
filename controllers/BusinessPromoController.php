@@ -126,13 +126,10 @@ class BusinessPromoController extends \backoffice\controllers\BaseController
         if ($model->load(Yii::$app->request->post())) {
 
             if (!empty($save)) {
+                
+                $image = Tools::uploadFile('/img/business_promo/', $model, 'image', 'id', $model->business_id);
 
-                if (($model->image = Tools::uploadFile('/img/business_promo/', $model, 'image', 'id', $model->business_id))){
-
-                } else {
-
-                    $model->image = $model->oldAttributes['image'];
-                }
+                $model->image = !empty($image) ? $image : $model->oldAttributes['image'];
 
                 if ($model->save()) {
 

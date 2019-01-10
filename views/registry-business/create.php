@@ -1060,29 +1060,6 @@ $cssscript = '
     .wizard > .content > .body ul > li {
         display: block;
     }
-
-    .select2-container--krajee .select2-selection--multiple .select2-selection__choice__remove {
-        margin-top: 1px;
-    }
-
-    .select2-grid-system ul.select2-results__options > li.select2-results__option {
-        float: left;
-        width: 50%;
-    }
-
-    @media (min-width: 768px) {
-        .select2-grid-system ul.select2-results__options > li.select2-results__option {
-            float: left;
-            width: 33.33333333%;
-        }
-    }
-
-    @media (min-width: 1200px) {
-        .select2-grid-system ul.select2-results__options > li.select2-results__option {
-            float: left;
-            width: 20%;
-        }
-    }
 ';
 
 $this->registerCss($cssscript);
