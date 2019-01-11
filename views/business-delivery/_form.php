@@ -136,7 +136,7 @@ $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/i
 $jscript = '
     $("#businessdelivery-delivery_method_id").select2({
         theme: "krajee",
-        placeholder: "' . Yii::t('app', 'Product Category') . '"
+        placeholder: "' . Yii::t('app', 'Delivery Methods') . '"
     });
 ';
 
