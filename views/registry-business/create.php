@@ -1315,8 +1315,6 @@ $jscript = '
 
     village();
 
-    $("#registrybusiness-city_id").val(1).trigger("change");
-
     $("#registrybusiness-city_id").on("select2:select", function(e) {
 
         district(true, function() {
