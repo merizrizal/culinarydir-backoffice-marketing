@@ -309,8 +309,6 @@ $jscript = '
 
     village();
 
-    $("#registrybusiness-city_id").val(1).trigger("change");
-
     if ($("#registrybusiness-city_id").select2("data")[0].id) {
 
         district(true, function() {
