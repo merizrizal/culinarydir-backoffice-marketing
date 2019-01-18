@@ -273,7 +273,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                     if ($flag) {
 
-                        $newModelRegistryBusinessImage = new RegistryBusinessImage(['registry_business_id' => $model->id]);
+                        $newModelRegistryBusinessImage = new RegistryBusinessImage();
 
                         if ($newModelRegistryBusinessImage->load($post)) {
 
@@ -1037,7 +1037,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 
                 if ($flag) {
                 
-                    $newModelRegistryBusinessImage = new RegistryBusinessImage(['registry_business_id' => $model->id]);
+                    $newModelRegistryBusinessImage = new RegistryBusinessImage();
                     
                     if ($newModelRegistryBusinessImage->load($post)) {
                         

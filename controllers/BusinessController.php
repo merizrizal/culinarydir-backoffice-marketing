@@ -551,7 +551,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
-                    $newModelBusinessImage = new BusinessImage(['business_id' => $model->id]);
+                    $newModelBusinessImage = new BusinessImage();
 
                     if ($newModelBusinessImage->load($post)) {
 
