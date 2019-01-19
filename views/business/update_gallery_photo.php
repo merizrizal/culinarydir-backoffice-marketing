@@ -92,7 +92,7 @@ echo $ajaxRequest->component(); ?>
                                                         </div>
                                                         <div class="mt-10">
                                                         
-                                                        	<?= Html::dropDownList('category['. $businessImage['id'] .']', !empty($businessImage['category']) ? $businessImage['category'] : null, ['Ambience' => 'Suasana', 'Menu' => 'Menu'], ['class' => 'photo-category']) ?>
+                                                        	<?= Html::dropDownList('category['. $businessImage['id'] .']', !empty($businessImage['category']) ? $businessImage['category'] : null, ['Ambience' => 'Suasana', 'Menu' => 'Menu', 'QR-Code' => 'QR Code'], ['class' => 'photo-category']) ?>
                                                         	
                                                         	<div class="clearfix" style="margin-bottom: 5px"></div>
                                                         
