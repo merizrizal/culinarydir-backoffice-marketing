@@ -586,7 +586,8 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                         $existModelBusinessImage->type = !empty($post['profile'][$existModelBusinessImage->id]) ? 'Profile' : 'Gallery';
                         $existModelBusinessImage->is_primary = !empty($post['thumbnail']) && $post['thumbnail'] == $existModelBusinessImage->id ? true : false;
-                        $existModelBusinessImage->category = !empty($post['category'][$existModelBusinessImage->id]) ? $post['category'][$existModelBusinessImage->id] : $existModelBusinessImage->category;
+                        $existModelBusinessImage->category = $post['category'][$existModelBusinessImage->id];
+                        $existModelBusinessImage->order = $post['order'][$existModelBusinessImage->id];
 
                         if (!($flag = $existModelBusinessImage->save())) {
 
@@ -929,85 +930,6 @@ class BusinessController extends \backoffice\controllers\BaseController
         ]);
     }
 
-
-    public function actionUp($id)
-    {
-        $modelBusinessImage = BusinessImage::findOne($id);
-
-        $modelBusinessImageTemp = BusinessImage::find()
-            ->andWhere(['business_id' => $modelBusinessImage->business_id])
-            ->andWhere(['order' => $modelBusinessImage->order - 1])
-            ->one();
-
-        if ($modelBusinessImage->order > 1) {
-
-            $transaction = Yii::$app->db->beginTransaction();
-            $flag = false;
-
-            $modelBusinessImageTemp->order = $modelBusinessImage->order;
-
-            if (($flag = $modelBusinessImageTemp->save())) {
-
-                $modelBusinessImage->order -= 1;
-
-                $flag = $modelBusinessImage->save();
-            }
-
-            if ($flag) {
-
-                $transaction->commit();
-            } else {
-
-                Yii::$app->session->setFlash('status', 'danger');
-                Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-
-                $transaction->rollBack();
-            }
-        }
-
-        return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/update-gallery-photo', 'id' => $modelBusinessImage->business_id]));
-    }
-
-    public function actionDown($id)
-    {
-        $modelBusinessImage = BusinessImage::findOne($id);
-
-        $modelBusinessImageTemp = BusinessImage::find()
-            ->andWhere(['business_id' => $modelBusinessImage->business_id])
-            ->andWhere(['order' => $modelBusinessImage->order + 1])
-            ->one();
-
-        if ($modelBusinessImageTemp !== null) {
-
-            $transaction = Yii::$app->db->beginTransaction();
-            $flag = false;
-
-            $modelBusinessImageTemp->order = $modelBusinessImage->order;
-
-            if (($flag = $modelBusinessImageTemp->save())) {
-
-                $modelBusinessImage->order += 1;
-
-                $flag = $modelBusinessImage->save();
-            }
-
-            if ($flag) {
-
-                $transaction->commit();
-            } else {
-
-                Yii::$app->session->setFlash('status', 'danger');
-                Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-
-                $transaction->rollBack();
-            }
-        }
-
-        return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/update-gallery-photo', 'id' => $modelBusinessImage->business_id]));
-    }
-    
     public function actionUpgradeMembership($id, $save = null)
     {
         $model = $this->findModel($id);

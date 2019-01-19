@@ -75,6 +75,9 @@ echo $ajaxRequest->component(); ?>
                                         <div class="row">
 
                                             <?php
+                                            $imageOrder = range(0, count($dataBusinessImage));
+                                            unset($imageOrder[0]);
+                                            
                                             foreach ($dataBusinessImage as $businessImage): ?>
 
                                                 <div class="col-xs-6 col-sm-3">
@@ -92,26 +95,36 @@ echo $ajaxRequest->component(); ?>
                                                         </div>
                                                         <div class="mt-10">
                                                         
-                                                        	<?= Html::dropDownList('category['. $businessImage['id'] .']', !empty($businessImage['category']) ? $businessImage['category'] : null, ['Ambience' => 'Suasana', 'Menu' => 'Menu', 'QR-Code' => 'QR Code'], ['class' => 'photo-category']) ?>
-                                                        	
-                                                        	<div class="clearfix" style="margin-bottom: 5px"></div>
+                                                    		<div class="row">
+                                                				<div class="col-xs-6">
                                                         
-                                                            <?= Html::checkbox('BusinessImageDelete[]', false, ['label' => 'Delete', 'value' => $businessImage['id']]) ?>
+                                                        			<?= Html::dropDownList('category['. $businessImage['id'] .']', !empty($businessImage['category']) ? $businessImage['category'] : null, ['Ambience' => 'Suasana', 'Menu' => 'Menu', 'QR-Code' => 'QR Code'], ['class' => 'photo-category']) ?>
+                                                        		
+                                                        		</div>
+                                                    			<div class="col-xs-6">
+                                                        			
+                                                    				<?= Html::dropDownList('order['. $businessImage['id'] .']', $businessImage['order'], $imageOrder, ['class' => 'image-order']) ?>
+                                                        		
+                                                        		</div>
+                                                        	</div>
+                                                        	
+                                                    		<div class="row mt-10">
+                                                				<div class="col-xs-12">
+                                                        
+                                                            		<?= Html::checkbox('BusinessImageDelete[]', false, ['label' => 'Delete', 'value' => $businessImage['id']]) ?>
                                                             
-                                                            <div class="clearfix"></div>
+                                                            	</div>
+                                                            	<div class="col-xs-12">
                                                             
-                                                            <?= Html::checkbox('profile['. $businessImage['id'] .']', ($businessImage['type'] == 'Profile'), ['label' => 'Set as Profile']) ?>
+                                                            		<?= Html::checkbox('profile['. $businessImage['id'] .']', ($businessImage['type'] == 'Profile'), ['label' => 'Set as Profile']) ?>
                                                             
-                                                            <div class="clearfix"></div>
+                                                            	</div>
+                                                            	<div class="col-xs-12">
                                                             
-                                                            <?= Html::radio('thumbnail', $businessImage['is_primary'], ['label' => 'Set as Thumbnail', 'value' => $businessImage['id']]) ?>
+                                                            		<?= Html::radio('thumbnail', $businessImage['is_primary'], ['label' => 'Set as Thumbnail', 'value' => $businessImage['id']]) ?>
                                                             
-                                                            <div class="clearfix"></div>
-                                                            
-                                                            <?php
-                                                            echo Html::a('<i class="fa fa-arrow-left"></i>', ['up', 'id' => $businessImage['id']], ['class' => 'btn btn-default', 'title' => 'Left']);
-                                                            echo Html::a('<i class="fa fa-arrow-right"></i>', ['down', 'id' => $businessImage['id']], ['class' => 'btn btn-default', 'title' => 'Right']); ?>
-                                                            
+                                                            	</div>
+                                                        	</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -177,6 +190,11 @@ $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/Magnific
 
 $jscript = '
     $(".photo-category").select2({
+        theme: "krajee",
+        minimumResultsForSearch: Infinity
+    });
+
+    $(".image-order").select2({
         theme: "krajee",
         minimumResultsForSearch: Infinity
     });
