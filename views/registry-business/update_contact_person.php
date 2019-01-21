@@ -386,6 +386,11 @@ $jscript = '
         return contentClone;
     };
 
+    for (var i = 0; i < indexCount; i++) {
+
+        addValidator(i);
+    }
+
     $(".add-contact-person").on("click", function() {
         
         var formContactPerson = $(".temp-form").clone();
