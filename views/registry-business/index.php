@@ -92,32 +92,32 @@ echo $ajaxRequest->component(); ?>
             <div class="clearfix"></div>
             <div class="row">
                 <div class="col-lg-4 col-md-4">
-                    ' . Html::dropDownList('RegistryBusinessSearch[district_id]', (!empty(Yii::$app->request->get('RegistryBusinessSearch')['district_id']) ? Yii::$app->request->get('RegistryBusinessSearch')['district_id'] : null),
+                    ' . Html::dropDownList('RegistryBusinessSearch[district.name]', (!empty(Yii::$app->request->get('RegistryBusinessSearch')['district.name']) ? Yii::$app->request->get('RegistryBusinessSearch')['district.name'] : null),
                             ArrayHelper::map(
                                 District::find()->orderBy('name')->asArray()->all(),
-                                'id',
+                                'name',
                                 function($data) {
                                     return $data['name'];
                                 }
                             ),
                             [
-                                'id' => 'registrybusiness-district_id',
+                                'id' => 'registrybusiness-district_name',
                                 'class' => 'form-control',
                                 'prompt' => Yii::t('app', 'District'),
                             ]
                     ) . '
                 </div>
                 <div class="col-lg-4 col-md-4">
-                    ' . Html::dropDownList('RegistryBusinessSearch[village_id]', (!empty(Yii::$app->request->get('RegistryBusinessSearch')['village_id']) ? Yii::$app->request->get('RegistryBusinessSearch')['village_id'] : null),
+                    ' . Html::dropDownList('RegistryBusinessSearch[village.name]', (!empty(Yii::$app->request->get('RegistryBusinessSearch')['village.name']) ? Yii::$app->request->get('RegistryBusinessSearch')['village.name'] : null),
                             ArrayHelper::map(
                                 Village::find()->orderBy('name')->asArray()->all(),
-                                'id',
+                                'name',
                                 function($data) {
                                     return $data['name'];
                                 }
                             ),
                             [
-                                'id' => 'registrybusiness-village_id',
+                                'id' => 'registrybusiness-village_name',
                                 'class' => 'form-control',
                                 'prompt' => Yii::t('app', 'Village'),
                             ]
@@ -170,11 +170,11 @@ echo $modalDialog->renderDialog();
 $jscript = ''
     . $modalDialog->getScript() . '
 
-    $("#registrybusiness-district_id").select2({
+    $("#registrybusiness-district_name").select2({
         theme: "krajee",
     });
 
-    $("#registrybusiness-village_id").select2({
+    $("#registrybusiness-village_name").select2({
         theme: "krajee",
     });
 ';

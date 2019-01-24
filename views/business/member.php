@@ -66,32 +66,32 @@ echo $ajaxRequest->component(false); ?>
             ' . (empty($this->params['type']) ? '
             <div class="row">
                 <div class="col-lg-4 col-md-4">
-                    ' . Html::dropDownList('BusinessSearch[businessLocation.district_id]', (!empty(Yii::$app->request->get('BusinessSearch')['businessLocation.district_id']) ? Yii::$app->request->get('BusinessSearch')['businessLocation.district_id'] : null),
+                    ' . Html::dropDownList('BusinessSearch[district.name]', (!empty(Yii::$app->request->get('BusinessSearch')['district.name']) ? Yii::$app->request->get('BusinessSearch')['district.name'] : null),
                             ArrayHelper::map(
                                 District::find()->orderBy('name')->asArray()->all(),
-                                'id',
+                                'name',
                                 function($data) {
                                     return $data['name'];
                                 }
                             ),
                             [
-                                'id' => 'business-district_id',
+                                'id' => 'business-district_name',
                                 'class' => 'form-control',
                                 'prompt' => Yii::t('app', 'District'),
                             ]
                     ) . '
                 </div>
                 <div class="col-lg-4 col-md-4">
-                    ' . Html::dropDownList('BusinessSearch[businessLocation.village_id]', (!empty(Yii::$app->request->get('BusinessSearch')['businessLocation.village_id']) ? Yii::$app->request->get('BusinessSearch')['businessLocation.village_id'] : null),
+                    ' . Html::dropDownList('BusinessSearch[village.name]', (!empty(Yii::$app->request->get('BusinessSearch')['village.name']) ? Yii::$app->request->get('BusinessSearch')['village.name'] : null),
                             ArrayHelper::map(
                                 Village::find()->orderBy('name')->asArray()->all(),
-                                'id',
+                                'name',
                                 function($data) {
                                     return $data['name'];
                                 }
                             ),
                             [
-                                'id' => 'business-village_id',
+                                'id' => 'business-village_name',
                                 'class' => 'form-control',
                                 'prompt' => Yii::t('app', 'Village'),
                             ]
@@ -239,11 +239,11 @@ $jscript = ''
         });
     });
 
-    $("#business-district_id").select2({
+    $("#business-district_name").select2({
         theme: "krajee",
     });
 
-    $("#business-village_id").select2({
+    $("#business-village_name").select2({
         theme: "krajee",
     });
 ';
