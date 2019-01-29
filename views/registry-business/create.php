@@ -402,7 +402,7 @@ $this->registerJs($jscript); ?>
 
                                                 echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[child]')->dropDownList(
                                                     ArrayHelper::map(
-                                                        ProductCategory::find()->andWhere(['<>', 'type', 'General'])->orderBy('name')->asArray()->all(),
+                                                        ProductCategory::find()->andWhere(['OR', ['type' => 'Specific'], ['type' => 'Specific-Menu']])->orderBy('name')->asArray()->all(),
                                                         'id',
                                                         'name'
                                                     ),
