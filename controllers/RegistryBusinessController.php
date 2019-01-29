@@ -120,7 +120,6 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     $model->setCoordinate();
                     $model->price_min = !empty($model->price_min) ? $model->price_min : 0;
                     $model->price_max = !empty($model->price_max) ? $model->price_max : 0;
-                    $model->menu = $post['RegistryBusiness']['menu'];
 
                     if (($flag = $model->save())) {
 
