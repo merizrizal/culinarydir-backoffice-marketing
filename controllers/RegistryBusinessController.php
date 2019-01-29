@@ -28,6 +28,7 @@ use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use core\models\BusinessProduct;
 
 /**
  * RegistryBusinessController implements the CRUD actions for RegistryBusiness model.
@@ -92,7 +93,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             } else {
-
+                
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
 
@@ -119,6 +120,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     $model->setCoordinate();
                     $model->price_min = !empty($model->price_min) ? $model->price_min : 0;
                     $model->price_max = !empty($model->price_max) ? $model->price_max : 0;
+                    $model->menu = $post['RegistryBusiness']['menu'];
 
                     if (($flag = $model->save())) {
 

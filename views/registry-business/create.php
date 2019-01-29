@@ -871,12 +871,25 @@ $this->registerJs($jscript); ?>
                             	        
                         	        </div>
                                 	
-                                    <div class="row">
+                                    <div class="row mb-30">
                                         <div class="col-md-12">
                                             <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default add-delivery-method']) ?>
                                             <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default delete-delivery-method']); ?>
                                         </div>
                                     </div>
+                                    
+                                    <div class="form-group">
+                                    	<div class="row">
+                                			<div class="col-xs-12">
+                                                <?= Html::label(Yii::t('app', 'Menu')) ?>
+                                            </div>
+                                		</div>
+                                		<div class="row">
+                            	        	<div class="col-xs-6">
+                            	        		<?= $form->field($model, 'menu')->textarea(['rows' => 5, 'placeholder' => Yii::t('app', 'Menu')]) ?>
+                            	        	</div>
+                        	        	</div>
+                    	        	</div>
                                 </div>
                             </div>
 
