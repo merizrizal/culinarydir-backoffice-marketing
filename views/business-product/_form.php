@@ -7,7 +7,7 @@ use kartik\number\NumberControl;
 use yii\widgets\ActiveForm;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
-use core\models\BusinessProductCategory;
+use core\models\ProductCategory;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\BusinessProduct */
@@ -73,7 +73,6 @@ echo $ajaxRequest->component(); ?>
                 ]); ?>
 
                     <div class="x_title">
-
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-lg-6">
@@ -85,23 +84,21 @@ echo $ajaxRequest->component(); ?>
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="x_content">
 
                         <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                         
-                        <?= $form->field($model, 'business_product_category_id')->dropDownList(
+                        <?= $form->field($model, 'product_category_id')->dropDownList(
                             ArrayHelper::map(
-                                BusinessProductCategory::find()
-                                    ->joinWith(['productCategory'])
-                                    ->andWhere(['business_id' => $modelBusiness['id']])
-                                    ->orderBy('product_category.name')->asArray()->all(),
+                                ProductCategory::find()
+                                    ->andWhere(['OR', ['type' => 'Menu'], ['type' => 'Specific-Menu']])                                    
+                                    ->orderBy('name')->asArray()->all(),
                                 'id',
                                 function($data) {
                                     
-                                    return $data['productCategory']['name'];
+                                    return $data['name'];
                                 }
                             ),
                             [
@@ -163,7 +160,7 @@ $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript = '
-    $("#businessproduct-business_product_category_id").select2({
+    $("#businessproduct-product_category_id").select2({
         theme: "krajee",
         placeholder: "' . Yii::t('app', 'Product Category') . '"
     });

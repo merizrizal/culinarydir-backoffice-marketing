@@ -70,7 +70,7 @@ echo $ajaxRequest->component(); ?>
                         ],
                         'attributes' => [
                             'name',
-                            'businessProductCategory.productCategory.name',
+                            'productCategory.name',
                             'description:ntext',
                             'price:currency',
                             [

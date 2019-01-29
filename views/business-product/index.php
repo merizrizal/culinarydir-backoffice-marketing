@@ -87,7 +87,7 @@ echo $ajaxRequest->component(true); ?>
             ['class' => 'yii\grid\SerialColumn'],
 
             'name',
-            'businessProductCategory.productCategory.name',
+            'productCategory.name',
             'price:currency',
             [
                 'attribute' => 'not_active',

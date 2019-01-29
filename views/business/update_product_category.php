@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use core\models\ProductCategory;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 
