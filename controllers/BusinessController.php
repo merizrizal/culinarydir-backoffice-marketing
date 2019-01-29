@@ -15,7 +15,6 @@ use core\models\BusinessContactPerson;
 use core\models\RegistryBusinessContactPerson;
 use core\models\Person;
 use sycomponent\Tools;
-use sycomponent\AjaxRequest;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
@@ -450,7 +449,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
         foreach ($model['businessProductCategories'] as $valueBusinessProductCategory) {
 
-            if ($valueBusinessProductCategory['productCategory']['is_parent']) {
+            if ($valueBusinessProductCategory['productCategory']['type'] == 'General') {
 
                 $businessProductCategoryParent[] = $valueBusinessProductCategory;
             } else {
@@ -956,6 +955,68 @@ class BusinessController extends \backoffice\controllers\BaseController
         
         return $this->render('upgrade_membership', [
             'model' => $model,
+        ]);
+    }
+    
+    public function actionUpdateProductCategory ($id, $save = null) {
+        
+        $model = Business::find()
+            ->joinWith([
+                'businessProductCategories' => function ($query) {
+                
+                    $query->andOnCondition(['business_product_category.is_active' => true])
+                        ->orderBy(['order' => SORT_ASC]);
+                },
+                'businessProductCategories.productCategory',
+            ])
+            ->andWhere(['business.id' => $id])
+            ->one();
+        
+        $modelBusinessProductCategory = new BusinessProductCategory();
+        $dataBusinessProductCategory = [];
+        
+        if (!empty(($post = Yii::$app->request->post()))) {
+            
+            if (!empty($save)) {
+                
+                foreach ($post['order'] as $id => $businessProductCategoryOrder) {
+                    
+                    $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $post['product_category_id'][$id]]);
+                    $newModelBusinessProductCategory->order = $businessProductCategoryOrder;
+                    
+                    if ($newModelBusinessProductCategory->save()) {
+                        
+                        $modelProductCategory = [];
+                        $modelProductCategory['productCategory'] = $newModelBusinessProductCategory->productCategory->toArray();
+                        array_push($dataBusinessProductCategory, array_merge($newModelBusinessProductCategory->toArray(), $modelProductCategory));
+                        
+                        Yii::$app->session->setFlash('status', 'success');
+                        Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                        Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    } else {
+                        
+                        Yii::$app->session->setFlash('status', 'danger');
+                        Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                        Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                        
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if (empty($dataBusinessProductCategory)) {
+            
+            foreach ($model['businessProductCategories'] as $productCategory) {
+                
+                array_push($dataBusinessProductCategory, $productCategory);
+            }
+        }
+        
+        return $this->render('update_product_category', [
+            'model' => $model,
+            'modelBusinessProductCategory' => $modelBusinessProductCategory,
+            'dataBusinessProductCategory' => $dataBusinessProductCategory
         ]);
     }
 

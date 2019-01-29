@@ -227,7 +227,7 @@ echo $ajaxRequest->component(); ?>
                             
                             foreach ($model['registryBusinessProductCategories'] as $dataRegistryBusinessProductCategory) {
 
-                                if ($dataRegistryBusinessProductCategory['productCategory']['is_parent']) {
+                                if ($dataRegistryBusinessProductCategory['productCategory']['type'] == 'General') {
 
                                     $productCategoryParent[$dataRegistryBusinessProductCategory['product_category_id']] = $dataRegistryBusinessProductCategory['productCategory']['name'];
                                 } else {

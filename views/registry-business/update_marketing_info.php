@@ -133,7 +133,7 @@ echo $ajaxRequest->component(); ?>
 
                                         echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[parent]')->dropDownList(
                                             ArrayHelper::map(
-                                                ProductCategory::find()->andWhere(['is_parent' => true])->orderBy('name')->asArray()->all(),
+                                                ProductCategory::find()->andWhere(['type' => 'General'])->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 'name'
                                             ),
@@ -160,7 +160,7 @@ echo $ajaxRequest->component(); ?>
 
                                         echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[child]')->dropDownList(
                                             ArrayHelper::map(
-                                                ProductCategory::find()->andWhere(['is_parent' => false])->orderBy('name')->asArray()->all(),
+                                                ProductCategory::find()->andWhere(['<>', 'type', 'General'])->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 'name'
                                             ),
