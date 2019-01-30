@@ -133,7 +133,10 @@ echo $ajaxRequest->component(); ?>
 
                                         echo $form->field($modelBusinessProductCategory, 'product_category_id[parent]')->dropDownList(
                                             ArrayHelper::map(
-                                                ProductCategory::find()->andWhere(['type' => 'General'])->orderBy('name')->asArray()->all(),
+                                                ProductCategory::find()
+                                                    ->andWhere(['type' => 'General'])
+                                                    ->andWhere(['is_active' => true])
+                                                    ->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 'name'
                                             ),
@@ -160,7 +163,10 @@ echo $ajaxRequest->component(); ?>
 
                                         echo $form->field($modelBusinessProductCategory, 'product_category_id[child]')->dropDownList(
                                             ArrayHelper::map(
-                                                ProductCategory::find()->andWhere(['OR', ['type' => 'Specific'], ['type' => 'Specific-Menu']])->orderBy('name')->asArray()->all(),
+                                                ProductCategory::find()
+                                                    ->andWhere(['OR', ['type' => 'Specific'], ['type' => 'Specific-Menu']])
+                                                    ->andWhere(['is_active' => true])
+                                                    ->orderBy('name')->asArray()->all(),
                                                 'id',
                                                 'name'
                                             ),

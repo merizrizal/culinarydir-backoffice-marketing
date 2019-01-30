@@ -208,6 +208,8 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
+                
+                $orderProductCategory = count($model->businessProductCategories);
 
                 if (($flag = $model->save())) {
 
@@ -266,20 +268,20 @@ class BusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
-
+                
                 if ($flag) {
 
                     if (!empty($post['BusinessProductCategory']['product_category_id']['parent'])) {
-
+                        
                         foreach ($post['BusinessProductCategory']['product_category_id']['parent'] as $productCategoryId) {
 
                             $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
-
+                            
                             if (!empty($newModelBusinessProductCategory)) {
 
                                 $newModelBusinessProductCategory->is_active = true;
                             } else {
-
+                                
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
                                 $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
@@ -287,7 +289,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 $newModelBusinessProductCategory->is_active = true;
                             }
 
-                            if(!($flag = $newModelBusinessProductCategory->save())) {
+                            if (!($flag = $newModelBusinessProductCategory->save())) {
 
                                 break;
                             } else {
@@ -305,20 +307,20 @@ class BusinessController extends \backoffice\controllers\BaseController
                         foreach ($post['BusinessProductCategory']['product_category_id']['child'] as $productCategoryId) {
 
                             $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
-
+                            
                             if (!empty($newModelBusinessProductCategory)) {
 
                                 $newModelBusinessProductCategory->is_active = true;
                             } else {
-
+                                
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
                                 $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
                                 $newModelBusinessProductCategory->product_category_id = $productCategoryId;
                                 $newModelBusinessProductCategory->is_active = true;
                             }
-
-                            if(!($flag = $newModelBusinessProductCategory->save())) {
+                            
+                            if (!($flag = $newModelBusinessProductCategory->save())) {
 
                                 break;
                             } else {
@@ -350,7 +352,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                             }
 
                             if (!$exist) {
-
+                                
                                 $existModelBusinessProductCategory->is_active = false;
 
                                 if (!($flag = $existModelBusinessProductCategory->save())) {
@@ -424,9 +426,11 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     $modelBusinessDetail->price_min = !empty($modelBusinessDetail->price_min) ? $modelBusinessDetail->price_min : 0;
                     $modelBusinessDetail->price_max = !empty($modelBusinessDetail->price_max) ? $modelBusinessDetail->price_max : 0;
+                    
+                    $flag = $modelBusinessDetail->save();
                 }
 
-                if ($flag = $modelBusinessDetail->save()) {
+                if ($flag) {
 
                     Yii::$app->session->setFlash('status', 'success');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
@@ -958,7 +962,7 @@ class BusinessController extends \backoffice\controllers\BaseController
         ]);
     }
     
-    public function actionUpdateProductCategory ($id, $save = null)
+    public function actionUpdateProductCategory($id, $save = null)
     {
         $model = Business::find()
             ->joinWith([
