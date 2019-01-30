@@ -92,9 +92,7 @@ echo $ajaxRequest->component(); ?>
                         
                         <?= $form->field($model, 'product_category_id')->dropDownList(
                             ArrayHelper::map(
-                                ProductCategory::find()
-                                    ->andWhere(['OR', ['type' => 'Menu'], ['type' => 'Specific-Menu']])                                    
-                                    ->orderBy('name')->asArray()->all(),
+                                ProductCategory::find()->andWhere(['OR', ['type' => 'Menu'], ['type' => 'Specific-Menu']])->orderBy('name')->asArray()->all(),
                                 'id',
                                 function($data) {
                                     

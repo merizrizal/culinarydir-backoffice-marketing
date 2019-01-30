@@ -958,8 +958,8 @@ class BusinessController extends \backoffice\controllers\BaseController
         ]);
     }
     
-    public function actionUpdateProductCategory ($id, $save = null) {
-        
+    public function actionUpdateProductCategory ($id, $save = null)
+    {
         $model = Business::find()
             ->joinWith([
                 'businessProductCategories' => function ($query) {
@@ -982,25 +982,28 @@ class BusinessController extends \backoffice\controllers\BaseController
                 foreach ($post['order'] as $id => $businessProductCategoryOrder) {
                     
                     $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $post['product_category_id'][$id]]);
-                    $newModelBusinessProductCategory->order = $businessProductCategoryOrder;
                     
-                    if ($newModelBusinessProductCategory->save()) {
+                    if ($newModelBusinessProductCategory->order != $businessProductCategoryOrder) {
                         
-                        $modelProductCategory = [];
-                        $modelProductCategory['productCategory'] = $newModelBusinessProductCategory->productCategory->toArray();
-                        array_push($dataBusinessProductCategory, array_merge($newModelBusinessProductCategory->toArray(), $modelProductCategory));
+                        $newModelBusinessProductCategory->order = $businessProductCategoryOrder;
                         
-                        Yii::$app->session->setFlash('status', 'success');
-                        Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                        Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
-                    } else {
-                        
-                        Yii::$app->session->setFlash('status', 'danger');
-                        Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                        Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                        
-                        break;
+                        if (!($newModelBusinessProductCategory->save())) {
+                            
+                            Yii::$app->session->setFlash('status', 'danger');
+                            Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                            Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                            
+                            break;
+                        }
                     }
+                    
+                    $modelProductCategory = [];
+                    $modelProductCategory['productCategory'] = $newModelBusinessProductCategory->productCategory->toArray();
+                    array_push($dataBusinessProductCategory, array_merge($newModelBusinessProductCategory->toArray(), $modelProductCategory));
+                    
+                    Yii::$app->session->setFlash('status', 'success');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
                 }
             }
         }
