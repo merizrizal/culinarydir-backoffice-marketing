@@ -277,16 +277,20 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                             $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
                             
-                            if (!empty($newModelBusinessProductCategory)) {
+                            if (empty($newModelBusinessProductCategory)) {
 
-                                $newModelBusinessProductCategory->is_active = true;
-                            } else {
-                                
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
                                 $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
                                 $newModelBusinessProductCategory->product_category_id = $productCategoryId;
-                                $newModelBusinessProductCategory->is_active = true;
+                            }
+                            
+                            $newModelBusinessProductCategory->is_active = true;
+                            
+                            if (empty($newModelBusinessProductCategory->order)) {
+                                
+                                $orderProductCategory++;
+                                $newModelBusinessProductCategory->order = $orderProductCategory;
                             }
 
                             if (!($flag = $newModelBusinessProductCategory->save())) {
@@ -308,16 +312,20 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                             $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
                             
-                            if (!empty($newModelBusinessProductCategory)) {
-
-                                $newModelBusinessProductCategory->is_active = true;
-                            } else {
+                            if (empty($newModelBusinessProductCategory)) {
                                 
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
                                 $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
                                 $newModelBusinessProductCategory->product_category_id = $productCategoryId;
-                                $newModelBusinessProductCategory->is_active = true;
+                            }
+                            
+                            $newModelBusinessProductCategory->is_active = true;
+                            
+                            if (empty($newModelBusinessProductCategory->order)) {
+                                
+                                $orderProductCategory++;
+                                $newModelBusinessProductCategory->order = $orderProductCategory;
                             }
                             
                             if (!($flag = $newModelBusinessProductCategory->save())) {
@@ -354,6 +362,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                             if (!$exist) {
                                 
                                 $existModelBusinessProductCategory->is_active = false;
+                                $existModelBusinessProductCategory->order = null;
 
                                 if (!($flag = $existModelBusinessProductCategory->save())) {
 
@@ -517,37 +526,6 @@ class BusinessController extends \backoffice\controllers\BaseController
                         } else {
                             
                             $deletedBusinessImageId = $post['BusinessImageDelete'];
-                        }
-                    }
-
-                    if ($flag) {
-
-                        $order = 0;
-
-                        foreach ($model->businessImages as $dataModelBusinessImage) {
-
-                            $deleted = false;
-
-                            foreach ($deletedBusinessImageId as $businessImageId) {
-
-                                if ($dataModelBusinessImage->id == $businessImageId) {
-
-                                    $deleted = true;
-                                    break;
-                                }
-                            }
-
-                            if (!$deleted) {
-
-                                $order++;
-
-                                $dataModelBusinessImage->order = $order;
-
-                                if (!($flag = $dataModelBusinessImage->save())) {
-                                    
-                                    break;
-                                }
-                            }
                         }
                     }
                 }
