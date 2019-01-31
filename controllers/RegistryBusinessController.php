@@ -28,7 +28,6 @@ use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use core\models\BusinessProduct;
 
 /**
  * RegistryBusinessController implements the CRUD actions for RegistryBusiness model.
@@ -1611,13 +1610,13 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     
                     $query->andOnCondition(['registry_business_product_category.is_active' => true]);
                 },
+                'registryBusinessProductCategories.productCategory',
                 'registryBusinessHours' => function ($query) {
                     
                     $query->andOnCondition(['registry_business_hour.is_open' => true])
                         ->orderBy(['registry_business_hour.day' => SORT_ASC]);
                 },
                 'registryBusinessHours.registryBusinessHourAdditionals',
-                'registryBusinessProductCategories.productCategory',
                 'registryBusinessFacilities' => function ($query) {
                     
                     $query->andOnCondition(['registry_business_facility.is_active' => true]);

@@ -75,13 +75,13 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     $query->andOnCondition(['business_product_category.is_active' => true]);
                 },
+                'businessProductCategories.productCategory',
                 'businessHours' => function ($query) {
 
                     $query->andOnCondition(['business_hour.is_open' => true])
                         ->orderBy(['business_hour.day' => SORT_ASC]);
                 },
                 'businessHours.businessHourAdditionals',
-                'businessProductCategories.productCategory',
                 'businessFacilities' => function ($query) {
 
                     $query->andOnCondition(['business_facility.is_active' => true]);
