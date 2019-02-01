@@ -7,7 +7,6 @@ use kartik\touchspin\TouchSpin;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use core\models\Category;
-use core\models\ProductCategory;
 use core\models\Facility;
 
 /* @var $this yii\web\View */
@@ -20,6 +19,8 @@ use core\models\Facility;
 /* @var $modelBusinessFacility core\models\BusinessFacility */
 /* @var $dataBusinessFacility core\models\BusinessFacility */
 /* @var $modelBusinessDetail core\models\BusinessDetail */
+/* @var $dataProductCategoryParent array */
+/* @var $dataProductCategoryChild array */
 /* @var $day string */
 
 kartik\select2\Select2Asset::register($this);
@@ -131,16 +132,8 @@ echo $ajaxRequest->component(); ?>
                                             }
                                         }
 
-                                        echo $form->field($modelBusinessProductCategory, 'product_category_id[parent]')->dropDownList(
-                                            ArrayHelper::map(
-                                                ProductCategory::find()
-                                                    ->andWhere(['type' => 'General'])
-                                                    ->andWhere(['is_active' => true])
-                                                    ->orderBy('name')->asArray()->all(),
-                                                'id',
-                                                'name'
-                                            ),
-                                            [
+                                        echo $form->field($modelBusinessProductCategory, 'product_category_id[parent]')
+                                            ->dropDownList($dataProductCategoryParent, [
                                                 'multiple' => 'multiple',
                                                 'prompt' => '',
                                                 'style' => 'width: 100%',
@@ -161,16 +154,8 @@ echo $ajaxRequest->component(); ?>
                                             }
                                         }
 
-                                        echo $form->field($modelBusinessProductCategory, 'product_category_id[child]')->dropDownList(
-                                            ArrayHelper::map(
-                                                ProductCategory::find()
-                                                    ->andWhere(['OR', ['type' => 'Specific'], ['type' => 'Specific-Menu']])
-                                                    ->andWhere(['is_active' => true])
-                                                    ->orderBy('name')->asArray()->all(),
-                                                'id',
-                                                'name'
-                                            ),
-                                            [
+                                        echo $form->field($modelBusinessProductCategory, 'product_category_id[child]')
+                                            ->dropDownList($dataProductCategoryChild, [
                                                 'multiple' => 'multiple',
                                                 'prompt' => '',
                                                 'style' => 'width: 100%',

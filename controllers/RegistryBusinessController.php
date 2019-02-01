@@ -9,6 +9,7 @@ use core\models\ApplicationBusiness;
 use core\models\LogStatusApproval;
 use core\models\LogStatusApprovalAction;
 use core\models\Person;
+use core\models\ProductCategory;
 use core\models\RegistryBusinessCategory;
 use core\models\RegistryBusinessProductCategory;
 use core\models\RegistryBusinessHour;
@@ -404,6 +405,25 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 }
             }
         }
+        
+        $modelProductCategory = ProductCategory::find()
+            ->andWhere(['<>', 'type', 'Menu'])
+            ->andWhere(['is_active' => true])
+            ->orderBy('name')->asArray()->all();
+        
+        $dataProductCategoryParent = [];
+        $dataProductCategoryChild = [];
+        
+        foreach ($modelProductCategory as $dataProductCategory) {
+            
+            if ($dataProductCategory['type'] == 'General') {
+                
+                $dataProductCategoryParent[$dataProductCategory['id']] = $dataProductCategory['name'];
+            } else {
+                
+                $dataProductCategoryChild[$dataProductCategory['id']] = $dataProductCategory['name'];
+            }
+        }
 
         return $this->render('create', [
             'model' => $model,
@@ -426,6 +446,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'dataRegistryBusinessPayment' => $dataRegistryBusinessPayment,
             'modelRegistryBusinessDelivery' => $modelRegistryBusinessDelivery,
             'dataRegistryBusinessDelivery' => $dataRegistryBusinessDelivery,
+            'dataProductCategoryParent' => $dataProductCategoryParent,
+            'dataProductCategoryChild' => $dataProductCategoryChild
         ]);
     }
 
@@ -672,7 +694,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     
                     $query->andOnCondition(['registry_business_product_category.is_active' => true]);
                 },
-                'registryBusinessProductCategories.productCategory',
+                'registryBusinessProductCategories.productCategory' => function ($query) {
+                    
+                    $query->andOnCondition(['<>' , 'type', 'Menu']);
+                },
                 'registryBusinessFacilities' => function ($query) {
                     
                     $query->andOnCondition(['registry_business_facility.is_active' => true]);
@@ -939,7 +964,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             if ($existModelRegistryBusinessProductCategory['productCategory']['type'] == 'General') {
                 
                 $registryBusinessProductCategoryParent[] = $existModelRegistryBusinessProductCategory;
-            } else {
+            } else if (($existModelRegistryBusinessProductCategory['productCategory']['type'] == 'Specific') || ($existModelRegistryBusinessProductCategory['productCategory']['type'] == 'Specific-Menu')) {
                 
                 $registryBusinessProductCategoryChild[] = $existModelRegistryBusinessProductCategory;
             }
@@ -949,7 +974,26 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $dataRegistryBusinessProductCategoryParent = empty($dataRegistryBusinessProductCategoryParent) ? $registryBusinessProductCategoryParent : $dataRegistryBusinessProductCategoryParent;
         $dataRegistryBusinessProductCategoryChild = empty($dataRegistryBusinessProductCategoryChild) ? $registryBusinessProductCategoryChild : $dataRegistryBusinessProductCategoryChild;
         $dataRegistryBusinessFacility = empty($dataRegistryBusinessFacility) ? $model['registryBusinessFacilities'] : $dataRegistryBusinessFacility;
-
+        
+        $modelProductCategory = ProductCategory::find()
+            ->andWhere(['<>', 'type', 'Menu'])
+            ->andWhere(['is_active' => true])
+            ->orderBy('name')->asArray()->all();
+        
+        $dataProductCategoryParent = [];
+        $dataProductCategoryChild = [];
+        
+        foreach ($modelProductCategory as $dataProductCategory) {
+            
+            if ($dataProductCategory['type'] == 'General') {
+                
+                $dataProductCategoryParent[$dataProductCategory['id']] = $dataProductCategory['name'];
+            } else {
+                
+                $dataProductCategoryChild[$dataProductCategory['id']] = $dataProductCategory['name'];
+            }
+        }
+        
         return $this->render('update_marketing_info', [
             'model' => $model,
             'modelRegistryBusinessCategory' => $modelRegistryBusinessCategory,
@@ -959,6 +1003,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'dataRegistryBusinessProductCategoryChild' => $dataRegistryBusinessProductCategoryChild,
             'modelRegistryBusinessFacility' => $modelRegistryBusinessFacility,
             'dataRegistryBusinessFacility' => $dataRegistryBusinessFacility,
+            'dataProductCategoryParent' => $dataProductCategoryParent,
+            'dataProductCategoryChild' => $dataProductCategoryChild,
             'statusApproval' => $statusApproval,
         ]);
     }

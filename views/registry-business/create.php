@@ -11,7 +11,6 @@ use sycomponent\NotificationDialog;
 use core\models\MembershipType;
 use core\models\City;
 use core\models\Category;
-use core\models\ProductCategory;
 use core\models\Facility;
 use core\models\PaymentMethod;
 use core\models\DeliveryMethod;
@@ -43,6 +42,8 @@ use core\models\RegistryBusinessDelivery;
 /* @var $dataRegistryBusinessPayment array */
 /* @var $modelRegistryBusinessDelivery core\models\RegistryBusinessDelivery */
 /* @var $dataRegistryBusinessDelivery array */
+/* @var $dataProductCategoryParent array */
+/* @var $dataProductCategoryChild array */
 /* @var $day string */
 
 kartik\select2\Select2Asset::register($this);
@@ -373,13 +374,8 @@ $this->registerJs($jscript); ?>
                                                     }
                                                 }
 
-                                                echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[parent]')->dropDownList(
-                                                    ArrayHelper::map(
-                                                        ProductCategory::find()->andWhere(['type' => 'General'])->orderBy('name')->asArray()->all(),
-                                                        'id',
-                                                        'name'
-                                                    ),
-                                                    [
+                                                echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[parent]')
+                                                    ->dropDownList($dataProductCategoryParent, [
                                                         'multiple' => 'multiple',
                                                         'prompt' => '',
                                                         'style' => 'width: 100%',
@@ -400,13 +396,8 @@ $this->registerJs($jscript); ?>
                                                     }
                                                 }
 
-                                                echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[child]')->dropDownList(
-                                                    ArrayHelper::map(
-                                                        ProductCategory::find()->andWhere(['OR', ['type' => 'Specific'], ['type' => 'Specific-Menu']])->orderBy('name')->asArray()->all(),
-                                                        'id',
-                                                        'name'
-                                                    ),
-                                                    [
+                                                echo $form->field($modelRegistryBusinessProductCategory, 'product_category_id[child]')
+                                                    ->dropDownList($dataProductCategoryChild, [
                                                         'multiple' => 'multiple',
                                                         'prompt' => '',
                                                         'style' => 'width: 100%',
