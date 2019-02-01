@@ -51,7 +51,7 @@ $actionButton =
         <li class="dropdown-submenu">' .
             Html::a(Yii::t('app', 'Marketing Information') . ' <span class="caret"></span>', '#', ['class' => 'direct']) . '
             <ul class="dropdown-menu">
-                <li>' . Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id']]) . '</li>
+                <li>' . Html::a(Yii::t('app', 'Update Marketing Information'), ['update-marketing-info', 'id' => $model['id']]) . '</li>
                 <li>' . Html::a(Yii::t('app', 'Product Category'), ['update-product-category', 'id' => $model['id']]) . '</li>
             </ul>
         </li>
