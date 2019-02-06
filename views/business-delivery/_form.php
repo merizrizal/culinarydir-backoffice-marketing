@@ -138,6 +138,46 @@ $jscript = '
         theme: "krajee",
         placeholder: "' . Yii::t('app', 'Delivery Methods') . '"
     });
+
+    function notes(executeRemote, afterSuccess) {
+
+        function setNotes(remoteData) {
+
+            $("#businessdelivery-note").text(remoteData.note);
+            $("#businessdelivery-description").text(remoteData.description);
+        };
+
+        if (executeRemote) {
+            
+            $.ajax({
+                dataType: "json",
+                cache: false,
+                url: "' . Yii::$app->urlManager->createUrl(['masterdata/delivery-method/get-notes-by-delivery-method']) . '?id=" + $("#businessdelivery-delivery_method_id").select2("data")[0].id,
+                success: function(response) {
+                    
+                    setNotes(response);
+
+                    if (afterSuccess !== undefined) {
+
+                        afterSuccess();
+                    }
+                }
+            });
+        } else {
+
+            setNotes([]);
+
+            if (afterSuccess !== undefined) {
+
+                afterSuccess();
+            }
+        }
+    };
+
+    $("#businessdelivery-delivery_method_id").on("select2:select", function() {
+        
+        notes(true);
+    });
 ';
 
 $this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>

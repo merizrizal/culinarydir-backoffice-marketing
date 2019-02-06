@@ -138,6 +138,46 @@ $jscript = '
         theme: "krajee",
         placeholder: "' . Yii::t('app', 'Payment Methods') . '"
     });
+
+    function notes(executeRemote, afterSuccess) {
+
+        function setNotes(remoteData) {
+
+            $("#businesspayment-note").text(remoteData.note);
+            $("#businesspayment-description").text(remoteData.description);
+        };
+
+        if (executeRemote) {
+            
+            $.ajax({
+                dataType: "json",
+                cache: false,
+                url: "' . Yii::$app->urlManager->createUrl(['masterdata/payment-method/get-notes-by-payment-method']) . '?id=" + $("#businesspayment-payment_method_id").select2("data")[0].id,
+                success: function(response) {
+                    
+                    setNotes(response);
+
+                    if (afterSuccess !== undefined) {
+
+                        afterSuccess();
+                    }
+                }
+            });
+        } else {
+
+            setNotes([]);
+
+            if (afterSuccess !== undefined) {
+
+                afterSuccess();
+            }
+        }
+    };
+
+    $("#businesspayment-payment_method_id").on("select2:select", function() {
+        
+        notes(true);
+    });
 ';
 
 $this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>
