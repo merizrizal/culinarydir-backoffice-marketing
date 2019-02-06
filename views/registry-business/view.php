@@ -567,7 +567,7 @@ echo $ajaxRequest->component(); ?>
                     		} else {
                     		    
                     		    echo 'Data menu masih kosong';
-                    		}?>
+                    		} ?>
                     		
                     	</div>
                     </div>
