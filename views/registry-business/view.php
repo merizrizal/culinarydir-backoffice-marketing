@@ -230,7 +230,7 @@ echo $ajaxRequest->component(); ?>
                                 if ($dataRegistryBusinessProductCategory['productCategory']['type'] == 'General') {
 
                                     $productCategoryParent[$dataRegistryBusinessProductCategory['product_category_id']] = $dataRegistryBusinessProductCategory['productCategory']['name'];
-                                } else {
+                                } else if ($dataRegistryBusinessProductCategory['productCategory']['type'] == 'Specific' || $dataRegistryBusinessProductCategory['productCategory']['type'] == 'Specific-Menu') {
 
                                     $productCategoryChild[$dataRegistryBusinessProductCategory['product_category_id']] = $dataRegistryBusinessProductCategory['productCategory']['name'];
                                 }

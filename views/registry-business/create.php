@@ -761,6 +761,18 @@ $this->registerJs($jscript); ?>
                                 
                                 <h1><?= Yii::t('app', 'Online Order') ?></h1>
                                 <div>
+                                	<div class="form-group">
+                                    	<div class="row">
+                                			<div class="col-xs-12">
+                                                <?= Html::label(Yii::t('app', 'Menu')) ?>
+                                            </div>
+                                		</div>
+                                		<div class="row">
+                            	        	<div class="col-xs-6">
+                            	        		<?= $form->field($model, 'menu')->textarea(['rows' => 5, 'placeholder' => Yii::t('app', 'Menu')]) ?>
+                            	        	</div>
+                        	        	</div>
+                    	        	</div>
                                 	<div class="payment-main-form">
                                 		<div class="row">
                                 			<div class="col-xs-12">
@@ -868,19 +880,6 @@ $this->registerJs($jscript); ?>
                                             <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default delete-delivery-method']); ?>
                                         </div>
                                     </div>
-                                    
-                                    <div class="form-group">
-                                    	<div class="row">
-                                			<div class="col-xs-12">
-                                                <?= Html::label(Yii::t('app', 'Menu')) ?>
-                                            </div>
-                                		</div>
-                                		<div class="row">
-                            	        	<div class="col-xs-6">
-                            	        		<?= $form->field($model, 'menu')->textarea(['rows' => 5, 'placeholder' => Yii::t('app', 'Menu')]) ?>
-                            	        	</div>
-                        	        	</div>
-                    	        	</div>
                                 </div>
                             </div>
 

@@ -251,7 +251,7 @@ $actionButton =
                                 if ($dataBusinessProductCategory['productCategory']['type'] == 'General') {
 
                                     $productCategoryParent[$dataBusinessProductCategory['product_category_id']] = $dataBusinessProductCategory['productCategory']['name'];
-                                } else {
+                                } else if ($dataBusinessProductCategory['productCategory']['type'] == 'Specific' || $dataBusinessProductCategory['productCategory']['type'] == 'Specific-Menu') {
 
                                     $productCategoryChild[$dataBusinessProductCategory['product_category_id']] = $dataBusinessProductCategory['productCategory']['name'];
                                 }

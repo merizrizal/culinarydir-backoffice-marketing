@@ -76,7 +76,10 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     $query->andOnCondition(['business_product_category.is_active' => true]);
                 },
-                'businessProductCategories.productCategory',
+                'businessProductCategories.productCategory' => function ($query) {
+                    
+                    $query->andOnCondition(['<>', 'product_category.type', 'Menu']);
+                },
                 'businessHours' => function ($query) {
 
                     $query->andOnCondition(['business_hour.is_open' => true])
@@ -182,7 +185,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                 },
                 'businessProductCategories.productCategory' => function ($query) {
                     
-                    $query->andOnCondition(['<>', 'type', 'Menu']);
+                    $query->andOnCondition(['<>', 'product_category.type', 'Menu']);
                 },
                 'businessFacilities' => function ($query) {
 
@@ -282,21 +285,18 @@ class BusinessController extends \backoffice\controllers\BaseController
                             $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
                             
                             if (empty($newModelBusinessProductCategory)) {
+                                
+                                $orderProductCategory++;
 
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
                                 $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
                                 $newModelBusinessProductCategory->product_category_id = $productCategoryId;
+                                $newModelBusinessProductCategory->order = $orderProductCategory;
                             }
                             
                             $newModelBusinessProductCategory->is_active = true;
                             
-                            if (empty($newModelBusinessProductCategory->order)) {
-                                
-                                $orderProductCategory++;
-                                $newModelBusinessProductCategory->order = $orderProductCategory;
-                            }
-
                             if (!($flag = $newModelBusinessProductCategory->save())) {
 
                                 break;
@@ -318,19 +318,16 @@ class BusinessController extends \backoffice\controllers\BaseController
                             
                             if (empty($newModelBusinessProductCategory)) {
                                 
+                                $orderProductCategory++;
+                                
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
                                 $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
                                 $newModelBusinessProductCategory->product_category_id = $productCategoryId;
+                                $newModelBusinessProductCategory->order = $orderProductCategory;
                             }
                             
                             $newModelBusinessProductCategory->is_active = true;
-                            
-                            if (empty($newModelBusinessProductCategory->order)) {
-                                
-                                $orderProductCategory++;
-                                $newModelBusinessProductCategory->order = $orderProductCategory;
-                            }
                             
                             if (!($flag = $newModelBusinessProductCategory->save())) {
 
@@ -469,7 +466,7 @@ class BusinessController extends \backoffice\controllers\BaseController
             if ($valueBusinessProductCategory['productCategory']['type'] == 'General') {
 
                 $businessProductCategoryParent[] = $valueBusinessProductCategory;
-            } else if (($valueBusinessProductCategory['productCategory']['type'] == 'Specific') || ($valueBusinessProductCategory['productCategory']['type'] == 'Specific-Menu')) {
+            } else if ($valueBusinessProductCategory['productCategory']['type'] == 'Specific' || $valueBusinessProductCategory['productCategory']['type'] == 'Specific-Menu') {
                 
                 $businessProductCategoryChild[] = $valueBusinessProductCategory;
             }
