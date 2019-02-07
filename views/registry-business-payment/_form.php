@@ -142,12 +142,12 @@ $jscript = '
         placeholder: "' . Yii::t('app', 'Payment Methods') . '"
     });
 
-    function notes(executeRemote, afterSuccess) {
+    function notes(executeRemote) {
 
         function setNotes(remoteData) {
 
-            $("#registrybusinesspayment-note").text(remoteData.note);
-            $("#registrybusinesspayment-description").text(remoteData.description);
+            $("#registrybusinesspayment-note").val(remoteData.note);
+            $("#registrybusinesspayment-description").val(remoteData.description);
         };
 
         if (executeRemote) {
@@ -159,21 +159,11 @@ $jscript = '
                 success: function(response) {
                     
                     setNotes(response);
-
-                    if (afterSuccess !== undefined) {
-
-                        afterSuccess();
-                    }
                 }
             });
         } else {
 
             setNotes([]);
-
-            if (afterSuccess !== undefined) {
-
-                afterSuccess();
-            }
         }
     };
 

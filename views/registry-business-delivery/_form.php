@@ -142,12 +142,12 @@ $jscript = '
         placeholder: "' . Yii::t('app', 'Delivery Methods') . '"
     });
 
-    function notes(executeRemote, afterSuccess) {
+    function notes(executeRemote) {
 
         function setNotes(remoteData) {
 
-            $("#registrybusinessdelivery-note").text(remoteData.note);
-            $("#registrybusinessdelivery-description").text(remoteData.description);
+            $("#registrybusinessdelivery-note").val(remoteData.note);
+            $("#registrybusinessdelivery-description").val(remoteData.description);
         };
 
         if (executeRemote) {
@@ -159,21 +159,11 @@ $jscript = '
                 success: function(response) {
                     
                     setNotes(response);
-
-                    if (afterSuccess !== undefined) {
-
-                        afterSuccess();
-                    }
                 }
             });
         } else {
 
             setNotes([]);
-
-            if (afterSuccess !== undefined) {
-
-                afterSuccess();
-            }
         }
     };
 

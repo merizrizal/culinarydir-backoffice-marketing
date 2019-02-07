@@ -774,7 +774,8 @@ $this->registerJs($jscript); ?>
                             	            foreach ($dataRegistryBusinessPayment as $i => $registryBusinessPayment):
                             	                
                             	                $modelRegistryBusinessPayment->payment_method_id = $registryBusinessPayment['payment_method_id']; 
-                            	                $modelRegistryBusinessPayment->note = $registryBusinessPayment['note']; ?>
+                            	                $modelRegistryBusinessPayment->note = $registryBusinessPayment['note'];
+                            	                $modelRegistryBusinessPayment->description = $registryBusinessPayment['description']; ?>
                             	                
                             	                <div class="mb-40 payment-data-form">
                                                     <div class="row mt-10">
@@ -800,6 +801,9 @@ $this->registerJs($jscript); ?>
                                                             <?= $form->field($modelRegistryBusinessPayment, '[' . $i .']description')->textarea(['rows' => 6, 'placeholder' => Yii::t('app', 'Description')]) ?>
                                                         </div>
                                                     </div>
+                                                    
+                                                    <?= Html::hiddenInput('paymentIdx', $i, ['class' => 'payment-idx']); ?>
+                                                    
                                                 </div>
                                                 
                                         	<?php
@@ -828,7 +832,8 @@ $this->registerJs($jscript); ?>
                                 	        foreach ($dataRegistryBusinessDelivery as $i => $registryBusinessDelivery):
                                 	                
                                 	            $modelRegistryBusinessDelivery->delivery_method_id = $registryBusinessDelivery['delivery_method_id'];
-                            	                $modelRegistryBusinessDelivery->note = $registryBusinessDelivery['note']; ?>
+                            	                $modelRegistryBusinessDelivery->note = $registryBusinessDelivery['note'];
+                            	                $modelRegistryBusinessDelivery->description = $registryBusinessDelivery['description']; ?>
                             	                
                             	                <div class="mb-40 delivery-data-form">
                                                     <div class="row mt-10">
@@ -854,6 +859,9 @@ $this->registerJs($jscript); ?>
                                                             <?= $form->field($modelRegistryBusinessDelivery, '[' . $i .']description')->textarea(['rows' => 6, 'placeholder' => Yii::t('app', 'Description')]) ?>
                                                         </div>
                                                     </div>
+                                                    
+                                                    <?= Html::hiddenInput('deliveryIdx', $i, ['class' => 'delivery-idx']); ?>
+                                                    
                                                 </div>
                                                 
                                         	<?php
@@ -1231,6 +1239,56 @@ $jscript = '
         }
     };
 
+    function notesPayment(executeRemote, index) {
+
+        function setNotesPayment(remoteData) {
+
+            $("#registrybusinesspayment-" + index + "-note").val(remoteData.note);
+            $("#registrybusinesspayment-" + index + "-description").val(remoteData.description);
+        };
+
+        if (executeRemote) {
+            
+            $.ajax({
+                dataType: "json",
+                cache: false,
+                url: "' . Yii::$app->urlManager->createUrl(['masterdata/payment-method/get-notes-by-payment-method']) . '?id=" + $("#registrybusinesspayment-" + index + "-payment_method_id").select2("data")[0].id,
+                success: function(response) {
+                    
+                    setNotesPayment(response);
+                }
+            });
+        } else {
+
+            setNotesPayment([]);
+        }
+    };
+
+    function notesDelivery(executeRemote, index) {
+
+        function setNotesDelivery(remoteData) {
+
+            $("#registrybusinessdelivery-" + index + "-note").val(remoteData.note);
+            $("#registrybusinessdelivery-" + index + "-description").val(remoteData.description);
+        };
+
+        if (executeRemote) {
+            
+            $.ajax({
+                dataType: "json",
+                cache: false,
+                url: "' . Yii::$app->urlManager->createUrl(['masterdata/delivery-method/get-notes-by-delivery-method']) . '?id=" + $("#registrybusinessdelivery-" + index + "-delivery_method_id").select2("data")[0].id,
+                success: function(response) {
+                    
+                    setNotesDelivery(response);
+                }
+            });
+        } else {
+
+            setNotesDelivery([]);
+        }
+    };
+
     function addValidator(index) {
 
         $("#registry-business-form").yiiActiveForm("add", {
@@ -1409,9 +1467,24 @@ $jscript = '
         return false;
     });
 
+    if ($(".payment-idx").length) {
+
+        $(".payment-idx").each(function() {
+
+            var paymentIndex = $(this).val();
+            
+            $("#registrybusinesspayment-" + paymentIndex + "-payment_method_id").on("select2:select", function() {
+                
+                notesPayment(true, paymentIndex);
+            });
+        });
+    }
+
     $(".add-payment-method").on("click", function() {
 
         var formPaymentMethod = $(".payment-temp-form").clone();
+
+        var paymentCountTemp = paymentIndexCount;
 
         formPaymentMethod = replaceComponent(formPaymentMethod, "registrybusinesspayment-index-payment_method_id", "index", paymentIndexCount);
         formPaymentMethod = replaceComponent(formPaymentMethod, "registrybusinesspayment-index-note", "index", paymentIndexCount);
@@ -1435,6 +1508,11 @@ $jscript = '
             minimumResultsForSearch: "Infinity"
         });
 
+        $("#registrybusinesspayment-" + paymentCountTemp + "-payment_method_id").on("select2:select", function() {
+            
+            notesPayment(true, paymentCountTemp);
+        });
+
         paymentIndexCount++;
 
         return false;
@@ -1452,9 +1530,24 @@ $jscript = '
         return false;
     });
 
+    if ($(".delivery-idx").length) {
+
+        $(".delivery-idx").each(function() {
+
+            var deliveryIndex = $(this).val();
+            
+            $("#registrybusinessdelivery-" + deliveryIndex + "-delivery_method_id").on("select2:select", function() {
+                
+                notesDelivery(true, deliveryIndex);
+            });
+        });
+    }
+
     $(".add-delivery-method").on("click", function() {
 
         var formDeliveryMethod = $(".delivery-temp-form").clone();
+
+        var deliveryCountTemp = deliveryIndexCount;
 
         formDeliveryMethod = replaceComponent(formDeliveryMethod, "registrybusinessdelivery-index-delivery_method_id", "index", deliveryIndexCount);
         formDeliveryMethod = replaceComponent(formDeliveryMethod, "registrybusinessdelivery-index-note", "index", deliveryIndexCount);
@@ -1476,6 +1569,11 @@ $jscript = '
             theme: "krajee",
             placeholder: "' . Yii::t('app', 'Delivery Methods') . '",
             minimumResultsForSearch: "Infinity"
+        });
+
+        $("#registrybusinessdelivery-" + deliveryCountTemp + "-delivery_method_id").on("select2:select", function() {
+
+            notesDelivery(true, deliveryCountTemp);
         });
 
         deliveryIndexCount++;
