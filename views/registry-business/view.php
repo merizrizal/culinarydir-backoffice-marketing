@@ -230,7 +230,7 @@ echo $ajaxRequest->component(); ?>
                                 if ($dataRegistryBusinessProductCategory['productCategory']['type'] == 'General') {
 
                                     $productCategoryParent[$dataRegistryBusinessProductCategory['product_category_id']] = $dataRegistryBusinessProductCategory['productCategory']['name'];
-                                } else {
+                                } else if ($dataRegistryBusinessProductCategory['productCategory']['type'] == 'Specific' || $dataRegistryBusinessProductCategory['productCategory']['type'] == 'Specific-Menu') {
 
                                     $productCategoryChild[$dataRegistryBusinessProductCategory['product_category_id']] = $dataRegistryBusinessProductCategory['productCategory']['name'];
                                 }
@@ -542,6 +542,34 @@ echo $ajaxRequest->component(); ?>
                                 <div class="col-sm-9 col-xs-7"> - </div>';
                         } ?>
                     
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                    	<div class="col-sm-12">
+                            <?= Html::label(Yii::t('app', 'Menu')) ?>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                    	<div class="col-sm-12">
+                    	
+                    		<?php
+                    		if (!empty($model['menu'])) {
+                    		    
+                    		    $listMenu = explode("\n", $model['menu']);
+                    		    
+                    		    foreach ($listMenu as $dataMenu) {
+                    		        
+                    		        echo $dataMenu . '<br>';
+                    		    }
+                    		} else {
+                    		    
+                    		    echo 'Data menu masih kosong';
+                    		} ?>
+                    		
+                    	</div>
                     </div>
                     
                     <hr>

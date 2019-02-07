@@ -696,7 +696,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 },
                 'registryBusinessProductCategories.productCategory' => function ($query) {
                     
-                    $query->andOnCondition(['<>' , 'type', 'Menu']);
+                    $query->andOnCondition(['<>' , 'product_category.type', 'Menu']);
                 },
                 'registryBusinessFacilities' => function ($query) {
                     
@@ -964,7 +964,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             if ($existModelRegistryBusinessProductCategory['productCategory']['type'] == 'General') {
                 
                 $registryBusinessProductCategoryParent[] = $existModelRegistryBusinessProductCategory;
-            } else if (($existModelRegistryBusinessProductCategory['productCategory']['type'] == 'Specific') || ($existModelRegistryBusinessProductCategory['productCategory']['type'] == 'Specific-Menu')) {
+            } else if ($existModelRegistryBusinessProductCategory['productCategory']['type'] == 'Specific' || $existModelRegistryBusinessProductCategory['productCategory']['type'] == 'Specific-Menu') {
                 
                 $registryBusinessProductCategoryChild[] = $existModelRegistryBusinessProductCategory;
             }
@@ -1656,7 +1656,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     
                     $query->andOnCondition(['registry_business_product_category.is_active' => true]);
                 },
-                'registryBusinessProductCategories.productCategory',
+                'registryBusinessProductCategories.productCategory' => function ($query) {
+                    
+                    $query->andOnCondition(['<>', 'product_category.type', 'Menu']);
+                },
                 'registryBusinessHours' => function ($query) {
                     
                     $query->andOnCondition(['registry_business_hour.is_open' => true])
