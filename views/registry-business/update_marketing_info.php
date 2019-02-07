@@ -247,6 +247,19 @@ echo $ajaxRequest->component(); ?>
                                     </div>
                                 </div>
                             </div>
+                            
+                            <div class="form-group">
+                            	<div class="row">
+                        			<div class="col-xs-12">
+                                        <?= Html::label(Yii::t('app', 'Menu')) ?>
+                                    </div>
+                        		</div>
+                        		<div class="row">
+                    	        	<div class="col-xs-6">
+                    	        		<?= $form->field($model, 'menu')->textarea(['rows' => 5, 'placeholder' => Yii::t('app', 'Menu')]) ?>
+                    	        	</div>
+                	        	</div>
+            	        	</div>
 
                             <div class="row">
                                 <div class="col-xs-12">
