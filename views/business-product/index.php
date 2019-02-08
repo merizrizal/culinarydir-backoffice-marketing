@@ -73,6 +73,14 @@ echo $ajaxRequest->component(true); ?>
         ],
         'toolbar' => [
             [
+                'content' => Html::a('Update ' . Yii::t('app', 'Product Order'), ['update-business-product-order', 'id' => $modelBusiness['id']], [
+                    'class' => 'btn btn-success',
+                    'data-placement' => 'top',
+                    'data-toggle' => 'tooltip',
+                    'title' => 'Update Order'
+                ])
+            ],
+            [
                 'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index', 'id' => $modelBusiness['id']], [
                     'id' => 'refresh',
                     'class' => 'btn btn-success',
@@ -103,13 +111,13 @@ echo $ajaxRequest->component(true); ?>
                 'template' => '
                     <div class="btn-container hide">
                         <div class="visible-lg visible-md">
-                            <div class="btn-group btn-group-md" role="group" style="width: 200px">
-                                {view}{update}{delete}{up}{down}
+                            <div class="btn-group btn-group-md" role="group" style="width: 120px">
+                                {view}{update}{delete}
                             </div>
                         </div>
                         <div class="visible-sm visible-xs">
-                            <div class="btn-group btn-group-lg" role="group" style="width: 260px">
-                                {view}{update}{delete}{up}{down}
+                            <div class="btn-group btn-group-lg" role="group" style="width: 156px">
+                                {view}{update}{delete}
                             </div>
                         </div>
                     </div>',
@@ -145,26 +153,6 @@ echo $ajaxRequest->component(true); ?>
                             'title' => 'Delete',
                             'model-id' => $model->id,
                             'model-name' => $model->name,
-                        ]);
-                    },
-                    'up' => function($url, $model, $key) {
-                        
-                        return Html::a('<i class="fa fa-arrow-up"></i>', ['up', 'id' => $model->id], [
-                            'id' => 'up',
-                            'class' => 'btn btn-default',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'title' => 'Up'
-                        ]);
-                    },
-                    'down' => function($url, $model, $key) {
-                        
-                        return Html::a('<i class="fa fa-arrow-down"></i>', ['down', 'id' => $model->id], [
-                            'id' => 'down',
-                            'class' => 'btn btn-default',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'title' => 'Down'
                         ]);
                     }
                 ]

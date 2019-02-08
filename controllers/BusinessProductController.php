@@ -7,7 +7,6 @@ use core\models\BusinessProduct;
 use core\models\search\BusinessProductSearch;
 use core\models\Business;
 use sycomponent\Tools;
-use sycomponent\AjaxRequest;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -199,82 +198,73 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         return $return;
     }
     
-    public function actionUp($id)
+    public function actionUpdateBusinessProductOrder($id, $save = null)
     {
-        $model = $this->findModel($id);
-        
-        $modelTemp = BusinessProduct::find()
-            ->andWhere(['business_id' => $model->business_id])
-            ->andWhere(['order' => $model->order - 1])
+        $model = Business::find()
+            ->joinWith([
+                'businessProducts' => function ($query) {
+            
+                    $query->orderBy(['order' => SORT_ASC]);
+                },
+            ])
+            ->andWhere(['business.id' => $id])
             ->one();
+            
+        $modelBusinessProduct = new BusinessProduct();
+        $dataBusinessProduct = [];
         
-        if ($model->order > 1) {
+        if (!empty(($post = Yii::$app->request->post()))) {
             
-            $transaction = Yii::$app->db->beginTransaction();
-            $flag = false;
-            
-            $modelTemp->order = $model->order;
-            
-            if (($flag = $modelTemp->save())) {
+            if (!empty($save)) {
                 
-                $model->order -= 1;
+                $transaction = Yii::$app->db->beginTransaction();
+                $flag = false;
                 
-                $flag = $model->save();
-            }
-            
-            if ($flag) {
+                foreach ($model->businessProducts as $dataProduct) {
+                    
+                    $dataProduct->order = $post['order'][$dataProduct['id']];
+                    $dataProduct->not_active = !empty($post['not_active'][$dataProduct['id']]) ? true : false; 
+                    
+                    if (!($flag = $dataProduct->save())) {
+                        
+                        break;
+                    } else {
+                        
+                        array_push($dataBusinessProduct, array_merge($dataProduct->toArray()));
+                    }
+                }
                 
-                $transaction->commit();
-            } else {
-                
-                Yii::$app->session->setFlash('status', 'danger');
-                Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                
-                $transaction->rollBack();
+                if ($flag) {
+                    
+                    Yii::$app->session->setFlash('status', 'success');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    
+                    $transaction->commit();
+                } else {
+                    
+                    Yii::$app->session->setFlash('status', 'danger');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    
+                    $transaction->rollBack();
+                }
             }
         }
         
-        return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business-product/index', 'id' => $model->business_id]));
-    }
-    
-    public function actionDown($id)
-    {
-        $model = $this->findModel($id);
-        
-        $modelTemp = BusinessProduct::find()
-            ->andWhere(['business_id' => $model->business_id])
-            ->andWhere(['order' => $model->order + 1])
-            ->one();
-        
-        if ($modelTemp !== null) {
+        if (empty($dataBusinessProduct)) {
             
-            $transaction = Yii::$app->db->beginTransaction();
-            $flag = false;
-            
-            $modelTemp->order = $model->order;
-            
-            if (($flag = $modelTemp->save())) {
+            foreach ($model['businessProducts'] as $businessProduct) {
                 
-                $model->order += 1;
-                
-                $flag = $model->save();
-            }
-            
-            if ($flag) {
-                
-                $transaction->commit();
-            } else {
-                
-                Yii::$app->session->setFlash('status', 'danger');
-                Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                
-                $transaction->rollBack();
+                array_push($dataBusinessProduct, $businessProduct);
             }
         }
         
-        return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business-product/index', 'id' => $model->business_id]));
+        return $this->render('update_business_product_order', [
+            'model' => $model,
+            'modelBusinessProduct' => $modelBusinessProduct,
+            'dataBusinessProduct' => $dataBusinessProduct
+        ]);
     }
 
     /**
