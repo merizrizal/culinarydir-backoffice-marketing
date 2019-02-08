@@ -142,34 +142,23 @@ $jscript = '
         placeholder: "' . Yii::t('app', 'Delivery Methods') . '"
     });
 
-    function notes(executeRemote) {
-
-        var setNotes = function(remoteData) {
-
-            $("#registrybusinessdelivery-note").val(remoteData.note);
-            $("#registrybusinessdelivery-description").val(remoteData.description);
-        };
-
-        if (executeRemote) {
+    function notes() {
             
-            $.ajax({
-                dataType: "json",
-                cache: false,
-                url: "' . Yii::$app->urlManager->createUrl(['masterdata/delivery-method/get-notes-by-delivery-method']) . '?id=" + $("#registrybusinessdelivery-delivery_method_id").select2("data")[0].id,
-                success: function(response) {
-                    
-                    setNotes(response);
-                }
-            });
-        } else {
-
-            setNotes([]);
-        }
+        $.ajax({
+            dataType: "json",
+            cache: false,
+            url: "' . Yii::$app->urlManager->createUrl(['masterdata/delivery-method/get-notes-by-delivery-method']) . '?id=" + $("#registrybusinessdelivery-delivery_method_id").select2("data")[0].id,
+            success: function(response) {
+                
+                $("#registrybusinessdelivery-note").val(response.note);
+                $("#registrybusinessdelivery-description").val(response.description);
+            }
+        });
     };
 
     $("#registrybusinessdelivery-delivery_method_id").on("select2:select", function() {
         
-        notes(true);
+        notes();
     });
 ';
 

@@ -517,6 +517,9 @@ $actionButton =
                                     </div>
                                     <div class="col-sm-9 col-xs-7 mb-10">
                                         ' . (!empty($dataBusinessPayment['note']) ? $dataBusinessPayment['note'] : '-') . '
+                                    </div>
+                                    <div class="col-sm-offset-3 col-sm-9 col-xs-offset-5 col-xs-7 mb-10">
+                                        ' . (!empty($dataBusinessPayment['description']) ? $dataBusinessPayment['description'] : '-') . '
                                     </div>';
                             }
                         } else {
@@ -552,6 +555,9 @@ $actionButton =
                                     </div>
                                     <div class="col-sm-9 col-xs-7 mb-10">
                                         ' . (!empty($dataBusinessDelivery['note']) ? $dataBusinessDelivery['note'] : '-') . '
+                                    </div>
+                                    <div class="col-sm-offset-3 col-sm-9 col-xs-offset-5 col-xs-7 mb-10">
+                                        ' . (!empty($dataBusinessDelivery['description']) ? $dataBusinessDelivery['description'] : '-') . '
                                     </div>';
                             }
                         } else {

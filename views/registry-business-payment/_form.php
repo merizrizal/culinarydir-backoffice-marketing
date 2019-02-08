@@ -142,34 +142,23 @@ $jscript = '
         placeholder: "' . Yii::t('app', 'Payment Methods') . '"
     });
 
-    function notes(executeRemote) {
-
-        var setNotes = function(remoteData) {
-
-            $("#registrybusinesspayment-note").val(remoteData.note);
-            $("#registrybusinesspayment-description").val(remoteData.description);
-        };
-
-        if (executeRemote) {
+    function notes() {
             
-            $.ajax({
-                dataType: "json",
-                cache: false,
-                url: "' . Yii::$app->urlManager->createUrl(['masterdata/payment-method/get-notes-by-payment-method']) . '?id=" + $("#registrybusinesspayment-payment_method_id").select2("data")[0].id,
-                success: function(response) {
-                    
-                    setNotes(response);
-                }
-            });
-        } else {
-
-            setNotes([]);
-        }
+        $.ajax({
+            dataType: "json",
+            cache: false,
+            url: "' . Yii::$app->urlManager->createUrl(['masterdata/payment-method/get-notes-by-payment-method']) . '?id=" + $("#registrybusinesspayment-payment_method_id").select2("data")[0].id,
+            success: function(response) {
+                
+                $("#registrybusinesspayment-note").val(response.note);
+                $("#registrybusinesspayment-description").val(response.description);
+            }
+        });
     };
 
     $("#registrybusinesspayment-payment_method_id").on("select2:select", function() {
         
-        notes(true);
+        notes();
     });
 ';
 

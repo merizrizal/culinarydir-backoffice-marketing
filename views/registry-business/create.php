@@ -1238,54 +1238,32 @@ $jscript = '
         }
     };
 
-    function notesPayment(executeRemote, index) {
-
-        var setNotesPayment = function(remoteData) {
-
-            $("#registrybusinesspayment-" + index + "-note").val(remoteData.note);
-            $("#registrybusinesspayment-" + index + "-description").val(remoteData.description);
-        };
-
-        if (executeRemote) {
+    function notesPayment(index) {
             
-            $.ajax({
-                dataType: "json",
-                cache: false,
-                url: "' . Yii::$app->urlManager->createUrl(['masterdata/payment-method/get-notes-by-payment-method']) . '?id=" + $("#registrybusinesspayment-" + index + "-payment_method_id").select2("data")[0].id,
-                success: function(response) {
-                    
-                    setNotesPayment(response);
-                }
-            });
-        } else {
-
-            setNotesPayment([]);
-        }
+        $.ajax({
+            dataType: "json",
+            cache: false,
+            url: "' . Yii::$app->urlManager->createUrl(['masterdata/payment-method/get-notes-by-payment-method']) . '?id=" + $("#registrybusinesspayment-" + index + "-payment_method_id").select2("data")[0].id,
+            success: function(response) {
+                
+                $("#registrybusinesspayment-" + index + "-note").val(response.note);
+                $("#registrybusinesspayment-" + index + "-description").val(response.description);
+            }
+        });
     };
 
-    function notesDelivery(executeRemote, index) {
-
-        var setNotesDelivery = function(remoteData) {
-
-            $("#registrybusinessdelivery-" + index + "-note").val(remoteData.note);
-            $("#registrybusinessdelivery-" + index + "-description").val(remoteData.description);
-        };
-
-        if (executeRemote) {
+    function notesDelivery(index) {
             
-            $.ajax({
-                dataType: "json",
-                cache: false,
-                url: "' . Yii::$app->urlManager->createUrl(['masterdata/delivery-method/get-notes-by-delivery-method']) . '?id=" + $("#registrybusinessdelivery-" + index + "-delivery_method_id").select2("data")[0].id,
-                success: function(response) {
-                    
-                    setNotesDelivery(response);
-                }
-            });
-        } else {
-
-            setNotesDelivery([]);
-        }
+        $.ajax({
+            dataType: "json",
+            cache: false,
+            url: "' . Yii::$app->urlManager->createUrl(['masterdata/delivery-method/get-notes-by-delivery-method']) . '?id=" + $("#registrybusinessdelivery-" + index + "-delivery_method_id").select2("data")[0].id,
+            success: function(response) {
+                
+                $("#registrybusinessdelivery-" + index + "-note").val(response.note);
+                $("#registrybusinessdelivery-" + index + "-description").val(response.description);
+            }
+        });
     };
 
     function addValidator(index) {
@@ -1474,7 +1452,7 @@ $jscript = '
             
             $("#registrybusinesspayment-" + paymentIndex + "-payment_method_id").on("select2:select", function() {
                 
-                notesPayment(true, paymentIndex);
+                notesPayment(paymentIndex);
             });
         });
     }
@@ -1509,7 +1487,7 @@ $jscript = '
 
         $("#registrybusinesspayment-" + paymentCountTemp + "-payment_method_id").on("select2:select", function() {
             
-            notesPayment(true, paymentCountTemp);
+            notesPayment(paymentCountTemp);
         });
 
         paymentIndexCount++;
@@ -1537,7 +1515,7 @@ $jscript = '
             
             $("#registrybusinessdelivery-" + deliveryIndex + "-delivery_method_id").on("select2:select", function() {
                 
-                notesDelivery(true, deliveryIndex);
+                notesDelivery(deliveryIndex);
             });
         });
     }
@@ -1572,7 +1550,7 @@ $jscript = '
 
         $("#registrybusinessdelivery-" + deliveryCountTemp + "-delivery_method_id").on("select2:select", function() {
 
-            notesDelivery(true, deliveryCountTemp);
+            notesDelivery(deliveryCountTemp);
         });
 
         deliveryIndexCount++;

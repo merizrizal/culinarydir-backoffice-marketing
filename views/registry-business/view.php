@@ -498,6 +498,9 @@ echo $ajaxRequest->component(); ?>
                                     </div>
                                     <div class="col-sm-9 col-xs-7 mb-10">
                                         ' . (!empty($dataRegistryBusinessPayment['note']) ? $dataRegistryBusinessPayment['note'] : '-') . '
+                                    </div>
+                                    <div class="col-sm-offset-3 col-sm-9 col-xs-offset-5 col-xs-7 mb-10">
+                                        ' . (!empty($dataRegistryBusinessPayment['description']) ? $dataRegistryBusinessPayment['description'] : '-') . '
                                     </div>';
                             }
                         } else {
@@ -533,6 +536,9 @@ echo $ajaxRequest->component(); ?>
                                     </div>
                                     <div class="col-sm-9 col-xs-7 mb-10">
                                         ' . (!empty($dataRegistryBusinessDelivery['note']) ? $dataRegistryBusinessDelivery['note'] : '-') . '
+                                    </div>
+                                    <div class="col-sm-offset-3 col-sm-9 col-xs-offset-5 col-xs-7 mb-10">
+                                        ' . (!empty($dataRegistryBusinessDelivery['description']) ? $dataRegistryBusinessDelivery['description'] : '-') . '
                                     </div>';
                             }
                         } else {
