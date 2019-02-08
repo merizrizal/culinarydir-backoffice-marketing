@@ -210,7 +210,6 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             ->andWhere(['business.id' => $id])
             ->one();
             
-        $modelBusinessProduct = new BusinessProduct();
         $dataBusinessProduct = [];
         
         if (!empty(($post = Yii::$app->request->post()))) {
@@ -262,7 +261,6 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         
         return $this->render('update_business_product_order', [
             'model' => $model,
-            'modelBusinessProduct' => $modelBusinessProduct,
             'dataBusinessProduct' => $dataBusinessProduct
         ]);
     }

@@ -7,7 +7,6 @@ use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\Business */
-/* @var $modelBusinessProduct core\models\BusinessProduct */
 /* @var $dataBusinessProduct array */
 
 kartik\select2\Select2Asset::register($this);
@@ -77,9 +76,7 @@ echo $ajaxRequest->component(); ?>
                                             $productOrder = range(0, count($dataBusinessProduct));
                                             unset($productOrder[0]);
                                             
-                                            foreach ($dataBusinessProduct as $businessProduct):
-                                                
-                                                $modelBusinessProduct->order = $businessProduct['order']; ?>
+                                            foreach ($dataBusinessProduct as $businessProduct): ?>
 
                                                 <div class="col-xs-6 col-sm-4">
                                                     <div class="thumbnail">
