@@ -1160,7 +1160,7 @@ $jscript = '
 
     function district(executeRemote, afterSuccess) {
 
-        function setDistrict(remoteData) {
+        var setDistrict = function(remoteData) {
 
             $("#registrybusiness-district_id").val(null).trigger("change");
 
@@ -1200,7 +1200,7 @@ $jscript = '
 
     function village(executeRemote, afterSuccess) {
 
-        function setVillage(remoteData) {
+        var setVillage = function(remoteData) {
 
             $("#registrybusiness-village_id").val(null).trigger("change");
 
@@ -1240,7 +1240,7 @@ $jscript = '
 
     function notesPayment(executeRemote, index) {
 
-        function setNotesPayment(remoteData) {
+        var setNotesPayment = function(remoteData) {
 
             $("#registrybusinesspayment-" + index + "-note").val(remoteData.note);
             $("#registrybusinesspayment-" + index + "-description").val(remoteData.description);
@@ -1265,7 +1265,7 @@ $jscript = '
 
     function notesDelivery(executeRemote, index) {
 
-        function setNotesDelivery(remoteData) {
+        var setNotesDelivery = function(remoteData) {
 
             $("#registrybusinessdelivery-" + index + "-note").val(remoteData.note);
             $("#registrybusinessdelivery-" + index + "-description").val(remoteData.description);

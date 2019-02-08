@@ -141,7 +141,7 @@ $jscript = '
 
     function notes(executeRemote) {
 
-        function setNotes(remoteData) {
+        var setNotes = function(remoteData) {
 
             $("#businessdelivery-note").val(remoteData.note);
             $("#businessdelivery-description").val(remoteData.description);

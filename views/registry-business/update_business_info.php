@@ -216,7 +216,7 @@ echo $ajaxRequest->component(); ?>
 $jscript = '
     function district(executeRemote, afterSuccess) {
 
-        function setDistrict(remoteData) {
+        var setDistrict = function(remoteData) {
 
             $("#registrybusiness-district_id").val(null).trigger("change");
 
@@ -256,7 +256,7 @@ $jscript = '
 
     function village(executeRemote, afterSuccess) {
 
-        function setVillage(remoteData) {
+        var setVillage = function(remoteData) {
 
             $("#registrybusiness-village_id").val(null).trigger("change");
 
