@@ -229,7 +229,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
                         break;
                     } else {
                         
-                        array_push($dataBusinessProduct, array_merge($dataProduct->toArray()));
+                        array_push($dataBusinessProduct, $dataProduct->toArray());
                     }
                 }
                 
