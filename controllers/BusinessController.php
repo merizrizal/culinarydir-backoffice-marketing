@@ -216,8 +216,6 @@ class BusinessController extends \backoffice\controllers\BaseController
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
                 
-                $orderProductCategory = count($model->businessProductCategories);
-
                 if (($flag = $model->save())) {
 
                     if (!empty($post['BusinessCategory']['category_id'])) {
@@ -286,13 +284,10 @@ class BusinessController extends \backoffice\controllers\BaseController
                             
                             if (empty($newModelBusinessProductCategory)) {
                                 
-                                $orderProductCategory++;
-
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
                                 $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
                                 $newModelBusinessProductCategory->product_category_id = $productCategoryId;
-                                $newModelBusinessProductCategory->order = $orderProductCategory;
                             }
                             
                             $newModelBusinessProductCategory->is_active = true;
@@ -318,13 +313,10 @@ class BusinessController extends \backoffice\controllers\BaseController
                             
                             if (empty($newModelBusinessProductCategory)) {
                                 
-                                $orderProductCategory++;
-                                
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
                                 $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
                                 $newModelBusinessProductCategory->product_category_id = $productCategoryId;
-                                $newModelBusinessProductCategory->order = $orderProductCategory;
                             }
                             
                             $newModelBusinessProductCategory->is_active = true;
@@ -362,8 +354,10 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                             if (!$exist) {
                                 
-                                $existModelBusinessProductCategory->is_active = false;
-                                $existModelBusinessProductCategory->order = null;
+                                if (!empty($existModelBusinessProductCategory->productCategory)) {
+                                    
+                                    $existModelBusinessProductCategory->is_active = false;
+                                }
 
                                 if (!($flag = $existModelBusinessProductCategory->save())) {
 
@@ -962,78 +956,6 @@ class BusinessController extends \backoffice\controllers\BaseController
         ]);
     }
     
-    public function actionUpdateProductCategory($id, $save = null)
-    {
-        $model = Business::find()
-            ->joinWith([
-                'businessProductCategories' => function ($query) {
-                
-                    $query->andOnCondition(['business_product_category.is_active' => true])
-                        ->orderBy(['order' => SORT_ASC]);
-                },
-                'businessProductCategories.productCategory',
-            ])
-            ->andWhere(['business.id' => $id])
-            ->one();
-        
-        $modelBusinessProductCategory = new BusinessProductCategory();
-        $dataBusinessProductCategory = [];
-        
-        if (!empty(($post = Yii::$app->request->post()))) {
-            
-            if (!empty($save)) {
-                
-                $transaction = Yii::$app->db->beginTransaction();
-                $flag = false;
-                
-                foreach ($model->businessProductCategories as $dataProductCategories) {
-                    
-                    $dataProductCategories->order = $post['order'][$dataProductCategories['id']];
-                    
-                    if (!($flag = $dataProductCategories->save())) {
-                        
-                        break;
-                    } else {
-                        
-                        $modelProductCategory = [];
-                        $modelProductCategory['productCategory'] = $dataProductCategories->productCategory->toArray();
-                        array_push($dataBusinessProductCategory, array_merge($dataProductCategories->toArray(), $modelProductCategory));
-                    }
-                }
-                
-                if ($flag) {
-                    
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
-                    
-                    $transaction->commit();
-                } else {
-                    
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                    
-                    $transaction->rollBack();
-                }
-            }
-        }
-        
-        if (empty($dataBusinessProductCategory)) {
-            
-            foreach ($model['businessProductCategories'] as $productCategory) {
-                
-                array_push($dataBusinessProductCategory, $productCategory);
-            }
-        }
-        
-        return $this->render('update_product_category', [
-            'model' => $model,
-            'modelBusinessProductCategory' => $modelBusinessProductCategory,
-            'dataBusinessProductCategory' => $dataBusinessProductCategory
-        ]);
-    }
-
     protected function findModel($id)
     {
         if (($model = Business::findOne($id)) !== null) {

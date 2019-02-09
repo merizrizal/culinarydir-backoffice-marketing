@@ -3,18 +3,19 @@
 namespace backoffice\modules\marketing\controllers;
 
 use Yii;
-use core\models\BusinessProduct;
-use core\models\search\BusinessProductSearch;
 use core\models\Business;
-use sycomponent\Tools;
-use yii\filters\VerbFilter;
+use core\models\BusinessProductCategory;
+use core\models\search\BusinessProductCategorySearch;
+use backoffice\controllers\BaseController;
 use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
- * BusinessProductController implements the CRUD actions for BusinessProduct model.
+ * BusinessProductCategoryController implements the CRUD actions for BusinessProductCategory model.
  */
-class BusinessProductController extends \backoffice\controllers\BaseController
+class BusinessProductCategoryController extends BaseController
 {
     /**
      * @inheritdoc
@@ -27,22 +28,22 @@ class BusinessProductController extends \backoffice\controllers\BaseController
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
-                        'delete' => ['POST'],
+                        
                     ],
                 ],
             ]);
     }
 
     /**
-     * Lists all BusinessProduct models.
+     * Lists all BusinessProductCategory models.
      * @return mixed
      */
     public function actionIndex($id)
     {
-        $searchModel = new BusinessProductSearch();
+        $searchModel = new BusinessProductCategorySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->andWhere(['business_product.business_id' => $id]);
-
+        $dataProvider->query->andWhere(['business_id' => $id])->andWhere(['OR', ['product_category.type' => 'Menu'], ['product_category.type' => 'Specific-Menu']]);
+        
         $modelBusiness = Business::find()
             ->andWhere(['id' => $id])
             ->asArray()->one();
@@ -50,13 +51,13 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'modelBusiness' => $modelBusiness,
+            'modelBusiness' => $modelBusiness
         ]);
     }
 
     /**
-     * Displays a single BusinessProduct model.
-     * @param integer $id
+     * Displays a single BusinessProductCategory model.
+     * @param string $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -68,7 +69,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
     }
 
     /**
-     * Creates a new BusinessProduct model.
+     * Creates a new BusinessProductCategory model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
@@ -76,21 +77,16 @@ class BusinessProductController extends \backoffice\controllers\BaseController
     {
         $render = 'create';
 
-        $model = new BusinessProduct();
+        $model = new BusinessProductCategory();
 
-        if ($model->load(Yii::$app->request->post())) {
-
+        if ($model->load(($post = Yii::$app->request->post()))) {
+            
             if (!empty($save)) {
                 
-                $last = BusinessProduct::find()
-                    ->andWhere(['business_id' => $id])
-                    ->orderBy(['order' => SORT_DESC])
-                    ->asArray()->one();
-
                 $model->business_id = $id;
-                $model->image = Tools::uploadFile('/img/business_product/', $model, 'image', 'id', $model->business_id);
-                $model->order = $last['order'] + 1;
-                
+                $model->unique_id = $id . '-' . $post['BusinessProductCategory']['product_category_id'];
+                $model->product_category_id = $post['BusinessProductCategory']['product_category_id'];
+
                 if ($model->save()) {
 
                     Yii::$app->session->setFlash('status', 'success');
@@ -108,21 +104,21 @@ class BusinessProductController extends \backoffice\controllers\BaseController
                 }
             }
         }
-
+        
         $modelBusiness = Business::find()
             ->andWhere(['id' => $id])
             ->asArray()->one();
 
         return $this->render($render, [
             'model' => $model,
-            'modelBusiness' => $modelBusiness,
+            'modelBusiness' => $modelBusiness
         ]);
     }
 
     /**
-     * Updates an existing BusinessProduct model.
+     * Updates an existing BusinessProductCategory model.
      * If update is successful, the browser will be redirected to the 'update' page.
-     * @param integer $id
+     * @param string $id
      * @return mixed
      */
     public function actionUpdate($id, $save = null)
@@ -132,11 +128,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         if ($model->load(Yii::$app->request->post())) {
 
             if (!empty($save)) {
-                
-                $image = Tools::uploadFile('/img/business_product/', $model, 'image', 'id', $model->business_id);
 
-                $model->image = !empty($image) ? $image : $model->oldAttributes['image'];
-                
                 if ($model->save()) {
 
                     Yii::$app->session->setFlash('status', 'success');
@@ -153,64 +145,29 @@ class BusinessProductController extends \backoffice\controllers\BaseController
 
         return $this->render('update', [
             'model' => $model,
-            'modelBusiness' => $model->business->toArray(),
+            'modelBusiness' => $model->business->toArray()
         ]);
-    }
-
-    /**
-     * Deletes an existing BusinessProduct model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        if (($model = $this->findModel($id)) !== false) {
-
-            $flag = false;
-            $error = '';
-
-            try {
-                $flag = $model->delete();
-            } catch (yii\db\Exception $exc) {
-                $error = Yii::$app->params['errMysql'][$exc->errorInfo[1]];
-            }
-        }
-
-        if ($flag) {
-
-            Yii::$app->session->setFlash('status', 'success');
-            Yii::$app->session->setFlash('message1', Yii::t('app', 'Delete Is Success'));
-            Yii::$app->session->setFlash('message2', Yii::t('app', 'Delete process is success. Data has been deleted'));
-        } else {
-
-            Yii::$app->session->setFlash('status', 'danger');
-            Yii::$app->session->setFlash('message1', Yii::t('app', 'Delete Is Fail'));
-            Yii::$app->session->setFlash('message2', Yii::t('app', 'Delete process is fail. Data fail to delete' . $error));
-        }
-
-        $return = [];
-
-        $return['url'] = Yii::$app->urlManager->createUrl([$this->module->id . '/business-product/index', 'id' => $model->business_id]);
-
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        return $return;
     }
     
     public function actionUpdateOrder($id, $save = null)
     {
         $model = Business::find()
             ->joinWith([
-                'businessProducts' => function ($query) {
-            
-                    $query->orderBy(['order' => SORT_ASC]);
+                'businessProductCategories' => function ($query) {
+                
+                    $query->andOnCondition(['business_product_category.is_active' => true])
+                        ->orderBy(['order' => SORT_ASC]);
+                },
+                'businessProductCategories.productCategory' => function ($query) {
+                    
+                    $query->andOnCondition(['OR', ['product_category.type' => 'Menu'], ['product_category.type' => 'Specific-Menu']]);
                 },
             ])
             ->andWhere(['business.id' => $id])
             ->one();
             
-        $dataBusinessProduct = [];
+        $modelBusinessProductCategory = new BusinessProductCategory();
+        $dataBusinessProductCategory = [];
         
         if (!empty(($post = Yii::$app->request->post()))) {
             
@@ -218,18 +175,22 @@ class BusinessProductController extends \backoffice\controllers\BaseController
                 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
-                
-                foreach ($model->businessProducts as $dataProduct) {
+
+                foreach ($model->businessProductCategories as $dataProductCategories) {
                     
-                    $dataProduct->order = $post['order'][$dataProduct['id']];
-                    $dataProduct->not_active = !empty($post['not_active'][$dataProduct['id']]) ? true : false; 
-                    
-                    if (!($flag = $dataProduct->save())) {
+                    if (!empty($dataProductCategories->productCategory)) {
                         
-                        break;
-                    } else {
+                        $dataProductCategories->order = $post['order'][$dataProductCategories['id']];
                         
-                        array_push($dataBusinessProduct, $dataProduct->toArray());
+                        if (!($flag = $dataProductCategories->save())) {
+                            
+                            break;
+                        } else {
+                            
+                            $modelProductCategory = [];
+                            $modelProductCategory['productCategory'] = $dataProductCategories->productCategory->toArray();
+                            array_push($dataBusinessProductCategory, array_merge($dataProductCategories->toArray(), $modelProductCategory));
+                        }
                     }
                 }
                 
@@ -251,30 +212,34 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             }
         }
         
-        if (empty($dataBusinessProduct)) {
+        if (empty($dataBusinessProductCategory)) {
             
-            foreach ($model['businessProducts'] as $businessProduct) {
+            foreach ($model['businessProductCategories'] as $productCategory) {
                 
-                array_push($dataBusinessProduct, $businessProduct);
+                if ($productCategory['productCategory']['type'] == 'Menu' || $productCategory['productCategory']['type'] == 'Specific-Menu') {
+                    
+                    array_push($dataBusinessProductCategory, $productCategory);
+                }
             }
         }
         
         return $this->render('update_order', [
             'model' => $model,
-            'dataBusinessProduct' => $dataBusinessProduct
+            'modelBusinessProductCategory' => $modelBusinessProductCategory,
+            'dataBusinessProductCategory' => $dataBusinessProductCategory
         ]);
     }
 
     /**
-     * Finds the BusinessProduct model based on its primary key value.
+     * Finds the BusinessProductCategory model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return BusinessProduct the loaded model
+     * @param string $id
+     * @return BusinessProductCategory the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = BusinessProduct::findOne($id)) !== null) {
+        if (($model = BusinessProductCategory::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

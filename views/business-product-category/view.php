@@ -7,10 +7,10 @@ use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
-/* @var $model core\models\BusinessProduct */
+/* @var $model core\models\BusinessProductCategory */
 
 $ajaxRequest = new AjaxRequest([
-    'modelClass' => 'BusinessProduct',
+    'modelClass' => 'BusinessProductCategory',
 ]);
 
 $ajaxRequest->view();
@@ -20,7 +20,7 @@ $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
 if ($status !== null) {
-    
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -31,15 +31,17 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = $model->name;
+$this->title = $model->productCategory->name;
+
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['business/member']];
-$this->params['breadcrumbs'][] = ['label' => $model->business->name, 'url' => ['business/view-member', 'id' => $model->business->id]];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Product'), 'url' => ['index', 'id' => $model->business->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->business->name, 'url' => ['business/view-member', 'id' => $model->business_id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Product'), 'url' => ['business-product/index', 'id' => $model->business_id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Product Category'), 'url' => ['index', 'id' => $model->business_id]];
 $this->params['breadcrumbs'][] = $this->title;
 
 echo $ajaxRequest->component(); ?>
 
-<div class="business-product-view">
+<div class="business-product-category-view">
 
     <div class="row">
         <div class="col-sm-12">
@@ -47,19 +49,11 @@ echo $ajaxRequest->component(); ?>
 
                 <div class="x_content">
 
-                    <?= Html::a('<i class="fa fa-upload"></i> Create', ['create', 'id' => $model->business->id], ['class' => 'btn btn-success']) ?>
+                    <?= Html::a('<i class="fa fa-upload"></i> Create', ['create', 'id' => $model->business_id], ['class' => 'btn btn-success']) ?>
 
                     <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
 
-                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model->id], [
-                            'id' => 'delete',
-                            'class' => 'btn btn-danger',
-                            'data-not-ajax' => 1,
-                            'model-id' => $model->id,
-                            'model-name' => $model->name,
-                        ]) ?>
-
-                    <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index', 'id' => $model->business->id], ['class' => 'btn btn-default']) ?>
+                    <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index', 'id' => $model->business_id], ['class' => 'btn btn-default']) ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>
 
@@ -69,20 +63,12 @@ echo $ajaxRequest->component(); ?>
                             'class' => 'table'
                         ],
                         'attributes' => [
-                            'name',
-                            'businessProductCategory.productCategory.name',
-                            'description:ntext',
-                            'price:currency',
+                            'productCategory.name',
                             [
-                                'attribute' => 'image',
+                                'attribute' => 'is_active',
                                 'format' => 'raw',
-                                'value' => Html::img(Yii::getAlias('@uploadsUrl') . $model->thumb('/img/business_product/', 'image', 200, 200), ['class'=>'img-thumbnail']),
-                            ],
-                            [
-                                'attribute' => 'not_active',
-                                'format' => 'raw',
-                                'value' => Html::checkbox('not_active', $model->not_active, ['value' => $model->not_active, 'disabled' => 'disabled']),
-                            ],
+                                'value' => Html::checkbox('is_active', $model->is_active, ['value' => $model->is_active, 'disabled' => 'disabled']),
+                            ]
                         ],
                     ]) ?>
 
@@ -104,7 +90,6 @@ $modalDialog = new ModalDialog([
 $modalDialog->theScript(false);
 
 echo $modalDialog->renderDialog();
-
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
 
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);

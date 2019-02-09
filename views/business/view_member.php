@@ -48,13 +48,7 @@ $actionButton =
     
     <ul class="dropdown-menu">
         <li>' . Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id']]) . '</li>
-        <li class="dropdown-submenu">' .
-            Html::a(Yii::t('app', 'Marketing Information') . ' <span class="caret"></span>', '#', ['class' => 'direct']) . '
-            <ul class="dropdown-menu">
-                <li>' . Html::a(Yii::t('app', 'Update Marketing Information'), ['update-marketing-info', 'id' => $model['id']]) . '</li>
-                <li>' . Html::a(Yii::t('app', 'Product Category'), ['update-product-category', 'id' => $model['id']]) . '</li>
-            </ul>
-        </li>
+        <li>' . Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id']]) . '</li>
         <li>' . Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id']]) . '</li>
         <li>' . Html::a(Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id']]) . '</li>
         <li>' . Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id']]) . '</li>
@@ -605,14 +599,6 @@ $jscript = '
         image: {
             tError: "The image could not be loaded."
         }
-    });
-
-    $(".dropdown-submenu > a").on("click", function(e) {
-
-        $(this).next("ul").toggle();
-        e.stopPropagation();
-
-        return false;
     });
 ';
 

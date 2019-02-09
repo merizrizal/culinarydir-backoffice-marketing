@@ -35,10 +35,12 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = 'Update ' . Yii::t('app', 'Product Category') . ' : ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['member']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view-member', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Product Category');
+$this->title = 'Update ' . Yii::t('app', 'Product Category Order') . ' : ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['business/member']];
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['business/view-member', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Product'), 'url' => ['business-product/index', 'id' => $model['id']]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Product Category'), 'url' => ['index', 'id' => $model['id']]];
+$this->params['breadcrumbs'][] = 'Update ' . Yii::t('app', 'Product Category Order');
 
 echo $ajaxRequest->component(); ?>
 
@@ -51,7 +53,7 @@ echo $ajaxRequest->component(); ?>
                     <?php
                     ActiveForm::begin([
                         'id' => 'business-form',
-                        'action' => ['update-product-category', 'id' => $model->id],
+                        'action' => ['update-order', 'id' => $model->id],
                         'options' => [
 
                         ],
@@ -108,7 +110,7 @@ echo $ajaxRequest->component(); ?>
 
                                     <?php
                                     echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-member', 'id' => $model->id], ['class' => 'btn btn-default']); ?>
+                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['index', 'id' => $model['id']], ['class' => 'btn btn-default']); ?>
 
                                 </div>
                             </div>

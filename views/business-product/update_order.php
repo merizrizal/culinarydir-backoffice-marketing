@@ -51,7 +51,7 @@ echo $ajaxRequest->component(); ?>
                     <?php
                     ActiveForm::begin([
                         'id' => 'business-product-form',
-                        'action' => ['update-business-product-order', 'id' => $model->id],
+                        'action' => ['update-order', 'id' => $model->id],
                         'options' => [
 
                         ],
