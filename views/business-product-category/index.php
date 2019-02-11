@@ -95,8 +95,15 @@ echo $ajaxRequest->component(true); ?>
             ['class' => 'yii\grid\SerialColumn'],
 
             'productCategory.name',
-            'is_active:boolean',
-
+            [
+                'attribute' => 'is_active',
+                'format' => 'raw',
+                'filter' =>  [true => 'True', false => 'False'],
+                'value' => function ($model, $index, $widget) {
+                
+                    return Html::checkbox('is_active[]', $model->is_active, ['value' => $index, 'disabled' => 'disabled']);
+                },
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '
@@ -144,7 +151,13 @@ echo $ajaxRequest->component(true); ?>
 <?php
 $modalDialog->renderDialog();
 
+$this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
+
+$this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
+
 $jscript = ''
+    . Yii::$app->params['checkbox-radio-script']()
+    . '$(".iCheck-helper").parent().removeClass("disabled");'
     . $modalDialog->getScript() . '
 
     $("div.container.body").off("click");
