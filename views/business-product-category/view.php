@@ -51,8 +51,6 @@ echo $ajaxRequest->component(); ?>
 
                     <?= Html::a('<i class="fa fa-upload"></i> Create', ['create', 'id' => $model->business_id], ['class' => 'btn btn-success']) ?>
 
-                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-
                     <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index', 'id' => $model->business_id], ['class' => 'btn btn-default']) ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>

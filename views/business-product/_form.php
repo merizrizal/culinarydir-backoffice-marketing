@@ -97,7 +97,7 @@ echo $ajaxRequest->component(); ?>
                                     ->andWhere(['OR', ['product_category.type' => 'Menu'], ['product_category.type' => 'Specific-Menu']])
                                     ->andWhere(['business_product_category.business_id' => $modelBusiness['id']])
                                     ->andWhere(['business_product_category.is_active' => true])
-                                    ->orderBy('product_category.name')
+                                    ->orderBy('business_product_category.order')
                                     ->asArray()->all(),
                                 'id',
                                 function($data) {
@@ -113,12 +113,12 @@ echo $ajaxRequest->component(); ?>
                         <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
                         <?= $form->field($model, 'price', [
-                            'parts' => [
-                                '{inputClass}' => 'col-lg-4'
-                            ],
-                        ])->widget(NumberControl::className(), [
-                            'maskedInputOptions' => Yii::$app->params['maskedInputOptions']
-                        ]) ?>
+                                'parts' => [
+                                    '{inputClass}' => 'col-lg-4'
+                                ],
+                            ])->widget(NumberControl::className(), [
+                                'maskedInputOptions' => Yii::$app->params['maskedInputOptions']
+                            ]) ?>
 
                         <?= $form->field($model, 'image')->widget(FileInput::classname(), [
                             'options' => [

@@ -9,8 +9,6 @@ use core\models\search\BusinessProductCategorySearch;
 use backoffice\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
 
 /**
  * BusinessProductCategoryController implements the CRUD actions for BusinessProductCategory model.
@@ -114,43 +112,6 @@ class BusinessProductCategoryController extends BaseController
             'modelBusiness' => $modelBusiness
         ]);
     }
-
-    /**
-     * Updates an existing BusinessProductCategory model.
-     * If update is successful, the browser will be redirected to the 'update' page.
-     * @param string $id
-     * @return mixed
-     */
-    public function actionUpdate($id, $save = null)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(($post = Yii::$app->request->post()))) {
-
-            if (!empty($save)) {
-                
-                $model->unique_id = $model->business_id . '-' . $post['BusinessProductCategory']['product_category_id'];
-                $model->order = !empty($model['order']) && !$post['BusinessProductCategory']['is_active'] ? null : $model->order;
-
-                if ($model->save()) {
-
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
-                } else {
-
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                }
-            }
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-            'modelBusiness' => $model->business->toArray()
-        ]);
-    }
     
     public function actionUpdateOrder($id, $save = null)
     {
@@ -158,8 +119,7 @@ class BusinessProductCategoryController extends BaseController
             ->joinWith([
                 'businessProductCategories' => function ($query) {
                 
-                    $query->andOnCondition(['business_product_category.is_active' => true])
-                        ->orderBy(['order' => SORT_ASC]);
+                    $query->orderBy(['order' => SORT_ASC]);
                 },
                 'businessProductCategories.productCategory' => function ($query) {
                     
@@ -184,6 +144,7 @@ class BusinessProductCategoryController extends BaseController
                     if (!empty($dataProductCategories->productCategory)) {
                         
                         $dataProductCategories->order = $post['order'][$dataProductCategories['id']];
+                        $dataProductCategories->is_active = !empty($post['is_active'][$dataProductCategories['id']]) ? true : false;
                         
                         if (!($flag = $dataProductCategories->save())) {
                             

@@ -46,7 +46,7 @@ echo $ajaxRequest->component(); ?>
                 <?php
                 $form = ActiveForm::begin([
                     'id' => 'business-product-category-form',
-                    'action' => $model->isNewRecord ? ['create', 'id' => $modelBusiness['id']] : ['update', 'id' => $model->id],
+                    'action' => ['create', 'id' => $modelBusiness['id']],
                     'options' => [
 
                     ],
@@ -108,7 +108,7 @@ echo $ajaxRequest->component(); ?>
                                 
                                     <?php
                                     $icon = '<i class="fa fa-save"></i> ';
-                                    echo Html::submitButton($model->isNewRecord ? $icon . 'Save' : $icon . 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']);
+                                    echo Html::submitButton($icon . 'Save', ['class' => 'btn btn-success']);
                                     echo Html::a('<i class="fa fa-times"></i> Cancel', ['index', 'id' => $modelBusiness['id']], ['class' => 'btn btn-default']); ?>
                                 
                                 </div>

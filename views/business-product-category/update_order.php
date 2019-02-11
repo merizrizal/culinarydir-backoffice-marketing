@@ -86,8 +86,13 @@ echo $ajaxRequest->component(); ?>
                                                 <div class="col-xs-6 col-sm-4">
                                                     <div class="thumbnail">
                                                 		<div class="row mt-10 mb-10">
-                                            				<div class="col-xs-8">
+                                            				<div class="col-xs-12">
                                                     			<?= $businessProductCategory['productCategory']['name']; ?>
+                                                    		</div>
+                                                		</div>
+                                                		<div class="row mb-10">
+                                                			<div class="col-xs-8">
+                                                    			<?= Html::checkbox('is_active[' . $businessProductCategory['id'] . ']', $businessProductCategory['is_active'], ['label' => Yii::t('app', 'Is Active')]) ?>
                                                     		</div>
                                                 			<div class="col-xs-4">
                                                 				<?= Html::dropDownList('order[' . $businessProductCategory['id'] .']', $businessProductCategory['order'], $productCategoryOrder, ['class' => 'product-category-order']); ?>
@@ -127,6 +132,10 @@ echo $ajaxRequest->component(); ?>
 </div>
 
 <?php
+$this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
+
+$this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
+
 $jscript = '
     $(".product-category-order").select2({
         theme: "krajee",
@@ -134,4 +143,4 @@ $jscript = '
     });
 ';
 
-$this->registerJs($jscript); ?>
+$this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>
