@@ -113,12 +113,12 @@ echo $ajaxRequest->component(); ?>
                         <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
                         <?= $form->field($model, 'price', [
-                                'parts' => [
-                                    '{inputClass}' => 'col-lg-4'
-                                ],
-                            ])->widget(NumberControl::className(), [
-                                'maskedInputOptions' => Yii::$app->params['maskedInputOptions']
-                            ]) ?>
+                            'parts' => [
+                                '{inputClass}' => 'col-lg-4'
+                            ],
+                        ])->widget(NumberControl::className(), [
+                            'maskedInputOptions' => Yii::$app->params['maskedInputOptions']
+                        ]) ?>
 
                         <?= $form->field($model, 'image')->widget(FileInput::classname(), [
                             'options' => [
