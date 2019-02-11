@@ -125,9 +125,12 @@ class BusinessProductCategoryController extends BaseController
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(($post = Yii::$app->request->post()))) {
 
             if (!empty($save)) {
+                
+                $model->unique_id = $model->business_id . '-' . $post['BusinessProductCategory']['product_category_id'];
+                $model->order = !empty($model['order']) && !$post['BusinessProductCategory']['is_active'] ? null : $model->order;
 
                 if ($model->save()) {
 

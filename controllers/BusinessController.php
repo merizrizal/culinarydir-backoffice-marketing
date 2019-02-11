@@ -337,31 +337,31 @@ class BusinessController extends \backoffice\controllers\BaseController
                     if (!empty($post['BusinessProductCategory']['product_category_id']['parent']) && !empty($post['BusinessProductCategory']['product_category_id']['child'])) {
 
                         foreach ($model->businessProductCategories as $existModelBusinessProductCategory) {
+                            
+                            if (!empty($existModelBusinessProductCategory->productCategory)) {
 
-                            $exist = false;
-
-                            foreach ($post['BusinessProductCategory']['product_category_id'] as $dataProductCategory) {
-
-                                foreach ($dataProductCategory as $productCategoryId) {
-
-                                    if ($existModelBusinessProductCategory['product_category_id'] == $productCategoryId) {
-
-                                        $exist = true;
-                                        break 2;
+                                $exist = false;
+    
+                                foreach ($post['BusinessProductCategory']['product_category_id'] as $dataProductCategory) {
+    
+                                    foreach ($dataProductCategory as $productCategoryId) {
+    
+                                        if ($existModelBusinessProductCategory['product_category_id'] == $productCategoryId) {
+    
+                                            $exist = true;
+                                            break 2;
+                                        }
                                     }
                                 }
-                            }
-
-                            if (!$exist) {
-                                
-                                if (!empty($existModelBusinessProductCategory->productCategory)) {
+    
+                                if (!$exist) {
                                     
                                     $existModelBusinessProductCategory->is_active = false;
-                                }
-
-                                if (!($flag = $existModelBusinessProductCategory->save())) {
-
-                                    break;
+    
+                                    if (!($flag = $existModelBusinessProductCategory->save())) {
+    
+                                        break;
+                                    }
                                 }
                             }
                         }
