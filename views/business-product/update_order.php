@@ -76,28 +76,34 @@ echo $ajaxRequest->component(); ?>
                                             $productOrder = range(0, count($dataBusinessProduct));
                                             unset($productOrder[0]);
                                             
-                                            foreach ($dataBusinessProduct as $businessProduct): ?>
-
-                                                <div class="col-xs-6 col-sm-4">
-                                                    <div class="thumbnail">
-                                                		<div class="row mt-10 mb-20">
-                                            				<div class="col-xs-12">
-                                                    			<?= $businessProduct['name']; ?>
-                                                    		</div>
-                                                    	</div>
-                                                    	<div class="row mb-10">
-                                                    		<div class="col-xs-8">
-                                                    			<?= Html::checkbox('not_active[' . $businessProduct['id'] . ']', $businessProduct['not_active'], ['label' => Yii::t('app', 'Not Active')]) ?>
-                                                    		</div>
-                                                    		<div class="col-xs-4">
-                                                				<?= Html::dropDownList('order[' . $businessProduct['id'] .']', $businessProduct['order'], $productOrder, ['class' => 'business-product-order']); ?>
-                                                    		</div>
-                                                    	</div>
+                                            if (!empty($dataBusinessProduct)):
+                                            
+                                                foreach ($dataBusinessProduct as $businessProduct): ?>
+    
+                                                    <div class="col-xs-6 col-sm-4">
+                                                        <div class="thumbnail">
+                                                    		<div class="row mt-10 mb-20">
+                                                				<div class="col-xs-12">
+                                                        			<?= $businessProduct['name']; ?>
+                                                        		</div>
+                                                        	</div>
+                                                        	<div class="row mb-10">
+                                                        		<div class="col-xs-8">
+                                                        			<?= Html::checkbox('not_active[' . $businessProduct['id'] . ']', $businessProduct['not_active'], ['label' => Yii::t('app', 'Not Active')]) ?>
+                                                        		</div>
+                                                        		<div class="col-xs-4">
+                                                    				<?= Html::dropDownList('order[' . $businessProduct['id'] .']', $businessProduct['order'], $productOrder, ['class' => 'business-product-order']); ?>
+                                                        		</div>
+                                                        	</div>
+                                                        </div>
                                                     </div>
-                                                </div>
-
-                                            <?php
-                                            endforeach; ?>
+    
+                                                <?php
+                                                endforeach;
+                                            else:
+                                                
+                                                echo '<div class="col-xs-12 mb-10">' . Yii::t('app', 'Data Not Available') . '</div>';
+                                            endif; ?>
 
                                         </div>
 

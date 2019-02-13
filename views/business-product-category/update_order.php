@@ -78,31 +78,38 @@ echo $ajaxRequest->component(); ?>
                                             $productCategoryOrder = range(0, count($dataBusinessProductCategory));
                                             unset($productCategoryOrder[0]);
                                             
-                                            foreach ($dataBusinessProductCategory as $businessProductCategory):
-                                                
-                                                $modelBusinessProductCategory->order = $businessProductCategory['order'];
-                                                echo Html::hiddenInput('product_category_id[' . $businessProductCategory['id'] . ']', $businessProductCategory['product_category_id']); ?>
-
-                                                <div class="col-xs-6 col-sm-4">
-                                                    <div class="thumbnail">
-                                                		<div class="row mt-10 mb-10">
-                                            				<div class="col-xs-12">
-                                                    			<?= $businessProductCategory['productCategory']['name']; ?>
+                                            if (!empty($dataBusinessProductCategory)):
+                                            
+                                                foreach ($dataBusinessProductCategory as $businessProductCategory):
+                                                    
+                                                    $modelBusinessProductCategory->order = $businessProductCategory['order'];
+                                                    echo Html::hiddenInput('product_category_id[' . $businessProductCategory['id'] . ']', $businessProductCategory['product_category_id']); ?>
+    
+                                                    <div class="col-xs-6 col-sm-4">
+                                                        <div class="thumbnail">
+                                                    		<div class="row mt-10 mb-10">
+                                                				<div class="col-xs-12">
+                                                        			<?= $businessProductCategory['productCategory']['name']; ?>
+                                                        		</div>
                                                     		</div>
-                                                		</div>
-                                                		<div class="row mb-10">
-                                                			<div class="col-xs-8">
-                                                    			<?= Html::checkbox('is_active[' . $businessProductCategory['id'] . ']', $businessProductCategory['is_active'], ['label' => Yii::t('app', 'Is Active')]) ?>
-                                                    		</div>
-                                                			<div class="col-xs-4">
-                                                				<?= Html::dropDownList('order[' . $businessProductCategory['id'] .']', $businessProductCategory['order'], $productCategoryOrder, ['class' => 'product-category-order']); ?>
-                                                    		</div>
-                                                    	</div>
+                                                    		<div class="row mb-10">
+                                                    			<div class="col-xs-8">
+                                                        			<?= Html::checkbox('is_active[' . $businessProductCategory['id'] . ']', $businessProductCategory['is_active'], ['label' => Yii::t('app', 'Is Active')]) ?>
+                                                        		</div>
+                                                    			<div class="col-xs-4">
+                                                    				<?= Html::dropDownList('order[' . $businessProductCategory['id'] .']', $businessProductCategory['order'], $productCategoryOrder, ['class' => 'product-category-order']); ?>
+                                                        		</div>
+                                                        	</div>
+                                                        </div>
                                                     </div>
-                                                </div>
-
-                                            <?php
-                                            endforeach; ?>
+    
+                                                <?php
+                                                endforeach;
+                                            else:
+                                            
+                                                echo '<div class="col-xs-12 mb-10">' . Yii::t('app', 'Data Not Available') . '</div>';
+                                            endif; ?>
+                                                
 
                                         </div>
 
