@@ -180,7 +180,7 @@ class BusinessProductCategoryController extends BaseController
             
             foreach ($model['businessProductCategories'] as $productCategory) {
                 
-                if ($productCategory['productCategory']['type'] == 'Menu' || $productCategory['productCategory']['type'] == 'Specific-Menu') {
+                if (!empty($productCategory['productCategory'])) {
                     
                     array_push($dataBusinessProductCategory, $productCategory);
                 }
