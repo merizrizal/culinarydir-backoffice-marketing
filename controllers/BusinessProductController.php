@@ -6,6 +6,7 @@ use Yii;
 use core\models\BusinessProduct;
 use core\models\search\BusinessProductSearch;
 use core\models\Business;
+use sycomponent\AjaxRequest;
 use sycomponent\Tools;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -262,6 +263,80 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         return $this->render('update_order', [
             'model' => $model,
             'dataBusinessProduct' => $dataBusinessProduct
+        ]);
+    }
+    
+    public function actionAddMenu($id, $save = null)
+    {
+        $model = Business::find()
+            ->joinWith([
+                'businessProducts'
+            ])
+            ->andWhere(['business.id' => $id])
+            ->one();
+            
+        $modelBusinessProduct = new BusinessProduct();
+        $dataBusinessProduct = [];
+        
+        if (!empty(($post = Yii::$app->request->post()))) {
+            
+            if (!empty($save)) {
+                
+                $transaction = Yii::$app->db->beginTransaction();
+                $flag = true;
+                
+                if (!empty($post['BusinessProduct'])) {
+                    
+                    $menuCount = count($model->businessProducts);
+                    
+                    foreach ($post['BusinessProduct'] as $businessProduct) {
+                        
+                        $newModelBusinessProduct = new BusinessProduct();
+                        
+                        $newModelBusinessProduct->business_id = $id;
+                        $newModelBusinessProduct->name = $businessProduct['name'];
+                        $newModelBusinessProduct->description = $businessProduct['description'];
+                        $newModelBusinessProduct->price = $businessProduct['price'];
+                        $newModelBusinessProduct->business_product_category_id = $businessProduct['business_product_category_id'];
+                        $newModelBusinessProduct->not_active = false;
+                        $newModelBusinessProduct->order = $menuCount + 1;
+                        
+                        if (!($flag = $newModelBusinessProduct->save())) {
+                            
+                            break;
+                        } else {
+                            
+                            array_push($dataBusinessProduct, $newModelBusinessProduct);
+                            
+                            $menuCount++;
+                        }
+                    }
+                }
+                
+                if ($flag) {
+                    
+                    Yii::$app->session->setFlash('status', 'success');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    
+                    $transaction->commit();
+                    
+                    return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business-product/index', 'id' => $id]));
+                } else {
+                    
+                    Yii::$app->session->setFlash('status', 'danger');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    
+                    $transaction->rollBack();
+                }
+            }
+        }
+        
+        return $this->render('add_menu', [
+            'model' => $model,
+            'modelBusinessProduct' => $modelBusinessProduct,
+            'dataBusinessProduct' => $dataBusinessProduct,
         ]);
     }
 
