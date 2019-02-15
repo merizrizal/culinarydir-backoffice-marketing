@@ -73,7 +73,7 @@ echo $ajaxRequest->component(true); ?>
         ],
         'toolbar' => [
             [
-                'content' => Html::a('Tambah Menu', ['add-menu', 'id' => $modelBusiness['id']], [
+                'content' => Html::a(Yii::t('app', 'Add Product'), ['add-menu', 'id' => $modelBusiness['id']], [
                     'class' => 'btn btn-success',
                     'data-placement' => 'top',
                     'data-toggle' => 'tooltip',

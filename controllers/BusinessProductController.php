@@ -283,7 +283,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             if (!empty($save)) {
                 
                 $transaction = Yii::$app->db->beginTransaction();
-                $flag = true;
+                $flag = false;
                 
                 if (!empty($post['BusinessProduct'])) {
                     
