@@ -356,7 +356,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         
         if (!empty($selected)) {
             
-            $dataSelected = explode(",", $get['selected']);
+            $dataSelected = explode(",", $selected);
         }
         
         if (!empty(($post = Yii::$app->request->post()))) {
