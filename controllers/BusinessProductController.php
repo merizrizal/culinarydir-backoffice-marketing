@@ -339,6 +339,85 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             'dataBusinessProduct' => $dataBusinessProduct,
         ]);
     }
+    
+    public function actionUpdateSelectedMenu($id, $selected, $save = null)
+    {
+        $model = Business::find()
+            ->joinWith([
+                'businessProducts'
+            ])
+            ->andWhere(['business.id' => $id])
+            ->one();
+        
+        $modelBusinessProduct = new BusinessProduct();
+        $dataBusinessProduct = [];
+        
+        $get = Yii::$app->request->get();
+        
+        if (!empty($selected)) {
+            
+            $dataSelected = explode(",", $get['selected']);
+        }
+        
+        if (!empty(($post = Yii::$app->request->post()))) {
+            
+            if (!empty($save)) {
+                
+                $transaction = Yii::$app->db->beginTransaction();
+                $flag = false;
+                
+                if (!empty($post['BusinessProduct']['business_product_category_id'])) {
+                    
+                    if (!empty($dataSelected)) {
+                        
+                        foreach ($dataSelected as $selectedBusinessProductId) {
+                            
+                            if (!empty($selectedBusinessProductId)) {
+                                
+                                foreach ($model['businessProducts'] as $businessProduct) {
+                                    
+                                    if ($businessProduct['id'] == $selectedBusinessProductId) {
+                                        
+                                        $businessProduct->business_product_category_id = $post['BusinessProduct']['business_product_category_id'];
+                                        
+                                        if (!($flag = $businessProduct->save())) {
+                                            
+                                            break 2;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if ($flag) {
+                    
+                    Yii::$app->session->setFlash('status', 'success');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    
+                    $transaction->commit();
+                    
+                    return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business-product/index', 'id' => $id]));
+                } else {
+                    
+                    Yii::$app->session->setFlash('status', 'danger');
+                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    
+                    $transaction->rollBack();
+                }
+            }
+        }
+        
+        return $this->render('update_selected_menu', [
+            'model' => $model,
+            'modelBusinessProduct' => $modelBusinessProduct,
+            'dataBusinessProduct' => $dataBusinessProduct,
+            'selected' => $get['selected']
+        ]);
+    }
 
     /**
      * Finds the BusinessProduct model based on its primary key value.

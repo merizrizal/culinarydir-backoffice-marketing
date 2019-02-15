@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 use kartik\grid\GridView;
 use sycomponent\AjaxRequest;
 use sycomponent\ModalDialog;
@@ -49,145 +50,171 @@ echo $ajaxRequest->component(true); ?>
         'modelAttributeId' => 'model-id',
         'modelAttributeName' => 'model-name',
     ]);
-
-    echo GridView::widget([
-        'id' => 'grid-view-business-product',
-        'dataProvider' => $dataProvider,
-        'pjax' => false,
-        'bordered' => false,
-        'panelHeadingTemplate' => '
-            <div class="kv-panel-pager pull-right" style="text-align:right">
-                {pager}{summary}
-            </div>
-            <div class="clearfix"></div>'
-        ,
-        'panelFooterTemplate' => '
-            <div class="kv-panel-pager pull-right" style="text-align:right">
-                {summary}{pager}
-            </div>
-            {footer}
-            <div class="clearfix"></div>'
-        ,
-        'panel' => [
-            'heading' => '',
-        ],
-        'toolbar' => [
-            [
-                'content' => Html::a(Yii::t('app', 'Add Product'), ['add-menu', 'id' => $modelBusiness['id']], [
-                    'class' => 'btn btn-success',
-                    'data-placement' => 'top',
-                    'data-toggle' => 'tooltip',
-                    'title' => 'Tambah Menu Banyak'
-                ])
-            ],
-            [
-                'content' => Html::a(Yii::t('app', 'Add Product Category'), ['business-product-category/index', 'id' => $modelBusiness['id']], [
-                    'class' => 'btn btn-success',
-                    'data-placement' => 'top',
-                    'data-toggle' => 'tooltip',
-                    'title' => 'Update Kategori Menu'
-                ])
-            ],
-            [
-                'content' => Html::a('Update ' . Yii::t('app', 'Product Order'), ['update-order', 'id' => $modelBusiness['id']], [
-                    'class' => 'btn btn-success',
-                    'data-placement' => 'top',
-                    'data-toggle' => 'tooltip',
-                    'title' => 'Update Order'
-                ])
-            ],
-            [
-                'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index', 'id' => $modelBusiness['id']], [
-                    'id' => 'refresh',
-                    'class' => 'btn btn-success',
-                    'data-placement' => 'top',
-                    'data-toggle' => 'tooltip',
-                    'title' => 'Refresh'
-                ])
-            ],
-        ],
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'name',
-            'businessProductCategory.productCategory.name',
-            'price:currency',
-            [
-                'attribute' => 'not_active',
-                'format' => 'raw',
-                'filter' =>  [true => 'True', false => 'False'],
-                'value' => function ($model, $index, $widget) {
-                    
-                    return Html::checkbox('not_active[]', $model->not_active, ['value' => $index, 'disabled' => 'disabled']);
-                },
-            ],
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '
-                    <div class="btn-container hide">
-                        <div class="visible-lg visible-md">
-                            <div class="btn-group btn-group-md" role="group" style="width: 120px">
-                                {view}{update}{delete}
-                            </div>
-                        </div>
-                        <div class="visible-sm visible-xs">
-                            <div class="btn-group btn-group-lg" role="group" style="width: 156px">
-                                {view}{update}{delete}
-                            </div>
-                        </div>
-                    </div>',
-                'buttons' => [
-                    'view' => function($url, $model, $key) {
-                        
-                        return Html::a('<i class="fa fa-search-plus"></i>', ['view', 'id' => $model->id], [
-                            'id' => 'view',
-                            'class' => 'btn btn-primary',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'title' => 'View',
-                        ]);
-                    },
-                    'update' => function($url, $model, $key) {
-                        
-                        return Html::a('<i class="fa fa-pencil-alt"></i>', ['update', 'id' => $model->id], [
-                            'id' => 'update',
-                            'class' => 'btn btn-success',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'title' => 'Edit',
-                        ]);
-                    },
-                    'delete' => function($url, $model, $key) {
-                        
-                        return Html::a('<i class="fa fa-trash-alt"></i>', ['delete', 'id' => $model->id], [
-                            'id' => 'delete',
-                            'class' => 'btn btn-danger',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'data-not-ajax' => 1,
-                            'title' => 'Delete',
-                            'model-id' => $model->id,
-                            'model-name' => $model->name,
-                        ]);
-                    }
-                ]
-            ],
-        ],
-        'tableOptions' => [
-            'class' => 'table table-striped table-hover'
-        ],
-        'rowOptions' => function ($model, $key, $index, $grid) {
+    
+    ActiveForm::begin([
+        'id' => 'business-product-form',
+        'action' => ['update-selected-menu', 'id' => $modelBusiness['id']],
+        'options' => [
             
-            return ['id' => $model['id'], 'class' => 'row-grid-view-business-product', 'style' => 'cursor: pointer;'];
-        },
-        'pager' => [
-            'firstPageLabel' => '<i class="fa fa-angle-double-left"></i>',
-            'prevPageLabel' => '<i class="fa fa-angle-left"></i>',
-            'lastPageLabel' => '<i class="fa fa-angle-double-right"></i>',
-            'nextPageLabel' => '<i class="fa fa-angle-right"></i>',
         ],
-    ]); ?>
+        'fieldConfig' => [
+            'template' => '{input}{error}',
+        ]
+    ]);
+
+        echo GridView::widget([
+            'id' => 'grid-view-business-product',
+            'dataProvider' => $dataProvider,
+            'pjax' => false,
+            'bordered' => false,
+            'panelHeadingTemplate' => '
+                <div class="kv-panel-pager pull-right" style="text-align:right">
+                    {pager}{summary}
+                </div>
+                <div class="clearfix"></div>'
+            ,
+            'panelFooterTemplate' => '
+                <div class="kv-panel-pager pull-right" style="text-align:right">
+                    {summary}{pager}
+                </div>
+                {footer}
+                <div class="clearfix"></div>'
+            ,
+            'panelAfterTemplate' => Html::a(Yii::t('app', 'Update Selected'), ['update-selected-menu', 'id' => $modelBusiness['id']], [
+                'class' => 'btn btn-success update-selected',
+                'data-placement' => 'top',
+                'data-toggle' => 'tooltip',
+                'title' => 'Update Menu yang Terpilih'
+            ]),
+            'panel' => [
+                'heading' => '',
+            ],
+            'toolbar' => [
+                [
+                    'content' => Html::a(Yii::t('app', 'Add Product'), ['add-menu', 'id' => $modelBusiness['id']], [
+                        'class' => 'btn btn-success',
+                        'data-placement' => 'top',
+                        'data-toggle' => 'tooltip',
+                        'title' => 'Tambah Menu Banyak'
+                    ])
+                ],
+                [
+                    'content' => Html::a(Yii::t('app', 'Add Product Category'), ['business-product-category/index', 'id' => $modelBusiness['id']], [
+                        'class' => 'btn btn-success',
+                        'data-placement' => 'top',
+                        'data-toggle' => 'tooltip',
+                        'title' => 'Update Kategori Menu'
+                    ])
+                ],
+                [
+                    'content' => Html::a('Update ' . Yii::t('app', 'Product Order'), ['update-order', 'id' => $modelBusiness['id']], [
+                        'class' => 'btn btn-success',
+                        'data-placement' => 'top',
+                        'data-toggle' => 'tooltip',
+                        'title' => 'Update Order'
+                    ])
+                ],
+                [
+                    'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index', 'id' => $modelBusiness['id']], [
+                        'id' => 'refresh',
+                        'class' => 'btn btn-success',
+                        'data-placement' => 'top',
+                        'data-toggle' => 'tooltip',
+                        'title' => 'Refresh'
+                    ])
+                ],
+            ],
+            'filterModel' => $searchModel,
+            'columns' => [
+                ['class' => 'yii\grid\SerialColumn'],
+                
+                [
+                    'format' => 'raw',
+                    'value' => function ($model, $index, $widget) {
+                    
+                        return Html::checkbox('selected[]', false, ['class' => 'selected-menu', 'value' => $model->id]);
+                    },
+                ],
+                'name',
+                'businessProductCategory.productCategory.name',
+                'price:currency',
+                [
+                    'attribute' => 'not_active',
+                    'format' => 'raw',
+                    'filter' =>  [true => 'True', false => 'False'],
+                    'value' => function ($model, $index, $widget) {
+                        
+                        return Html::checkbox('not_active[]', $model->not_active, ['value' => $index, 'disabled' => 'disabled']);
+                    },
+                ],
+                [
+                    'class' => 'yii\grid\ActionColumn',
+                    'template' => '
+                        <div class="btn-container hide">
+                            <div class="visible-lg visible-md">
+                                <div class="btn-group btn-group-md" role="group" style="width: 120px">
+                                    {view}{update}{delete}
+                                </div>
+                            </div>
+                            <div class="visible-sm visible-xs">
+                                <div class="btn-group btn-group-lg" role="group" style="width: 156px">
+                                    {view}{update}{delete}
+                                </div>
+                            </div>
+                        </div>',
+                    'buttons' => [
+                        'view' => function($url, $model, $key) {
+                            
+                            return Html::a('<i class="fa fa-search-plus"></i>', ['view', 'id' => $model->id], [
+                                'id' => 'view',
+                                'class' => 'btn btn-primary',
+                                'data-toggle' => 'tooltip',
+                                'data-placement' => 'top',
+                                'title' => 'View',
+                            ]);
+                        },
+                        'update' => function($url, $model, $key) {
+                            
+                            return Html::a('<i class="fa fa-pencil-alt"></i>', ['update', 'id' => $model->id], [
+                                'id' => 'update',
+                                'class' => 'btn btn-success',
+                                'data-toggle' => 'tooltip',
+                                'data-placement' => 'top',
+                                'title' => 'Edit',
+                            ]);
+                        },
+                        'delete' => function($url, $model, $key) {
+                            
+                            return Html::a('<i class="fa fa-trash-alt"></i>', ['delete', 'id' => $model->id], [
+                                'id' => 'delete',
+                                'class' => 'btn btn-danger',
+                                'data-toggle' => 'tooltip',
+                                'data-placement' => 'top',
+                                'data-not-ajax' => 1,
+                                'title' => 'Delete',
+                                'model-id' => $model->id,
+                                'model-name' => $model->name,
+                            ]);
+                        }
+                    ]
+                ],
+            ],
+            'tableOptions' => [
+                'class' => 'table table-striped table-hover'
+            ],
+            'rowOptions' => function ($model, $key, $index, $grid) {
+                
+                return ['id' => $model['id'], 'class' => 'row-grid-view-business-product', 'style' => 'cursor: pointer;'];
+            },
+            'pager' => [
+                'firstPageLabel' => '<i class="fa fa-angle-double-left"></i>',
+                'prevPageLabel' => '<i class="fa fa-angle-left"></i>',
+                'lastPageLabel' => '<i class="fa fa-angle-double-right"></i>',
+                'nextPageLabel' => '<i class="fa fa-angle-right"></i>',
+            ],
+        ]);
+        
+    ActiveForm::end(); ?>
 
 </div>
 
@@ -241,6 +268,31 @@ $jscript = ''
 
             return false;
         });
+    });
+
+    $(".update-selected").off("click");
+    $(".update-selected").on("click", function() {
+        
+        var thisObj = $(this);
+        var newUrl = thisObj.attr("href");
+
+        var selectedIds = "";
+
+        $(".selected-menu").each(function() {
+
+            if ($(this).parent().hasClass("checked")) {
+                
+                selectedIds = selectedIds + $(this).attr("value") + ",";
+            }
+        });
+
+        newUrl = newUrl + "&selected=" + selectedIds;
+
+        thisObj.attr("href", newUrl);
+
+        ajaxRequest($(this));
+
+        return false;
     });
 ';
 
