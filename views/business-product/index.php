@@ -95,7 +95,7 @@ echo $ajaxRequest->component(true); ?>
                         'class' => 'btn btn-success',
                         'data-placement' => 'top',
                         'data-toggle' => 'tooltip',
-                        'title' => 'Tambah Beberapa Menu'
+                        'title' => Yii::t('app', 'Add Multiple Product')
                     ])
                 ],
                 [

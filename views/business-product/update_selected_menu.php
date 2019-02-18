@@ -38,7 +38,7 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = 'Create ' . Yii::t('app', 'Product');
+$this->title = 'Update ' . Yii::t('app', 'Product Category');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Member'), 'url' => ['business/member']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['business/view-member', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Product'), 'url' => ['index', 'id' => $model->id]];
@@ -65,7 +65,7 @@ echo $ajaxRequest->component(); ?>
                     ]); ?>
 
                         <div class="x_title">
-                            <h4><?= Yii::t('app', 'Update Product Category') ?></h4>
+                            <h4><?= 'Update ' . Yii::t('app', 'Product Category') ?></h4>
                         </div>
 
                         <div class="x_content">

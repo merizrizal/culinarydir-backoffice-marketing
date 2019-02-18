@@ -342,22 +342,29 @@ class BusinessProductController extends \backoffice\controllers\BaseController
     
     public function actionUpdateSelectedMenu($id, $selected, $save = null)
     {
+        if (empty($selected)) {
+            
+            Yii::$app->session->setFlash('status', 'danger');
+            Yii::$app->session->setFlash('message1', Yii::t('app', 'No Data Selected'));
+            Yii::$app->session->setFlash('message2', Yii::t('app', 'Please select the data that you want to update first'));
+            
+            return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business-product/index', 'id' => $id]));
+        }
+        
+        $dataSelected = explode(',', trim($selected, ','));
+        
         $model = Business::find()
             ->joinWith([
-                'businessProducts'
+                'businessProducts' => function ($query) use ($dataSelected) {
+                    
+                    $query->andOnCondition(['business_product.id' => $dataSelected]);
+                }
             ])
             ->andWhere(['business.id' => $id])
             ->one();
-        
+            
         $modelBusinessProduct = new BusinessProduct();
         $productCategoryId = '';
-        
-        $get = Yii::$app->request->get();
-        
-        if (!empty($selected)) {
-            
-            $dataSelected = explode(',', $selected);
-        }
         
         if (!empty(($post = Yii::$app->request->post()))) {
             
@@ -368,27 +375,15 @@ class BusinessProductController extends \backoffice\controllers\BaseController
                 
                 if (!empty($post['BusinessProduct']['business_product_category_id'])) {
                     
-                    if (!empty($dataSelected)) {
+                    $productCategoryId = $post['BusinessProduct']['business_product_category_id'];
                         
-                        $productCategoryId = $post['BusinessProduct']['business_product_category_id'];
+                    foreach ($model['businessProducts'] as $businessProduct) {
+
+                        $businessProduct->business_product_category_id = $post['BusinessProduct']['business_product_category_id'];
                         
-                        foreach ($dataSelected as $selectedBusinessProductId) {
+                        if (!($flag = $businessProduct->save())) {
                             
-                            if (!empty($selectedBusinessProductId)) {
-                                
-                                foreach ($model['businessProducts'] as $businessProduct) {
-                                    
-                                    if ($businessProduct['id'] == $selectedBusinessProductId) {
-                                        
-                                        $businessProduct->business_product_category_id = $post['BusinessProduct']['business_product_category_id'];
-                                        
-                                        if (!($flag = $businessProduct->save())) {
-                                            
-                                            break 2;
-                                        }
-                                    }
-                                }
-                            }
+                            break;
                         }
                     }
                 }
@@ -417,7 +412,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             'model' => $model,
             'modelBusinessProduct' => $modelBusinessProduct,
             'productCategoryId' => $productCategoryId,
-            'selected' => $get['selected']
+            'selected' => $selected
         ]);
     }
 
