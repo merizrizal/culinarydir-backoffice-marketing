@@ -290,7 +290,7 @@ $actionButton =
 
                     <div class="row">
                         <div class="col-xs-12">
-                            <?= Html::label(Yii::t('app', 'Business Hour')) ?>
+                            <?= Html::label(Yii::t('app', 'Operational Hours')) ?>
                         </div>
                     </div>
 
