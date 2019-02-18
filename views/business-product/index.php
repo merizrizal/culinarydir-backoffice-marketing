@@ -91,11 +91,11 @@ echo $ajaxRequest->component(true); ?>
             ],
             'toolbar' => [
                 [
-                    'content' => Html::a(Yii::t('app', 'Add Product'), ['add-menu', 'id' => $modelBusiness['id']], [
+                    'content' => Html::a(Yii::t('app', 'Add Multiple Product'), ['add-multiple-menu', 'id' => $modelBusiness['id']], [
                         'class' => 'btn btn-success',
                         'data-placement' => 'top',
                         'data-toggle' => 'tooltip',
-                        'title' => 'Tambah Menu Banyak'
+                        'title' => 'Tambah Beberapa Menu'
                     ])
                 ],
                 [

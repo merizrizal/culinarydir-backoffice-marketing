@@ -266,7 +266,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         ]);
     }
     
-    public function actionAddMenu($id, $save = null)
+    public function actionAddMultipleMenu($id, $save = null)
     {
         $model = Business::find()
             ->joinWith([
@@ -333,7 +333,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             }
         }
         
-        return $this->render('add_menu', [
+        return $this->render('add_multiple_menu', [
             'model' => $model,
             'modelBusinessProduct' => $modelBusinessProduct,
             'dataBusinessProduct' => $dataBusinessProduct,
@@ -350,13 +350,13 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             ->one();
         
         $modelBusinessProduct = new BusinessProduct();
-        $dataBusinessProduct = [];
+        $productCategoryId = '';
         
         $get = Yii::$app->request->get();
         
         if (!empty($selected)) {
             
-            $dataSelected = explode(",", $selected);
+            $dataSelected = explode(',', $selected);
         }
         
         if (!empty(($post = Yii::$app->request->post()))) {
@@ -369,6 +369,8 @@ class BusinessProductController extends \backoffice\controllers\BaseController
                 if (!empty($post['BusinessProduct']['business_product_category_id'])) {
                     
                     if (!empty($dataSelected)) {
+                        
+                        $productCategoryId = $post['BusinessProduct']['business_product_category_id'];
                         
                         foreach ($dataSelected as $selectedBusinessProductId) {
                             
@@ -414,7 +416,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         return $this->render('update_selected_menu', [
             'model' => $model,
             'modelBusinessProduct' => $modelBusinessProduct,
-            'dataBusinessProduct' => $dataBusinessProduct,
+            'productCategoryId' => $productCategoryId,
             'selected' => $get['selected']
         ]);
     }

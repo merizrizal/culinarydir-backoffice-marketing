@@ -56,7 +56,7 @@ echo $ajaxRequest->component(); ?>
                     <?php
                     $form = ActiveForm::begin([
                         'id' => 'business-product-form',
-                        'action' => ['add-menu', 'id' => $model->id],
+                        'action' => ['add-multiple-menu', 'id' => $model->id],
                         'options' => [
 
                         ],
@@ -275,30 +275,9 @@ $jscript = '
         var inputId = contentClone.find("#" + component).attr("id");
         inputId = inputId.replace(content, index);
         contentClone.find("#" + component).attr("id", inputId);
-
-        if (component.includes("price")) {
-
-            contentClone.find("#businessproduct-index-price-disp").parent().attr("class", inputClass);
-            
-            var inputDispName = contentClone.find("#businessproduct-index-price-disp").attr("name");
-            inputDispName = inputDispName.replace(content, index);
-            contentClone.find("#businessproduct-index-price-disp").attr("name", inputDispName);
-    
-            var inputDispId = contentClone.find("#businessproduct-index-price-disp").attr("id");
-            inputDispId = inputDispId.replace(content, index);
-            contentClone.find("#businessproduct-index-price-disp").attr("id", inputDispId);
-        }
         
         return contentClone;
     };
-    
-    if (indexCount > 0) {
-
-        for (var i = 0; i < indexCount; i++) {
-        
-            addValidator(i);
-        }
-    }
 
     $(".add-menu").on("click", function() {
 
@@ -319,9 +298,14 @@ $jscript = '
         };
 
         formMenu = replaceComponent(formMenu, "businessproduct-index-name", "index", indexCount);
-        formMenu = replaceComponent(formMenu, "businessproduct-index-price", "index", indexCount);
         formMenu = replaceComponent(formMenu, "businessproduct-index-business_product_category_id", "index", indexCount);
         formMenu = replaceComponent(formMenu, "businessproduct-index-description", "index", indexCount);
+
+        formMenu.find(".field-businessproduct-index-price").attr("class", formMenu.find(".field-businessproduct-index-price").attr("class").replace("index", indexCount));
+        formMenu.find("#businessproduct-index-price").attr("name", formMenu.find("#businessproduct-index-price").attr("name").replace("index", indexCount));
+        formMenu.find("#businessproduct-index-price").attr("id", formMenu.find("#businessproduct-index-price").attr("id").replace("index", indexCount));
+        formMenu.find("#businessproduct-index-price-disp").attr("name", formMenu.find("#businessproduct-index-price-disp").attr("name").replace("index", indexCount));
+        formMenu.find("#businessproduct-index-price-disp").attr("id", formMenu.find("#businessproduct-index-price-disp").attr("id").replace("index", indexCount));
 
         $(".main-form").append(formMenu.html());
 

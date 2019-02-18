@@ -10,7 +10,7 @@ use core\models\BusinessProductCategory;
 /* @var $this yii\web\View */
 /* @var $model core\models\Business */
 /* @var $modelBusinessProduct core\models\BusinessProduct */
-/* @var $dataBusinessProduct Array */
+/* @var $productCategoryId String */
 /* @var $selected string */
 
 kartik\select2\Select2Asset::register($this);
@@ -77,7 +77,13 @@ echo $ajaxRequest->component(); ?>
                                         <div class="row mt-10">
                                             <div class="col-md-6 col-xs-12">
                                             
-                                            	<?= $form->field($modelBusinessProduct, 'business_product_category_id')->dropDownList(
+                                            	<?php
+                                            	if (!empty($productCategoryId)) {
+                                            	   
+                                            	    $modelBusinessProduct->business_product_category_id = $productCategoryId;
+                                            	}
+                                            
+                                            	echo $form->field($modelBusinessProduct, 'business_product_category_id')->dropDownList(
                                             	    ArrayHelper::map(
                                             	        BusinessProductCategory::find()
                                                 	        ->joinWith(['productCategory'])
