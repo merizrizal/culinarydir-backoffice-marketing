@@ -64,10 +64,6 @@ echo $ajaxRequest->component(); ?>
                         ]
                     ]); ?>
 
-                        <div class="x_title">
-                            <h4><?= 'Update ' . Yii::t('app', 'Product Category') ?></h4>
-                        </div>
-
                         <div class="x_content">
 
                             <div class="form-group">
@@ -111,10 +107,8 @@ echo $ajaxRequest->component(); ?>
                                 </div>
                             </div>
 							
-							<hr>
-								
                             <div class="form-group">
-                                <div class="row mt-30">
+                                <div class="row mt-10">
                                     <div class="col-lg-12">
 
                                         <?php

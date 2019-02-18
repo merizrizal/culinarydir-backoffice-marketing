@@ -7,12 +7,12 @@ use kartik\number\NumberControl;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use core\models\BusinessProduct;
-use core\models\BusinessProductCategory;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\Business */
 /* @var $modelBusinessProduct core\models\BusinessProduct */
 /* @var $dataBusinessProduct Array */
+/* @var $dataBusinessProductCategory Array */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -99,15 +99,7 @@ echo $ajaxRequest->component(); ?>
                                                             <div class="col-md-4 col-xs-12">
                                                             
                                                             	<?= $form->field($modelBusinessProduct, '[' . $i . ']business_product_category_id')->dropDownList(
-                                                            	    ArrayHelper::map(
-                                                            	        BusinessProductCategory::find()
-                                                                	        ->joinWith(['productCategory'])
-                                                                	        ->andWhere(['OR', ['product_category.type' => 'Menu'], ['product_category.type' => 'Specific-Menu']])
-                                                                	        ->andWhere(['business_product_category.business_id' => $model['id']])
-                                                                	        ->andWhere(['business_product_category.is_active' => true])
-                                                                	        ->orderBy('business_product_category.order')
-                                                                	        ->asArray()->all(),
-                                                            	        'id',
+                                                            	    ArrayHelper::map($dataBusinessProductCategory, 'id',
                                                             	        function($data) {
                                                             	            
                                                             	            return $data['productCategory']['name'];
@@ -193,15 +185,7 @@ $modelBusinessProduct = new BusinessProduct(); ?>
             <div class="col-md-4 col-xs-12">
             
             	<?= $form->field($modelBusinessProduct, '[index]business_product_category_id')->dropDownList(
-            	    ArrayHelper::map(
-            	        BusinessProductCategory::find()
-                	        ->joinWith(['productCategory'])
-                	        ->andWhere(['OR', ['product_category.type' => 'Menu'], ['product_category.type' => 'Specific-Menu']])
-                	        ->andWhere(['business_product_category.business_id' => $model['id']])
-                	        ->andWhere(['business_product_category.is_active' => true])
-                	        ->orderBy('business_product_category.order')
-                	        ->asArray()->all(),
-            	        'id',
+            	    ArrayHelper::map($dataBusinessProductCategory, 'id',
             	        function($data) {
             	            
             	            return $data['productCategory']['name'];

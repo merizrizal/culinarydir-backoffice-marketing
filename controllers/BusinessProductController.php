@@ -4,6 +4,7 @@ namespace backoffice\modules\marketing\controllers;
 
 use Yii;
 use core\models\BusinessProduct;
+use core\models\BusinessProductCategory;
 use core\models\search\BusinessProductSearch;
 use core\models\Business;
 use sycomponent\AjaxRequest;
@@ -333,10 +334,19 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             }
         }
         
+        $dataBusinessProductCategory = BusinessProductCategory::find()
+            ->joinWith(['productCategory'])
+            ->andWhere(['OR', ['product_category.type' => 'Menu'], ['product_category.type' => 'Specific-Menu']])
+            ->andWhere(['business_product_category.business_id' => $model['id']])
+            ->andWhere(['business_product_category.is_active' => true])
+            ->orderBy('business_product_category.order')
+            ->asArray()->all();
+        
         return $this->render('add_multiple_menu', [
             'model' => $model,
             'modelBusinessProduct' => $modelBusinessProduct,
             'dataBusinessProduct' => $dataBusinessProduct,
+            'dataBusinessProductCategory' => $dataBusinessProductCategory
         ]);
     }
     
@@ -351,13 +361,11 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business-product/index', 'id' => $id]));
         }
         
-        $dataSelected = explode(',', trim($selected, ','));
-        
         $model = Business::find()
             ->joinWith([
-                'businessProducts' => function ($query) use ($dataSelected) {
+                'businessProducts' => function ($query) use ($selected) {
                     
-                    $query->andOnCondition(['business_product.id' => $dataSelected]);
+                    $query->andOnCondition(['business_product.id' => explode(',', trim($selected, ','))]);
                 }
             ])
             ->andWhere(['business.id' => $id])
