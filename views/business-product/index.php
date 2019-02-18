@@ -103,7 +103,7 @@ echo $ajaxRequest->component(true); ?>
                         'class' => 'btn btn-success',
                         'data-placement' => 'top',
                         'data-toggle' => 'tooltip',
-                        'title' => 'Update Kategori Menu'
+                        'title' => Yii::t('app', 'Add Product Category')
                     ])
                 ],
                 [
