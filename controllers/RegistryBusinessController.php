@@ -108,11 +108,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     $modelLogStatusApproval->status_approval_id = StatusApproval::find()->andWhere(['group' => 0])->asArray()->one()['id'];
                     $modelLogStatusApproval->is_actual = true;
                     $modelLogStatusApproval->application_business_counter = $modelApplicationBusiness->counter;
-
-                    $flag = $modelLogStatusApproval->save();
                 }
 
-                if ($flag) {
+                if (($flag = $modelLogStatusApproval->save())) {
 
                     $model->application_business_id = $modelApplicationBusiness->id;
                     $model->user_in_charge = $modelApplicationBusiness->user_in_charge;
@@ -1167,7 +1165,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             ->joinWith([
                 'registryBusinessContactPeople' => function ($query) {
                     
-                    $query->orderBy(['registry_business_contact_person.id' => SORT_ASC]);
+                    $query->orderBy(['registry_business_contact_person.created_at' => SORT_ASC]);
                 },
                 'registryBusinessContactPeople.person',
             ])
@@ -1509,11 +1507,9 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 $modelLogStatusApproval->status_approval_id = 'RSBMT';
                 $modelLogStatusApproval->is_actual = true;
                 $modelLogStatusApproval->application_business_counter = $appBCounter;
-
-                $flag = $modelLogStatusApproval->save();
             }
 
-            if ($flag) {
+            if (($flag = $modelLogStatusApproval->save())) {
                 
                 $flag = $this->run('/approval/status-approval/resubmit', ['appBId' => $appBId, 'regBId' => $id]);
             }
@@ -1684,7 +1680,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 'registryBusinessImages',
                 'registryBusinessContactPeople' => function ($query) {
                     
-                    $query->orderBy(['registry_business_contact_person.id' => SORT_ASC]);
+                    $query->orderBy(['registry_business_contact_person.created_at' => SORT_ASC]);
                 },
                 'registryBusinessContactPeople.person',
                 'applicationBusiness',

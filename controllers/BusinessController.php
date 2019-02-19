@@ -105,7 +105,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                 'businessImages',
                 'businessContactPeople' => function ($query) {
 
-                    $query->orderBy(['business_contact_person.id' => SORT_ASC]);
+                    $query->orderBy(['business_contact_person.created_at' => SORT_ASC]);
                 },
                 'businessContactPeople.person',
                 'applicationBusiness',
@@ -648,7 +648,7 @@ class BusinessController extends \backoffice\controllers\BaseController
             ->joinWith([
                 'businessContactPeople' => function ($query) {
 
-                    $query->orderBy(['business_contact_person.id' => SORT_ASC]);
+                    $query->orderBy(['business_contact_person.created_at' => SORT_ASC]);
                 },
                 'businessContactPeople.person',
             ])
@@ -687,48 +687,51 @@ class BusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
+                
+                if ($flag) {
 
-                if (!empty($post['Person']) && !empty($post['BusinessContactPerson'])) {
-
-                    foreach ($post['Person'] as $i => $person) {
-
-                        if (!empty($model['businessContactPeople'][$i])) {
-
-                            $newModelPerson = Person::findOne(['id' => $model['businessContactPeople'][$i]['person_id']]);
-                        } else {
-
-                            $newModelPerson = new Person();
-                        }
-
-                        $newModelPerson->first_name = $person['first_name'];
-                        $newModelPerson->last_name = $person['last_name'];
-                        $newModelPerson->phone = $person['phone'];
-                        $newModelPerson->email = $person['email'];
-
-                        if (!($flag = $newModelPerson->save())) {
-
-                            break;
-                        } else {
-
-                            $newModelBusinessContactPerson = BusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
-
-                            if (empty($newModelBusinessContactPerson)) {
-
-                                $newModelBusinessContactPerson = new BusinessContactPerson();
-                                $newModelBusinessContactPerson->business_id = $model->id;
-                                $newModelBusinessContactPerson->person_id = $newModelPerson->id;
+                    if (!empty($post['Person']) && !empty($post['BusinessContactPerson'])) {
+    
+                        foreach ($post['Person'] as $i => $person) {
+    
+                            if (!empty($model['businessContactPeople'][$i])) {
+    
+                                $newModelPerson = Person::findOne(['id' => $model['businessContactPeople'][$i]['person_id']]);
+                            } else {
+    
+                                $newModelPerson = new Person();
                             }
-
-                            $newModelBusinessContactPerson->position = $post['BusinessContactPerson'][$i]['position'];
-                            $newModelBusinessContactPerson->is_primary_contact = !empty($post['BusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
-                            $newModelBusinessContactPerson->note = $post['BusinessContactPerson'][$i]['note'];
-
-                            if (!($flag = $newModelBusinessContactPerson->save())) {
-
+    
+                            $newModelPerson->first_name = $person['first_name'];
+                            $newModelPerson->last_name = $person['last_name'];
+                            $newModelPerson->phone = $person['phone'];
+                            $newModelPerson->email = $person['email'];
+    
+                            if (!($flag = $newModelPerson->save())) {
+    
                                 break;
                             } else {
-
-                                array_push($dataBusinessContactPerson, ArrayHelper::merge($newModelBusinessContactPerson->toArray(), $newModelPerson->toArray()));
+    
+                                $newModelBusinessContactPerson = BusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
+    
+                                if (empty($newModelBusinessContactPerson)) {
+    
+                                    $newModelBusinessContactPerson = new BusinessContactPerson();
+                                    $newModelBusinessContactPerson->business_id = $model->id;
+                                    $newModelBusinessContactPerson->person_id = $newModelPerson->id;
+                                }
+    
+                                $newModelBusinessContactPerson->position = $post['BusinessContactPerson'][$i]['position'];
+                                $newModelBusinessContactPerson->is_primary_contact = !empty($post['BusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
+                                $newModelBusinessContactPerson->note = $post['BusinessContactPerson'][$i]['note'];
+    
+                                if (!($flag = $newModelBusinessContactPerson->save())) {
+    
+                                    break;
+                                } else {
+    
+                                    array_push($dataBusinessContactPerson, ArrayHelper::merge($newModelBusinessContactPerson->toArray(), $newModelPerson->toArray()));
+                                }
                             }
                         }
                     }
