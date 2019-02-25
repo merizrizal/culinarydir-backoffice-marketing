@@ -267,7 +267,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         ]);
     }
     
-    public function actionAddMultipleMenu($id, $save = null)
+    public function actionAddMultipleProduct($id, $save = null)
     {
         $model = Business::find()
             ->joinWith([
@@ -342,7 +342,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             ->orderBy('business_product_category.order')
             ->asArray()->all();
         
-        return $this->render('add_multiple_menu', [
+        return $this->render('add_multiple_product', [
             'model' => $model,
             'modelBusinessProduct' => $modelBusinessProduct,
             'dataBusinessProduct' => $dataBusinessProduct,
@@ -350,7 +350,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         ]);
     }
     
-    public function actionUpdateSelectedMenu($id, $selected, $save = null)
+    public function actionUpdateSelectedProduct($id, $selected, $save = null)
     {
         if (empty($selected)) {
             
@@ -416,7 +416,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             }
         }
         
-        return $this->render('update_selected_menu', [
+        return $this->render('update_selected_product', [
             'model' => $model,
             'modelBusinessProduct' => $modelBusinessProduct,
             'productCategoryId' => $productCategoryId,

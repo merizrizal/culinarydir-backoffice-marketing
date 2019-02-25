@@ -80,7 +80,7 @@ echo $ajaxRequest->component(true); ?>
                 {footer}
                 <div class="clearfix"></div>'
             ,
-            'panelAfterTemplate' => Html::a(Yii::t('app', 'Update Selected'), ['update-selected-menu', 'id' => $modelBusiness['id']], [
+            'panelAfterTemplate' => Html::a(Yii::t('app', 'Update Selected'), ['update-selected-product', 'id' => $modelBusiness['id']], [
                 'class' => 'btn btn-success update-selected',
                 'data-placement' => 'top',
                 'data-toggle' => 'tooltip',
@@ -91,7 +91,7 @@ echo $ajaxRequest->component(true); ?>
             ],
             'toolbar' => [
                 [
-                    'content' => Html::a(Yii::t('app', 'Add Multiple Product'), ['add-multiple-menu', 'id' => $modelBusiness['id']], [
+                    'content' => Html::a(Yii::t('app', 'Add Multiple Product'), ['add-multiple-product', 'id' => $modelBusiness['id']], [
                         'class' => 'btn btn-success',
                         'data-placement' => 'top',
                         'data-toggle' => 'tooltip',
