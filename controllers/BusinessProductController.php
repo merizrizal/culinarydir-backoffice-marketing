@@ -224,7 +224,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
                 foreach ($model->businessProducts as $dataProduct) {
                     
                     $dataProduct->order = $post['order'][$dataProduct['id']];
-                    $dataProduct->not_active = !empty($post['not_active'][$dataProduct['id']]) ? true : false; 
+                    $dataProduct->not_active = !empty($post['not_active'][$dataProduct['id']]);
                     
                     if (!($flag = $dataProduct->save())) {
                         

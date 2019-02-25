@@ -144,7 +144,7 @@ class BusinessProductCategoryController extends BaseController
                     if (!empty($dataProductCategories->productCategory)) {
                         
                         $dataProductCategories->order = $post['order'][$dataProductCategories['id']];
-                        $dataProductCategories->is_active = !empty($post['is_active'][$dataProductCategories['id']]) ? true : false;
+                        $dataProductCategories->is_active = !empty($post['is_active'][$dataProductCategories['id']]);
                         
                         if (!($flag = $dataProductCategories->save())) {
                             
