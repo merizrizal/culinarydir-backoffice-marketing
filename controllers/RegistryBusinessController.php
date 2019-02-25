@@ -225,7 +225,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $newModelRegistryBusinessHourDay->registry_business_id = $model->id;
                                 $newModelRegistryBusinessHourDay->unique_id = $model->id . '-' . $day;
                                 $newModelRegistryBusinessHourDay->day = $day;
-                                $newModelRegistryBusinessHourDay->is_open = !empty($post['RegistryBusinessHour'][$dayName]['is_open']) ? true : false;
+                                $newModelRegistryBusinessHourDay->is_open = !empty($post['RegistryBusinessHour'][$dayName]['is_open']);
                                 $newModelRegistryBusinessHourDay->open_at = !empty($post['RegistryBusinessHour'][$dayName]['open_at']) ? $post['RegistryBusinessHour'][$dayName]['open_at'] : null;
                                 $newModelRegistryBusinessHourDay->close_at = !empty($post['RegistryBusinessHour'][$dayName]['close_at']) ? $post['RegistryBusinessHour'][$dayName]['close_at'] : null;
                                 
@@ -317,7 +317,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                     $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
                                     $newModelRegistryBusinessContactPerson->registry_business_id = $model->id;
                                     $newModelRegistryBusinessContactPerson->person_id = $newModelPerson->id;
-                                    $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
+                                    $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']);
                                     $newModelRegistryBusinessContactPerson->note = !empty($post['RegistryBusinessContactPerson'][$i]['note']) ? $post['RegistryBusinessContactPerson'][$i]['note'] : null;
                                     $newModelRegistryBusinessContactPerson->position = $post['RegistryBusinessContactPerson'][$i]['position'];
                                 
@@ -1227,7 +1227,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             }
                             
                             $newModelRegistryBusinessContactPerson->position = $post['RegistryBusinessContactPerson'][$i]['position'];
-                            $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
+                            $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']);
                             $newModelRegistryBusinessContactPerson->note = $post['RegistryBusinessContactPerson'][$i]['note'];
                             
                             if (!($flag = $newModelRegistryBusinessContactPerson->save())) {
@@ -1325,7 +1325,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             $newModelRegistryBusinessHourDay->day = $day;
                         }
                         
-                        $newModelRegistryBusinessHourDay->is_open = !empty($post['RegistryBusinessHour'][$dayName]['is_open']) ? true : false;
+                        $newModelRegistryBusinessHourDay->is_open = !empty($post['RegistryBusinessHour'][$dayName]['is_open']);
                         $newModelRegistryBusinessHourDay->open_at = !empty($post['RegistryBusinessHour'][$dayName]['open_at']) ? $post['RegistryBusinessHour'][$dayName]['open_at'] : null;
                         $newModelRegistryBusinessHourDay->close_at = !empty($post['RegistryBusinessHour'][$dayName]['close_at']) ? $post['RegistryBusinessHour'][$dayName]['close_at'] : null;
                         

@@ -582,7 +582,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                     foreach ($model->businessImages as $existModelBusinessImage) {
 
                         $existModelBusinessImage->type = !empty($post['profile'][$existModelBusinessImage->id]) ? 'Profile' : 'Gallery';
-                        $existModelBusinessImage->is_primary = !empty($post['thumbnail']) && $post['thumbnail'] == $existModelBusinessImage->id ? true : false;
+                        $existModelBusinessImage->is_primary = !empty($post['thumbnail']) && $post['thumbnail'] == $existModelBusinessImage->id;
                         $existModelBusinessImage->category = $post['category'][$existModelBusinessImage->id];
                         $existModelBusinessImage->order = $post['order'][$existModelBusinessImage->id];
 
@@ -722,7 +722,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 }
     
                                 $newModelBusinessContactPerson->position = $post['BusinessContactPerson'][$i]['position'];
-                                $newModelBusinessContactPerson->is_primary_contact = !empty($post['BusinessContactPerson'][$i]['is_primary_contact']) ? true : false;
+                                $newModelBusinessContactPerson->is_primary_contact = !empty($post['BusinessContactPerson'][$i]['is_primary_contact']);
                                 $newModelBusinessContactPerson->note = $post['BusinessContactPerson'][$i]['note'];
     
                                 if (!($flag = $newModelBusinessContactPerson->save())) {
@@ -821,7 +821,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                             $newModelBusinessHourDay->day = $day;
                         }
 
-                        $newModelBusinessHourDay->is_open = !empty($post['BusinessHour'][$dayName]['is_open']) ? true : false;
+                        $newModelBusinessHourDay->is_open = !empty($post['BusinessHour'][$dayName]['is_open']);
                         $newModelBusinessHourDay->open_at = !empty($post['BusinessHour'][$dayName]['open_at']) ? $post['BusinessHour'][$dayName]['open_at'] : null;
                         $newModelBusinessHourDay->close_at = !empty($post['BusinessHour'][$dayName]['close_at']) ? $post['BusinessHour'][$dayName]['close_at'] : null;
 
