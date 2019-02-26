@@ -28,13 +28,13 @@ $message1 = Yii::$app->session->getFlash('message1');
 $message2 = Yii::$app->session->getFlash('message2');
 
 if ($status !== null) {
-    
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
         'message2' => $message2,
     ]);
-    
+
     $notif->theScript();
     echo $notif->renderDialog();
 }
@@ -56,7 +56,7 @@ echo $ajaxRequest->component(); ?>
                     <?php
                     $form = ActiveForm::begin([
                         'id' => 'business-product-form',
-                        'action' => ['add-multiple-menu', 'id' => $model->id],
+                        'action' => ['add-multiple-product', 'id' => $model->id],
                         'options' => [
 
                         ],
@@ -76,18 +76,18 @@ echo $ajaxRequest->component(); ?>
                                     <div class="col-sm-12">
 
                                         <div class="main-form">
-                                	
+
                                         	<?php
                                 	        if (!empty($dataBusinessProduct)):
-                                	            
+
                                 	            foreach ($dataBusinessProduct as $i => $businessProduct):
-                                	                
+
                                 	                $modelBusinessProduct->business_id = $businessProduct['business_id'];
                                 	                $modelBusinessProduct->name = $businessProduct['name'];
                                 	                $modelBusinessProduct->description = $businessProduct['description'];
                                 	                $modelBusinessProduct->price = $businessProduct['price'];
                                 	                $modelBusinessProduct->business_product_category_id = $businessProduct['business_product_category_id']; ?>
-                                	                
+
                                 	                <div class="mb-40 data-form">
                                                         <div class="row mt-10">
                                                             <div class="col-md-4 col-xs-6">
@@ -97,56 +97,56 @@ echo $ajaxRequest->component(); ?>
                                                             	<?= $form->field($modelBusinessProduct, '[' . $i . ']price')->widget(NumberControl::className(), ['maskedInputOptions' => Yii::$app->params['maskedInputOptions']]) ?>
                                                             </div>
                                                             <div class="col-md-4 col-xs-12">
-                                                            
+
                                                             	<?= $form->field($modelBusinessProduct, '[' . $i . ']business_product_category_id')->dropDownList(
                                                             	    ArrayHelper::map($dataBusinessProductCategory, 'id',
                                                             	        function($data) {
-                                                            	            
+
                                                             	            return $data['productCategory']['name'];
                                                             	        }
                                                         	        ),
-                                                        	        [ 
+                                                        	        [
                                                     	               'prompt' => Yii::t('app', 'Product Category'),
                                                         	           'class' => 'product-category',
                                                         	           'style' => 'width: 100%'
                                                         	        ]); ?>
-                                                            	
+
                                                             </div>
                                                         </div>
-                                                
+
                                                         <div class="row">
                                                         	<div class="col-md-8 col-xs-12">
-                                                        	
+
                                                                 <?= $form->field($modelBusinessProduct, '[' . $i .']description')->textarea([
-                                                                    'rows' => 2, 
+                                                                    'rows' => 2,
                                                                     'placeholder' => Yii::t('app', 'Description')
                                                                 ]) ?>
-                                                                
+
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                             	<?php
                                 	            endforeach;
                                 	        endif; ?>
-                                	        
+
                             	        </div>
-                            	        
+
                             	        <div class="row">
                                             <div class="col-md-12">
-                                            
+
                                                 <?= Html::button('<i class="fa fa-plus"></i> ' . Yii::t('app', 'Add'), ['class' => 'btn btn-default add-menu']) ?>
                                                 <?= Html::button('<i class="fa fa-trash"></i> ' . Yii::t('app', 'Delete'), ['class' => 'btn btn-default delete-menu']); ?>
-                                                
+
                                             </div>
                                     	</div>
 
                                     </div>
                                 </div>
                             </div>
-							
+
 							<hr>
-								
+
                             <div class="form-group">
                                 <div class="row mt-30">
                                     <div class="col-lg-12">
@@ -183,31 +183,31 @@ $modelBusinessProduct = new BusinessProduct(); ?>
             	<?= $form->field($modelBusinessProduct, '[index]price')->widget(NumberControl::className()) ?>
             </div>
             <div class="col-md-4 col-xs-12">
-            
+
             	<?= $form->field($modelBusinessProduct, '[index]business_product_category_id')->dropDownList(
             	    ArrayHelper::map($dataBusinessProductCategory, 'id',
             	        function($data) {
-            	            
+
             	            return $data['productCategory']['name'];
             	        }
         	        ),
-        	        [ 
+        	        [
     	               'prompt' => Yii::t('app', 'Product Category'),
         	           'class' => 'product-category',
         	           'style' => 'width: 100%'
         	        ]); ?>
-            	
+
             </div>
         </div>
 
         <div class="row">
         	<div class="col-md-8 col-xs-12">
-        	
+
                 <?= $form->field($modelBusinessProduct, '[index]description')->textarea([
-                    'rows' => 2, 
+                    'rows' => 2,
                     'placeholder' => Yii::t('app', 'Description')
                 ]) ?>
-                
+
             </div>
         </div>
     </div>
@@ -251,7 +251,7 @@ $jscript = '
         var inputClass = contentClone.find(".field-" + component).attr("class");
         inputClass = inputClass.replace(content, index);
         contentClone.find("#" + component).parent().attr("class", inputClass);
-        
+
         var inputName = contentClone.find("#" + component).attr("name");
         inputName = inputName.replace(content, index);
         contentClone.find("#" + component).attr("name", inputName);
@@ -259,7 +259,7 @@ $jscript = '
         var inputId = contentClone.find("#" + component).attr("id");
         inputId = inputId.replace(content, index);
         contentClone.find("#" + component).attr("id", inputId);
-        
+
         return contentClone;
     };
 
@@ -316,7 +316,7 @@ $jscript = '
 
             indexCount--;
         }
-        
+
         return false;
     });
 ';
