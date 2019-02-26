@@ -77,45 +77,45 @@ echo $ajaxRequest->component(); ?>
 
                                         <div class="main-form">
 
-                                        	<?php
-                                	        if (!empty($dataBusinessProduct)):
+                                            <?php
+                                            if (!empty($dataBusinessProduct)):
 
-                                	            foreach ($dataBusinessProduct as $i => $businessProduct):
+                                                foreach ($dataBusinessProduct as $i => $businessProduct):
 
-                                	                $modelBusinessProduct->business_id = $businessProduct['business_id'];
-                                	                $modelBusinessProduct->name = $businessProduct['name'];
-                                	                $modelBusinessProduct->description = $businessProduct['description'];
-                                	                $modelBusinessProduct->price = $businessProduct['price'];
-                                	                $modelBusinessProduct->business_product_category_id = $businessProduct['business_product_category_id']; ?>
+                                                    $modelBusinessProduct->business_id = $businessProduct['business_id'];
+                                                    $modelBusinessProduct->name = $businessProduct['name'];
+                                                    $modelBusinessProduct->description = $businessProduct['description'];
+                                                    $modelBusinessProduct->price = $businessProduct['price'];
+                                                    $modelBusinessProduct->business_product_category_id = $businessProduct['business_product_category_id']; ?>
 
-                                	                <div class="mb-40 data-form">
+                                                    <div class="mb-40 data-form">
                                                         <div class="row mt-10">
                                                             <div class="col-md-4 col-xs-6">
                                                                 <?= $form->field($modelBusinessProduct, '[' . $i .']name')->textInput(['placeholder' => Yii::t('app', 'Name')]) ?>
                                                             </div>
                                                             <div class="col-md-4 col-xs-6">
-                                                            	<?= $form->field($modelBusinessProduct, '[' . $i . ']price')->widget(NumberControl::className(), ['maskedInputOptions' => Yii::$app->params['maskedInputOptions']]) ?>
+                                                                <?= $form->field($modelBusinessProduct, '[' . $i . ']price')->widget(NumberControl::className(), ['maskedInputOptions' => Yii::$app->params['maskedInputOptions']]) ?>
                                                             </div>
                                                             <div class="col-md-4 col-xs-12">
 
-                                                            	<?= $form->field($modelBusinessProduct, '[' . $i . ']business_product_category_id')->dropDownList(
-                                                            	    ArrayHelper::map($dataBusinessProductCategory, 'id',
-                                                            	        function($data) {
+                                                                <?= $form->field($modelBusinessProduct, '[' . $i . ']business_product_category_id')->dropDownList(
+                                                                    ArrayHelper::map($dataBusinessProductCategory, 'id',
+                                                                        function($data) {
 
-                                                            	            return $data['productCategory']['name'];
-                                                            	        }
-                                                        	        ),
-                                                        	        [
-                                                    	               'prompt' => Yii::t('app', 'Product Category'),
-                                                        	           'class' => 'product-category',
-                                                        	           'style' => 'width: 100%'
-                                                        	        ]); ?>
+                                                                            return $data['productCategory']['name'];
+                                                                        }
+                                                                    ),
+                                                                    [
+                                                                        'prompt' => Yii::t('app', 'Product Category'),
+                                                                        'class' => 'product-category',
+                                                                        'style' => 'width: 100%'
+                                                                    ]); ?>
 
                                                             </div>
                                                         </div>
 
                                                         <div class="row">
-                                                        	<div class="col-md-8 col-xs-12">
+                                                            <div class="col-md-8 col-xs-12">
 
                                                                 <?= $form->field($modelBusinessProduct, '[' . $i .']description')->textarea([
                                                                     'rows' => 2,
@@ -126,9 +126,9 @@ echo $ajaxRequest->component(); ?>
                                                         </div>
                                                     </div>
 
-                                            	<?php
-                                	            endforeach;
-                                	        endif; ?>
+                                                <?php
+                                                endforeach;
+                                            endif; ?>
 
                             	        </div>
 
@@ -145,7 +145,7 @@ echo $ajaxRequest->component(); ?>
                                 </div>
                             </div>
 
-							<hr>
+                            <hr>
 
                             <div class="form-group">
                                 <div class="row mt-30">
@@ -190,18 +190,18 @@ $modelBusinessProduct = new BusinessProduct(); ?>
 
             	            return $data['productCategory']['name'];
             	        }
-        	        ),
-        	        [
-    	               'prompt' => Yii::t('app', 'Product Category'),
-        	           'class' => 'product-category',
-        	           'style' => 'width: 100%'
-        	        ]); ?>
+                    ),
+                    [
+    	                'prompt' => Yii::t('app', 'Product Category'),
+                        'class' => 'product-category',
+                        'style' => 'width: 100%'
+                    ]); ?>
 
             </div>
         </div>
 
         <div class="row">
-        	<div class="col-md-8 col-xs-12">
+            <div class="col-md-8 col-xs-12">
 
                 <?= $form->field($modelBusinessProduct, '[index]description')->textarea([
                     'rows' => 2,
