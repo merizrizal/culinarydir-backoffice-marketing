@@ -959,6 +959,24 @@ class BusinessController extends \backoffice\controllers\BaseController
         ]);
     }
     
+    public function actionAddBusinessUser($id)
+    {
+        $model = Business::find()
+            ->joinWith([
+                'businessContactPeople' => function ($query) {
+            
+                    $query->orderBy(['business_contact_person.created_at' => SORT_ASC]);
+                },
+                'businessContactPeople.person',
+            ])
+            ->andWhere(['business.id' => $id])
+            ->asArray()->one();
+        
+        return $this->render('add_business_user' , [
+            'model' => $model
+        ]);
+    }
+    
     protected function findModel($id)
     {
         if (($model = Business::findOne($id)) !== null) {

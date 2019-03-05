@@ -69,6 +69,7 @@ $actionButton =
 
                     <?= Html::a('<i class="fas fa-utensils"></i> Menu', ['business-product/index', 'id' => $model['id']], ['class' => 'btn btn-default']) ?>
                     <?= Html::a('<i class="fas fa-percent"></i> Special Discount', ['business-promo/index', 'id' => $model['id']], ['class' => 'btn btn-default']) ?>
+                    <?= Html::a('<i class="fas fa-user-plus"></i> Add User', ['add-business-user', 'id' => $model['id']], ['class' => 'btn btn-default']) ?>
                     <?= Html::a('<i class="fa fa-level-up-alt"></i> Upgrade', ['upgrade-membership', 'id' => $model['id']], ['class' => 'btn btn-success']) ?>
                     <?= Html::a('<i class="fa fa-times"></i> Cancel', ['member'], ['class' => 'btn btn-default']) ?>
 
@@ -571,6 +572,7 @@ $actionButton =
 
                     <?= Html::a('<i class="fas fa-utensils"></i> Menu', ['business-product/index', 'id' => $model['id']], ['class' => 'btn btn-default']) ?>
                     <?= Html::a('<i class="fas fa-percent"></i> Special Discount', ['business-promo/index', 'id' => $model['id']], ['class' => 'btn btn-default']) ?>
+                    <?= Html::a('<i class="fas fa-user-plus"></i> Add User', ['add-business-user', 'id' => $model['id']], ['class' => 'btn btn-default']) ?>
                     <?= Html::a('<i class="fa fa-level-up-alt"></i> Upgrade', ['upgrade-membership', 'id' => $model['id']], ['class' => 'btn btn-success']) ?>
                     <?= Html::a('<i class="fa fa-times"></i> Cancel', ['member'], ['class' => 'btn btn-default']) ?>
 
