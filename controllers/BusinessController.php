@@ -15,12 +15,14 @@ use core\models\BusinessContactPerson;
 use core\models\ProductCategory;
 use core\models\RegistryBusinessContactPerson;
 use core\models\Person;
+use core\models\UserLevel;
 use sycomponent\Tools;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use core\models\User;
 
 /**
  * BusinessController
@@ -959,7 +961,7 @@ class BusinessController extends \backoffice\controllers\BaseController
         ]);
     }
     
-    public function actionAddBusinessUser($id)
+    public function actionChooseBusinessUser($id)
     {
         $model = Business::find()
             ->joinWith([
@@ -972,8 +974,53 @@ class BusinessController extends \backoffice\controllers\BaseController
             ->andWhere(['business.id' => $id])
             ->asArray()->one();
         
-        return $this->render('add_business_user' , [
+        return $this->render('choose_business_user', [
             'model' => $model
+        ]);
+    }
+    
+    public function actionAddBusinessUser($id, $save = null)
+    {
+        $post = Yii::$app->request->post();
+        
+        $model = Business::find()->andWhere(['business.id' => $id]);
+        
+        if (!empty($post['userSource'])) {
+            
+            $model = $model
+                ->joinWith([
+                    'businessContactPeople' => function ($query) use ($post) {
+                
+                        $query->orderBy(['business_contact_person.created_at' => SORT_ASC])
+                            ->andOnCondition(['business_contact_person.id' => $post['selectedUser']]);
+                    },
+                    'businessContactPeople.person',
+                ]);
+        } else {
+            
+            $model = $model
+                ->joinWith([
+                    'businessContactPeople' => function ($query) {
+                    
+                        $query->orderBy(['business_contact_person.created_at' => SORT_ASC]);
+                    },
+                    'businessContactPeople.person',
+                ]);
+        }
+        
+        $model = $model->asArray()->one();
+        
+        if (!empty($save)) {
+            
+        }
+        
+        $userLevel = UserLevel::find()
+            ->andWhere(['nama_level' => 'Business Owner'])
+            ->asArray()->one();
+        
+        return $this->render('add_business_user', [
+           'model' => $model,
+           'userLevel' => $userLevel['id']
         ]);
     }
     
