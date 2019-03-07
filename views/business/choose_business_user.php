@@ -95,7 +95,7 @@ $jscript = '
             $("#business-form").trigger("submit");
         },
         labels: {
-            finish: "<i class=\"fa fa-save\"></i> Save",
+            finish: "<i class=\"fa fa-user-plus add-selected\"></i> Tambah User",
             next: "<i class=\"fa fa-angle-double-right\"></i> Next",
             previous: "<i class=\"fa fa-angle-double-left\"></i> Previous"
         }
@@ -166,7 +166,7 @@ $this->registerJs($jscript); ?>
             <div class="row mb-20">
         		<div class="col-xs-12 mb-10">
         			<strong><?= Yii::t('app', 'Contact') . ' ' . ($i + 1) . $is_primary ?></strong>
-        			<?= Html::checkbox('selectedUser[' . $i . ']', false, ['value' => $dataBusinessContactPerson['id'], 'label' => 'Add This User']) ?>
+        			<?= Html::checkbox('selectedUser[' . $i . ']', false, ['class' => 'selected-user', 'value' => $dataBusinessContactPerson['id'], 'label' => 'Add This User']) ?>
             	</div>
         		<div class="col-sm-3 col-xs-6 mb-10">
             		<?= Html::label(Yii::t('app', 'Name')) ?><br>
@@ -232,4 +232,31 @@ $this->registerCss($cssscript);
 $this->registerJsFile(Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-steps/build/jquery.steps.js', ['depends' => 'yii\web\YiiAsset']);
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
-$this->registerJs(Yii::$app->params['checkbox-radio-script']()); ?>
+$jscript = '
+    $(".add-selected").parent().off("click");
+    $(".add-selected").parent().on("click", function() {
+
+        var thisObj = $(this);
+        var newUrl = "' . Yii::$app->urlManager->createUrl(['marketing/business/add-business-user', 'id' => $model['id']]) . '";
+
+        var selectedIds = "";
+
+        $(".selected-user").each(function() {
+
+            if ($(this).parent().hasClass("checked")) {
+                
+                selectedIds = selectedIds + $(this).attr("value") + ",";
+            }
+        });
+
+        newUrl = newUrl + "&selected=" + selectedIds;
+
+        thisObj.attr("href", newUrl);
+
+        ajaxRequest($(this));
+
+        return false;
+    });
+';
+
+$this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>

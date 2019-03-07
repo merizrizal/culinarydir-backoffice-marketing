@@ -16,6 +16,7 @@ use core\models\ProductCategory;
 use core\models\RegistryBusinessContactPerson;
 use core\models\Person;
 use core\models\UserLevel;
+use sycomponent\AjaxRequest;
 use sycomponent\Tools;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -23,6 +24,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use core\models\User;
+use core\models\UserPerson;
 
 /**
  * BusinessController
@@ -979,39 +981,86 @@ class BusinessController extends \backoffice\controllers\BaseController
         ]);
     }
     
-    public function actionAddBusinessUser($id, $save = null)
+    public function actionAddBusinessUser($id, $selected, $save = null)
     {
-        $post = Yii::$app->request->post();
-        
-        $model = Business::find()->andWhere(['business.id' => $id]);
-        
-        if (!empty($post['userSource'])) {
+        if (empty($selected)) {
             
-            $model = $model
-                ->joinWith([
-                    'businessContactPeople' => function ($query) use ($post) {
-                
-                        $query->orderBy(['business_contact_person.created_at' => SORT_ASC])
-                            ->andOnCondition(['business_contact_person.id' => $post['selectedUser']]);
-                    },
-                    'businessContactPeople.person',
-                ]);
-        } else {
+            Yii::$app->session->setFlash('status', 'danger');
+            Yii::$app->session->setFlash('message1', Yii::t('app', 'No User Selected'));
+            Yii::$app->session->setFlash('message2', Yii::t('app', 'Please select the user that you want to update first'));
             
-            $model = $model
-                ->joinWith([
-                    'businessContactPeople' => function ($query) {
-                    
-                        $query->orderBy(['business_contact_person.created_at' => SORT_ASC]);
-                    },
-                    'businessContactPeople.person',
-                ]);
+            return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/choose-business-user', 'id' => $id]));
         }
         
-        $model = $model->asArray()->one();
-        
-        if (!empty($save)) {
+        $model = Business::find()
+            ->joinWith([
+                'businessContactPeople' => function ($query) use ($selected) {
             
+                    $query->orderBy(['business_contact_person.created_at' => SORT_ASC])
+                        ->andOnCondition(['business_contact_person.id' => explode(',', trim($selected, ','))]);
+                },
+                'businessContactPeople.person',
+            ])
+            ->andWhere(['business.id' => $id])
+            ->asArray()->one();
+        
+        if (($post = Yii::$app->request->post())) {
+            
+            $flag = false;
+            $transaction = Yii::$app->db->beginTransaction();
+            
+            foreach ($post['User'] as $dataUser) {
+                
+                $newModelUser = new User();
+                $newModelUser->user_level_id = $dataUser['user_level_id'];
+                $newModelUser->username = $dataUser['username'];
+                $newModelUser->email = $dataUser['email'];
+                $newModelUser->setPassword($dataUser['password']);
+                $newModelUser->full_name = $dataUser['full_name'];
+                $newModelUser->not_active = $dataUser['not_active'];
+                
+                if (!($flag = $newModelUser->save())) {
+                    
+                    break;
+                } else {
+                    
+                    foreach ($model['businessContactPeople'] as $dataBusinessContactPerson) {
+                        
+                        if ($dataBusinessContactPerson['person']['email'] == $newModelUser->email) {
+                        
+                            $newModelUserPerson = new UserPerson();
+                            $newModelUserPerson->user_id = $newModelUser->id;
+                            $newModelUserPerson->person_id = $dataBusinessContactPerson['person_id'];
+                            
+                            if (($flag = $newModelUserPerson->save())) {
+                                
+                                break;
+                            } else {
+                                
+                                break 2;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if ($flag) {
+                
+                Yii::$app->session->setFlash('status', 'success');
+                Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                
+                $transaction->rollBack();
+                
+                return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/choose-business-user', 'id' => $id]));
+            } else {
+                
+                Yii::$app->session->setFlash('status', 'danger');
+                Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                
+                $transaction->rollBack();
+            }
         }
         
         $userLevel = UserLevel::find()
@@ -1020,7 +1069,8 @@ class BusinessController extends \backoffice\controllers\BaseController
         
         return $this->render('add_business_user', [
            'model' => $model,
-           'userLevel' => $userLevel['id']
+           'userLevel' => $userLevel['id'],
+           'selected' => $selected
         ]);
     }
     

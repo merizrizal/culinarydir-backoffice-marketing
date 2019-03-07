@@ -1,14 +1,20 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use core\models\User;
+use core\models\UserLevel;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\Business */
 /* @var $userLevel String */
+/* @var $selected String */
+
+kartik\select2\Select2Asset::register($this);
+kartik\select2\ThemeKrajeeAsset::register($this);
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'Business',
@@ -50,7 +56,7 @@ echo $ajaxRequest->component(); ?>
 						<?php
                         $form = ActiveForm::begin([
                             'id' => 'business-form',
-                            'action' => ['add-business-user'],
+                            'action' => ['add-business-user', 'id' => $model['id'], 'selected' => $selected],
                             'options' => [
 
                             ],
@@ -59,34 +65,59 @@ echo $ajaxRequest->component(); ?>
                             ]
                         ]);
                         	
-                        	
-                    	    foreach ($model['businessContactPeople'] as $dataContactPerson):
+                    	    foreach ($model['businessContactPeople'] as $i => $dataContactPerson):
                     	        
                     	        $newModelUser = new User();
                     	        $newModelUser->user_level_id = $userLevel;
                     	        $newModelUser->email = $dataContactPerson['person']['email'];
                     	        $newModelUser->full_name = $dataContactPerson['person']['first_name'] . ' ' . $dataContactPerson['person']['last_name']; ?>
-                    	
+                    			
                             	<div class="form-group">
                             		<div class="row">
                             			<div class="col-xs-12">
+                            				<label>User <?= $i + 1 ?></label>
                             				<div class="row mt-10">
                             					<div class="col-md-4 col-xs-6">
                     								
-                    								<?= $form->field($newModelUser, 'email', [
+                    								<?= $form->field($newModelUser, '[' . $i . ']email', [
                                                         'enableAjaxValidation' => true
                                                     ])->textInput(['maxlength' => true, 'placeholder' => 'email']) ?>
                     								
                             					</div>
                             					<div class="col-md-4 col-xs-6">
                             						
-                            						<?= $form->field($model, 'username', [
+                            						<?= $form->field($newModelUser, '[' . $i . ']username', [
                                                         'enableAjaxValidation' => true
                                                     ])->textInput(['maxlength' => true, 'placeholder' => 'username']) ?>
                             						
                             					</div>
                             					<div class="col-md-4 col-xs-12">
                             						
+                            						<?= $form->field($newModelUser, '[' . $i . ']user_level_id')->dropDownList(
+                                                        ArrayHelper::map(
+                                                            UserLevel::find()->orderBy('nama_level')->asArray()->all(),
+                                                            'id',
+                                                            function($data) {
+                                                                return $data['nama_level'];
+                                                            }
+                                                        ),
+                                                        [
+                                                            'prompt' => '',
+                                                            'style' => 'width: 100%',
+                                                            'class' => 'user-level-field'
+                                                        ]) ?>
+                            						
+                            					</div>
+                            				</div>
+                            				<div class="row mt-10">
+                            					<div class="col-md-4 col-xs-6">
+                        							<?= $form->field($newModelUser, '[' . $i . ']password')->passwordInput(['maxlength' => true, 'placeholder' => 'password']) ?>
+                            					</div>
+                            					<div class="col-md-4 col-xs-6">
+                        							<?= $form->field($newModelUser, '[' . $i . ']full_name')->textInput(['maxlength' => true]) ?>
+                            					</div>
+                            					<div class="col-md-4 col-xs-6">
+                        							<?= $form->field($newModelUser, '[' . $i . ']not_active')->checkbox(['value' => true]) ?>
                             					</div>
                             				</div>
                             			</div>
@@ -96,8 +127,21 @@ echo $ajaxRequest->component(); ?>
                             	<hr>
                         	
                     		<?php
-                        	endforeach;
+                        	endforeach; ?>
                         	
+                        	<div class="form-group">
+                        		<div class="row mt-30">
+                        			<div class="col-lg-12">
+                        	
+                                    	<?php
+                                    	echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
+                                    	echo Html::a('<i class="fa fa-times"></i> Cancel', ['choose-business-user', 'id' => $model['id']], ['class' => 'btn btn-default']); ?>
+
+                                    </div>
+                                </div>
+                            </div>
+                            
+                    	<?php
                         ActiveForm::end(); ?>
 						
 					</div>
@@ -106,3 +150,15 @@ echo $ajaxRequest->component(); ?>
 		</div>
 	</div>
 </div>
+
+<?php
+$this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
+$this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
+
+$jscript = '
+    $(".user-level-field").select2({
+        theme: "krajee",
+    });
+';
+
+$this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>
