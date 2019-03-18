@@ -186,8 +186,8 @@ echo $ajaxRequest->component(); ?>
                             </div>
                             
                             <div class="row">
-                                <div class="col-xs-12 col-sm-9">
-                                    <?= $form->field($model, 'note')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Note')]) ?>
+                                <div class="col-xs-12 col-sm-12">
+                                    <?= $form->field($model, 'note')->textarea(['rows' => 8, 'placeholder' => Yii::t('app', 'Note')]) ?>
                                 </div>
                             </div>
                             
