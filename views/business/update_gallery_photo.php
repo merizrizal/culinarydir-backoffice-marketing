@@ -95,11 +95,21 @@ echo $ajaxRequest->component(); ?>
                                                         </div>
                                                         <div class="mt-10">
                                                     		<div class="row">
-                                                				<div class="col-xs-6">
-                                                        			<?= Html::dropDownList('category['. $businessImage['id'] .']', !empty($businessImage['category']) ? $businessImage['category'] : null, ['Ambience' => 'Suasana', 'Menu' => 'Menu', 'QR-Code' => 'QR Code'], ['class' => 'photo-category']) ?>
+                                                				<div class="col-xs-7">
+                                                        			
+                                                        			<?= Html::dropDownList('category['. $businessImage['id'] .']', !empty($businessImage['category']) ? $businessImage['category'] : null, ['Ambience' => 'Suasana', 'Menu' => 'Menu', 'QR-Code' => 'QR Code'], [
+                                                        			    'class' => 'photo-category',
+                                                        			    'style' => 'width:100%'
+                                                        			]) ?>
+                                                        		
                                                         		</div>
-                                                    			<div class="col-xs-6">
-                                                    				<?= Html::dropDownList('order['. $businessImage['id'] .']', $businessImage['order'], $imageOrder, ['class' => 'image-order']) ?>
+                                                    			<div class="col-xs-5">
+                                                    			
+                                                    				<?= Html::dropDownList('order['. $businessImage['id'] .']', $businessImage['order'], $imageOrder, [
+                                                    				    'class' => 'image-order',
+                                                				        'style' => 'width:100%'
+                                                    				]) ?>
+                                                        		
                                                         		</div>
                                                         	</div>
                                                         	

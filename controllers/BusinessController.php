@@ -144,7 +144,8 @@ class BusinessController extends \backoffice\controllers\BaseController
                 $flag = false;
 
                 if (($flag = $model->save())) {
-
+                    
+                    $modelBusinessLocation->address = trim(str_replace("\n", '', Yii::$app->request->post()['BusinessLocation']['address']));
                     $modelBusinessLocation->setCoordinate();
 
                     $flag = $modelBusinessLocation->save();

@@ -77,7 +77,7 @@ echo $ajaxRequest->component(); ?>
                                         ',
                                     ])->radioList(
                                         ArrayHelper::map(
-                                            MembershipType::find()->andWhere(['as_archive' => false])->orderBy('order')->asArray()->all(),
+                                            MembershipType::find()->orderBy('order')->asArray()->all(),
                                             'id',
                                             function($data) {
                                                 

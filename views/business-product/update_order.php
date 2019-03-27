@@ -88,11 +88,16 @@ echo $ajaxRequest->component(); ?>
                                                         		</div>
                                                         	</div>
                                                         	<div class="row mb-10">
-                                                        		<div class="col-xs-8">
+                                                        		<div class="col-xs-7">
                                                         			<?= Html::checkbox('not_active[' . $businessProduct['id'] . ']', $businessProduct['not_active'], ['label' => Yii::t('app', 'Not Active')]) ?>
                                                         		</div>
-                                                        		<div class="col-xs-4">
-                                                    				<?= Html::dropDownList('order[' . $businessProduct['id'] .']', $businessProduct['order'], $productOrder, ['class' => 'business-product-order']); ?>
+                                                        		<div class="col-xs-5">
+                                                        		
+                                                    				<?= Html::dropDownList('order[' . $businessProduct['id'] .']', $businessProduct['order'], $productOrder, [
+                                                    				    'class' => 'business-product-order',
+                                                    				    'style' => 'width: 100%'
+                                                    				]); ?>
+                                                    				
                                                         		</div>
                                                         	</div>
                                                         </div>
