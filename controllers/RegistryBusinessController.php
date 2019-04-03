@@ -1021,6 +1021,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             ->one();
             
         $modelRegistryBusinessImage = new RegistryBusinessImage();
+        $modelRegistryBusinessImage->setScenario(RegistryBusinessImage::SCENARIO_UPDATE);
         $dataRegistryBusinessImage = [];
         $newDataRegistryBusinessImage = [];
 
