@@ -102,7 +102,10 @@ class BusinessController extends \backoffice\controllers\BaseController
                 },
                 'businessDeliveries.deliveryMethod',
                 'businessDetail',
-                'businessImages',
+                'businessImages' => function ($query) {
+                
+                    $query->orderBy(['business_image.order' => SORT_ASC]);
+                },
                 'businessContactPeople' => function ($query) {
 
                     $query->orderBy(['business_contact_person.created_at' => SORT_ASC]);

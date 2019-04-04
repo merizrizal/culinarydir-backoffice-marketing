@@ -1678,7 +1678,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     $query->andOnCondition(['registry_business_delivery.is_active' => true]);
                 },
                 'registryBusinessDeliveries.deliveryMethod',
-                'registryBusinessImages',
+                'registryBusinessImages' => function ($query) {
+                
+                    $query->orderBy(['registry_business_image.order' => SORT_ASC]);
+                },
                 'registryBusinessContactPeople' => function ($query) {
                     
                     $query->orderBy(['registry_business_contact_person.created_at' => SORT_ASC]);
