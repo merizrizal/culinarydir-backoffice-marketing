@@ -145,6 +145,23 @@ echo $ajaxRequest->component(); ?>
                     'title' => 'Refresh'
                 ])
             ],
+            '{export}',
+            '{toggleData}'
+        ],
+        'exportConfig' => [
+            GridView::EXCEL => ['label' => 'Save as EXCEL'],
+        ],
+        'export' => [
+            'showConfirmAlert' => false,
+            'header' => ''
+        ],
+        'toggleDataOptions' => [
+            'all' => [
+                'label' => 'Tampilkan Semua',
+            ],
+            'page' => [
+                'label' => 'Tampilkan Per Halaman',
+            ],
         ],
         'filterModel' => $searchModel,
         'columns' => $column,

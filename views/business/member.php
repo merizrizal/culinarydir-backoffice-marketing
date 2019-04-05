@@ -112,12 +112,29 @@ echo $ajaxRequest->component(false); ?>
         'toolbar' => [
             [
                 'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['member'], [
-                'id' => 'refresh',
-                'class' => 'btn btn-success',
-                'data-placement' => 'top',
-                'data-toggle' => 'tooltip',
-                'title' => 'Refresh'
+                    'id' => 'refresh',
+                    'class' => 'btn btn-success',
+                    'data-placement' => 'top',
+                    'data-toggle' => 'tooltip',
+                    'title' => 'Refresh'
                 ])
+            ],
+            '{export}',
+            '{toggleData}'
+        ],
+        'exportConfig' => [
+            GridView::EXCEL => ['label' => 'Save as EXCEL'],
+        ],
+        'export' => [
+            'showConfirmAlert' => false,
+            'header' => ''
+        ],
+        'toggleDataOptions' => [
+            'all' => [
+                'label' => 'Tampilkan Semua',
+            ],
+            'page' => [
+                'label' => 'Tampilkan Per Halaman',
             ],
         ],
         'filterModel' => $searchModel,
