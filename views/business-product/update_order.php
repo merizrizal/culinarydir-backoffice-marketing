@@ -69,48 +69,49 @@ echo $ajaxRequest->component(); ?>
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-sm-12">
+                                    
+                                    	<table class="table table-responsive table-striped table-border">
+                                    		<tbody>
+                                        		<tr>
+                                        			<th><?= Yii::t('app', 'Name') ?></th>
+                                        			<th><?= Yii::t('app', 'Product Category') ?></th>
+                                        			<th><?= Yii::t('app', 'Price') ?></th>
+                                        			<th><?= Yii::t('app', 'Not Active') ?></th>
+                                        			<th><?= Yii::t('app', 'Order') ?></th>
+                                        		</tr>
 
-                                        <div class="row">
-
-                                            <?php
-                                            $productOrder = range(0, count($dataBusinessProduct));
-                                            unset($productOrder[0]);
-                                            
-                                            if (!empty($dataBusinessProduct)):
-                                            
-                                                foreach ($dataBusinessProduct as $businessProduct): ?>
-    
-                                                    <div class="col-xs-6 col-sm-4">
-                                                        <div class="thumbnail">
-                                                    		<div class="row mt-10 mb-20">
-                                                				<div class="col-xs-12">
-                                                        			<?= $businessProduct['name']; ?>
-                                                        		</div>
-                                                        	</div>
-                                                        	<div class="row mb-10">
-                                                        		<div class="col-xs-7">
-                                                        			<?= Html::checkbox('not_active[' . $businessProduct['id'] . ']', $businessProduct['not_active'], ['label' => Yii::t('app', 'Not Active')]) ?>
-                                                        		</div>
-                                                        		<div class="col-xs-5">
-                                                        		
-                                                    				<?= Html::dropDownList('order[' . $businessProduct['id'] .']', $businessProduct['order'], $productOrder, [
-                                                    				    'class' => 'business-product-order',
-                                                    				    'style' => 'width: 100%'
-                                                    				]); ?>
-                                                    				
-                                                        		</div>
-                                                        	</div>
-                                                        </div>
-                                                    </div>
-    
                                                 <?php
-                                                endforeach;
-                                            else:
+                                                $productOrder = range(0, count($dataBusinessProduct));
+                                                unset($productOrder[0]);
                                                 
-                                                echo '<div class="col-xs-12 mb-10">' . Yii::t('app', 'Data Not Available') . '</div>';
-                                            endif; ?>
-
-                                        </div>
+                                                if (!empty($dataBusinessProduct)):
+                                                
+                                                    foreach ($dataBusinessProduct as $businessProduct): ?>
+        												
+        												<tr>
+                                                    		<td><?= $businessProduct['name']; ?></td>
+                                                			<td><?= $businessProduct['businessProductCategory']['productCategory']['name'] ?></td>
+                                                			<td><?= Yii::$app->formatter->asCurrency($businessProduct['price']); ?></td>
+                                                			<td><?= Html::checkbox('not_active[' . $businessProduct['id'] . ']', $businessProduct['not_active']) ?></td>
+                                                			<td>
+                                                			
+                                                				<?= Html::dropDownList('order[' . $businessProduct['id'] .']', $businessProduct['order'], $productOrder, [
+                                                				    'class' => 'business-product-order',
+                                                				    'style' => 'width: 100%'
+                                                				]); ?>
+                                                				
+                                                			</td>
+                                                    	</tr>
+        
+                                                    <?php
+                                                    endforeach;
+                                                else:
+                                                    
+                                                    echo '<div class="col-xs-12 mb-10">' . Yii::t('app', 'Data Not Available') . '</div>';
+                                                endif; ?>
+                                            
+                                            </tbody>
+										</table>
 
                                     </div>
                                 </div>
