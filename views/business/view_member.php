@@ -205,30 +205,6 @@ $actionButton =
 
                     <div class="row">
                         <div class="col-xs-12">
-                            <?= Html::label(Yii::t('app', 'Business Category')) ?>
-                        </div>
-                    </div>
-
-                    <div class="row">
-
-                        <?php
-                        if (!empty($model['businessCategories'])) {
-                            
-                            foreach ($model['businessCategories'] as $dataBusinessCategory) {
-
-                                echo '
-                                    <div class="col-xs-4 col-sm-2">
-                                        ' . $dataBusinessCategory['category']['name'] . '
-                                    </div>';
-                            }
-                        } ?>
-
-                    </div>
-
-                    <hr>
-
-                    <div class="row">
-                        <div class="col-xs-12">
                             <?= Html::label(Yii::t('app', 'Product Category')) ?>
                         </div>
                     </div>
@@ -385,10 +361,34 @@ $actionButton =
                     </div>
                     
                     <hr>
+                    
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <?= Html::label(Yii::t('app', 'Business Category')) ?>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <?php
+                        if (!empty($model['businessCategories'])) {
+                            
+                            foreach ($model['businessCategories'] as $dataBusinessCategory) {
+
+                                echo '
+                                    <div class="col-xs-4 col-sm-2">
+                                        ' . $dataBusinessCategory['category']['name'] . '
+                                    </div>';
+                            }
+                        } ?>
+
+                    </div>
+
+                    <hr>
 
                     <div class="row">
                         <div class="col-xs-12">
-                            <?= Html::label(Yii::t('app', 'Photo')) ?>
+                            <?= Html::label(Yii::t('app', 'Photo') . ' - ' . $model['membershipType']['name']) ?>
                         </div>
                     </div>
                     

@@ -12,6 +12,7 @@ use sycomponent\Tools;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\helpers\ArrayHelper;
 
 /**
  * BusinessProductController implements the CRUD actions for BusinessProduct model.
@@ -206,12 +207,13 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             ->joinWith([
                 'businessProducts' => function ($query) {
             
-                    $query->orderBy(['order' => SORT_ASC]);
+                    $query->orderBy(['business_product.order' => SORT_ASC]);
                 },
+                'businessProducts.businessProductCategory.productCategory'
             ])
             ->andWhere(['business.id' => $id])
             ->one();
-            
+                
         $dataBusinessProduct = [];
         
         if (!empty(($post = Yii::$app->request->post()))) {
@@ -231,7 +233,11 @@ class BusinessProductController extends \backoffice\controllers\BaseController
                         break;
                     } else {
                         
-                        array_push($dataBusinessProduct, $dataProduct->toArray());
+                        $dataBusinessProductCategory = [];
+                        $dataBusinessProductCategory['businessProductCategory'] = $dataProduct->businessProductCategory->toArray();
+                        $dataBusinessProductCategory['businessProductCategory']['productCategory'] = $dataProduct->businessProductCategory->productCategory->toArray();
+                        
+                        array_push($dataBusinessProduct, array_merge($dataProduct->toArray(), $dataBusinessProductCategory));
                     }
                 }
                 
