@@ -1,16 +1,14 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
-use core\models\User;
-use core\models\UserLevel;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\Business */
-/* @var $userLevel String */
+/* @var $modelUser core\models\User */
+/* @var $userLevel Array */
 /* @var $selected String */
 
 kartik\select2\Select2Asset::register($this);
@@ -51,100 +49,93 @@ echo $ajaxRequest->component(); ?>
 		<div class="col-xs-12">
 			<div class="x_panel">
 				<div class="business-form">
-					<div class="x_content">
 						
-						<?php
-                        $form = ActiveForm::begin([
-                            'id' => 'business-form',
-                            'action' => ['add-business-user', 'id' => $model['id'], 'selected' => $selected],
-                            'options' => [
+					<?php
+                    $form = ActiveForm::begin([
+                        'id' => 'business-form',
+                        'action' => ['add-business-user', 'id' => $model['id'], 'selected' => $selected],
+                        'options' => [
 
-                            ],
-                            'fieldConfig' => [
-                                'template' => '{input}{error}',
-                            ]
-                        ]);
-                        	
-                    	    foreach ($model['businessContactPeople'] as $i => $dataContactPerson):
-                    	        
-                    	        $newModelUser = new User();
-                    	        $newModelUser->user_level_id = $userLevel;
-                    	        $newModelUser->email = $dataContactPerson['person']['email'];
-                    	        $newModelUser->full_name = $dataContactPerson['person']['first_name'] . ' ' . $dataContactPerson['person']['last_name']; ?>
-                    			
-                            	<div class="form-group">
+                        ],
+                        'fieldConfig' => [
+                            'template' => '{input}{error}',
+                        ]
+                    ]); ?>
+                    
+                        <div class="x_content">
+                        	<div class="form-group">
+                    	
+                            	<?php
+                        	    foreach ($model['businessContactPeople'] as $i => $dataContactPerson):
+                        	        
+                        	        $modelUser->user_level_id = $userLevel['id'];
+                        	        $modelUser->email = $dataContactPerson['person']['email'];
+                        	        $modelUser->full_name = $dataContactPerson['person']['first_name'] . ' ' . $dataContactPerson['person']['last_name']; ?>
+                        			
                             		<div class="row">
                             			<div class="col-xs-12">
                             				<label>User <?= $i + 1 ?></label>
                             				<div class="row mt-10">
                             					<div class="col-md-4 col-xs-6">
                     								
-                    								<?= $form->field($newModelUser, '[' . $i . ']email', [
+                    								<?= $form->field($modelUser, '[' . $i . ']email', [
                                                         'enableAjaxValidation' => true
                                                     ])->textInput(['maxlength' => true, 'placeholder' => 'email']) ?>
                     								
                             					</div>
                             					<div class="col-md-4 col-xs-6">
                             						
-                            						<?= $form->field($newModelUser, '[' . $i . ']username', [
+                            						<?= $form->field($modelUser, '[' . $i . ']username', [
                                                         'enableAjaxValidation' => true
                                                     ])->textInput(['maxlength' => true, 'placeholder' => 'username']) ?>
                             						
                             					</div>
                             					<div class="col-md-4 col-xs-12">
                             						
-                            						<?= $form->field($newModelUser, '[' . $i . ']user_level_id')->dropDownList(
-                                                        ArrayHelper::map(
-                                                            UserLevel::find()->orderBy('nama_level')->asArray()->all(),
-                                                            'id',
-                                                            function($data) {
-                                                                return $data['nama_level'];
-                                                            }
-                                                        ),
-                                                        [
-                                                            'prompt' => '',
-                                                            'style' => 'width: 100%',
-                                                            'class' => 'user-level-field'
-                                                        ]) ?>
+                            						<?= $form->field($modelUser, '[' . $i . ']user_level_id')->dropDownList([$userLevel['id'] => $userLevel['nama_level']], [
+                                                        'style' => 'width: 100%',
+                                                        'class' => 'user-level-field',
+                                                    ]) ?>
                             						
                             					</div>
                             				</div>
                             				<div class="row mt-10">
                             					<div class="col-md-4 col-xs-6">
-                        							<?= $form->field($newModelUser, '[' . $i . ']password')->passwordInput(['maxlength' => true, 'placeholder' => 'password']) ?>
+                        							<?= $form->field($modelUser, '[' . $i . ']password')->passwordInput(['maxlength' => true, 'placeholder' => 'password']) ?>
                             					</div>
                             					<div class="col-md-4 col-xs-6">
-                        							<?= $form->field($newModelUser, '[' . $i . ']full_name')->textInput(['maxlength' => true]) ?>
+                        							<?= $form->field($modelUser, '[' . $i . ']full_name')->textInput(['maxlength' => true]) ?>
                             					</div>
                             					<div class="col-md-4 col-xs-6">
-                        							<?= $form->field($newModelUser, '[' . $i . ']not_active')->checkbox(['value' => true]) ?>
+                        							<?= $form->field($modelUser, '[' . $i . ']not_active')->checkbox(['value' => true]) ?>
                             					</div>
                             				</div>
                             			</div>
                             		</div>
-                            	</div>
+                                	
+                                	<hr>
                             	
-                            	<hr>
-                        	
-                    		<?php
-                        	endforeach; ?>
-                        	
-                        	<div class="form-group">
-                        		<div class="row mt-30">
-                        			<div class="col-lg-12">
-                        	
-                                    	<?php
-                                    	echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                    	echo Html::a('<i class="fa fa-times"></i> Cancel', ['choose-business-user', 'id' => $model['id']], ['class' => 'btn btn-default']); ?>
+                        		<?php
+                            	endforeach; ?>
+                            	
+                        	</div>
+                    	</div>
+                    	
+                    	<div class="form-group">
+                    		<div class="row mt-30">
+                    			<div class="col-lg-12">
+                    	
+                                	<?php
+                                	echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
+                                	echo Html::a('<i class="fa fa-times"></i> Cancel', ['choose-business-user', 'id' => $model['id']], ['class' => 'btn btn-default']); ?>
 
-                                    </div>
                                 </div>
                             </div>
-                            
-                    	<?php
-                        ActiveForm::end(); ?>
+                        </div>
+                        
+                	<?php
+                    ActiveForm::end(); ?>
 						
-					</div>
 				</div>
 			</div>
 		</div>
@@ -158,6 +149,7 @@ $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/i
 $jscript = '
     $(".user-level-field").select2({
         theme: "krajee",
+        minimumResultsForSearch: "Infinity"
     });
 ';
 

@@ -18,6 +18,7 @@ use core\models\Person;
 use core\models\UserLevel;
 use sycomponent\AjaxRequest;
 use sycomponent\Tools;
+use yii\base\Model;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
@@ -985,7 +986,7 @@ class BusinessController extends \backoffice\controllers\BaseController
         ]);
     }
     
-    public function actionAddBusinessUser($id, $selected, $save = null)
+    public function actionAddBusinessUser($id, $selected, $userSource, $save = null)
     {
         if (empty($selected)) {
             
@@ -996,74 +997,95 @@ class BusinessController extends \backoffice\controllers\BaseController
             return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/choose-business-user', 'id' => $id]));
         }
         
-        $model = Business::find()
-            ->joinWith([
-                'businessContactPeople' => function ($query) use ($selected) {
+        if ($userSource == 'Contact-Person') {
             
-                    $query->orderBy(['business_contact_person.created_at' => SORT_ASC])
-                        ->andOnCondition(['business_contact_person.id' => explode(',', trim($selected, ','))]);
-                },
-                'businessContactPeople.person',
-            ])
-            ->andWhere(['business.id' => $id])
-            ->asArray()->one();
+            $model = Business::find()
+                ->joinWith([
+                    'businessContactPeople' => function ($query) use ($selected) {
+                
+                        $query->orderBy(['business_contact_person.created_at' => SORT_ASC])
+                            ->andOnCondition(['business_contact_person.id' => explode(',', trim($selected, ','))]);
+                    },
+                    'businessContactPeople.person',
+                ])
+                ->andWhere(['business.id' => $id])
+                ->asArray()->one();
+        } else if ($userSource == 'User-Asikmakan') {
+            
+            $model = User::find()
+                ->andWhere(['username' => $selected])
+                ->one();
+        }
         
-        if (($post = Yii::$app->request->post())) {
+        $modelUser = new User();
             
-            $flag = false;
-            $transaction = Yii::$app->db->beginTransaction();
+        if (!empty(($post = Yii::$app->request->post()))) {
             
-            foreach ($post['User'] as $dataUser) {
+            $modelUsers = [];
+            
+            for ($i = 0; $i < count($post['User']); $i++) {
                 
-                $newModelUser = new User();
-                $newModelUser->user_level_id = $dataUser['user_level_id'];
-                $newModelUser->username = $dataUser['username'];
-                $newModelUser->email = $dataUser['email'];
-                $newModelUser->setPassword($dataUser['password']);
-                $newModelUser->full_name = $dataUser['full_name'];
-                $newModelUser->not_active = $dataUser['not_active'];
+                $modelUsers[] = new User();
+            }
+            
+            if (Model::loadMultiple($modelUsers, $post)) {
                 
-                if (!($flag = $newModelUser->save())) {
+                if (empty($save)) {
                     
-                    break;
+                    Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ActiveForm::validateMultiple($modelUsers);
                 } else {
                     
-                    foreach ($model['businessContactPeople'] as $dataBusinessContactPerson) {
+                    $flag = false;
+                    $transaction = Yii::$app->db->beginTransaction();
+                    
+                    foreach ($post['User'] as $i => $dataUser) {
                         
-                        if ($dataBusinessContactPerson['person']['email'] == $newModelUser->email) {
+                        $modelUsers[$i]->setPassword($dataUser['password']);
                         
-                            $newModelUserPerson = new UserPerson();
-                            $newModelUserPerson->user_id = $newModelUser->id;
-                            $newModelUserPerson->person_id = $dataBusinessContactPerson['person_id'];
+                        if (!($flag = $modelUsers[$i]->save())) {
                             
-                            if (($flag = $newModelUserPerson->save())) {
+                            break;
+                        } else {
+                            
+                            foreach ($model['businessContactPeople'] as $dataBusinessContactPerson) {
                                 
-                                break;
-                            } else {
-                                
-                                break 2;
+                                if ($dataBusinessContactPerson['person']['email'] == $modelUsers[$i]->email) {
+                                    
+                                    $newModelUserPerson = new UserPerson();
+                                    $newModelUserPerson->user_id = $modelUsers[$i]->id;
+                                    $newModelUserPerson->person_id = $dataBusinessContactPerson['person_id'];
+                                    
+                                    if (($flag = $newModelUserPerson->save())) {
+                                        
+                                        break;
+                                    } else {
+                                        
+                                        break 2;
+                                    }
+                                }
                             }
                         }
                     }
+                    
+                    if ($flag) {
+                        
+                        Yii::$app->session->setFlash('status', 'success');
+                        Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                        Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                        
+                        $transaction->rollBack();
+                        
+                        return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/choose-business-user', 'id' => $id]));
+                    } else {
+                        
+                        Yii::$app->session->setFlash('status', 'danger');
+                        Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                        Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                        
+                        $transaction->rollBack();
+                    }
                 }
-            }
-            
-            if ($flag) {
-                
-                Yii::$app->session->setFlash('status', 'success');
-                Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
-                
-                $transaction->rollBack();
-                
-                return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/choose-business-user', 'id' => $id]));
-            } else {
-                
-                Yii::$app->session->setFlash('status', 'danger');
-                Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                
-                $transaction->rollBack();
             }
         }
         
@@ -1073,7 +1095,8 @@ class BusinessController extends \backoffice\controllers\BaseController
         
         return $this->render('add_business_user', [
            'model' => $model,
-           'userLevel' => $userLevel['id'],
+           'modelUser' => $modelUser,
+           'userLevel' => $userLevel,
            'selected' => $selected
         ]);
     }

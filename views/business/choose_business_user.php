@@ -1,12 +1,16 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use core\models\User;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\Business */
+
+kartik\select2\Select2Asset::register($this);
+kartik\select2\ThemeKrajeeAsset::register($this);
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'Business',
@@ -53,7 +57,7 @@ $jscript = '
             $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#previous\"]").addClass("buttonDisabled");
         },
         onStepChanged: function(event, currentIndex, priorIndex) {
-            
+
             if (priorIndex == 0) {
     
                 $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#previous\"]").removeClass("buttonDisabled");
@@ -81,6 +85,11 @@ $jscript = '
                     
                     $("#wizard-create-application-p-1").html($(".user-asikmakan-steps").html());
                     $("#wizard-create-application-t-1").children(".desc").html("User Asikmakan");
+
+                    $(".user-list").select2({
+                    theme: "krajee",
+                    placeholder: "' . Yii::t('app', 'Pick a Username to Add') . '",
+                });
                 }
             } else if (priorIndex == lastCount) {
     
@@ -89,10 +98,6 @@ $jscript = '
     
                 $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#finish\"]").parent().hide();
             }
-        },
-        onFinished: function(event, currentIndex) {
-    
-            $("#business-form").trigger("submit");
         },
         labels: {
             finish: "<i class=\"fa fa-user-plus add-selected\"></i> Tambah User",
@@ -110,43 +115,26 @@ $this->registerJs($jscript); ?>
             <div class="x_panel">
                 <div class="business-form">
                     <div class="x_content">
-                    
-                    	<?php
-                        ActiveForm::begin([
-                            'id' => 'business-form',
-                            'action' => ['add-business-user', 'id' => $model['id']],
-                            'options' => [
-
-                            ],
-                            'fieldConfig' => [
-                                'template' => '{input}{error}',
-                            ]
-                        ]); ?>
-
-                            <div id="wizard-create-application">
-                                <h1><?= Yii::t('app', 'User Source') ?></h1>
-                                <div>
-                                
-                                    <?= Html::radioList('userSource', null, ['Contact-Person' => Yii::t('app', 'Contact Person'), 'User-Asikmakan' => 'User Asikmakan'], [
-                                        'item' => function ($index, $label, $name, $checked, $value) {
-                                        
-                                            return '
-                                                <div class="col-xs-12 col-sm-4">
-                                                    <label class="' . strtolower($value) . '">' .
-                                                        Html::radio($name, $checked, ['value' => $value]) . ' ' . $label . '
-                                                    </label>
-                                                </div>';
-                                        }
-                                    ]) ?>
-                                    
-                                </div>
-                                <h1></h1>
-                                <div></div>
-                            </div>
+                        <div id="wizard-create-application">
+                            <h1><?= Yii::t('app', 'User Source') ?></h1>
+                            <div>
                             
-                        <?php
-                        ActiveForm::end(); ?>
-
+                                <?= Html::radioList('userSource', null, ['Contact-Person' => Yii::t('app', 'Contact Person'), 'User-Asikmakan' => 'User Asikmakan'], [
+                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                    
+                                        return '
+                                            <div class="col-xs-12 col-sm-4">
+                                                <label class="' . strtolower($value) . '">' .
+                                                    Html::radio($name, $checked, ['value' => $value]) . ' ' . $label . '
+                                                </label>
+                                            </div>';
+                                    }
+                                ]) ?>
+                                
+                            </div>
+                            <h1></h1>
+                            <div></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -166,7 +154,7 @@ $this->registerJs($jscript); ?>
             <div class="row mb-20">
         		<div class="col-xs-12 mb-10">
         			<strong><?= Yii::t('app', 'Contact') . ' ' . ($i + 1) . $is_primary ?></strong>
-        			<?= Html::checkbox('selectedUser[' . $i . ']', false, ['class' => 'selected-user', 'value' => $dataBusinessContactPerson['id'], 'label' => 'Add This User']) ?>
+        			<?= Html::checkbox('selected[' . $i . ']', false, ['class' => 'selected-user', 'value' => $dataBusinessContactPerson['id'], 'label' => 'Add This User']) ?>
             	</div>
         		<div class="col-sm-3 col-xs-6 mb-10">
             		<?= Html::label(Yii::t('app', 'Name')) ?><br>
@@ -213,7 +201,21 @@ $this->registerJs($jscript); ?>
 </div>
 
 <div class="user-asikmakan-steps hide">
-	Asikmakan
+	
+	<?= Html::dropDownList('selected', null, [
+	    ArrayHelper::map(
+	        User::find()->orderBy(['username' => SORT_ASC])->asArray()->all(),
+	        'id',
+	        function ($data) {
+	            return $data['username'];
+	        }
+        )
+	], [
+	    'prompt' => '',
+	    'class' => 'user-list',
+	    'style' => 'width:60%'
+	]) ?>
+	
 </div>
 
 <?php
@@ -233,27 +235,37 @@ $this->registerJsFile(Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-st
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript = '
-    $(".add-selected").parent().off("click");
     $(".add-selected").parent().on("click", function() {
-
+        
         var thisObj = $(this);
         var newUrl = "' . Yii::$app->urlManager->createUrl(['marketing/business/add-business-user', 'id' => $model['id']]) . '";
 
         var selectedIds = "";
+        var userSource = "";
 
-        $(".selected-user").each(function() {
+        if ($(".contact-person").children().hasClass("checked")) {
+            
+            userSource = "Contact-Person";
 
-            if ($(this).parent().hasClass("checked")) {
-                
-                selectedIds = selectedIds + $(this).attr("value") + ",";
-            }
-        });
+            $(".selected-user").each(function() {
+    
+                if ($(this).parent().hasClass("checked")) {
+                    
+                    selectedIds = selectedIds + $(this).attr("value") + ",";
+                }
+            });
+        } else if ($(".user-asikmakan").children().hasClass("checked")) {
+            
+            userSource = "User-Asikmakan";
 
-        newUrl = newUrl + "&selected=" + selectedIds;
+            selectedIds = $(".user-list").siblings(".select2").find(".select2-selection__rendered").attr("title");
+        }
+
+        newUrl = newUrl + "&selected=" + selectedIds + "&userSource=" + userSource;
 
         thisObj.attr("href", newUrl);
 
-        ajaxRequest($(this));
+        ajaxRequest(thisObj);
 
         return false;
     });
