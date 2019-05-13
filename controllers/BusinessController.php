@@ -82,7 +82,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                     $query->andOnCondition(['business_product_category.is_active' => true]);
                 },
                 'businessProductCategories.productCategory' => function ($query) {
-                    
+
                     $query->andOnCondition(['<>', 'product_category.type', 'Menu']);
                 },
                 'businessHours' => function ($query) {
@@ -97,18 +97,18 @@ class BusinessController extends \backoffice\controllers\BaseController
                 },
                 'businessFacilities.facility',
                 'businessPayments' => function ($query) {
-                    
+
                     $query->andOnCondition(['business_payment.is_active' => true]);
                 },
                 'businessPayments.paymentMethod',
                 'businessDeliveries' => function ($query) {
-                
+
                     $query->andOnCondition(['business_delivery.is_active' => true]);
                 },
                 'businessDeliveries.deliveryMethod',
                 'businessDetail',
                 'businessImages' => function ($query) {
-                
+
                     $query->orderBy(['business_image.order' => SORT_ASC]);
                 },
                 'businessContactPeople' => function ($query) {
@@ -148,7 +148,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                 $flag = false;
 
                 if (($flag = $model->save())) {
-                    
+
                     $modelBusinessLocation->address = trim(str_replace("\n", '', Yii::$app->request->post()['BusinessLocation']['address']));
                     $modelBusinessLocation->setCoordinate();
 
@@ -193,7 +193,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                     $query->andOnCondition(['business_product_category.is_active' => true]);
                 },
                 'businessProductCategories.productCategory' => function ($query) {
-                    
+
                     $query->andOnCondition(['<>', 'product_category.type', 'Menu']);
                 },
                 'businessFacilities' => function ($query) {
@@ -224,7 +224,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
-                
+
                 if (($flag = $model->save())) {
 
                     if (!empty($post['BusinessCategory']['category_id'])) {
@@ -282,25 +282,25 @@ class BusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
-                
+
                 if ($flag) {
 
                     if (!empty($post['BusinessProductCategory']['product_category_id']['parent'])) {
-                        
+
                         foreach ($post['BusinessProductCategory']['product_category_id']['parent'] as $productCategoryId) {
 
                             $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
-                            
+
                             if (empty($newModelBusinessProductCategory)) {
-                                
+
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
                                 $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
                                 $newModelBusinessProductCategory->product_category_id = $productCategoryId;
                             }
-                            
+
                             $newModelBusinessProductCategory->is_active = true;
-                            
+
                             if (!($flag = $newModelBusinessProductCategory->save())) {
 
                                 break;
@@ -319,17 +319,17 @@ class BusinessController extends \backoffice\controllers\BaseController
                         foreach ($post['BusinessProductCategory']['product_category_id']['child'] as $productCategoryId) {
 
                             $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
-                            
+
                             if (empty($newModelBusinessProductCategory)) {
-                                
+
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
                                 $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
                                 $newModelBusinessProductCategory->product_category_id = $productCategoryId;
                             }
-                            
+
                             $newModelBusinessProductCategory->is_active = true;
-                            
+
                             if (!($flag = $newModelBusinessProductCategory->save())) {
 
                                 break;
@@ -346,29 +346,29 @@ class BusinessController extends \backoffice\controllers\BaseController
                     if (!empty($post['BusinessProductCategory']['product_category_id']['parent']) && !empty($post['BusinessProductCategory']['product_category_id']['child'])) {
 
                         foreach ($model->businessProductCategories as $existModelBusinessProductCategory) {
-                            
+
                             if (!empty($existModelBusinessProductCategory->productCategory)) {
 
                                 $exist = false;
-    
+
                                 foreach ($post['BusinessProductCategory']['product_category_id'] as $dataProductCategory) {
-    
+
                                     foreach ($dataProductCategory as $productCategoryId) {
-    
+
                                         if ($existModelBusinessProductCategory['product_category_id'] == $productCategoryId) {
-    
+
                                             $exist = true;
                                             break 2;
                                         }
                                     }
                                 }
-    
+
                                 if (!$exist) {
-                                    
+
                                     $existModelBusinessProductCategory->is_active = false;
-    
+
                                     if (!($flag = $existModelBusinessProductCategory->save())) {
-    
+
                                         break;
                                     }
                                 }
@@ -439,7 +439,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     $modelBusinessDetail->price_min = !empty($modelBusinessDetail->price_min) ? $modelBusinessDetail->price_min : 0;
                     $modelBusinessDetail->price_max = !empty($modelBusinessDetail->price_max) ? $modelBusinessDetail->price_max : 0;
-                    
+
                     $flag = $modelBusinessDetail->save();
                 }
 
@@ -470,7 +470,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 $businessProductCategoryParent[] = $valueBusinessProductCategory;
             } else if ($valueBusinessProductCategory['productCategory']['type'] == 'Specific' || $valueBusinessProductCategory['productCategory']['type'] == 'Specific-Menu') {
-                
+
                 $businessProductCategoryChild[] = $valueBusinessProductCategory;
             }
         }
@@ -479,22 +479,22 @@ class BusinessController extends \backoffice\controllers\BaseController
         $dataBusinessProductCategoryParent = empty($dataBusinessProductCategoryParent) ? $businessProductCategoryParent : $dataBusinessProductCategoryParent;
         $dataBusinessProductCategoryChild = empty($dataBusinessProductCategoryChild) ? $businessProductCategoryChild : $dataBusinessProductCategoryChild;
         $dataBusinessFacility = empty($dataBusinessFacility) ? $model['businessFacilities'] : $dataBusinessFacility;
-        
+
         $modelProductCategory = ProductCategory::find()
             ->andWhere(['<>', 'type', 'Menu'])
             ->andWhere(['is_active' => true])
             ->orderBy('name')->asArray()->all();
-        
+
         $dataProductCategoryParent = [];
         $dataProductCategoryChild = [];
-        
+
         foreach ($modelProductCategory as $dataProductCategory) {
-            
+
             if ($dataProductCategory['type'] == 'General') {
-                
+
                 $dataProductCategoryParent[$dataProductCategory['id']] = $dataProductCategory['name'];
             } else {
-                
+
                 $dataProductCategoryChild[$dataProductCategory['id']] = $dataProductCategory['name'];
             }
         }
@@ -544,12 +544,12 @@ class BusinessController extends \backoffice\controllers\BaseController
                 if (!empty($post['BusinessImageDelete'])) {
 
                     if (($flag = BusinessImage::deleteAll(['id' => $post['BusinessImageDelete']]))) {
-                        
+
                         if ($order == count($post['BusinessImageDelete'])) {
-                            
+
                             $flag = false;
                         } else {
-                            
+
                             $deletedBusinessImageId = $post['BusinessImageDelete'];
                         }
                     }
@@ -585,7 +585,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
-                
+
                 if ($flag) {
 
                     foreach ($model->businessImages as $existModelBusinessImage) {
@@ -667,7 +667,7 @@ class BusinessController extends \backoffice\controllers\BaseController
         $modelPerson = new Person();
         $modelBusinessContactPerson = new BusinessContactPerson();
         $dataBusinessContactPerson = [];
-        
+
         $isEmpty = false;
 
         if (!empty(($post = Yii::$app->request->post()))) {
@@ -680,65 +680,65 @@ class BusinessController extends \backoffice\controllers\BaseController
                 $isEmpty = (empty($post['Person']) && empty($post['BusinessContactPerson']));
 
                 if (!empty($post['BusinessContactPersonDeleted'])) {
-                    
+
                     $modelRegistryBusinessContactPerson = RegistryBusinessContactPerson::findOne(['person_id' => $post['BusinessContactPersonDeleted']]);
-                    
+
                     if (!empty($modelRegistryBusinessContactPerson)) {
-                        
+
                         $flag = RegistryBusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]);
                     }
-                    
+
                     if ($flag) {
-                        
+
                         if (($flag = BusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]))) {
-                            
+
                             $flag = Person::deleteAll(['id' => $post['BusinessContactPersonDeleted']]);
                         }
                     }
                 }
-                
+
                 if ($flag) {
 
                     if (!empty($post['Person']) && !empty($post['BusinessContactPerson'])) {
-    
+
                         foreach ($post['Person'] as $i => $person) {
-    
+
                             if (!empty($model['businessContactPeople'][$i])) {
-    
+
                                 $newModelPerson = Person::findOne(['id' => $model['businessContactPeople'][$i]['person_id']]);
                             } else {
-    
+
                                 $newModelPerson = new Person();
                             }
-    
+
                             $newModelPerson->first_name = $person['first_name'];
                             $newModelPerson->last_name = $person['last_name'];
                             $newModelPerson->phone = $person['phone'];
                             $newModelPerson->email = $person['email'];
-    
+
                             if (!($flag = $newModelPerson->save())) {
-    
+
                                 break;
                             } else {
-    
-                                $newModelBusinessContactPerson = BusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
-    
+
+                                $newModelBusinessContactPerson = BusinessContactPerson::findOne(['person_id' => $newModelPerson->id, 'business_id' => $id]);
+
                                 if (empty($newModelBusinessContactPerson)) {
-    
+
                                     $newModelBusinessContactPerson = new BusinessContactPerson();
                                     $newModelBusinessContactPerson->business_id = $model->id;
                                     $newModelBusinessContactPerson->person_id = $newModelPerson->id;
                                 }
-    
+
                                 $newModelBusinessContactPerson->position = $post['BusinessContactPerson'][$i]['position'];
                                 $newModelBusinessContactPerson->is_primary_contact = !empty($post['BusinessContactPerson'][$i]['is_primary_contact']);
                                 $newModelBusinessContactPerson->note = $post['BusinessContactPerson'][$i]['note'];
-    
+
                                 if (!($flag = $newModelBusinessContactPerson->save())) {
-    
+
                                     break;
                                 } else {
-    
+
                                     array_push($dataBusinessContactPerson, ArrayHelper::merge($newModelBusinessContactPerson->toArray(), $newModelPerson->toArray()));
                                 }
                             }
@@ -884,11 +884,11 @@ class BusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
-                
+
                 if ($flag) {
-                    
+
                     $model->businessDetail->note_business_hour = !empty($post['BusinessDetail']['note_business_hour']) ? $post['BusinessDetail']['note_business_hour'] : null;
-                    
+
                     $flag = $model->businessDetail->save();
                 }
 
@@ -942,165 +942,247 @@ class BusinessController extends \backoffice\controllers\BaseController
     public function actionUpgradeMembership($id, $save = null)
     {
         $model = $this->findModel($id);
-        
+
         if ($model->load(Yii::$app->request->post())) {
-            
+
             if (!empty($save)) {
-                
+
                 if ($model->save()) {
-                    
+
                     Yii::$app->session->setFlash('status', 'success');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
                 } else {
-                    
+
                     $model->setIsNewRecord(true);
-                    
+
                     Yii::$app->session->setFlash('status', 'danger');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
                 }
             }
         }
-        
+
         return $this->render('upgrade_membership', [
             'model' => $model,
         ]);
     }
-    
+
     public function actionChooseBusinessUser($id)
     {
         $model = Business::find()
             ->joinWith([
                 'businessContactPeople' => function ($query) {
-            
+
                     $query->orderBy(['business_contact_person.created_at' => SORT_ASC]);
                 },
                 'businessContactPeople.person',
             ])
             ->andWhere(['business.id' => $id])
             ->asArray()->one();
-        
+
         return $this->render('choose_business_user', [
             'model' => $model
         ]);
     }
-    
+
     public function actionAddBusinessUser($id, $selected, $userSource, $save = null)
     {
         if (empty($selected)) {
-            
+
             Yii::$app->session->setFlash('status', 'danger');
             Yii::$app->session->setFlash('message1', Yii::t('app', 'No User Selected'));
             Yii::$app->session->setFlash('message2', Yii::t('app', 'Please select the user that you want to update first'));
-            
+
             return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/choose-business-user', 'id' => $id]));
         }
-        
+
+        $modelBusiness = Business::find()
+            ->joinWith([
+                'businessContactPeople' => function ($query) use ($selected) {
+
+                    $query->orderBy(['business_contact_person.created_at' => SORT_ASC])
+                        ->andOnCondition(['business_contact_person.id' => explode(',', trim($selected, ','))]);
+                },
+                'businessContactPeople.person',
+            ])
+            ->andWhere(['business.id' => $id])
+            ->one();
+
         if ($userSource == 'Contact-Person') {
-            
-            $model = Business::find()
-                ->joinWith([
-                    'businessContactPeople' => function ($query) use ($selected) {
-                
-                        $query->orderBy(['business_contact_person.created_at' => SORT_ASC])
-                            ->andOnCondition(['business_contact_person.id' => explode(',', trim($selected, ','))]);
-                    },
-                    'businessContactPeople.person',
-                ])
-                ->andWhere(['business.id' => $id])
-                ->asArray()->one();
-        } else if ($userSource == 'User-Asikmakan') {
-            
-            $model = User::find()
-                ->andWhere(['username' => $selected])
-                ->one();
-        }
-        
-        $modelUser = new User();
-            
-        if (!empty(($post = Yii::$app->request->post()))) {
-            
-            $modelUsers = [];
-            
-            for ($i = 0; $i < count($post['User']); $i++) {
-                
-                $modelUsers[] = new User();
-            }
-            
-            if (Model::loadMultiple($modelUsers, $post)) {
-                
-                if (empty($save)) {
-                    
-                    Yii::$app->response->format = Response::FORMAT_JSON;
-                    return ActiveForm::validateMultiple($modelUsers);
-                } else {
-                    
-                    $flag = false;
-                    $transaction = Yii::$app->db->beginTransaction();
-                    
-                    foreach ($post['User'] as $i => $dataUser) {
-                        
-                        $modelUsers[$i]->setPassword($dataUser['password']);
-                        
-                        if (!($flag = $modelUsers[$i]->save())) {
-                            
-                            break;
-                        } else {
-                            
-                            foreach ($model['businessContactPeople'] as $dataBusinessContactPerson) {
-                                
-                                if ($dataBusinessContactPerson['person']['email'] == $modelUsers[$i]->email) {
-                                    
+
+            if (!empty(($post = Yii::$app->request->post()))) {
+
+                $modelUsers = [];
+
+                for ($i = 0; $i < count($post['User']); $i++) {
+
+                    $modelUsers[] = new User();
+                }
+
+                if (Model::loadMultiple($modelUsers, $post)) {
+
+                    if (empty($save)) {
+
+                        Yii::$app->response->format = Response::FORMAT_JSON;
+                        return ActiveForm::validateMultiple($modelUsers);
+                    } else {
+
+                        $flag = false;
+                        $transaction = Yii::$app->db->beginTransaction();
+
+                        foreach ($post['User'] as $i => $dataUser) {
+
+                            $modelUsers[$i]->setPassword($dataUser['password']);
+
+                            if (!($flag = $modelUsers[$i]->save())) {
+
+                                break;
+                            } else {
+
+                                if (empty($modelUsers[$i]->userPerson)) {
+
                                     $newModelUserPerson = new UserPerson();
                                     $newModelUserPerson->user_id = $modelUsers[$i]->id;
-                                    $newModelUserPerson->person_id = $dataBusinessContactPerson['person_id'];
-                                    
-                                    if (($flag = $newModelUserPerson->save())) {
-                                        
+                                    $newModelUserPerson->person_id = $post['person_id'][$i];
+                                }
+
+                                if (!($flag = $newModelUserPerson->save())) {
+
+                                    break;
+                                } else {
+
+                                    $modelPerson = $newModelUserPerson->person;
+
+                                    $userFullName = explode(' ', $modelUsers[$i]->full_name);
+                                    $modelPerson->first_name = $userFullName[0];
+                                    $modelPerson->last_name = $userFullName[1];
+                                    $modelPerson->email = $modelUsers[$i]->email;
+
+                                    if (!($flag = $modelPerson->save())) {
+
                                         break;
-                                    } else {
-                                        
-                                        break 2;
                                     }
                                 }
                             }
                         }
+
+                        if ($flag) {
+
+                            Yii::$app->session->setFlash('status', 'success');
+                            Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
+                            Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+
+                            $transaction->rollBack();
+
+                            return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/choose-business-user', 'id' => $id]));
+                        } else {
+
+                            Yii::$app->session->setFlash('status', 'danger');
+                            Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
+                            Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+
+                            $transaction->rollBack();
+                        }
                     }
-                    
+                }
+            }
+        } else if ($userSource == 'User-Asikmakan') {
+
+            $model = User::find()
+                ->joinWith([
+                    'userPerson.person',
+                    'userPerson.person.businessContactPeople' => function ($query) use ($id) {
+
+                        $query->andOnCondition(['business_contact_person.business_id' => $id]);
+                    }
+                ])
+                ->andWhere(['username' => explode(',', trim($selected, ','))])
+                ->all();
+
+            if (!empty(($post = Yii::$app->request->post()))) {
+
+                if (!empty($save)) {
+
+                    $flag = false;
+                    $transaction = Yii::$app->db->beginTransaction();
+
+                    foreach ($model as $i => $dataUser) {
+
+                        $modelPerson = $dataUser->userPerson->person;
+
+                        $modelPerson->first_name = $post['Person'][$i]['first_name'];
+                        $modelPerson->last_name = $post['Person'][$i]['last_name'];
+                        $modelPerson->phone = $post['Person'][$i]['phone'];
+                        $modelPerson->email = $post['Person'][$i]['email'];
+
+                        if (!($flag = $modelPerson->save())) {
+
+                            break;
+                        } else {
+
+                            if (!empty($modelPerson->businessContactPeople)) {
+
+                                $newModelBusinessContactPerson = $modelPerson->businessContactPeople[0];
+                            } else {
+
+                                $newModelBusinessContactPerson = new BusinessContactPerson();
+                                $newModelBusinessContactPerson->business_id = $id;
+                                $newModelBusinessContactPerson->person_id = $modelPerson->id;
+                            }
+
+                            $newModelBusinessContactPerson->is_primary_contact = $post['BusinessContactPerson'][$i]['is_primary_contact'];
+                            $newModelBusinessContactPerson->note = $post['BusinessContactPerson'][$i]['note'];
+                            $newModelBusinessContactPerson->position = $post['BusinessContactPerson'][$i]['position'];
+
+                            if (!($flag = $newModelBusinessContactPerson->save())) {
+
+                                break;
+                            }
+                        }
+                    }
+
                     if ($flag) {
-                        
+
                         Yii::$app->session->setFlash('status', 'success');
                         Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
                         Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
-                        
-                        $transaction->rollBack();
-                        
+
+                        $transaction->commit();
+
                         return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/choose-business-user', 'id' => $id]));
                     } else {
-                        
+
                         Yii::$app->session->setFlash('status', 'danger');
                         Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
                         Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                        
+
                         $transaction->rollBack();
                     }
                 }
             }
         }
-        
+
+        $modelUser = new User();
+        $modelPerson = new Person();
+        $modelBusinessContactPerson = new BusinessContactPerson();
+
         $userLevel = UserLevel::find()
             ->andWhere(['nama_level' => 'Business Owner'])
             ->asArray()->one();
-        
+
         return $this->render('add_business_user', [
-           'model' => $model,
-           'modelUser' => $modelUser,
-           'userLevel' => $userLevel,
-           'selected' => $selected
+            'model' => !empty($model) ? $model : null,
+            'modelBusiness' => $modelBusiness,
+            'modelBusinessContactPerson' => $modelBusinessContactPerson,
+            'modelUser' => $modelUser,
+            'modelPerson' => $modelPerson,
+            'userLevel' => $userLevel,
+            'selected' => $selected,
+            'userSource' => $userSource
         ]);
     }
-    
+
     protected function findModel($id)
     {
         if (($model = Business::findOne($id)) !== null) {
