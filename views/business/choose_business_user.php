@@ -272,7 +272,10 @@ $jscript = '
 
             $("#wizard-create-application-p-1").find(".main-form").find(".data-form").find(".user-list").each(function() {
 
-                selectedIds = selectedIds + $(this).siblings(".select2").find(".select2-selection__rendered").attr("title") + ",";
+                if ($(this).siblings(".select2").find(".select2-selection__rendered").attr("title") != undefined) {
+
+                    selectedIds = selectedIds + $(this).siblings(".select2").find(".select2-selection__rendered").attr("title") + ",";
+                }
             });
         }
 

@@ -1015,7 +1015,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 $modelUsers = [];
 
-                for ($i = 0; $i < count($post['User']); $i++) {
+                for ($index = 0; $index < count($post['User']); $index++) {
 
                     $modelUsers[] = new User();
                 }
@@ -1031,28 +1031,34 @@ class BusinessController extends \backoffice\controllers\BaseController
                         $flag = false;
                         $transaction = Yii::$app->db->beginTransaction();
 
-                        foreach ($post['User'] as $i => $dataUser) {
+                        foreach ($modelBusiness['businessContactPeople'] as $i => $dataContactPerson) {
 
-                            $modelUsers[$i]->setPassword($dataUser['password']);
+                            $modelUsers[$i]->setPassword($post['User'][$i]['password']);
 
                             if (!($flag = $modelUsers[$i]->save())) {
 
                                 break;
                             } else {
 
-                                if (empty($modelUsers[$i]->userPerson)) {
+                                if (empty($dataContactPerson->person->userPerson)) {
 
                                     $newModelUserPerson = new UserPerson();
                                     $newModelUserPerson->user_id = $modelUsers[$i]->id;
-                                    $newModelUserPerson->person_id = $post['person_id'][$i];
-                                }
+                                    $newModelUserPerson->person_id = $dataContactPerson['person_id'];
 
-                                if (!($flag = $newModelUserPerson->save())) {
+                                    if (!($flag = $newModelUserPerson->save())) {
 
-                                    break;
+                                        break;
+                                    } else {
+
+                                        $modelPerson = $newModelUserPerson->person;
+                                    }
                                 } else {
 
-                                    $modelPerson = $newModelUserPerson->person;
+                                    $modelPerson = $dataContactPerson->person;
+                                }
+
+                                if ($flag) {
 
                                     $userFullName = explode(' ', $modelUsers[$i]->full_name);
                                     $modelPerson->first_name = $userFullName[0];
@@ -1073,7 +1079,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                             Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
                             Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
 
-                            $transaction->rollBack();
+                            $transaction->commit();
 
                             return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/choose-business-user', 'id' => $id]));
                         } else {
