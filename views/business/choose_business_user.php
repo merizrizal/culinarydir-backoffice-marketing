@@ -213,19 +213,19 @@ $this->registerJs($jscript); ?>
 <div class="temp-form hide">
 	<div class="mb-20 data-form">
 
-		<?= Html::dropDownList('selected', null, [
+		<?= Html::dropDownList('selected', null,
     	    ArrayHelper::map(
-    	        User::find()->orderBy(['username' => SORT_ASC])->asArray()->all(),
+    	        User::find()->orderBy('username')->asArray()->all(),
     	        'id',
     	        function ($data) {
+
     	            return $data['username'];
     	        }
-            )
-    	], [
-    	    'prompt' => '',
-    	    'class' => 'user-list',
-    	    'style' => 'width:60%'
-    	]) ?>
+            ), [
+        	    'prompt' => '',
+        	    'class' => 'form-control user-list',
+        	    'style' => 'width:60%'
+        	]) ?>
 
 	</div>
 </div>
@@ -290,11 +290,11 @@ $jscript = '
 
     $("#wizard-create-application-p-1").on("click", ".add-user", function() {
 
-        $(".main-form").append($(".temp-form").html());
+        $(".main-form").append($(".temp-form").clone().html());
 
         $("#wizard-create-application-p-1").find(".user-list").select2({
             theme: "krajee",
-            placeholder: "' . Yii::t('app', 'Pick a Username to Add') . '",
+            placeholder: "' . Yii::t('app', 'Pick a Username to Add') . '"
         });
 
         return false;

@@ -992,7 +992,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
             Yii::$app->session->setFlash('status', 'danger');
             Yii::$app->session->setFlash('message1', Yii::t('app', 'No User Selected'));
-            Yii::$app->session->setFlash('message2', Yii::t('app', 'Please select the user that you want to update first'));
+            Yii::$app->session->setFlash('message2', Yii::t('app', 'Please select the user that you want to add first'));
 
             return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/choose-business-user', 'id' => $id]));
         }
@@ -1031,16 +1031,18 @@ class BusinessController extends \backoffice\controllers\BaseController
                         $flag = false;
                         $transaction = Yii::$app->db->beginTransaction();
 
+                        $message = Yii::t('app', 'Update data process is fail. Data fail to save');
+
                         foreach ($modelBusiness['businessContactPeople'] as $i => $dataContactPerson) {
 
-                            $modelUsers[$i]->setPassword($post['User'][$i]['password']);
+                            if (empty($dataContactPerson->person->userPerson)) {
 
-                            if (!($flag = $modelUsers[$i]->save())) {
+                                $modelUsers[$i]->setPassword($post['User'][$i]['password']);
 
-                                break;
-                            } else {
+                                if (!($flag = $modelUsers[$i]->save())) {
 
-                                if (empty($dataContactPerson->person->userPerson)) {
+                                    break;
+                                } else {
 
                                     $newModelUserPerson = new UserPerson();
                                     $newModelUserPerson->user_id = $modelUsers[$i]->id;
@@ -1052,24 +1054,23 @@ class BusinessController extends \backoffice\controllers\BaseController
                                     } else {
 
                                         $modelPerson = $newModelUserPerson->person;
-                                    }
-                                } else {
 
-                                    $modelPerson = $dataContactPerson->person;
-                                }
+                                        $userFullName = explode(' ', $modelUsers[$i]->full_name);
+                                        $modelPerson->first_name = $userFullName[0];
+                                        $modelPerson->last_name = $userFullName[1];
+                                        $modelPerson->email = $modelUsers[$i]->email;
 
-                                if ($flag) {
+                                        if (!($flag = $modelPerson->save())) {
 
-                                    $userFullName = explode(' ', $modelUsers[$i]->full_name);
-                                    $modelPerson->first_name = $userFullName[0];
-                                    $modelPerson->last_name = $userFullName[1];
-                                    $modelPerson->email = $modelUsers[$i]->email;
-
-                                    if (!($flag = $modelPerson->save())) {
-
-                                        break;
+                                            break;
+                                        }
                                     }
                                 }
+                            } else {
+
+                                $message = Yii::t('app', 'This contact is already added as user');
+
+                                break;
                             }
                         }
 
@@ -1086,7 +1087,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                             Yii::$app->session->setFlash('status', 'danger');
                             Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                            Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                            Yii::$app->session->setFlash('message2', $message);
 
                             $transaction->rollBack();
                         }
