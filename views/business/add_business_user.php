@@ -7,9 +7,9 @@ use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
-/* @var $model core\models\User */
 /* @var $modelBusiness core\models\Business */
 /* @var $modelUser core\models\User */
+/* @var $dataUser Array */
 /* @var $modelPerson core\models\Person */
 /* @var $modelBusinessContactPerson core\models\BusinessContactPerson */
 /* @var $userLevel Array */
@@ -73,11 +73,13 @@ echo $ajaxRequest->component(); ?>
                             	<?php
                             	if ($userSource == 'Contact-Person'):
 
-                            	    foreach ($modelBusiness['businessContactPeople'] as $i => $dataContactPerson):
+                            	    foreach ($dataUser as $i => $user):
 
                             	        $modelUser->user_level_id = $userLevel['id'];
-                            	        $modelUser->email = $dataContactPerson['person']['email'];
-                            	        $modelUser->full_name = $dataContactPerson['person']['first_name'] . ' ' . $dataContactPerson['person']['last_name']; ?>
+                            	        $modelUser->email = $user['email'];
+                            	        $modelUser->full_name = !empty($user['first_name']) ? $user['first_name'] . ' ' . $user['last_name'] : $user['full_name'];
+                            	        $modelUser->not_active = !empty($user['not_active']) ? $user['not_active'] : false;
+                            	        $modelUser->username = !empty($user['username']) ? $user['username'] : null; ?>
 
                                 		<div class="row">
                                 			<div class="col-xs-12">
@@ -126,100 +128,88 @@ echo $ajaxRequest->component(); ?>
                                 	endforeach;
                             	elseif ($userSource == 'User-Asikmakan'):
 
-                        	        if (!empty($model)):
+                                    foreach ($dataContactPerson as $j => $contactPerson):
 
-                                        foreach ($model as $j => $dataUser):
+                            	        $modelPerson->first_name = $contactPerson['first_name'];
+                            	        $modelPerson->last_name = $contactPerson['last_name'];
+                            	        $modelPerson->phone = $contactPerson['phone'];
+                            	        $modelPerson->email = $contactPerson['email'];
 
-                                            $userFullname = explode(' ', $dataUser['full_name']);
+                            	        $modelBusinessContactPerson->position = !empty($contactPerson['position']) ? $contactPerson['position'] : null;
+                            	        $modelBusinessContactPerson->is_primary_contact = !empty($contactPerson['is_primary_contact']) ? $contactPerson['is_primary_contact'] : null;
+                            	        $modelBusinessContactPerson->note = !empty($contactPerson['note']) ? $contactPerson['note'] : null; ?>
 
-                                	        $modelPerson->first_name = $userFullname[0];
-                                	        $modelPerson->last_name = $userFullname[1];
-                                	        $modelPerson->phone = $dataUser['userPerson']['person']['phone'];
-                                	        $modelPerson->email = $dataUser['userPerson']['person']['email'];
+                                        <div class="row mt-10">
+                                            <div class="col-md-4 col-xs-6">
 
-                                	        if (!empty($dataUser->userPerson->person->businessContactPeople)) {
+                                                <?= $form->field($modelPerson, '[' . $j .']first_name')->textInput([
+                                                    'maxlength' => true,
+                                                    'placeholder' => Yii::t('app', 'First Name')
+                                                ]) ?>
 
-                                	            foreach ($dataUser->userPerson->person->businessContactPeople as $dataBusinessContactPerson) {
-
-                                	                if ($dataBusinessContactPerson['business_id'] == $modelBusiness['id']) {
-
-                                	                    $modelBusinessContactPerson = $dataBusinessContactPerson;
-                                	                }
-                                	            }
-                                	        } ?>
-
-                                            <div class="row mt-10">
-                                                <div class="col-md-4 col-xs-6">
-
-                                                    <?= $form->field($modelPerson, '[' . $j .']first_name')->textInput([
-                                                        'maxlength' => true,
-                                                        'placeholder' => Yii::t('app', 'First Name')
-                                                    ]) ?>
-
-                                                </div>
-                                                <div class="col-md-4 col-xs-6">
-
-                                                    <?= $form->field($modelPerson, '[' . $j .']last_name')->textInput([
-                                                        'maxlength' => true,
-                                                        'placeholder' => Yii::t('app', 'Last Name')
-                                                    ]) ?>
-
-                                                </div>
-                                                <div class="col-md-4 col-xs-12">
-
-                                                	<?= $form->field($modelBusinessContactPerson, '[' . $j . ']position')->dropDownList([
-                                                	       'Owner' => 'Owner',
-                                                	       'Manager' => 'Manager',
-                                                	       'Staff' => 'Staff'
-                                                	    ],
-                                            	        [
-                                        	               'prompt' => '',
-                                            	           'class' => 'contact-person-position',
-                                            	           'style' => 'width: 100%'
-                                            	        ]); ?>
-
-                                                </div>
                                             </div>
+                                            <div class="col-md-4 col-xs-6">
 
-                                            <div class="row">
-                                                <div class="col-md-4 col-xs-6">
+                                                <?= $form->field($modelPerson, '[' . $j .']last_name')->textInput([
+                                                    'maxlength' => true,
+                                                    'placeholder' => Yii::t('app', 'Last Name')
+                                                ]) ?>
 
-                                                    <?= $form->field($modelPerson, '[' . $j .']phone')->widget(MaskedInput::className(), [
-                                                        'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
-                                                        'options' => [
-                                                            'class' => 'form-control',
-                                                            'placeholder' => Yii::t('app', 'Phone')
-                                                        ],
-                                                    ]) ?>
+                                            </div>
+                                            <div class="col-md-4 col-xs-12">
 
-                                                </div>
-                                                <div class="col-md-4 col-xs-6">
+                                            	<?= $form->field($modelBusinessContactPerson, '[' . $j . ']position')->dropDownList([
+                                            	       'Owner' => 'Owner',
+                                            	       'Manager' => 'Manager',
+                                            	       'Staff' => 'Staff'
+                                            	    ],
+                                        	        [
+                                    	               'prompt' => '',
+                                        	           'class' => 'contact-person-position',
+                                        	           'style' => 'width: 100%'
+                                        	        ]); ?>
 
-                                                    <?= $form->field($modelPerson, '[' . $j .']email')->textInput([
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4 col-xs-6">
+
+                                                <?= $form->field($modelPerson, '[' . $j .']phone')->widget(MaskedInput::className(), [
+                                                    'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
+                                                    'options' => [
                                                         'class' => 'form-control',
-                                                        'placeholder' => 'Email'
-                                                    ]) ?>
+                                                        'placeholder' => Yii::t('app', 'Phone')
+                                                    ],
+                                                ]) ?>
 
-                                                </div>
-                                                <div class="col-md-4 col-xs-6">
-                                                	<?= $form->field($modelBusinessContactPerson, '[' . $j .']is_primary_contact')->checkbox() ?>
-                                                </div>
                                             </div>
+                                            <div class="col-md-4 col-xs-6">
 
-                                            <div class="row">
-                                            	<div class="col-md-8 col-xs-12">
+                                                <?= $form->field($modelPerson, '[' . $j .']email')->textInput([
+                                                    'class' => 'form-control',
+                                                    'placeholder' => 'Email'
+                                                ]) ?>
 
-                                                    <?= $form->field($modelBusinessContactPerson, '[' . $j .']note')->textarea([
-                                                        'rows' => 2,
-                                                        'placeholder' => Yii::t('app', 'Note')
-                                                    ]) ?>
-
-                                                </div>
                                             </div>
+                                            <div class="col-md-4 col-xs-6">
+                                            	<?= $form->field($modelBusinessContactPerson, '[' . $j .']is_primary_contact')->checkbox() ?>
+                                            </div>
+                                        </div>
 
-                                        <?php
-                                        endforeach;
-                                    endif;
+                                        <div class="row">
+                                        	<div class="col-md-8 col-xs-12">
+
+                                                <?= $form->field($modelBusinessContactPerson, '[' . $j .']note')->textarea([
+                                                    'rows' => 2,
+                                                    'placeholder' => Yii::t('app', 'Note')
+                                                ]) ?>
+
+                                            </div>
+                                        </div>
+
+                                    <?php
+                                    endforeach;
                             	endif; ?>
 
                         	</div>

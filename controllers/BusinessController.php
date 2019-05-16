@@ -1005,11 +1005,14 @@ class BusinessController extends \backoffice\controllers\BaseController
                         ->andOnCondition(['business_contact_person.id' => explode(',', trim($selected, ','))]);
                 },
                 'businessContactPeople.person',
+                'businessContactPeople.person.userPerson.user'
             ])
             ->andWhere(['business.id' => $id])
-            ->one();
+            ->asArray()->one();
 
         if ($userSource == 'Contact-Person') {
+
+            $dataUser = [];
 
             if (!empty(($post = Yii::$app->request->post()))) {
 
@@ -1033,9 +1036,9 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                         $message = Yii::t('app', 'Update data process is fail. Data fail to save');
 
-                        foreach ($modelBusiness['businessContactPeople'] as $i => $dataContactPerson) {
+                        foreach ($modelBusiness['businessContactPeople'] as $i => $dataBusinessContactPerson) {
 
-                            if (empty($dataContactPerson->person->userPerson)) {
+                            if (empty($dataBusinessContactPerson['person']['userPerson'])) {
 
                                 $modelUsers[$i]->setPassword($post['User'][$i]['password']);
 
@@ -1044,9 +1047,11 @@ class BusinessController extends \backoffice\controllers\BaseController
                                     break;
                                 } else {
 
+                                    array_push($dataUser, $modelUsers[$i]->toArray());
+
                                     $newModelUserPerson = new UserPerson();
                                     $newModelUserPerson->user_id = $modelUsers[$i]->id;
-                                    $newModelUserPerson->person_id = $dataContactPerson['person_id'];
+                                    $newModelUserPerson->person_id = $dataBusinessContactPerson['person_id'];
 
                                     if (!($flag = $newModelUserPerson->save())) {
 
@@ -1057,7 +1062,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                                         $userFullName = explode(' ', $modelUsers[$i]->full_name);
                                         $modelPerson->first_name = $userFullName[0];
-                                        $modelPerson->last_name = $userFullName[1];
+                                        $modelPerson->last_name = !empty($userFullName[1]) ? $userFullName[1] : null;
                                         $modelPerson->email = $modelUsers[$i]->email;
 
                                         if (!($flag = $modelPerson->save())) {
@@ -1094,6 +1099,14 @@ class BusinessController extends \backoffice\controllers\BaseController
                     }
                 }
             }
+
+            if (empty($dataUser)) {
+
+                foreach ($modelBusiness['businessContactPeople'] as $dataBusinessContactPerson) {
+
+                    array_push($dataUser, $dataBusinessContactPerson['person']);
+                }
+            }
         } else if ($userSource == 'User-Asikmakan') {
 
             $model = User::find()
@@ -1104,8 +1117,11 @@ class BusinessController extends \backoffice\controllers\BaseController
                         $query->andOnCondition(['business_contact_person.business_id' => $id]);
                     }
                 ])
-                ->andWhere(['username' => explode(',', trim($selected, ','))])
+                ->andWhere(['user.username' => explode(',', trim($selected, ','))])
+                ->orderBy(['user.username' => SORT_ASC])
                 ->all();
+
+            $dataContactPerson = [];
 
             if (!empty(($post = Yii::$app->request->post()))) {
 
@@ -1145,6 +1161,9 @@ class BusinessController extends \backoffice\controllers\BaseController
                             if (!($flag = $newModelBusinessContactPerson->save())) {
 
                                 break;
+                            } else {
+
+                                array_push($dataContactPerson, ArrayHelper::merge($modelPerson->toArray(), $newModelBusinessContactPerson->toArray()));
                             }
                         }
                     }
@@ -1168,6 +1187,20 @@ class BusinessController extends \backoffice\controllers\BaseController
                     }
                 }
             }
+
+            if (empty($dataContactPerson)) {
+
+                foreach ($model as $dataUser) {
+
+                    if (!empty($dataUser->userPerson->person->businessContactPeople[0])) {
+
+                        array_push($dataContactPerson, ArrayHelper::merge($dataUser->userPerson->person->toArray(), $dataUser->userPerson->person->businessContactPeople[0]));
+                    } else {
+
+                        array_push($dataContactPerson, $dataUser->userPerson->person->toArray());
+                    }
+                }
+            }
         }
 
         $modelUser = new User();
@@ -1179,11 +1212,11 @@ class BusinessController extends \backoffice\controllers\BaseController
             ->asArray()->one();
 
         return $this->render('add_business_user', [
-            'model' => !empty($model) ? $model : null,
             'modelBusiness' => $modelBusiness,
-            'modelBusinessContactPerson' => $modelBusinessContactPerson,
             'modelUser' => $modelUser,
+            'dataUser' => $dataUser,
             'modelPerson' => $modelPerson,
+            'modelBusinessContactPerson' => $modelBusinessContactPerson,
             'userLevel' => $userLevel,
             'selected' => $selected,
             'userSource' => $userSource
