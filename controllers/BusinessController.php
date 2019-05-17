@@ -1008,11 +1008,12 @@ class BusinessController extends \backoffice\controllers\BaseController
                 'businessContactPeople.person.userPerson.user'
             ])
             ->andWhere(['business.id' => $id])
-            ->asArray()->one();
+            ->one();
+
+        $dataUser = [];
+        $dataContactPerson = [];
 
         if ($userSource == 'Contact-Person') {
-
-            $dataUser = [];
 
             if (!empty(($post = Yii::$app->request->post()))) {
 
@@ -1034,11 +1035,9 @@ class BusinessController extends \backoffice\controllers\BaseController
                         $flag = false;
                         $transaction = Yii::$app->db->beginTransaction();
 
-                        $message = Yii::t('app', 'Update data process is fail. Data fail to save');
-
                         foreach ($modelBusiness['businessContactPeople'] as $i => $dataBusinessContactPerson) {
 
-                            if (empty($dataBusinessContactPerson['person']['userPerson'])) {
+                            if (empty($dataBusinessContactPerson->person->userPerson)) {
 
                                 $modelUsers[$i]->setPassword($post['User'][$i]['password']);
 
@@ -1051,7 +1050,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                                     $newModelUserPerson = new UserPerson();
                                     $newModelUserPerson->user_id = $modelUsers[$i]->id;
-                                    $newModelUserPerson->person_id = $dataBusinessContactPerson['person_id'];
+                                    $newModelUserPerson->person_id = $dataBusinessContactPerson->person_id;
 
                                     if (!($flag = $newModelUserPerson->save())) {
 
@@ -1073,9 +1072,24 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 }
                             } else {
 
-                                $message = Yii::t('app', 'This contact is already added as user');
+                                $flag = true;
 
-                                break;
+                                if (!empty($post['is_merge'])) {
+
+                                    if (!empty($post['is_merge'][$i])) {
+
+                                        $userFullName = explode(' ', $post['User'][$i]['full_name']);
+
+                                        $dataBusinessContactPerson->person->email = $post['User'][$i]['email'];
+                                        $dataBusinessContactPerson->person->first_name = $userFullName[0];
+                                        $dataBusinessContactPerson->person->last_name = !empty($userFullName[1]) ? $userFullName[1] : null;
+
+                                        if (!($flag = $dataBusinessContactPerson->person->save())) {
+
+                                            break;
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -1092,7 +1106,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                             Yii::$app->session->setFlash('status', 'danger');
                             Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                            Yii::$app->session->setFlash('message2', $message);
+                            Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
 
                             $transaction->rollBack();
                         }
@@ -1117,11 +1131,18 @@ class BusinessController extends \backoffice\controllers\BaseController
                         $query->andOnCondition(['business_contact_person.business_id' => $id]);
                     }
                 ])
-                ->andWhere(['user.username' => explode(',', trim($selected, ','))])
+                ->andWhere(['user.email' => explode(',', trim($selected, ','))])
                 ->orderBy(['user.username' => SORT_ASC])
                 ->all();
 
-            $dataContactPerson = [];
+            if (empty($model)) {
+
+                Yii::$app->session->setFlash('status', 'danger');
+                Yii::$app->session->setFlash('message1', Yii::t('app', 'User Not Found'));
+                Yii::$app->session->setFlash('message2', Yii::t('app', 'No user found by that email'));
+
+                return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business/choose-business-user', 'id' => $id]));
+            }
 
             if (!empty(($post = Yii::$app->request->post()))) {
 
@@ -1217,6 +1238,7 @@ class BusinessController extends \backoffice\controllers\BaseController
             'dataUser' => $dataUser,
             'modelPerson' => $modelPerson,
             'modelBusinessContactPerson' => $modelBusinessContactPerson,
+            'dataContactPerson' => $dataContactPerson,
             'userLevel' => $userLevel,
             'selected' => $selected,
             'userSource' => $userSource

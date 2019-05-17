@@ -9,9 +9,6 @@ use yii\helpers\ArrayHelper;
 /* @var $this yii\web\View */
 /* @var $model core\models\Business */
 
-kartik\select2\Select2Asset::register($this);
-kartik\select2\ThemeKrajeeAsset::register($this);
-
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'Business',
 ]);
@@ -85,11 +82,6 @@ $jscript = '
 
                     $("#wizard-create-application-p-1").html($(".user-asikmakan-steps").html());
                     $("#wizard-create-application-t-1").children(".desc").html("User Asikmakan");
-
-                    $("#wizard-create-application-p-1").find(".user-list").select2({
-                        theme: "krajee",
-                        placeholder: "' . Yii::t('app', 'Pick a Username to Add') . '",
-                    });
                 }
             } else if (priorIndex == lastCount) {
 
@@ -153,8 +145,8 @@ $this->registerJs($jscript); ?>
 
             <div class="row mb-20">
         		<div class="col-xs-12 mb-10">
-        			<strong><?= Yii::t('app', 'Contact') . ' ' . ($i + 1) . $is_primary ?></strong>
-        			<?= Html::checkbox('selected[' . $i . ']', false, ['class' => 'selected-user', 'value' => $dataBusinessContactPerson['id'], 'label' => 'Add This User']) ?>
+        			<strong><?= Yii::t('app', 'Contact') . ' ' . ($i + 1) . $is_primary ?></strong>&nbsp;&nbsp;&nbsp;
+        			<?= Html::checkbox('selected[' . $i . ']', false, ['class' => 'selected-user', 'value' => $dataBusinessContactPerson['id'], 'label' => Yii::t('app', 'Add As User')]) ?>
             	</div>
         		<div class="col-sm-3 col-xs-6 mb-10">
             		<?= Html::label(Yii::t('app', 'Name')) ?><br>
@@ -213,19 +205,11 @@ $this->registerJs($jscript); ?>
 <div class="temp-form hide">
 	<div class="mb-20 data-form">
 
-		<?= Html::dropDownList('selected', null,
-    	    ArrayHelper::map(
-    	        User::find()->orderBy('username')->asArray()->all(),
-    	        'id',
-    	        function ($data) {
-
-    	            return $data['username'];
-    	        }
-            ), [
-        	    'prompt' => '',
-        	    'class' => 'form-control user-list',
-        	    'style' => 'width:60%'
-        	]) ?>
+		<?= Html::textInput('user_email', null, [
+		    'placeholder' => Yii::t('app', 'Input user\'s email that you want to add'),
+		    'class' => 'form-control user-email',
+		    'style' => 'width:60%',
+		]) ?>
 
 	</div>
 </div>
@@ -270,11 +254,11 @@ $jscript = '
 
             userSource = "User-Asikmakan";
 
-            $("#wizard-create-application-p-1").find(".main-form").find(".data-form").find(".user-list").each(function() {
+            $("#wizard-create-application-p-1").find(".main-form").find(".data-form").find(".user-email").each(function() {
 
-                if ($(this).siblings(".select2").find(".select2-selection__rendered").attr("title") != undefined) {
+                if ($(this).val() != "") {
 
-                    selectedIds = selectedIds + $(this).siblings(".select2").find(".select2-selection__rendered").attr("title") + ",";
+                    selectedIds = selectedIds + $(this).val() + ",";
                 }
             });
         }
@@ -291,11 +275,6 @@ $jscript = '
     $("#wizard-create-application-p-1").on("click", ".add-user", function() {
 
         $(".main-form").append($(".temp-form").clone().html());
-
-        $("#wizard-create-application-p-1").find(".user-list").select2({
-            theme: "krajee",
-            placeholder: "' . Yii::t('app', 'Pick a Username to Add') . '"
-        });
 
         return false;
     });

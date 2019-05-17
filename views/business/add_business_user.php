@@ -12,6 +12,7 @@ use sycomponent\NotificationDialog;
 /* @var $dataUser Array */
 /* @var $modelPerson core\models\Person */
 /* @var $modelBusinessContactPerson core\models\BusinessContactPerson */
+/* @var $dataContactPerson Array */
 /* @var $userLevel Array */
 /* @var $selected String */
 /* @var $userSource String */
@@ -75,11 +76,15 @@ echo $ajaxRequest->component(); ?>
 
                             	    foreach ($dataUser as $i => $user):
 
+                            	        $dataBusinessContactPerson = $modelBusiness['businessContactPeople'][$i];
+
+                            	        $isExist = !empty($dataBusinessContactPerson['person']['userPerson']);
+
                             	        $modelUser->user_level_id = $userLevel['id'];
                             	        $modelUser->email = $user['email'];
                             	        $modelUser->full_name = !empty($user['first_name']) ? $user['first_name'] . ' ' . $user['last_name'] : $user['full_name'];
                             	        $modelUser->not_active = !empty($user['not_active']) ? $user['not_active'] : false;
-                            	        $modelUser->username = !empty($user['username']) ? $user['username'] : null; ?>
+                            	        $modelUser->username = !empty($user['username']) ? $user['username'] : $dataBusinessContactPerson['person']['userPerson']['user']['username']; ?>
 
                                 		<div class="row">
                                 			<div class="col-xs-12">
@@ -88,15 +93,15 @@ echo $ajaxRequest->component(); ?>
                                 					<div class="col-md-4 col-xs-6">
 
                         								<?= $form->field($modelUser, '[' . $i . ']email', [
-                                                            'enableAjaxValidation' => true
+                                                            'enableAjaxValidation' => false
                                                         ])->textInput(['maxlength' => true, 'placeholder' => 'email']) ?>
 
                                 					</div>
                                 					<div class="col-md-4 col-xs-6">
 
                                 						<?= $form->field($modelUser, '[' . $i . ']username', [
-                                                            'enableAjaxValidation' => true
-                                                        ])->textInput(['maxlength' => true, 'placeholder' => 'username']) ?>
+                                                            'enableAjaxValidation' => !$isExist
+                                                        ])->textInput(['maxlength' => true, 'placeholder' => 'username', 'disabled' => $isExist]) ?>
 
                                 					</div>
                                 					<div class="col-md-4 col-xs-12">
@@ -110,7 +115,7 @@ echo $ajaxRequest->component(); ?>
                                 				</div>
                                 				<div class="row mt-10">
                                 					<div class="col-md-4 col-xs-6">
-                            							<?= $form->field($modelUser, '[' . $i . ']password')->passwordInput(['maxlength' => true, 'placeholder' => 'password']) ?>
+                            							<?= $form->field($modelUser, '[' . $i . ']password')->passwordInput(['maxlength' => true, 'placeholder' => 'password', 'disabled' => $isExist]) ?>
                                 					</div>
                                 					<div class="col-md-4 col-xs-6">
                             							<?= $form->field($modelUser, '[' . $i . ']full_name')->textInput(['maxlength' => true]) ?>
@@ -121,6 +126,47 @@ echo $ajaxRequest->component(); ?>
                                 				</div>
                                 			</div>
                                 		</div>
+
+                                    	<?php
+                                    	if ($isExist): ?>
+
+                                        	<div class="row mt-10">
+                                        		<div class="col-xs-12">
+                                        			<strong class="text-danger"><?= Yii::t('app', 'This contact person has already added as user, do you want to merge it?') ?></strong>&nbsp;&nbsp;&nbsp;
+                                        			<?= Html::checkbox('is_merge[' . $i . ']', false, ['label' => 'Merge']) ?>
+                                        		</div>
+                                        	</div>
+                                        	<div class="row mb-10">
+                                            	<div class="col-xs-12 mb-10">
+                                            		<?= Html::label(Yii::t('app', 'Username')) . ' : ' . $dataBusinessContactPerson['person']['userPerson']['user']['username'] ?>
+                                            	</div>
+                                        		<div class="col-sm-3 col-xs-6 mb-10">
+                                            		<?= Html::label(Yii::t('app', 'Name')) ?><br>
+                                	                <?= $dataBusinessContactPerson['person']['first_name'] . ' ' . $dataBusinessContactPerson['person']['last_name']; ?>
+                                                </div>
+                                                <div class="col-sm-3 col-xs-6 mb-10">
+                                                	<?= Html::label(Yii::t('app', 'Position')) ?><br>
+                                                	<?= $dataBusinessContactPerson['position']; ?>
+                                                </div>
+                                                <div class="col-sm-3 col-xs-6">
+                                            		<?= Html::label(Yii::t('app', 'Email')) ?><br>
+                                            		<?= !empty($dataBusinessContactPerson['person']['email']) ? $dataBusinessContactPerson['person']['email'] : '-'; ?>
+                                            	</div>
+                                            	<div class="col-sm-3 col-xs-6">
+                                            		<?= Html::label(Yii::t('app', 'Phone')) ?><br>
+                                            		<?= !empty($dataBusinessContactPerson['person']['phone']) ? $dataBusinessContactPerson['person']['phone'] : '-'; ?>
+                                            	</div>
+                                            </div>
+
+                                            <div class="row mb-20">
+                                            	<div class="col-xs-12">
+                                            		<?= Html::label(Yii::t('app', 'Note')) . '<br>'; ?>
+                                            		<?= !empty($dataBusinessContactPerson['note']) ? $dataBusinessContactPerson['note'] : '-'; ?>
+                                            	</div>
+                                            </div>
+
+                                    	<?php
+                                    	endif; ?>
 
                                     	<hr>
 
