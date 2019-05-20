@@ -1019,9 +1019,9 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 $modelUsers = [];
 
-                for ($index = 0; $index < count($post['User']); $index++) {
+                foreach ($modelBusiness['businessContactPeople'] as $dataBusinessContactPerson) {
 
-                    $modelUsers[] = new User();
+                    $modelUsers[] = empty($dataBusinessContactPerson->person->userPerson) ? new User() : $dataBusinessContactPerson->person->userPerson->user;
                 }
 
                 if (Model::loadMultiple($modelUsers, $post)) {
@@ -1037,16 +1037,18 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                         foreach ($modelBusiness['businessContactPeople'] as $i => $dataBusinessContactPerson) {
 
-                            if (empty($dataBusinessContactPerson->person->userPerson)) {
+                            $modelUsers[$i]->setPassword(!empty($post['User'][$i]['password']) ? $post['User'][$i]['password'] : $modelUsers[$i]->password);
 
-                                $modelUsers[$i]->setPassword($post['User'][$i]['password']);
+                            if (!($flag = $modelUsers[$i]->save())) {
 
-                                if (!($flag = $modelUsers[$i]->save())) {
+                                break;
+                            } else {
 
-                                    break;
-                                } else {
+                                $userFullName = explode(' ', $modelUsers[$i]->full_name);
 
-                                    array_push($dataUser, $modelUsers[$i]->toArray());
+                                array_push($dataUser, $modelUsers[$i]->toArray());
+
+                                if (empty($dataBusinessContactPerson->person->userPerson)) {
 
                                     $newModelUserPerson = new UserPerson();
                                     $newModelUserPerson->user_id = $modelUsers[$i]->id;
@@ -1059,7 +1061,6 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                                         $modelPerson = $newModelUserPerson->person;
 
-                                        $userFullName = explode(' ', $modelUsers[$i]->full_name);
                                         $modelPerson->first_name = $userFullName[0];
                                         $modelPerson->last_name = !empty($userFullName[1]) ? $userFullName[1] : null;
                                         $modelPerson->email = $modelUsers[$i]->email;
@@ -1069,16 +1070,9 @@ class BusinessController extends \backoffice\controllers\BaseController
                                             break;
                                         }
                                     }
-                                }
-                            } else {
-
-                                $flag = true;
-
-                                if (!empty($post['is_merge'])) {
+                                } else {
 
                                     if (!empty($post['is_merge'][$i])) {
-
-                                        $userFullName = explode(' ', $post['User'][$i]['full_name']);
 
                                         $dataBusinessContactPerson->person->email = $post['User'][$i]['email'];
                                         $dataBusinessContactPerson->person->first_name = $userFullName[0];
@@ -1116,9 +1110,15 @@ class BusinessController extends \backoffice\controllers\BaseController
 
             if (empty($dataUser)) {
 
-                foreach ($modelBusiness['businessContactPeople'] as $dataBusinessContactPerson) {
+                foreach ($modelBusiness->businessContactPeople as $dataBusinessContactPerson) {
 
-                    array_push($dataUser, $dataBusinessContactPerson['person']);
+                    if (!empty($dataBusinessContactPerson->person->userPerson->user)) {
+
+                        array_push($dataUser, ArrayHelper::merge($dataBusinessContactPerson->person->toArray(), $dataBusinessContactPerson->person->userPerson->user->toArray()));
+                    } else {
+
+                        array_push($dataUser, $dataBusinessContactPerson->person->toArray());
+                    }
                 }
             }
         } else if ($userSource == 'User-Asikmakan') {

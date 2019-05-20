@@ -82,9 +82,9 @@ echo $ajaxRequest->component(); ?>
 
                             	        $modelUser->user_level_id = $userLevel['id'];
                             	        $modelUser->email = $user['email'];
-                            	        $modelUser->full_name = !empty($user['first_name']) ? $user['first_name'] . ' ' . $user['last_name'] : $user['full_name'];
+                            	        $modelUser->full_name = !empty($user['full_name']) ? $user['full_name'] : $user['first_name'] . ' ' . $user['last_name'];
                             	        $modelUser->not_active = !empty($user['not_active']) ? $user['not_active'] : false;
-                            	        $modelUser->username = !empty($user['username']) ? $user['username'] : $dataBusinessContactPerson['person']['userPerson']['user']['username']; ?>
+                            	        $modelUser->username = !empty($user['username']) ? $user['username'] : null; ?>
 
                                 		<div class="row">
                                 			<div class="col-xs-12">
