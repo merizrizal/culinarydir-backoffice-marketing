@@ -660,6 +660,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                     $query->orderBy(['business_contact_person.created_at' => SORT_ASC]);
                 },
                 'businessContactPeople.person',
+                'businessContactPeople.person.userPerson',
             ])
             ->andWhere(['business.id' => $id])
             ->one();
@@ -692,7 +693,16 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                         if (($flag = BusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]))) {
 
-                            $flag = Person::deleteAll(['id' => $post['BusinessContactPersonDeleted']]);
+                            foreach ($post['BusinessContactPersonDeleted'] as $i => $dataContactPersonDeleted) {
+
+                                if (empty($model->businessContactPeople[$i]->person->userPerson)) {
+
+                                    if (!($flag = $model->businessContactPeople[$i]->person->delete())) {
+
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -770,9 +780,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 foreach ($model->businessContactPeople as $dataContactPerson) {
 
-                    $dataContactPerson = ArrayHelper::merge($dataContactPerson->toArray(), $dataContactPerson->person->toArray());
-
-                    array_push($dataBusinessContactPerson, $dataContactPerson);
+                    array_push($dataBusinessContactPerson, ArrayHelper::merge($dataContactPerson->toArray(), $dataContactPerson->person->toArray()));
                 }
             }
         }
@@ -1132,7 +1140,6 @@ class BusinessController extends \backoffice\controllers\BaseController
                     }
                 ])
                 ->andWhere(['user.email' => explode(',', trim($selected, ','))])
-                ->orderBy(['user.username' => SORT_ASC])
                 ->all();
 
             if (empty($model)) {
@@ -1185,6 +1192,17 @@ class BusinessController extends \backoffice\controllers\BaseController
                             } else {
 
                                 array_push($dataContactPerson, ArrayHelper::merge($modelPerson->toArray(), $newModelBusinessContactPerson->toArray()));
+
+                                if (!empty($post['is_merge'][$i])) {
+
+                                    $dataUser->email = $post['Person'][$i]['email'];
+                                    $dataUser->full_name = $post['Person'][$i]['first_name'] . ' ' . $post['Person'][$i]['last_name'];
+
+                                    if (!($flag = $dataUser->save())) {
+
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -1233,6 +1251,7 @@ class BusinessController extends \backoffice\controllers\BaseController
             ->asArray()->one();
 
         return $this->render('add_business_user', [
+            'model' => !empty($model) ? $model : null,
             'modelBusiness' => $modelBusiness,
             'modelUser' => $modelUser,
             'dataUser' => $dataUser,

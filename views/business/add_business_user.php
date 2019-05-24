@@ -7,6 +7,7 @@ use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 
 /* @var $this yii\web\View */
+/* @var $model core\models\User */
 /* @var $modelBusiness core\models\Business */
 /* @var $modelUser core\models\User */
 /* @var $dataUser Array */
@@ -93,7 +94,7 @@ echo $ajaxRequest->component(); ?>
                                 					<div class="col-md-4 col-xs-6">
 
                         								<?= $form->field($modelUser, '[' . $i . ']email', [
-                                                            'enableAjaxValidation' => false
+                        								    'enableAjaxValidation' => !$isExist
                                                         ])->textInput(['maxlength' => true, 'placeholder' => 'email']) ?>
 
                                 					</div>
@@ -176,6 +177,10 @@ echo $ajaxRequest->component(); ?>
 
                                     foreach ($dataContactPerson as $j => $contactPerson):
 
+                                        $dataUser = $model[$j];
+
+                                        $isExist = !empty($dataUser->userPerson->person->businessContactPeople[0]);
+
                             	        $modelPerson->first_name = $contactPerson['first_name'];
                             	        $modelPerson->last_name = $contactPerson['last_name'];
                             	        $modelPerson->phone = $contactPerson['phone'];
@@ -254,7 +259,36 @@ echo $ajaxRequest->component(); ?>
                                             </div>
                                         </div>
 
-                                    <?php
+                                        <?php
+                                    	if ($isExist): ?>
+
+                                    		<div class="row mt-10 mb-10">
+                                        		<div class="col-xs-12">
+                                        			<strong class="text-danger"><?= Yii::t('app', 'This user has already added as contact person, do you want to merge it?') ?></strong>&nbsp;&nbsp;&nbsp;
+                                        			<?= Html::checkbox('is_merge[' . $j . ']', false, ['label' => 'Merge']) ?>
+                                        		</div>
+                                        	</div>
+                                        	<div class="row mb-10">
+                                        		<div class="col-sm-3 col-xs-6">
+                                            		<?= Html::label(Yii::t('app', 'Username')) ?><br>
+                                	                <?= $dataUser['username']; ?>
+                                                </div>
+                                                <div class="col-sm-3 col-xs-6">
+                                                	<?= Html::label(Yii::t('app', 'Email')) ?><br>
+                                                	<?= $dataUser['email']; ?>
+                                                </div>
+                                                <div class="col-sm-3 col-xs-6">
+                                            		<?= Html::label(Yii::t('app', 'Name')) ?><br>
+                                            		<?= $dataUser['full_name']; ?>
+                                            	</div>
+                                            </div>
+
+                                    	<?php
+                                    	endif; ?>
+
+                                		<hr>
+
+                                	<?php
                                     endforeach;
                             	endif; ?>
 
