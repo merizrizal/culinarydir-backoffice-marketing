@@ -12,7 +12,6 @@ use sycomponent\Tools;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\helpers\ArrayHelper;
 
 /**
  * BusinessProductController implements the CRUD actions for BusinessProduct model.
@@ -84,7 +83,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         if ($model->load(Yii::$app->request->post())) {
 
             if (!empty($save)) {
-                
+
                 $last = BusinessProduct::find()
                     ->andWhere(['business_id' => $id])
                     ->orderBy(['order' => SORT_DESC])
@@ -93,7 +92,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
                 $model->business_id = $id;
                 $model->image = Tools::uploadFile('/img/business_product/', $model, 'image', 'id', $model->business_id);
                 $model->order = $last['order'] + 1;
-                
+
                 if ($model->save()) {
 
                     Yii::$app->session->setFlash('status', 'success');
@@ -135,11 +134,11 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         if ($model->load(Yii::$app->request->post())) {
 
             if (!empty($save)) {
-                
+
                 $image = Tools::uploadFile('/img/business_product/', $model, 'image', 'id', $model->business_id);
 
                 $model->image = !empty($image) ? $image : $model->oldAttributes['image'];
-                
+
                 if ($model->save()) {
 
                     Yii::$app->session->setFlash('status', 'success');
@@ -200,79 +199,79 @@ class BusinessProductController extends \backoffice\controllers\BaseController
         Yii::$app->response->format = Response::FORMAT_JSON;
         return $return;
     }
-    
+
     public function actionUpdateOrder($id, $save = null)
     {
         $model = Business::find()
             ->joinWith([
                 'businessProducts' => function ($query) {
-            
+
                     $query->orderBy(['business_product.order' => SORT_ASC]);
                 },
                 'businessProducts.businessProductCategory.productCategory'
             ])
             ->andWhere(['business.id' => $id])
             ->one();
-                
+
         $dataBusinessProduct = [];
-        
+
         if (!empty(($post = Yii::$app->request->post()))) {
-            
+
             if (!empty($save)) {
-                
+
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
-                
+
                 foreach ($model->businessProducts as $dataProduct) {
-                    
+
                     $dataProduct->order = $post['order'][$dataProduct['id']];
                     $dataProduct->not_active = !empty($post['not_active'][$dataProduct['id']]);
-                    
+
                     if (!($flag = $dataProduct->save())) {
-                        
+
                         break;
                     } else {
-                        
+
                         $dataBusinessProductCategory = [];
                         $dataBusinessProductCategory['businessProductCategory'] = $dataProduct->businessProductCategory->toArray();
                         $dataBusinessProductCategory['businessProductCategory']['productCategory'] = $dataProduct->businessProductCategory->productCategory->toArray();
-                        
+
                         array_push($dataBusinessProduct, array_merge($dataProduct->toArray(), $dataBusinessProductCategory));
                     }
                 }
-                
+
                 if ($flag) {
-                    
+
                     Yii::$app->session->setFlash('status', 'success');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
-                    
+
                     $transaction->commit();
                 } else {
-                    
+
                     Yii::$app->session->setFlash('status', 'danger');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                    
+
                     $transaction->rollBack();
                 }
             }
         }
-        
+
         if (empty($dataBusinessProduct)) {
-            
+
             foreach ($model['businessProducts'] as $businessProduct) {
-                
+
                 array_push($dataBusinessProduct, $businessProduct);
             }
         }
-        
+
         return $this->render('update_order', [
             'model' => $model,
             'dataBusinessProduct' => $dataBusinessProduct
         ]);
     }
-    
+
     public function actionAddMultipleProduct($id, $save = null)
     {
         $model = Business::find()
@@ -281,25 +280,25 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             ])
             ->andWhere(['business.id' => $id])
             ->one();
-            
+
         $modelBusinessProduct = new BusinessProduct();
         $dataBusinessProduct = [];
-        
+
         if (!empty(($post = Yii::$app->request->post()))) {
-            
+
             if (!empty($save)) {
-                
+
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
-                
+
                 if (!empty($post['BusinessProduct'])) {
-                    
+
                     $menuCount = count($model->businessProducts);
-                    
+
                     foreach ($post['BusinessProduct'] as $businessProduct) {
-                        
+
                         $newModelBusinessProduct = new BusinessProduct();
-                        
+
                         $newModelBusinessProduct->business_id = $id;
                         $newModelBusinessProduct->name = $businessProduct['name'];
                         $newModelBusinessProduct->description = $businessProduct['description'];
@@ -307,39 +306,39 @@ class BusinessProductController extends \backoffice\controllers\BaseController
                         $newModelBusinessProduct->business_product_category_id = $businessProduct['business_product_category_id'];
                         $newModelBusinessProduct->not_active = false;
                         $newModelBusinessProduct->order = $menuCount + 1;
-                        
+
                         if (!($flag = $newModelBusinessProduct->save())) {
-                            
+
                             break;
                         } else {
-                            
+
                             array_push($dataBusinessProduct, $newModelBusinessProduct);
-                            
+
                             $menuCount++;
                         }
                     }
                 }
-                
+
                 if ($flag) {
-                    
+
                     Yii::$app->session->setFlash('status', 'success');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
-                    
+
                     $transaction->commit();
-                    
+
                     return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business-product/index', 'id' => $id]));
                 } else {
-                    
+
                     Yii::$app->session->setFlash('status', 'danger');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                    
+
                     $transaction->rollBack();
                 }
             }
         }
-        
+
         $dataBusinessProductCategory = BusinessProductCategory::find()
             ->joinWith(['productCategory'])
             ->andWhere(['OR', ['product_category.type' => 'Menu'], ['product_category.type' => 'Specific-Menu']])
@@ -347,7 +346,7 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             ->andWhere(['business_product_category.is_active' => true])
             ->orderBy('business_product_category.order')
             ->asArray()->all();
-        
+
         return $this->render('add_multiple_product', [
             'model' => $model,
             'modelBusinessProduct' => $modelBusinessProduct,
@@ -355,73 +354,73 @@ class BusinessProductController extends \backoffice\controllers\BaseController
             'dataBusinessProductCategory' => $dataBusinessProductCategory
         ]);
     }
-    
+
     public function actionUpdateSelectedProduct($id, $selected, $save = null)
     {
         if (empty($selected)) {
-            
+
             Yii::$app->session->setFlash('status', 'danger');
             Yii::$app->session->setFlash('message1', Yii::t('app', 'No Data Selected'));
             Yii::$app->session->setFlash('message2', Yii::t('app', 'Please select the data that you want to update first'));
-            
+
             return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business-product/index', 'id' => $id]));
         }
-        
+
         $model = Business::find()
             ->joinWith([
                 'businessProducts' => function ($query) use ($selected) {
-                    
+
                     $query->andOnCondition(['business_product.id' => explode(',', trim($selected, ','))]);
                 }
             ])
             ->andWhere(['business.id' => $id])
             ->one();
-            
+
         $modelBusinessProduct = new BusinessProduct();
         $productCategoryId = '';
-        
+
         if (!empty(($post = Yii::$app->request->post()))) {
-            
+
             if (!empty($save)) {
-                
+
                 $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
-                
+
                 if (!empty($post['BusinessProduct']['business_product_category_id'])) {
-                    
+
                     $productCategoryId = $post['BusinessProduct']['business_product_category_id'];
-                        
+
                     foreach ($model['businessProducts'] as $businessProduct) {
 
                         $businessProduct->business_product_category_id = $post['BusinessProduct']['business_product_category_id'];
-                        
+
                         if (!($flag = $businessProduct->save())) {
-                            
+
                             break;
                         }
                     }
                 }
-                
+
                 if ($flag) {
-                    
+
                     Yii::$app->session->setFlash('status', 'success');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
-                    
+
                     $transaction->commit();
-                    
+
                     return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/business-product/index', 'id' => $id]));
                 } else {
-                    
+
                     Yii::$app->session->setFlash('status', 'danger');
                     Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
                     Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                    
+
                     $transaction->rollBack();
                 }
             }
         }
-        
+
         return $this->render('update_selected_product', [
             'model' => $model,
             'modelBusinessProduct' => $modelBusinessProduct,
