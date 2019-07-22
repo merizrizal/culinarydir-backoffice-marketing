@@ -11,6 +11,7 @@ use sycomponent\NotificationDialog;
 /* @var $modelBusiness core\models\Business */
 /* @var $modelUser core\models\User */
 /* @var $dataUser Array */
+/* @var $modelUserRole core\models\UserRole */
 /* @var $modelPerson core\models\Person */
 /* @var $modelBusinessContactPerson core\models\BusinessContactPerson */
 /* @var $dataContactPerson Array */
@@ -81,7 +82,7 @@ echo $ajaxRequest->component(); ?>
 
                             	        $isExist = !empty($dataBusinessContactPerson['person']['userPerson']);
 
-                            	        $modelUser->user_level_id = $userLevel['id'];
+                            	        $modelUserRole->user_level_id = $userLevel['id'];
                             	        $modelUser->email = $user['email'];
                             	        $modelUser->full_name = !empty($user['full_name']) ? $user['full_name'] : $user['first_name'] . ' ' . $user['last_name'];
                             	        $modelUser->not_active = !empty($user['not_active']) ? $user['not_active'] : false;
@@ -107,7 +108,7 @@ echo $ajaxRequest->component(); ?>
                                 					</div>
                                 					<div class="col-md-4 col-xs-12">
 
-                                						<?= $form->field($modelUser, '[' . $i . ']user_level_id')->dropDownList([$userLevel['id'] => $userLevel['nama_level']], [
+                                						<?= $form->field($modelUserRole, '[' . $i . ']user_level_id')->dropDownList([$userLevel['id'] => $userLevel['nama_level']], [
                                                             'style' => 'width: 100%',
                                                             'class' => 'user-level-field',
                                                         ]) ?>

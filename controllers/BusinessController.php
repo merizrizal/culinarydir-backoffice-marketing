@@ -26,6 +26,7 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use core\models\User;
 use core\models\UserPerson;
+use core\models\UserRole;
 
 /**
  * BusinessController
@@ -1021,6 +1022,15 @@ class BusinessController extends \backoffice\controllers\BaseController
         $dataUser = [];
         $dataContactPerson = [];
 
+        $modelUser = new User();
+        $modelUserRole = new UserRole();
+        $modelPerson = new Person();
+        $modelBusinessContactPerson = new BusinessContactPerson();
+
+        $userLevel = UserLevel::find()
+            ->andWhere(['nama_level' => 'Business Owner'])
+            ->asArray()->one();
+
         if ($userSource == 'Contact-Person') {
 
             if (!empty(($post = Yii::$app->request->post()))) {
@@ -1052,43 +1062,53 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 break;
                             } else {
 
-                                $userFullName = explode(' ', $modelUsers[$i]->full_name);
+                                $modelUserRole->user_id = $modelUsers[$i]->id;
+                                $modelUserRole->user_level_id = $userLevel['id'];
+                                $modelUserRole->unique_id = $modelUsers[$i]->id . '-' . $userLevel['id'];
 
-                                array_push($dataUser, $modelUsers[$i]->toArray());
+                                if (!($flag = $modelUserRole->save())) {
 
-                                if (empty($dataBusinessContactPerson->person->userPerson)) {
-
-                                    $newModelUserPerson = new UserPerson();
-                                    $newModelUserPerson->user_id = $modelUsers[$i]->id;
-                                    $newModelUserPerson->person_id = $dataBusinessContactPerson->person_id;
-
-                                    if (!($flag = $newModelUserPerson->save())) {
-
-                                        break;
-                                    } else {
-
-                                        $modelPerson = $newModelUserPerson->person;
-
-                                        $modelPerson->first_name = $userFullName[0];
-                                        $modelPerson->last_name = !empty($userFullName[1]) ? $userFullName[1] : null;
-                                        $modelPerson->email = $modelUsers[$i]->email;
-
-                                        if (!($flag = $modelPerson->save())) {
-
-                                            break;
-                                        }
-                                    }
+                                    break;
                                 } else {
 
-                                    if (!empty($post['is_merge'][$i])) {
+                                    $userFullName = explode(' ', $modelUsers[$i]->full_name);
 
-                                        $dataBusinessContactPerson->person->email = $post['User'][$i]['email'];
-                                        $dataBusinessContactPerson->person->first_name = $userFullName[0];
-                                        $dataBusinessContactPerson->person->last_name = !empty($userFullName[1]) ? $userFullName[1] : null;
+                                    array_push($dataUser, $modelUsers[$i]->toArray());
 
-                                        if (!($flag = $dataBusinessContactPerson->person->save())) {
+                                    if (empty($dataBusinessContactPerson->person->userPerson)) {
+
+                                        $newModelUserPerson = new UserPerson();
+                                        $newModelUserPerson->user_id = $modelUsers[$i]->id;
+                                        $newModelUserPerson->person_id = $dataBusinessContactPerson->person_id;
+
+                                        if (!($flag = $newModelUserPerson->save())) {
 
                                             break;
+                                        } else {
+
+                                            $modelPerson = $newModelUserPerson->person;
+
+                                            $modelPerson->first_name = $userFullName[0];
+                                            $modelPerson->last_name = !empty($userFullName[1]) ? $userFullName[1] : null;
+                                            $modelPerson->email = $modelUsers[$i]->email;
+
+                                            if (!($flag = $modelPerson->save())) {
+
+                                                break;
+                                            }
+                                        }
+                                    } else {
+
+                                        if (!empty($post['is_merge'][$i])) {
+
+                                            $dataBusinessContactPerson->person->email = $post['User'][$i]['email'];
+                                            $dataBusinessContactPerson->person->first_name = $userFullName[0];
+                                            $dataBusinessContactPerson->person->last_name = !empty($userFullName[1]) ? $userFullName[1] : null;
+
+                                            if (!($flag = $dataBusinessContactPerson->person->save())) {
+
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -1242,19 +1262,12 @@ class BusinessController extends \backoffice\controllers\BaseController
             }
         }
 
-        $modelUser = new User();
-        $modelPerson = new Person();
-        $modelBusinessContactPerson = new BusinessContactPerson();
-
-        $userLevel = UserLevel::find()
-            ->andWhere(['nama_level' => 'Business Owner'])
-            ->asArray()->one();
-
         return $this->render('add_business_user', [
             'model' => !empty($model) ? $model : null,
             'modelBusiness' => $modelBusiness,
             'modelUser' => $modelUser,
             'dataUser' => $dataUser,
+            'modelUserRole' => $modelUserRole,
             'modelPerson' => $modelPerson,
             'modelBusinessContactPerson' => $modelBusinessContactPerson,
             'dataContactPerson' => $dataContactPerson,
