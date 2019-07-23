@@ -27,6 +27,8 @@ use yii\widgets\ActiveForm;
 use core\models\User;
 use core\models\UserPerson;
 use core\models\UserRole;
+use core\models\UserAkses;
+use core\models\UserAksesAppModule;
 
 /**
  * BusinessController
@@ -1065,49 +1067,71 @@ class BusinessController extends \backoffice\controllers\BaseController
                                 $modelUserRole->user_id = $modelUsers[$i]->id;
                                 $modelUserRole->user_level_id = $userLevel['id'];
                                 $modelUserRole->unique_id = $modelUsers[$i]->id . '-' . $userLevel['id'];
+                                $modelUserRole->is_active = true;
 
                                 if (!($flag = $modelUserRole->save())) {
 
                                     break;
                                 } else {
 
-                                    $userFullName = explode(' ', $modelUsers[$i]->full_name);
+                                    $modelUserAkses = UserAkses::find()
+                                        ->andWhere(['user_level_id' => $modelUserRole->user_level_id])
+                                        ->asArray()->all();
 
-                                    array_push($dataUser, $modelUsers[$i]->toArray());
+                                    foreach ($modelUserAkses as $dataUserAkses) {
 
-                                    if (empty($dataBusinessContactPerson->person->userPerson)) {
+                                        $modelUserAksesAppModule = new UserAksesAppModule();
+                                        $modelUserAksesAppModule->unique_id = $modelUsers[$i]->id . '-' . $dataUserAkses['user_app_module_id'];
+                                        $modelUserAksesAppModule->user_id = $modelUsers[$i]->id;
+                                        $modelUserAksesAppModule->user_app_module_id = $dataUserAkses['user_app_module_id'];
+                                        $modelUserAksesAppModule->is_active = true;
 
-                                        $newModelUserPerson = new UserPerson();
-                                        $newModelUserPerson->user_id = $modelUsers[$i]->id;
-                                        $newModelUserPerson->person_id = $dataBusinessContactPerson->person_id;
-
-                                        if (!($flag = $newModelUserPerson->save())) {
+                                        if (!($flag = $modelUserAksesAppModule->save())) {
 
                                             break;
+                                        }
+                                    }
+
+                                    if ($flag) {
+
+                                        $userFullName = explode(' ', $modelUsers[$i]->full_name);
+
+                                        array_push($dataUser, $modelUsers[$i]->toArray());
+
+                                        if (empty($dataBusinessContactPerson->person->userPerson)) {
+
+                                            $newModelUserPerson = new UserPerson();
+                                            $newModelUserPerson->user_id = $modelUsers[$i]->id;
+                                            $newModelUserPerson->person_id = $dataBusinessContactPerson->person_id;
+
+                                            if (!($flag = $newModelUserPerson->save())) {
+
+                                                break;
+                                            } else {
+
+                                                $modelPerson = $newModelUserPerson->person;
+
+                                                $modelPerson->first_name = $userFullName[0];
+                                                $modelPerson->last_name = !empty($userFullName[1]) ? $userFullName[1] : null;
+                                                $modelPerson->email = $modelUsers[$i]->email;
+
+                                                if (!($flag = $modelPerson->save())) {
+
+                                                    break;
+                                                }
+                                            }
                                         } else {
 
-                                            $modelPerson = $newModelUserPerson->person;
+                                            if (!empty($post['is_merge'][$i])) {
 
-                                            $modelPerson->first_name = $userFullName[0];
-                                            $modelPerson->last_name = !empty($userFullName[1]) ? $userFullName[1] : null;
-                                            $modelPerson->email = $modelUsers[$i]->email;
+                                                $dataBusinessContactPerson->person->email = $post['User'][$i]['email'];
+                                                $dataBusinessContactPerson->person->first_name = $userFullName[0];
+                                                $dataBusinessContactPerson->person->last_name = !empty($userFullName[1]) ? $userFullName[1] : null;
 
-                                            if (!($flag = $modelPerson->save())) {
+                                                if (!($flag = $dataBusinessContactPerson->person->save())) {
 
-                                                break;
-                                            }
-                                        }
-                                    } else {
-
-                                        if (!empty($post['is_merge'][$i])) {
-
-                                            $dataBusinessContactPerson->person->email = $post['User'][$i]['email'];
-                                            $dataBusinessContactPerson->person->first_name = $userFullName[0];
-                                            $dataBusinessContactPerson->person->last_name = !empty($userFullName[1]) ? $userFullName[1] : null;
-
-                                            if (!($flag = $dataBusinessContactPerson->person->save())) {
-
-                                                break;
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
