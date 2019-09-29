@@ -253,7 +253,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                                         if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
 
-                                            break;
+                                            break 2;
                                         } else {
 
                                             if (empty($dataRegistryBusinessHourAdditional[$dayName])) {
