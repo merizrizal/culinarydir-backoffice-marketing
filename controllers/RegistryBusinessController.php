@@ -2,30 +2,29 @@
 
 namespace backoffice\modules\marketing\controllers;
 
-use Yii;
-use core\models\RegistryBusiness;
-use core\models\search\RegistryBusinessSearch;
 use core\models\ApplicationBusiness;
 use core\models\LogStatusApproval;
 use core\models\LogStatusApprovalAction;
 use core\models\Person;
 use core\models\ProductCategory;
+use core\models\RegistryBusiness;
 use core\models\RegistryBusinessCategory;
-use core\models\RegistryBusinessProductCategory;
+use core\models\RegistryBusinessContactPerson;
+use core\models\RegistryBusinessDelivery;
+use core\models\RegistryBusinessFacility;
 use core\models\RegistryBusinessHour;
 use core\models\RegistryBusinessHourAdditional;
-use core\models\RegistryBusinessFacility;
 use core\models\RegistryBusinessImage;
-use core\models\RegistryBusinessContactPerson;
 use core\models\RegistryBusinessPayment;
-use core\models\RegistryBusinessDelivery;
+use core\models\RegistryBusinessProductCategory;
 use core\models\StatusApproval;
 use core\models\StatusApprovalAction;
+use core\models\search\RegistryBusinessSearch;
 use sycomponent\AjaxRequest;
 use sycomponent\Tools;
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
@@ -69,36 +68,36 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         $modelRegistryBusinessHour = new RegistryBusinessHour();
         $dataRegistryBusinessHour = [];
-        
+
         $modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
         $dataRegistryBusinessHourAdditional = [];
 
         $modelRegistryBusinessImage = new RegistryBusinessImage();
         $modelRegistryBusinessImage->setScenario(RegistryBusinessImage::SCENARIO_CREATE);
-        
-        $modelPerson = new Person();        
+
+        $modelPerson = new Person();
         $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
         $dataRegistryBusinessContactPerson = [];
-        
+
         $modelRegistryBusinessPayment = new RegistryBusinessPayment();
         $dataRegistryBusinessPayment = [];
-        
+
         $modelRegistryBusinessDelivery = new RegistryBusinessDelivery();
         $dataRegistryBusinessDelivery = [];
 
-        if ($model->load(($post = Yii::$app->request->post()))) {
-            
+        if ($model->load(($post = \Yii::$app->request->post()))) {
+
             if (empty($save)) {
 
-                Yii::$app->response->format = Response::FORMAT_JSON;
+                \Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             } else {
-                
-                $transaction = Yii::$app->db->beginTransaction();
+
+                $transaction = \Yii::$app->db->beginTransaction();
                 $flag = false;
 
                 $modelApplicationBusiness = new ApplicationBusiness();
-                $modelApplicationBusiness->user_in_charge = Yii::$app->user->identity->id;
+                $modelApplicationBusiness->user_in_charge = \Yii::$app->user->identity->id;
                 $modelApplicationBusiness->counter = 1;
 
                 if (($flag = $modelApplicationBusiness->save())) {
@@ -132,10 +131,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $newModelRegistryBusinessCategory->is_active = true;
 
                                 if (!($flag = $newModelRegistryBusinessCategory->save())) {
-                                    
+
                                     break;
                                 } else {
-                                    
+
                                     array_push($dataRegistryBusinessCategory, $newModelRegistryBusinessCategory->toArray());
                                 }
                             }
@@ -155,10 +154,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $newModelRegistryBusinessProductCategory->is_active = true;
 
                                 if (!($flag = $newModelRegistryBusinessProductCategory->save())) {
-                                    
+
                                     break;
                                 } else {
-                                    
+
                                     array_push($dataRegistryBusinessProductCategoryParent, $newModelRegistryBusinessProductCategory->toArray());
                                 }
                             }
@@ -178,33 +177,33 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $newModelRegistryBusinessProductCategory->is_active = true;
 
                                 if (!($flag = $newModelRegistryBusinessProductCategory->save())) {
-                                    
+
                                     break;
                                 } else {
-                                    
+
                                     array_push($dataRegistryBusinessProductCategoryChild, $newModelRegistryBusinessProductCategory->toArray());
                                 }
                             }
                         }
                     }
-                    
+
                     if ($flag) {
-                        
+
                         if (!empty($post['RegistryBusinessFacility']['facility_id'])) {
-                            
+
                             foreach ($post['RegistryBusinessFacility']['facility_id'] as $facilityId) {
-                                
+
                                 $newModelRegistryBusinessFacility = new RegistryBusinessFacility();
                                 $newModelRegistryBusinessFacility->unique_id = $model->id . '-' . $facilityId;
                                 $newModelRegistryBusinessFacility->registry_business_id = $model->id;
                                 $newModelRegistryBusinessFacility->facility_id = $facilityId;
                                 $newModelRegistryBusinessFacility->is_active = true;
-                                
+
                                 if (!($flag = $newModelRegistryBusinessFacility->save())) {
-                                    
+
                                     break;
                                 } else {
-                                    
+
                                     array_push($dataRegistryBusinessFacility, $newModelRegistryBusinessFacility->toArray());
                                 }
                             }
@@ -228,22 +227,22 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $newModelRegistryBusinessHourDay->is_open = !empty($post['RegistryBusinessHour'][$dayName]['is_open']);
                                 $newModelRegistryBusinessHourDay->open_at = !empty($post['RegistryBusinessHour'][$dayName]['open_at']) ? $post['RegistryBusinessHour'][$dayName]['open_at'] : null;
                                 $newModelRegistryBusinessHourDay->close_at = !empty($post['RegistryBusinessHour'][$dayName]['close_at']) ? $post['RegistryBusinessHour'][$dayName]['close_at'] : null;
-                                
+
                                 if (!($flag = $newModelRegistryBusinessHourDay->save())) {
-                                    
+
                                     break;
                                 } else {
-                                    
+
                                     array_push($dataRegistryBusinessHour, $newModelRegistryBusinessHourDay->toArray());
                                 }
                             }
-                            
+
                             if (!empty($post['RegistryBusinessHourAdditional'][$dayName])) {
-                                
+
                                 foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $dataAdditional) {
-                                    
+
                                     if (!empty($dataAdditional['open_at']) || !empty($dataAdditional['close_at'])) {
-                                            
+
                                         $newModelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
                                         $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . $i;
                                         $newModelRegistryBusinessHourAdditional->registry_business_hour_id = $newModelRegistryBusinessHourDay->id;
@@ -251,17 +250,17 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                         $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
                                         $newModelRegistryBusinessHourAdditional->open_at = !empty($dataAdditional['open_at']) ? $dataAdditional['open_at'] : null;
                                         $newModelRegistryBusinessHourAdditional->close_at = !empty($dataAdditional['close_at']) ? $dataAdditional['close_at'] : null;
-                                    
+
                                         if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
-                                            
+
                                             break;
                                         } else {
-                                            
+
                                             if (empty($dataRegistryBusinessHourAdditional[$dayName])) {
-                                                
+
                                                 $dataRegistryBusinessHourAdditional[$dayName] = [];
                                             }
-                                            
+
                                             array_push($dataRegistryBusinessHourAdditional[$dayName], $newModelRegistryBusinessHourAdditional->toArray());
                                         }
                                     }
@@ -276,12 +275,12 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                         if ($newModelRegistryBusinessImage->load($post)) {
 
-                            $images = Tools::uploadFiles('/img/registry_business/', $newModelRegistryBusinessImage, 'image', 'registry_business_id', '', true);
+                            $images = Tools::uploadFiles('/img/registry_business/', $newModelRegistryBusinessImage, 'image', 'registry_business_id', $model->id, true);
 
                             foreach ($images as $i => $image) {
 
                                 $i++;
-                                
+
                                 $newModelRegistryBusinessImage = new RegistryBusinessImage();
                                 $newModelRegistryBusinessImage->registry_business_id = $model->id;
                                 $newModelRegistryBusinessImage->image = $image;
@@ -290,7 +289,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $newModelRegistryBusinessImage->order = $i;
 
                                 if (!($flag = $newModelRegistryBusinessImage->save())) {
-                                    
+
                                     break;
                                 }
                             }
@@ -302,7 +301,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                         if (!empty($post['Person']) && !empty($post['RegistryBusinessContactPerson'])) {
 
                             foreach ($post['Person'] as $i => $dataPerson) {
-                                
+
                                 $newModelPerson = new Person();
                                 $newModelPerson->first_name = $dataPerson['first_name'];
                                 $newModelPerson->last_name = !empty($dataPerson['last_name']) ? $dataPerson['last_name'] : null;
@@ -310,71 +309,71 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $newModelPerson->email = !empty($dataPerson['email']) ? $dataPerson['email'] : null;
 
                                 if (!($flag = $newModelPerson->save())) {
-                                    
+
                                     break;
                                 } else {
-                                    
+
                                     $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
                                     $newModelRegistryBusinessContactPerson->registry_business_id = $model->id;
                                     $newModelRegistryBusinessContactPerson->person_id = $newModelPerson->id;
                                     $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']);
                                     $newModelRegistryBusinessContactPerson->note = !empty($post['RegistryBusinessContactPerson'][$i]['note']) ? $post['RegistryBusinessContactPerson'][$i]['note'] : null;
                                     $newModelRegistryBusinessContactPerson->position = $post['RegistryBusinessContactPerson'][$i]['position'];
-                                
+
                                     if (!($flag = $newModelRegistryBusinessContactPerson->save())) {
-                                        
+
                                         break;
                                     } else {
-                                        
+
                                         array_push($dataRegistryBusinessContactPerson, ArrayHelper::merge($newModelRegistryBusinessContactPerson->toArray(), $newModelPerson->toArray()));
                                     }
                                 }
                             }
                         }
                     }
-                    
+
                     if ($flag) {
-                        
+
                         if (!empty($post['RegistryBusinessPayment'])) {
-                            
+
                             foreach ($post['RegistryBusinessPayment'] as $dataPaymentMethod) {
-                                
+
                                 $newModelRegistryBusinessPayment = new RegistryBusinessPayment();
                                 $newModelRegistryBusinessPayment->registry_business_id = $model->id;
                                 $newModelRegistryBusinessPayment->payment_method_id = $dataPaymentMethod['payment_method_id'];
                                 $newModelRegistryBusinessPayment->is_active = true;
                                 $newModelRegistryBusinessPayment->note = !empty($dataPaymentMethod['note']) ? $dataPaymentMethod['note'] : null;
                                 $newModelRegistryBusinessPayment->description = !empty($dataPaymentMethod['description']) ? $dataPaymentMethod['description'] : null;
-                                
+
                                 if (!($flag = $newModelRegistryBusinessPayment->save())) {
-                                    
+
                                     break;
                                 } else {
-                                    
+
                                     array_push($dataRegistryBusinessPayment, $newModelRegistryBusinessPayment->toArray());
                                 }
                             }
                         }
                     }
-                    
+
                     if ($flag) {
-                        
+
                         if (!empty($post['RegistryBusinessDelivery'])) {
-                            
+
                             foreach ($post['RegistryBusinessDelivery'] as $dataDeliveryMethod) {
-                                
+
                                 $newModelRegistryBusinessDelivery = new RegistryBusinessDelivery();
                                 $newModelRegistryBusinessDelivery->registry_business_id = $model->id;
                                 $newModelRegistryBusinessDelivery->delivery_method_id = $dataDeliveryMethod['delivery_method_id'];
                                 $newModelRegistryBusinessDelivery->is_active = true;
                                 $newModelRegistryBusinessDelivery->note = !empty($dataDeliveryMethod['note']) ? $dataDeliveryMethod['note'] : null;
                                 $newModelRegistryBusinessDelivery->description = !empty($dataDeliveryMethod['description']) ? $dataDeliveryMethod['description'] : null;
-                                
+
                                 if (!($flag = $newModelRegistryBusinessDelivery->save())) {
-                                    
+
                                     break;
                                 } else {
-                                    
+
                                     array_push($dataRegistryBusinessDelivery, $newModelRegistryBusinessDelivery->toArray());
                                 }
                             }
@@ -384,41 +383,41 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Create Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Create data process is success. Data has been saved'));
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is success. Data has been saved'));
 
                     $transaction->commit();
 
-                    return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl(['marketing/registry-business/view-pndg', 'id' => $model->id]));
+                    return AjaxRequest::redirect($this, \Yii::$app->urlManager->createUrl(['marketing/registry-business/view-pndg', 'id' => $model->id]));
                 } else {
 
                     $model->setIsNewRecord(true);
 
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Create Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Create data process is fail. Data fail to save'));
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is fail. Data fail to save'));
 
                     $transaction->rollBack();
                 }
             }
         }
-        
+
         $modelProductCategory = ProductCategory::find()
             ->andWhere(['<>', 'type', 'Menu'])
             ->andWhere(['is_active' => true])
             ->orderBy('name')->asArray()->all();
-        
+
         $dataProductCategoryParent = [];
         $dataProductCategoryChild = [];
-        
+
         foreach ($modelProductCategory as $dataProductCategory) {
-            
+
             if ($dataProductCategory['type'] == 'General') {
-                
+
                 $dataProductCategoryParent[$dataProductCategory['id']] = $dataProductCategory['name'];
             } else {
-                
+
                 $dataProductCategoryChild[$dataProductCategory['id']] = $dataProductCategory['name'];
             }
         }
@@ -491,7 +490,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             ]
         ];
 
-        return $this->index('PNDG', Yii::t('app', 'Pending Application'), $actionColumn);
+        return $this->index('PNDG', \Yii::t('app', 'Pending Application'), $actionColumn);
     }
 
     public function actionIndexIcorct()
@@ -524,7 +523,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             ]
         ];
 
-        return $this->index('ICORCT', Yii::t('app', 'Incorrect Application'), $actionColumn);
+        return $this->index('ICORCT', \Yii::t('app', 'Incorrect Application'), $actionColumn);
     }
 
     public function actionIndexRjct()
@@ -557,7 +556,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             ]
         ];
 
-        return $this->index('RJCT', Yii::t('app', 'Reject Application'), $actionColumn);
+        return $this->index('RJCT', \Yii::t('app', 'Reject Application'), $actionColumn);
     }
 
     public function actionViewPndg($id)
@@ -576,13 +575,13 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             ]) . '
 
                         <ul class="dropdown-menu">
-                            <li>' . Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
-                            <li>' . Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
-                            <li>' . Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
-                            <li>' . Html::a(Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
-                            <li>' . Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
-                            <li>' . Html::a(Yii::t('app', 'Payment Methods'), ['registry-business-payment/index', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
-                            <li>' . Html::a(Yii::t('app', 'Delivery Methods'), ['registry-business-delivery/index', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Payment Methods'), ['registry-business-payment/index', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Delivery Methods'), ['registry-business-delivery/index', 'id' => $model['id'], 'statusApproval' => 'pndg']) . '</li>
                         </ul>
                     </div>
                 ';
@@ -618,13 +617,13 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             ]) . '
 
                         <ul class="dropdown-menu">
-                            <li>' . Html::a(Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
-                            <li>' . Html::a(Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
-                            <li>' . Html::a(Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
-                            <li>' . Html::a(Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
-                            <li>' . Html::a(Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
-                            <li>' . Html::a(Yii::t('app', 'Payment Methods'), ['registry-business-payment/index', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
-                            <li>' . Html::a(Yii::t('app', 'Delivery Methods'), ['registry-business-delivery/index', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Business Information'), ['update-business-info', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Marketing Information'), ['update-marketing-info', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Gallery Photo'), ['update-gallery-photo', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Operational Hours'), ['update-business-hour', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Contact Person'), ['update-contact-person', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Payment Methods'), ['registry-business-payment/index', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
+                            <li>' . Html::a(\Yii::t('app', 'Delivery Methods'), ['registry-business-delivery/index', 'id' => $model['id'], 'statusApproval' => 'icorct']) . '</li>
                         </ul>
                     </div>
                 ';
@@ -649,27 +648,27 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(\Yii::$app->request->post())) {
 
             if (empty($save)) {
 
-                Yii::$app->response->format = Response::FORMAT_JSON;
+                \Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             } else {
-                
-                $model->address = trim(str_replace("\n", '', Yii::$app->request->post()['RegistryBusiness']['address']));
+
+                $model->address = trim(str_replace("\n", '', \Yii::$app->request->post()['RegistryBusiness']['address']));
                 $model->setCoordinate();
 
                 if ($model->save()) {
 
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
                 } else {
 
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
                 }
             }
         }
@@ -685,20 +684,20 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $model = RegistryBusiness::find()
             ->joinWith([
                 'registryBusinessCategories' => function ($query) {
-                    
+
                     $query->andOnCondition(['registry_business_category.is_active' => true]);
                 },
                 'registryBusinessCategories.category',
                 'registryBusinessProductCategories' => function ($query) {
-                    
+
                     $query->andOnCondition(['registry_business_product_category.is_active' => true]);
                 },
                 'registryBusinessProductCategories.productCategory' => function ($query) {
-                    
+
                     $query->andOnCondition(['<>' , 'product_category.type', 'Menu']);
                 },
                 'registryBusinessFacilities' => function ($query) {
-                    
+
                     $query->andOnCondition(['registry_business_facility.is_active' => true]);
                 },
                 'registryBusinessFacilities.facility'
@@ -715,12 +714,12 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
         $modelRegistryBusinessFacility = new RegistryBusinessFacility();
         $dataRegistryBusinessFacility = [];
-        
-        if ($model->load(($post = Yii::$app->request->post()))) {
+
+        if ($model->load(($post = \Yii::$app->request->post()))) {
 
             if (!empty($save)) {
 
-                $transaction = Yii::$app->db->beginTransaction();
+                $transaction = \Yii::$app->db->beginTransaction();
                 $flag = false;
 
                 $model->price_min = !empty($model->price_min) ? $model->price_min : 0;
@@ -747,35 +746,35 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             }
 
                             if (!($flag = $newModelRegistryBusinessCategory->save())) {
-                                
+
                                 break;
                             } else {
-                                
+
                                 array_push($dataRegistryBusinessCategory, $newModelRegistryBusinessCategory->toArray());
                             }
                         }
-                        
+
                         if ($flag) {
-                            
+
                             foreach ($model->registryBusinessCategories as $existModelRegistryBusinessCategory) {
-                                
+
                                 $exist = false;
-                                
+
                                 foreach ($post['RegistryBusinessCategory']['category_id'] as $categoryId) {
-                                    
+
                                     if ($existModelRegistryBusinessCategory['category_id'] == $categoryId) {
-                                        
+
                                         $exist = true;
                                         break;
                                     }
                                 }
-                                
+
                                 if (!$exist) {
-                                    
+
                                     $existModelRegistryBusinessCategory->is_active = false;
-                                    
+
                                     if (!($flag = $existModelRegistryBusinessCategory->save())) {
-                                        
+
                                         break;
                                     }
                                 }
@@ -805,10 +804,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             }
 
                             if (!($flag = $newModelRegistryBusinessProductCategory->save())) {
-                                
+
                                 break;
                             } else {
-                                
+
                                 array_push($dataRegistryBusinessProductCategoryParent, $newModelRegistryBusinessProductCategory->toArray());
                             }
                         }
@@ -836,10 +835,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             }
 
                             if (!($flag = $newModelRegistryBusinessProductCategory->save())) {
-                                
+
                                 break;
                             } else {
-                                
+
                                 array_push($dataRegistryBusinessProductCategoryChild, $newModelRegistryBusinessProductCategory->toArray());
                             }
                         }
@@ -871,7 +870,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                                 $existModelRegistryBusinessProductCategory->is_active = false;
 
                                 if (!($flag = $existModelRegistryBusinessProductCategory->save())) {
-                                    
+
                                     break;
                                 }
                             }
@@ -900,35 +899,35 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                             }
 
                             if (!($flag = $newModelRegistryBusinessFacility->save())) {
-                                
+
                                 break;
                             } else {
-                                
+
                                 array_push($dataRegistryBusinessFacility, $newModelRegistryBusinessFacility->toArray());
                             }
                         }
-                        
+
                         if ($flag) {
-                            
+
                             foreach ($model->registryBusinessFacilities as $existModelRegistryBusinessFacility) {
-                                
+
                                 $exist = false;
-                                
+
                                 foreach ($post['RegistryBusinessFacility']['facility_id'] as $facilityId) {
-                                    
+
                                     if ($existModelRegistryBusinessFacility['facility_id'] == $facilityId) {
-                                        
+
                                         $exist = true;
                                         break;
                                     }
                                 }
-                                
+
                                 if (!$exist) {
-                                    
+
                                     $existModelRegistryBusinessFacility->is_active = false;
-                                    
+
                                     if (!($flag = $existModelRegistryBusinessFacility->save())) {
-                                        
+
                                         break;
                                     }
                                 }
@@ -939,16 +938,16 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
 
                     $transaction->commit();
                 } else {
 
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
 
                     $transaction->rollBack();
                 }
@@ -961,10 +960,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         foreach ($model['registryBusinessProductCategories'] as $existModelRegistryBusinessProductCategory) {
 
             if ($existModelRegistryBusinessProductCategory['productCategory']['type'] == 'General') {
-                
+
                 $registryBusinessProductCategoryParent[] = $existModelRegistryBusinessProductCategory;
             } else if ($existModelRegistryBusinessProductCategory['productCategory']['type'] == 'Specific' || $existModelRegistryBusinessProductCategory['productCategory']['type'] == 'Specific-Menu') {
-                
+
                 $registryBusinessProductCategoryChild[] = $existModelRegistryBusinessProductCategory;
             }
         }
@@ -973,26 +972,26 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $dataRegistryBusinessProductCategoryParent = empty($dataRegistryBusinessProductCategoryParent) ? $registryBusinessProductCategoryParent : $dataRegistryBusinessProductCategoryParent;
         $dataRegistryBusinessProductCategoryChild = empty($dataRegistryBusinessProductCategoryChild) ? $registryBusinessProductCategoryChild : $dataRegistryBusinessProductCategoryChild;
         $dataRegistryBusinessFacility = empty($dataRegistryBusinessFacility) ? $model['registryBusinessFacilities'] : $dataRegistryBusinessFacility;
-        
+
         $modelProductCategory = ProductCategory::find()
             ->andWhere(['<>', 'type', 'Menu'])
             ->andWhere(['is_active' => true])
             ->orderBy('name')->asArray()->all();
-        
+
         $dataProductCategoryParent = [];
         $dataProductCategoryChild = [];
-        
+
         foreach ($modelProductCategory as $dataProductCategory) {
-            
+
             if ($dataProductCategory['type'] == 'General') {
-                
+
                 $dataProductCategoryParent[$dataProductCategory['id']] = $dataProductCategory['name'];
             } else {
-                
+
                 $dataProductCategoryChild[$dataProductCategory['id']] = $dataProductCategory['name'];
             }
         }
-        
+
         return $this->render('update_marketing_info', [
             'model' => $model,
             'modelRegistryBusinessCategory' => $modelRegistryBusinessCategory,
@@ -1013,97 +1012,97 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $model = RegistryBusiness::find()
             ->joinWith([
                 'registryBusinessImages' => function ($query) {
-                
+
                     $query->orderBy(['order' => SORT_ASC]);
                 }
             ])
             ->andWhere(['registry_business.id' => $id])
             ->one();
-            
+
         $modelRegistryBusinessImage = new RegistryBusinessImage();
         $dataRegistryBusinessImage = [];
         $newDataRegistryBusinessImage = [];
 
         $deletedRegistryBusinessImageId = [];
 
-        if (!empty(($post = Yii::$app->request->post()))) {
+        if (!empty(($post = \Yii::$app->request->post()))) {
 
             if (!empty($save)) {
 
-                $transaction = Yii::$app->db->beginTransaction();
+                $transaction = \Yii::$app->db->beginTransaction();
                 $flag = true;
-                
+
                 $order = count($model->registryBusinessImages);
-                
+
                 if (!empty($post['RegistryBusinessImageDelete'])) {
-                    
+
                     if (($flag = RegistryBusinessImage::deleteAll(['id' => $post['RegistryBusinessImageDelete']]))) {
-                        
+
                         if ($order == count($post['RegistryBusinessImageDelete'])) {
-                            
+
                             $flag = false;
                         } else {
-                            
+
                             $deletedRegistryBusinessImageId = $post['RegistryBusinessImageDelete'];
                         }
                     }
-                    
+
                     if ($flag) {
-                        
+
                         $order = 0;
-                        
+
                         foreach ($model->registryBusinessImages as $dataModelRegistryBusinessImage) {
-                            
+
                             $deleted = false;
-                            
+
                             foreach ($deletedRegistryBusinessImageId as $registryBusinessImageId) {
-                                
+
                                 if ($dataModelRegistryBusinessImage->id == $registryBusinessImageId) {
-                                    
+
                                     $deleted = true;
                                     break;
                                 }
                             }
-                            
+
                             if (!$deleted) {
-                            
+
                                 $order++;
-                                
+
                                 $dataModelRegistryBusinessImage->order = $order;
-                                
+
                                 if (!($flag = $dataModelRegistryBusinessImage->save())) {
-                                    
+
                                     break;
                                 }
                             }
                         }
                     }
                 }
-                
+
                 if ($flag) {
-                
+
                     $newModelRegistryBusinessImage = new RegistryBusinessImage();
-                    
+
                     if ($newModelRegistryBusinessImage->load($post)) {
-                        
-                        $images = Tools::uploadFiles('/img/registry_business/', $newModelRegistryBusinessImage, 'image', 'registry_business_id', '', true);
-                        
+
+                        $images = Tools::uploadFiles('/img/registry_business/', $newModelRegistryBusinessImage, 'image', 'registry_business_id', $model->id, true);
+
                         foreach ($images as $image) {
-                            
+
                             $order++;
-                            
+
                             $newModelRegistryBusinessImage = new RegistryBusinessImage();
                             $newModelRegistryBusinessImage->registry_business_id = $model->id;
                             $newModelRegistryBusinessImage->image = $image;
                             $newModelRegistryBusinessImage->type = 'Gallery';
                             $newModelRegistryBusinessImage->category = 'Ambience';
                             $newModelRegistryBusinessImage->order = $order;
-                            
+
                             if (!($flag = $newModelRegistryBusinessImage->save())) {
-                                
+
                                 break;
                             } else {
-                                
+
                                 array_push($newDataRegistryBusinessImage, $newModelRegistryBusinessImage->toArray());
                             }
                         }
@@ -1112,43 +1111,43 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
 
                     $transaction->commit();
                 } else {
 
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
 
                     $transaction->rollBack();
                 }
             }
         }
-        
+
         foreach ($model['registryBusinessImages'] as $valueRegistryBusinessImage) {
-            
+
             $deleted = false;
-            
+
             foreach ($deletedRegistryBusinessImageId as $registryBusinessImageId) {
-                
+
                 if ($registryBusinessImageId == $valueRegistryBusinessImage['id']) {
-                    
+
                     $deleted = true;
                     break;
                 }
             }
-            
+
             if (!$deleted) {
-                
+
                 array_push($dataRegistryBusinessImage, $valueRegistryBusinessImage->toArray());
             }
         }
-        
+
         if (!empty($newDataRegistryBusinessImage)) {
-            
+
             $dataRegistryBusinessImage = ArrayHelper::merge($dataRegistryBusinessImage, $newDataRegistryBusinessImage);
         }
 
@@ -1159,120 +1158,120 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'statusApproval' => $statusApproval,
         ]);
     }
-    
+
     public function actionUpdateContactPerson($id, $save = null, $statusApproval)
     {
         $model = RegistryBusiness::find()
             ->joinWith([
                 'registryBusinessContactPeople' => function ($query) {
-                    
+
                     $query->orderBy(['registry_business_contact_person.created_at' => SORT_ASC]);
                 },
                 'registryBusinessContactPeople.person',
             ])
             ->andWhere(['registry_business.id' => $id])
             ->one();
-            
+
         $modelPerson = new Person();
         $modelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
         $dataRegistryBusinessContactPerson = [];
-        
+
         $isEmpty = false;
-        
-        if (!empty($post = Yii::$app->request->post())) {
-            
+
+        if (!empty($post = \Yii::$app->request->post())) {
+
             if (!empty($save)) {
-                
-                $transaction = Yii::$app->db->beginTransaction();
+
+                $transaction = \Yii::$app->db->beginTransaction();
                 $flag = true;
-                
+
                 $isEmpty = (empty($post['Person']) && empty($post['RegistryBusinessContactPerson']));
-                
+
                 if (!empty($post['RegistryBusinessContactPersonDeleted'])) {
-                    
+
                     if (($flag = RegistryBusinessContactPerson::deleteAll(['person_id' => $post['RegistryBusinessContactPersonDeleted']]))) {
-                        
+
                         $flag = Person::deleteAll(['id' => $post['RegistryBusinessContactPersonDeleted']]);
                     }
                 }
-                
+
                 if (!empty($post['Person']) && !empty($post['RegistryBusinessContactPerson'])) {
-                    
+
                     foreach ($post['Person'] as $i => $person) {
-                            
+
                         if (!empty($model['registryBusinessContactPeople'][$i])) {
-                            
+
                             $newModelPerson = Person::findOne(['id' => $model['registryBusinessContactPeople'][$i]['person_id']]);
                         } else {
-                            
+
                             $newModelPerson = new Person();
                         }
-                        
+
                         $newModelPerson->first_name = $person['first_name'];
                         $newModelPerson->last_name = $person['last_name'];
                         $newModelPerson->phone = $person['phone'];
                         $newModelPerson->email = $person['email'];
-                        
+
                         if (!($flag = $newModelPerson->save())) {
-                            
+
                             break;
                         } else {
-                            
+
                             $newModelRegistryBusinessContactPerson = RegistryBusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
-                            
+
                             if (empty($newModelRegistryBusinessContactPerson)) {
-                                
+
                                 $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
                                 $newModelRegistryBusinessContactPerson->registry_business_id = $model->id;
                                 $newModelRegistryBusinessContactPerson->person_id = $newModelPerson->id;
                             }
-                            
+
                             $newModelRegistryBusinessContactPerson->position = $post['RegistryBusinessContactPerson'][$i]['position'];
                             $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']);
                             $newModelRegistryBusinessContactPerson->note = $post['RegistryBusinessContactPerson'][$i]['note'];
-                            
+
                             if (!($flag = $newModelRegistryBusinessContactPerson->save())) {
-                                
+
                                 break;
                             } else {
-                                
+
                                 array_push($dataRegistryBusinessContactPerson, ArrayHelper::merge($newModelRegistryBusinessContactPerson->toArray(), $newModelPerson->toArray()));
                             }
                         }
                     }
                 }
-                
+
                 if ($flag) {
-                    
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
-                    
+
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
+
                     $transaction->commit();
                 } else {
-                    
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                    
+
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
+
                     $transaction->rollBack();
                 }
             }
         }
-        
+
         if (!$isEmpty) {
-            
+
             if (empty($dataRegistryBusinessContactPerson)) {
-                
+
                 foreach ($model->registryBusinessContactPeople as $dataContactPerson) {
-                    
+
                     $dataContactPerson = ArrayHelper::merge($dataContactPerson->toArray(), $dataContactPerson->person->toArray());
-                    
+
                     array_push($dataRegistryBusinessContactPerson, $dataContactPerson);
                 }
             }
         }
-            
+
         return $this->render('update_contact_person', [
             'model' => $model,
             'modelPerson' => $modelPerson,
@@ -1281,151 +1280,151 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'statusApproval' => $statusApproval,
         ]);
     }
-    
+
     public function actionUpdateBusinessHour($id, $save = null, $statusApproval)
     {
         $model = RegistryBusiness::find()
             ->joinWith([
                 'registryBusinessHours' => function ($query) {
-                
+
                     $query->orderBy(['registry_business_hour.day' => SORT_ASC]);
                 },
                 'registryBusinessHours.registryBusinessHourAdditionals',
             ])
             ->andWhere(['registry_business.id' => $id])
             ->one();
-            
+
         $modelRegistryBusinessHour = new RegistryBusinessHour();
         $dataRegistryBusinessHour = [];
-        
+
         $modelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
         $dataRegistryBusinessHourAdditional = [];
-        
-        if (!empty($post = Yii::$app->request->post())) {
-            
+
+        if (!empty($post = \Yii::$app->request->post())) {
+
             if (!empty($save)) {
-                
-                $transaction = Yii::$app->db->beginTransaction();
+
+                $transaction = \Yii::$app->db->beginTransaction();
                 $flag = false;
-                
+
                 $loopDays = ['1', '2', '3', '4', '5', '6', '7'];
-                
+
                 foreach ($loopDays as $day) {
-                    
+
                     $dayName = 'day' . $day;
-                    
+
                     if (!empty($post['RegistryBusinessHour'][$dayName])) {
-                        
+
                         $newModelRegistryBusinessHourDay = RegistryBusinessHour::findOne(['unique_id' => $model->id . '-' . $day]);
-                        
+
                         if (empty($newModelRegistryBusinessHourDay)) {
-                            
+
                             $newModelRegistryBusinessHourDay = new RegistryBusinessHour();
                             $newModelRegistryBusinessHourDay->registry_business_id = $model->id;
                             $newModelRegistryBusinessHourDay->unique_id = $model->id . '-' . $day;
                             $newModelRegistryBusinessHourDay->day = $day;
                         }
-                        
+
                         $newModelRegistryBusinessHourDay->is_open = !empty($post['RegistryBusinessHour'][$dayName]['is_open']);
                         $newModelRegistryBusinessHourDay->open_at = !empty($post['RegistryBusinessHour'][$dayName]['open_at']) ? $post['RegistryBusinessHour'][$dayName]['open_at'] : null;
                         $newModelRegistryBusinessHourDay->close_at = !empty($post['RegistryBusinessHour'][$dayName]['close_at']) ? $post['RegistryBusinessHour'][$dayName]['close_at'] : null;
-                        
+
                         if (!($flag = $newModelRegistryBusinessHourDay->save())) {
-                            
+
                             break;
                         } else {
-                            
+
                             array_push($dataRegistryBusinessHour, $newModelRegistryBusinessHourDay->toArray());
                         }
                     }
-                    
+
                     if ($flag && !empty($post['RegistryBusinessHourAdditionalDeleted'][$dayName])) {
-                        
+
                         $flag = RegistryBusinessHourAdditional::deleteAll(['id' => $post['RegistryBusinessHourAdditionalDeleted'][$dayName]]);
                     }
 
                     if ($flag && !empty($post['RegistryBusinessHourAdditional'][$dayName])) {
-                        
+
                         foreach ($post['RegistryBusinessHourAdditional'][$dayName] as $i => $registryBusinessHourAdditional) {
-                            
+
                             if (!empty($registryBusinessHourAdditional['open_at']) || !empty($registryBusinessHourAdditional['close_at'])) {
-                                
+
                                 $newModelRegistryBusinessHourAdditional = RegistryBusinessHourAdditional::findOne(['unique_id' => $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . $i]);
-                                
+
                                 if (empty($newModelRegistryBusinessHourAdditional)) {
-                                    
+
                                     $newModelRegistryBusinessHourAdditional = new RegistryBusinessHourAdditional();
                                     $newModelRegistryBusinessHourAdditional->unique_id = $newModelRegistryBusinessHourDay->id . '-' . $day . '-' . $i;
                                     $newModelRegistryBusinessHourAdditional->registry_business_hour_id = $newModelRegistryBusinessHourDay->id;
                                     $newModelRegistryBusinessHourAdditional->day = $day;
                                 }
-                                
+
                                 $newModelRegistryBusinessHourAdditional->is_open = $newModelRegistryBusinessHourDay->is_open;
                                 $newModelRegistryBusinessHourAdditional->open_at = !empty($registryBusinessHourAdditional['open_at']) ? $registryBusinessHourAdditional['open_at'] : null;
                                 $newModelRegistryBusinessHourAdditional->close_at = !empty($registryBusinessHourAdditional['close_at']) ? $registryBusinessHourAdditional['close_at'] : null;
-                                
+
                                 if (!($flag = $newModelRegistryBusinessHourAdditional->save())) {
-                                    
+
                                     break;
                                 } else {
-                                    
+
                                     if (empty($dataRegistryBusinessHourAdditional[$dayName])) {
-                                        
+
                                         $dataRegistryBusinessHourAdditional[$dayName] = [];
                                     }
-                                    
+
                                     array_push($dataRegistryBusinessHourAdditional[$dayName], $newModelRegistryBusinessHourAdditional->toArray());
                                 }
                             }
                         }
                     }
                 }
-                
+
                 if ($flag) {
-                
+
                     $model->note_business_hour = !empty($post['RegistryBusiness']['note_business_hour']) ? $post['RegistryBusiness']['note_business_hour'] : null;
-                    
+
                     $flag = $model->save();
                 }
-                
+
                 if ($flag) {
-                    
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
-                    
+
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
+
                     $transaction->commit();
                 } else {
-                    
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-                    
+
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
+
                     $transaction->rollBack();
                 }
             }
         }
-        
+
         $dataRegistryBusinessHour = empty($dataRegistryBusinessHour) ? $model->registryBusinessHours : $dataRegistryBusinessHour;
-        
+
         if (empty($dataRegistryBusinessHourAdditional)) {
-            
+
             foreach ($dataRegistryBusinessHour as $businessHour) {
-                
+
                 $dayName = 'day' . $businessHour['day'];
-                
+
                 $dataRegistryBusinessHourAdditional[$dayName] = [];
-                
+
                 if (!empty($businessHour['registryBusinessHourAdditionals'])) {
-                    
+
                     foreach ($businessHour['registryBusinessHourAdditionals'] as $registryBusinessHourAdditional) {
-                        
+
                         array_push($dataRegistryBusinessHourAdditional[$dayName], $registryBusinessHourAdditional);
                     }
                 }
             }
         }
-        
+
         return $this->render('update_business_hour', [
             'model' => $model,
             'modelRegistryBusinessHour' => $modelRegistryBusinessHour,
@@ -1435,7 +1434,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             'statusApproval' => $statusApproval,
         ]);
     }
-    
+
     /**
      * Deletes an existing RegistryBusiness model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -1452,28 +1451,28 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
 
             try {
                 $flag = $model->delete();
-            } catch (yii\db\Exception $exc) {
-                $error = Yii::$app->params['errMysql'][$exc->errorInfo[1]];
+            } catch (\yii\db\Exception $exc) {
+                $error = \Yii::$app->params['errMysql'][$exc->errorInfo[1]];
             }
         }
 
         if ($flag) {
 
-            Yii::$app->session->setFlash('status', 'success');
-            Yii::$app->session->setFlash('message1', Yii::t('app', 'Delete Is Success'));
-            Yii::$app->session->setFlash('message2', Yii::t('app', 'Delete process is success. Data has been deleted'));
+            \Yii::$app->session->setFlash('status', 'success');
+            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Delete Is Success'));
+            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Delete process is success. Data has been deleted'));
         } else {
 
-            Yii::$app->session->setFlash('status', 'danger');
-            Yii::$app->session->setFlash('message1', Yii::t('app', 'Delete Is Fail'));
-            Yii::$app->session->setFlash('message2', Yii::t('app', 'Delete process is fail. Data fail to delete' . $error));
+            \Yii::$app->session->setFlash('status', 'danger');
+            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Delete Is Fail'));
+            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Delete process is fail. Data fail to delete' . $error));
         }
 
         $return = [];
 
-        $return['url'] = Yii::$app->urlManager->createUrl([$this->module->id . '/registry-business/index-' . $statusApproval]);
+        $return['url'] = \Yii::$app->urlManager->createUrl([$this->module->id . '/registry-business/index-' . $statusApproval]);
 
-        Yii::$app->response->format = Response::FORMAT_JSON;
+        \Yii::$app->response->format = Response::FORMAT_JSON;
         return $return;
     }
 
@@ -1490,7 +1489,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             ->andWhere(['application_business_counter' => $appBCounter])
             ->one();
 
-        $transaction = Yii::$app->db->beginTransaction();
+        $transaction = \Yii::$app->db->beginTransaction();
         $flag = true;
 
         $modelLogStatusApproval->is_actual = false;
@@ -1511,29 +1510,29 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
             }
 
             if (($flag = $modelLogStatusApproval->save())) {
-                
+
                 $flag = $this->run('/approval/status-approval/resubmit', ['appBId' => $appBId, 'regBId' => $id]);
             }
         }
 
         if ($flag) {
 
-            Yii::$app->session->setFlash('status', 'success');
-            Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-            Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+            \Yii::$app->session->setFlash('status', 'success');
+            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
 
             $transaction->commit();
 
-            return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl([$this->module->id . '/registry-business/index-icorct']));
+            return AjaxRequest::redirect($this, \Yii::$app->urlManager->createUrl([$this->module->id . '/registry-business/index-icorct']));
         } else {
 
-            Yii::$app->session->setFlash('status', 'danger');
-            Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-            Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
-    
+            \Yii::$app->session->setFlash('status', 'danger');
+            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
+
             $transaction->rollBack();
-    
-            return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl([$this->module->id . '/registry-business/view-icorct', 'id' => $id]));
+
+            return AjaxRequest::redirect($this, \Yii::$app->urlManager->createUrl([$this->module->id . '/registry-business/view-icorct', 'id' => $id]));
         }
     }
 
@@ -1542,7 +1541,7 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
         $tanggal = null;
         $data = null;
 
-        if (!empty($post = Yii::$app->request->post()) && !empty($post['tanggal_from']) && !empty($post['tanggal_to'])) {
+        if (!empty($post = \Yii::$app->request->post()) && !empty($post['tanggal_from']) && !empty($post['tanggal_to'])) {
 
             $basic = RegistryBusiness::find()
                 ->joinWith([
@@ -1552,14 +1551,14 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 ->andWhere('(registry_business.created_at::date) AT time zone \'Asia/Jakarta\' BETWEEN \'' . $post['tanggal_from'] . '\' AND \'' . $post['tanggal_to'] . '\'')
                 ->asArray()->all();
 
-            $tanggal = Yii::$app->formatter->asDate($post['tanggal_from'],'long') . ' - ' . Yii::$app->formatter->asDate($post['tanggal_to'],'long');
+            $tanggal = \Yii::$app->formatter->asDate($post['tanggal_from'],'long') . ' - ' . \Yii::$app->formatter->asDate($post['tanggal_to'],'long');
 
             $data = [];
             foreach ($basic as $b) {
                 $data[$b['district_id']][] = $b;
             }
         }
-        
+
         return $this->render('report/report_by_district',[
             'tanggal' => $tanggal,
             'data' => $data,
@@ -1570,8 +1569,8 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     {
         $tanggal = null;
         $data = null;
-        
-        if (!empty($post = Yii::$app->request->post()) && !empty($post['tanggal_from']) && !empty($post['tanggal_to'])) {
+
+        if (!empty($post = \Yii::$app->request->post()) && !empty($post['tanggal_from']) && !empty($post['tanggal_to'])) {
 
             $basic = RegistryBusiness::find()
                 ->joinWith([
@@ -1581,14 +1580,14 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 ->andWhere('(registry_business.created_at::date) AT time zone \'Asia/Jakarta\' BETWEEN \'' . $post['tanggal_from'] . '\' AND \'' . $post['tanggal_to'] . '\'')
                 ->asArray()->all();
 
-            $tanggal = Yii::$app->formatter->asDate($post['tanggal_from'],'long') . ' - ' . Yii::$app->formatter->asDate($post['tanggal_to'],'long');
+            $tanggal = \Yii::$app->formatter->asDate($post['tanggal_from'],'long') . ' - ' . \Yii::$app->formatter->asDate($post['tanggal_to'],'long');
 
             $data = [];
             foreach ($basic as $b) {
                 $data[$b['village_id']][] = $b;
             }
         }
-        
+
         return $this->render('report/report_by_village',[
             'tanggal' => $tanggal,
             'data' => $data,
@@ -1605,10 +1604,10 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     protected function findModel($id)
     {
         if (($model = RegistryBusiness::findOne($id)) !== null) {
-            
+
             return $model;
         } else {
-            
+
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
@@ -1616,15 +1615,15 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
     private function index($statusApproval, $title, $actionColumn) {
 
         $searchModel = new RegistryBusinessSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
         $dataProvider->query
-            //->andWhere(['registry_business.user_in_charge' => Yii::$app->user->getIdentity()->id])
+            //->andWhere(['registry_business.user_in_charge' => \Yii::$app->user->getIdentity()->id])
             ->andWhere(['log_status_approval.status_approval_id' => $statusApproval])
-            ->andWhere(['log_status_approval.is_actual' => 1])
+            ->andWhere(['log_status_approval.is_actual' => true])
             ->andWhere('registry_business.application_business_counter = application_business.counter')
             ->distinct();
 
-        Yii::$app->formatter->timeZone = 'Asia/Jakarta';
+        \Yii::$app->formatter->timeZone = 'Asia/Jakarta';
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -1645,58 +1644,58 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 'village',
                 'userInCharge',
                 'registryBusinessCategories' => function ($query) {
-                    
+
                     $query->andOnCondition(['registry_business_category.is_active' => true]);
                 },
                 'registryBusinessCategories.category',
                 'registryBusinessProductCategories' => function ($query) {
-                    
+
                     $query->andOnCondition(['registry_business_product_category.is_active' => true]);
                 },
                 'registryBusinessProductCategories.productCategory' => function ($query) {
-                    
+
                     $query->andOnCondition(['<>', 'product_category.type', 'Menu']);
                 },
                 'registryBusinessHours' => function ($query) {
-                    
+
                     $query->andOnCondition(['registry_business_hour.is_open' => true])
                         ->orderBy(['registry_business_hour.day' => SORT_ASC]);
                 },
                 'registryBusinessHours.registryBusinessHourAdditionals',
                 'registryBusinessFacilities' => function ($query) {
-                    
+
                     $query->andOnCondition(['registry_business_facility.is_active' => true]);
                 },
                 'registryBusinessFacilities.facility',
                 'registryBusinessPayments' => function ($query) {
-                
+
                     $query->andOnCondition(['registry_business_payment.is_active' => true]);
                 },
                 'registryBusinessPayments.paymentMethod',
                 'registryBusinessDeliveries' => function ($query) {
-                
+
                     $query->andOnCondition(['registry_business_delivery.is_active' => true]);
                 },
                 'registryBusinessDeliveries.deliveryMethod',
                 'registryBusinessImages' => function ($query) {
-                
+
                     $query->orderBy(['registry_business_image.order' => SORT_ASC]);
                 },
                 'registryBusinessContactPeople' => function ($query) {
-                    
+
                     $query->orderBy(['registry_business_contact_person.created_at' => SORT_ASC]);
                 },
                 'registryBusinessContactPeople.person',
                 'applicationBusiness',
                 'applicationBusiness.logStatusApprovals' => function ($query) {
-                    
+
                     $query->andOnCondition(['log_status_approval.is_actual' => true]);
                 },
                 'applicationBusiness.logStatusApprovals.statusApproval',
             ])
             ->andWhere(['registry_business.id' => $id])
             ->asArray()->one();
-        
+
         return $this->render('view', [
             'model' => $model,
             'statusApproval' => $statusApproval,

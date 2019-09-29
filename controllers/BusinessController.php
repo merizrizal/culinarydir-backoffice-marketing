@@ -2,19 +2,18 @@
 
 namespace backoffice\modules\marketing\controllers;
 
-use Yii;
 use core\models\Business;
-use core\models\search\BusinessSearch;
 use core\models\BusinessCategory;
-use core\models\BusinessProductCategory;
+use core\models\BusinessContactPerson;
+use core\models\BusinessFacility;
 use core\models\BusinessHour;
 use core\models\BusinessHourAdditional;
-use core\models\BusinessFacility;
 use core\models\BusinessImage;
-use core\models\BusinessContactPerson;
+use core\models\BusinessProductCategory;
+use core\models\Person;
 use core\models\ProductCategory;
 use core\models\RegistryBusinessContactPerson;
-use core\models\Person;
+use core\models\search\BusinessSearch;
 use sycomponent\Tools;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -47,10 +46,10 @@ class BusinessController extends \backoffice\controllers\BaseController
     public function actionMember()
     {
         $searchModel = new BusinessSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//         $dataProvider->query->andWhere(['user_in_charge' => Yii::$app->user->getIdentity()->id]);
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+//         $dataProvider->query->andWhere(['user_in_charge' => \Yii::$app->user->getIdentity()->id]);
 
-        Yii::$app->formatter->timeZone = 'Asia/Jakarta';
+        \Yii::$app->formatter->timeZone = 'Asia/Jakarta';
 
         return $this->render('member', [
             'searchModel' => $searchModel,
@@ -77,7 +76,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                     $query->andOnCondition(['business_product_category.is_active' => true]);
                 },
                 'businessProductCategories.productCategory' => function ($query) {
-                    
+
                     $query->andOnCondition(['<>', 'product_category.type', 'Menu']);
                 },
                 'businessHours' => function ($query) {
@@ -92,18 +91,18 @@ class BusinessController extends \backoffice\controllers\BaseController
                 },
                 'businessFacilities.facility',
                 'businessPayments' => function ($query) {
-                    
+
                     $query->andOnCondition(['business_payment.is_active' => true]);
                 },
                 'businessPayments.paymentMethod',
                 'businessDeliveries' => function ($query) {
-                
+
                     $query->andOnCondition(['business_delivery.is_active' => true]);
                 },
                 'businessDeliveries.deliveryMethod',
                 'businessDetail',
                 'businessImages' => function ($query) {
-                
+
                     $query->orderBy(['business_image.order' => SORT_ASC]);
                 },
                 'businessContactPeople' => function ($query) {
@@ -131,20 +130,20 @@ class BusinessController extends \backoffice\controllers\BaseController
         $model = $this->findModel($id);
         $modelBusinessLocation = $model->businessLocation;
 
-        if ($model->load(Yii::$app->request->post()) && $modelBusinessLocation->load(Yii::$app->request->post())) {
+        if ($model->load(\Yii::$app->request->post()) && $modelBusinessLocation->load(\Yii::$app->request->post())) {
 
             if (empty($save)) {
 
-                Yii::$app->response->format = Response::FORMAT_JSON;
+                \Yii::$app->response->format = Response::FORMAT_JSON;
                 return ArrayHelper::merge(ActiveForm::validate($model), ActiveForm::validate($modelBusinessLocation));
             } else {
 
-                $transaction = Yii::$app->db->beginTransaction();
+                $transaction = \Yii::$app->db->beginTransaction();
                 $flag = false;
 
                 if (($flag = $model->save())) {
-                    
-                    $modelBusinessLocation->address = trim(str_replace("\n", '', Yii::$app->request->post()['BusinessLocation']['address']));
+
+                    $modelBusinessLocation->address = trim(str_replace("\n", '', \Yii::$app->request->post()['BusinessLocation']['address']));
                     $modelBusinessLocation->setCoordinate();
 
                     $flag = $modelBusinessLocation->save();
@@ -152,16 +151,16 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
 
                     $transaction->commit();
                 } else {
 
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
 
                     $transaction->rollBack();
                 }
@@ -188,7 +187,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                     $query->andOnCondition(['business_product_category.is_active' => true]);
                 },
                 'businessProductCategories.productCategory' => function ($query) {
-                    
+
                     $query->andOnCondition(['<>', 'product_category.type', 'Menu']);
                 },
                 'businessFacilities' => function ($query) {
@@ -213,13 +212,13 @@ class BusinessController extends \backoffice\controllers\BaseController
 
         $modelBusinessDetail = $model->businessDetail;
 
-        if ($modelBusinessDetail->load(($post = Yii::$app->request->post()))) {
+        if ($modelBusinessDetail->load(($post = \Yii::$app->request->post()))) {
 
             if (!empty($save)) {
 
-                $transaction = Yii::$app->db->beginTransaction();
+                $transaction = \Yii::$app->db->beginTransaction();
                 $flag = false;
-                
+
                 if (($flag = $model->save())) {
 
                     if (!empty($post['BusinessCategory']['category_id'])) {
@@ -277,25 +276,25 @@ class BusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
-                
+
                 if ($flag) {
 
                     if (!empty($post['BusinessProductCategory']['product_category_id']['parent'])) {
-                        
+
                         foreach ($post['BusinessProductCategory']['product_category_id']['parent'] as $productCategoryId) {
 
                             $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
-                            
+
                             if (empty($newModelBusinessProductCategory)) {
-                                
+
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
                                 $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
                                 $newModelBusinessProductCategory->product_category_id = $productCategoryId;
                             }
-                            
+
                             $newModelBusinessProductCategory->is_active = true;
-                            
+
                             if (!($flag = $newModelBusinessProductCategory->save())) {
 
                                 break;
@@ -314,17 +313,17 @@ class BusinessController extends \backoffice\controllers\BaseController
                         foreach ($post['BusinessProductCategory']['product_category_id']['child'] as $productCategoryId) {
 
                             $newModelBusinessProductCategory = BusinessProductCategory::findOne(['unique_id' => $model->id . '-' . $productCategoryId]);
-                            
+
                             if (empty($newModelBusinessProductCategory)) {
-                                
+
                                 $newModelBusinessProductCategory = new BusinessProductCategory();
                                 $newModelBusinessProductCategory->unique_id = $model->id . '-' . $productCategoryId;
                                 $newModelBusinessProductCategory->business_id = $model->id;
                                 $newModelBusinessProductCategory->product_category_id = $productCategoryId;
                             }
-                            
+
                             $newModelBusinessProductCategory->is_active = true;
-                            
+
                             if (!($flag = $newModelBusinessProductCategory->save())) {
 
                                 break;
@@ -341,29 +340,29 @@ class BusinessController extends \backoffice\controllers\BaseController
                     if (!empty($post['BusinessProductCategory']['product_category_id']['parent']) && !empty($post['BusinessProductCategory']['product_category_id']['child'])) {
 
                         foreach ($model->businessProductCategories as $existModelBusinessProductCategory) {
-                            
+
                             if (!empty($existModelBusinessProductCategory->productCategory)) {
 
                                 $exist = false;
-    
+
                                 foreach ($post['BusinessProductCategory']['product_category_id'] as $dataProductCategory) {
-    
+
                                     foreach ($dataProductCategory as $productCategoryId) {
-    
+
                                         if ($existModelBusinessProductCategory['product_category_id'] == $productCategoryId) {
-    
+
                                             $exist = true;
                                             break 2;
                                         }
                                     }
                                 }
-    
+
                                 if (!$exist) {
-                                    
+
                                     $existModelBusinessProductCategory->is_active = false;
-    
+
                                     if (!($flag = $existModelBusinessProductCategory->save())) {
-    
+
                                         break;
                                     }
                                 }
@@ -434,22 +433,22 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     $modelBusinessDetail->price_min = !empty($modelBusinessDetail->price_min) ? $modelBusinessDetail->price_min : 0;
                     $modelBusinessDetail->price_max = !empty($modelBusinessDetail->price_max) ? $modelBusinessDetail->price_max : 0;
-                    
+
                     $flag = $modelBusinessDetail->save();
                 }
 
                 if ($flag) {
 
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
 
                     $transaction->commit();
                 } else {
 
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
 
                     $transaction->rollBack();
                 }
@@ -465,7 +464,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 $businessProductCategoryParent[] = $valueBusinessProductCategory;
             } else if ($valueBusinessProductCategory['productCategory']['type'] == 'Specific' || $valueBusinessProductCategory['productCategory']['type'] == 'Specific-Menu') {
-                
+
                 $businessProductCategoryChild[] = $valueBusinessProductCategory;
             }
         }
@@ -474,22 +473,22 @@ class BusinessController extends \backoffice\controllers\BaseController
         $dataBusinessProductCategoryParent = empty($dataBusinessProductCategoryParent) ? $businessProductCategoryParent : $dataBusinessProductCategoryParent;
         $dataBusinessProductCategoryChild = empty($dataBusinessProductCategoryChild) ? $businessProductCategoryChild : $dataBusinessProductCategoryChild;
         $dataBusinessFacility = empty($dataBusinessFacility) ? $model['businessFacilities'] : $dataBusinessFacility;
-        
+
         $modelProductCategory = ProductCategory::find()
             ->andWhere(['<>', 'type', 'Menu'])
             ->andWhere(['is_active' => true])
             ->orderBy('name')->asArray()->all();
-        
+
         $dataProductCategoryParent = [];
         $dataProductCategoryChild = [];
-        
+
         foreach ($modelProductCategory as $dataProductCategory) {
-            
+
             if ($dataProductCategory['type'] == 'General') {
-                
+
                 $dataProductCategoryParent[$dataProductCategory['id']] = $dataProductCategory['name'];
             } else {
-                
+
                 $dataProductCategoryChild[$dataProductCategory['id']] = $dataProductCategory['name'];
             }
         }
@@ -527,11 +526,11 @@ class BusinessController extends \backoffice\controllers\BaseController
 
         $deletedBusinessImageId = [];
 
-        if (!empty(($post = Yii::$app->request->post()))) {
+        if (!empty(($post = \Yii::$app->request->post()))) {
 
             if (!empty($save)) {
 
-                $transaction = Yii::$app->db->beginTransaction();
+                $transaction = \Yii::$app->db->beginTransaction();
                 $flag = true;
 
                 $order = count($model->businessImages);
@@ -539,12 +538,12 @@ class BusinessController extends \backoffice\controllers\BaseController
                 if (!empty($post['BusinessImageDelete'])) {
 
                     if (($flag = BusinessImage::deleteAll(['id' => $post['BusinessImageDelete']]))) {
-                        
+
                         if ($order == count($post['BusinessImageDelete'])) {
-                            
+
                             $flag = false;
                         } else {
-                            
+
                             $deletedBusinessImageId = $post['BusinessImageDelete'];
                         }
                     }
@@ -556,7 +555,7 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                     if ($newModelBusinessImage->load($post)) {
 
-                        $images = Tools::uploadFiles('/img/registry_business/', $newModelBusinessImage, 'image', 'business_id', '', true);
+                        $images = Tools::uploadFiles('/img/registry_business/', $newModelBusinessImage, 'image', 'business_id', $model->id, true);
 
                         foreach ($images as $image) {
 
@@ -580,7 +579,7 @@ class BusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
-                
+
                 if ($flag) {
 
                     foreach ($model->businessImages as $existModelBusinessImage) {
@@ -599,16 +598,16 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
 
                     $transaction->commit();
                 } else {
 
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
 
                     $transaction->rollBack();
                 }
@@ -662,78 +661,78 @@ class BusinessController extends \backoffice\controllers\BaseController
         $modelPerson = new Person();
         $modelBusinessContactPerson = new BusinessContactPerson();
         $dataBusinessContactPerson = [];
-        
+
         $isEmpty = false;
 
-        if (!empty(($post = Yii::$app->request->post()))) {
+        if (!empty(($post = \Yii::$app->request->post()))) {
 
             if (!empty($save)) {
 
-                $transaction = Yii::$app->db->beginTransaction();
+                $transaction = \Yii::$app->db->beginTransaction();
                 $flag = true;
 
                 $isEmpty = (empty($post['Person']) && empty($post['BusinessContactPerson']));
 
                 if (!empty($post['BusinessContactPersonDeleted'])) {
-                    
+
                     $modelRegistryBusinessContactPerson = RegistryBusinessContactPerson::findOne(['person_id' => $post['BusinessContactPersonDeleted']]);
-                    
+
                     if (!empty($modelRegistryBusinessContactPerson)) {
-                        
+
                         $flag = RegistryBusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]);
                     }
-                    
+
                     if ($flag) {
-                        
+
                         if (($flag = BusinessContactPerson::deleteAll(['person_id' => $post['BusinessContactPersonDeleted']]))) {
-                            
+
                             $flag = Person::deleteAll(['id' => $post['BusinessContactPersonDeleted']]);
                         }
                     }
                 }
-                
+
                 if ($flag) {
 
                     if (!empty($post['Person']) && !empty($post['BusinessContactPerson'])) {
-    
+
                         foreach ($post['Person'] as $i => $person) {
-    
+
                             if (!empty($model['businessContactPeople'][$i])) {
-    
+
                                 $newModelPerson = Person::findOne(['id' => $model['businessContactPeople'][$i]['person_id']]);
                             } else {
-    
+
                                 $newModelPerson = new Person();
                             }
-    
+
                             $newModelPerson->first_name = $person['first_name'];
                             $newModelPerson->last_name = $person['last_name'];
                             $newModelPerson->phone = $person['phone'];
                             $newModelPerson->email = $person['email'];
-    
+
                             if (!($flag = $newModelPerson->save())) {
-    
+
                                 break;
                             } else {
-    
+
                                 $newModelBusinessContactPerson = BusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
-    
+
                                 if (empty($newModelBusinessContactPerson)) {
-    
+
                                     $newModelBusinessContactPerson = new BusinessContactPerson();
                                     $newModelBusinessContactPerson->business_id = $model->id;
                                     $newModelBusinessContactPerson->person_id = $newModelPerson->id;
                                 }
-    
+
                                 $newModelBusinessContactPerson->position = $post['BusinessContactPerson'][$i]['position'];
                                 $newModelBusinessContactPerson->is_primary_contact = !empty($post['BusinessContactPerson'][$i]['is_primary_contact']);
                                 $newModelBusinessContactPerson->note = $post['BusinessContactPerson'][$i]['note'];
-    
+
                                 if (!($flag = $newModelBusinessContactPerson->save())) {
-    
+
                                     break;
                                 } else {
-    
+
                                     array_push($dataBusinessContactPerson, ArrayHelper::merge($newModelBusinessContactPerson->toArray(), $newModelPerson->toArray()));
                                 }
                             }
@@ -743,16 +742,16 @@ class BusinessController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
 
                     $transaction->commit();
                 } else {
 
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
 
                     $transaction->rollBack();
                 }
@@ -800,11 +799,11 @@ class BusinessController extends \backoffice\controllers\BaseController
         $modelBusinessHourAdditional = new BusinessHourAdditional();
         $dataBusinessHourAdditional = [];
 
-        if (!empty($post = Yii::$app->request->post())) {
+        if (!empty($post = \Yii::$app->request->post())) {
 
             if (!empty($save)) {
 
-                $transaction = Yii::$app->db->beginTransaction();
+                $transaction = \Yii::$app->db->beginTransaction();
                 $flag = false;
 
                 $loopDays = ['1', '2', '3', '4', '5', '6', '7'];
@@ -879,26 +878,26 @@ class BusinessController extends \backoffice\controllers\BaseController
                         }
                     }
                 }
-                
+
                 if ($flag) {
-                    
+
                     $model->businessDetail->note_business_hour = !empty($post['BusinessDetail']['note_business_hour']) ? $post['BusinessDetail']['note_business_hour'] : null;
-                    
+
                     $flag = $model->businessDetail->save();
                 }
 
                 if ($flag) {
 
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
 
                     $transaction->commit();
                 } else {
 
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
 
                     $transaction->rollBack();
                 }
@@ -937,32 +936,32 @@ class BusinessController extends \backoffice\controllers\BaseController
     public function actionUpgradeMembership($id, $save = null)
     {
         $model = $this->findModel($id);
-        
-        if ($model->load(Yii::$app->request->post())) {
-            
+
+        if ($model->load(\Yii::$app->request->post())) {
+
             if (!empty($save)) {
-                
+
                 if ($model->save()) {
-                    
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is success. Data has been saved'));
+
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
                 } else {
-                    
+
                     $model->setIsNewRecord(true);
-                    
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Update Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Update data process is fail. Data fail to save'));
+
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
                 }
             }
         }
-        
+
         return $this->render('upgrade_membership', [
             'model' => $model,
         ]);
     }
-    
+
     protected function findModel($id)
     {
         if (($model = Business::findOne($id)) !== null) {
