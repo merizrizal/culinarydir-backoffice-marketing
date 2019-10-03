@@ -107,9 +107,11 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     $modelLogStatusApproval->status_approval_id = StatusApproval::find()->andWhere(['group' => 0])->asArray()->one()['id'];
                     $modelLogStatusApproval->is_actual = true;
                     $modelLogStatusApproval->application_business_counter = $modelApplicationBusiness->counter;
+
+                    $flag = $modelLogStatusApproval->save();
                 }
 
-                if (($flag = $modelLogStatusApproval->save())) {
+                if ($flag) {
 
                     $model->application_business_id = $modelApplicationBusiness->id;
                     $model->user_in_charge = $modelApplicationBusiness->user_in_charge;
@@ -1195,47 +1197,50 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                     }
                 }
 
-                if (!empty($post['Person']) && !empty($post['RegistryBusinessContactPerson'])) {
+                if ($flag) {
 
-                    foreach ($post['Person'] as $i => $person) {
+                    if (!empty($post['Person']) && !empty($post['RegistryBusinessContactPerson'])) {
 
-                        if (!empty($model['registryBusinessContactPeople'][$i])) {
+                        foreach ($post['Person'] as $i => $person) {
 
-                            $newModelPerson = Person::findOne(['id' => $model['registryBusinessContactPeople'][$i]['person_id']]);
-                        } else {
+                            if (!empty($model['registryBusinessContactPeople'][$i])) {
 
-                            $newModelPerson = new Person();
-                        }
+                                $newModelPerson = Person::findOne(['id' => $model['registryBusinessContactPeople'][$i]['person_id']]);
+                            } else {
 
-                        $newModelPerson->first_name = $person['first_name'];
-                        $newModelPerson->last_name = $person['last_name'];
-                        $newModelPerson->phone = $person['phone'];
-                        $newModelPerson->email = $person['email'];
-
-                        if (!($flag = $newModelPerson->save())) {
-
-                            break;
-                        } else {
-
-                            $newModelRegistryBusinessContactPerson = RegistryBusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
-
-                            if (empty($newModelRegistryBusinessContactPerson)) {
-
-                                $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
-                                $newModelRegistryBusinessContactPerson->registry_business_id = $model->id;
-                                $newModelRegistryBusinessContactPerson->person_id = $newModelPerson->id;
+                                $newModelPerson = new Person();
                             }
 
-                            $newModelRegistryBusinessContactPerson->position = $post['RegistryBusinessContactPerson'][$i]['position'];
-                            $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']);
-                            $newModelRegistryBusinessContactPerson->note = $post['RegistryBusinessContactPerson'][$i]['note'];
+                            $newModelPerson->first_name = $person['first_name'];
+                            $newModelPerson->last_name = $person['last_name'];
+                            $newModelPerson->phone = $person['phone'];
+                            $newModelPerson->email = $person['email'];
 
-                            if (!($flag = $newModelRegistryBusinessContactPerson->save())) {
+                            if (!($flag = $newModelPerson->save())) {
 
                                 break;
                             } else {
 
-                                array_push($dataRegistryBusinessContactPerson, ArrayHelper::merge($newModelRegistryBusinessContactPerson->toArray(), $newModelPerson->toArray()));
+                                $newModelRegistryBusinessContactPerson = RegistryBusinessContactPerson::findOne(['person_id' => $newModelPerson->id]);
+
+                                if (empty($newModelRegistryBusinessContactPerson)) {
+
+                                    $newModelRegistryBusinessContactPerson = new RegistryBusinessContactPerson();
+                                    $newModelRegistryBusinessContactPerson->registry_business_id = $model->id;
+                                    $newModelRegistryBusinessContactPerson->person_id = $newModelPerson->id;
+                                }
+
+                                $newModelRegistryBusinessContactPerson->position = $post['RegistryBusinessContactPerson'][$i]['position'];
+                                $newModelRegistryBusinessContactPerson->is_primary_contact = !empty($post['RegistryBusinessContactPerson'][$i]['is_primary_contact']);
+                                $newModelRegistryBusinessContactPerson->note = $post['RegistryBusinessContactPerson'][$i]['note'];
+
+                                if (!($flag = $newModelRegistryBusinessContactPerson->save())) {
+
+                                    break;
+                                } else {
+
+                                    array_push($dataRegistryBusinessContactPerson, ArrayHelper::merge($newModelRegistryBusinessContactPerson->toArray(), $newModelPerson->toArray()));
+                                }
                             }
                         }
                     }
@@ -1507,11 +1512,11 @@ class RegistryBusinessController extends \backoffice\controllers\BaseController
                 $modelLogStatusApproval->status_approval_id = 'RSBMT';
                 $modelLogStatusApproval->is_actual = true;
                 $modelLogStatusApproval->application_business_counter = $appBCounter;
-            }
 
-            if (($flag = $modelLogStatusApproval->save())) {
+                if (($flag = $modelLogStatusApproval->save())) {
 
-                $flag = $this->run('/approval/status-approval/resubmit', ['appBId' => $appBId, 'regBId' => $id]);
+                    $flag = $this->run('/approval/status-approval/resubmit', ['appBId' => $appBId, 'regBId' => $id]);
+                }
             }
         }
 
